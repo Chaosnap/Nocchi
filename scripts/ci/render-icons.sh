@@ -17,7 +17,7 @@ fi
 
 python3 - "$SRC" "$WORK/ios.svg" <<'PY'
 # iOS 需要满版方图（系统自己加圆角）：把圆角瓷砖铺满整张画布，去掉瓷砖阴影与描边，
-# 再把视口稍微放大，让「冲出画框」的相片顶部也能留在画面里。
+# 视口裁到瓷砖范围（824×824）。
 import re, sys
 src, dst = sys.argv[1], sys.argv[2]
 text = open(src, encoding="utf-8").read()
@@ -25,7 +25,7 @@ text = re.sub(r'\s*<rect id="tileShadow"[^>]*/>', "", text)
 text = re.sub(r'\s*<rect id="tileStroke"[^>]*/>', "", text)
 text = re.sub(r'<rect id="tileBg"[^>]*/>', '<rect id="tileBg" x="0" y="0" width="1024" height="1024" fill="url(#room)"/>', text)
 text = re.sub(r'<rect id="tileClipRect"[^>]*/>', '<rect id="tileClipRect" x="0" y="0" width="1024" height="1024"/>', text)
-text = text.replace('viewBox="0 0 1024 1024"', 'viewBox="64 40 896 896"', 1)
+text = text.replace('viewBox="0 0 1024 1024"', 'viewBox="100 100 824 824"', 1)
 open(dst, "w", encoding="utf-8").write(text)
 PY
 
