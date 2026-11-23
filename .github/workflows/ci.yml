@@ -1,0 +1,57 @@
+# Nocchi · GitHub Actions-Only CI
+#
+# 本仓库不在本地构建或测试：所有编译、单元测试和打包都在这里完成。
+# - nocchikit : 共享 Swift Package 的单元测试（swift test）
+# - macos-app : XcodeGen 生成工程 → Release 构建（ad-hoc 签名）→ 上传 zip
+# - ios-app   : XcodeGen 生成工程 → Release 构建（通用 iOS 设备、未签名）→ 上传 ipa
+#
+# 失败时 scripts/ci/annotate-failure.sh 会把日志尾部写成 Check Run 注解，
+# 这样在公开仓库里不登录也能通过 REST API 读到错误。
+
+name: CI
+
+on:
+  push:
+    branches: [main, develop, "feat/**", "fix/**"]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  HOMEBREW_NO_AUTO_UPDATE: "1"
+  HOMEBREW_NO_INSTALL_CLEANUP: "1"
+  HOMEBREW_NO_ENV_HINTS: "1"
+
+jobs:
+  nocchikit:
+    name: NocchiKit · swift test
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: swift test
+        working-directory: Packages/NocchiKit
+        run: |
+          set -o pipefail
+          swift test 2>&1 | tee "$RUNNER_TEMP/nocchikit-test.log"
+
+      - name: Surface failure log
+        if: failure()
+        run: bash scripts/ci/annotate-failure.sh "$RUNNER_TEMP/nocchikit-test.log" "NocchiKit tests failed"
+
+  # macos-app / ios-app 两个任务会在对应工程目录提交后加入。
