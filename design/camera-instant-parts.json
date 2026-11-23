@@ -1,0 +1,9 @@
+{
+  "image": "camera-instant-v3.png",
+  "note": "Normalized to the image size, origin top-left. Used by the iOS layered camera (live lens, pressable shutter, flash glow).",
+  "lens": { "centerX": 0.5412, "centerY": 0.5680, "radius": 0.1357 },
+  "shutter": { "centerX": 0.2246, "centerY": 0.4990, "radius": 0.0488 },
+  "flashGlass": { "x": 0.1807, "y": 0.2266, "width": 0.2178, "height": 0.1426 },
+  "viewfinderGlass": { "x": 0.7197, "y": 0.2324, "width": 0.1367, "height": 0.1426 },
+  "topSlot": { "x": 0.2441, "y": 0.1289, "width": 0.5469, "height": 0.0273 }
+}

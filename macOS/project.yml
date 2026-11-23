@@ -1,0 +1,61 @@
+# Nocchi for macOS · XcodeGen 工程描述
+# 工程文件（Nocchi.xcodeproj）只在 CI 中生成，不入库。
+name: Nocchi
+options:
+  bundleIdPrefix: com.chaosnap
+  deploymentTarget:
+    macOS: "14.0"
+  developmentLanguage: zh-Hans
+  createIntermediateGroups: true
+
+packages:
+  NocchiKit:
+    path: ../Packages/NocchiKit
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEAD_CODE_STRIPPING: YES
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+
+targets:
+  Nocchi:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: Nocchi
+      - path: ../Shared/Art.xcassets
+    dependencies:
+      - package: NocchiKit
+    info:
+      path: Nocchi/Info.plist
+      properties:
+        CFBundleDisplayName: Nocchi
+        CFBundleName: Nocchi
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSApplicationCategoryType: public.app-category.photography
+        LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
+        LSUIElement: true
+        NSCameraUsageDescription: "Nocchi 用刘海里的摄像头拍自拍和大头贴。照片只保存在这台 Mac 上。"
+        NSDesktopFolderUsageDescription: "开启「接管系统截图」后，Nocchi 会读取你刚截下的屏幕截图，把它冲印成即显相片。"
+        NSDocumentsFolderUsageDescription: "Nocchi 会读取你保存在这里的屏幕截图，把它冲印成即显相片。"
+        NSDownloadsFolderUsageDescription: "Nocchi 会读取你保存在这里的屏幕截图，把它冲印成即显相片。"
+        NSHumanReadableCopyright: "© 2026 Nocchi · 刘海冲印店"
+    entitlements:
+      path: Nocchi/Nocchi.entitlements
+      properties:
+        com.apple.security.device.camera: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.chaosnap.nocchi.mac
+        PRODUCT_NAME: Nocchi
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        ENABLE_HARDENED_RUNTIME: NO
+        COMBINE_HIDPI_IMAGES: YES
+    scheme:
+      testTargets: []

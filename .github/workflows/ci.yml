@@ -43,6 +43,7 @@ jobs:
         run: |
           xcodebuild -version
           swift --version
+          echo "::notice title=Toolchain::$(xcodebuild -version | tr '\n' ' ') · $(swift --version 2>&1 | head -n 1)"
 
       - name: swift test
         working-directory: Packages/NocchiKit
@@ -54,4 +55,60 @@ jobs:
         if: failure()
         run: bash scripts/ci/annotate-failure.sh "$RUNNER_TEMP/nocchikit-test.log" "NocchiKit tests failed"
 
-  # macos-app / ios-app 两个任务会在对应工程目录提交后加入。
+  macos-app:
+    name: macOS app · build
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Install XcodeGen & xcbeautify
+        run: brew install xcodegen xcbeautify
+
+      - name: Generate Xcode project
+        run: |
+          set -o pipefail
+          xcodegen generate --spec macOS/project.yml 2>&1 | tee "$RUNNER_TEMP/mac-xcodegen.log"
+
+      - name: Build (Release, ad-hoc signed)
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project macOS/Nocchi.xcodeproj \
+            -scheme Nocchi \
+            -configuration Release \
+            -destination 'generic/platform=macOS' \
+            -derivedDataPath "$RUNNER_TEMP/dd-mac" \
+            CODE_SIGN_IDENTITY=- \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM= \
+            build 2>&1 | tee "$RUNNER_TEMP/mac-build.log" | xcbeautify --renderer github-actions
+
+      - name: Package
+        run: |
+          APP="$RUNNER_TEMP/dd-mac/Build/Products/Release/Nocchi.app"
+          codesign --verify --deep --strict --verbose=2 "$APP" || true
+          lipo -info "$APP/Contents/MacOS/Nocchi" || true
+          mkdir -p dist
+          ditto -c -k --sequesterRsrc --keepParent "$APP" "dist/Nocchi-macOS-${GITHUB_SHA::7}.zip"
+          ls -la dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Nocchi-macOS
+          path: dist/*.zip
+          retention-days: 14
+
+      - name: Surface failure log
+        if: failure()
+        run: |
+          LOG="$RUNNER_TEMP/mac-build.log"
+          [ -f "$LOG" ] || LOG="$RUNNER_TEMP/mac-xcodegen.log"
+          bash scripts/ci/annotate-failure.sh "$LOG" "macOS build failed"
+
+  # ios-app 任务会在 iOS 工程提交后加入。

@@ -124,6 +124,7 @@ public final class FilmProcessor: @unchecked Sendable {
         let fx = stock.effects
         image = applyHalation(image, amount: fx.halation, extent: extent)
         image = applyBloom(image, amount: fx.bloom, extent: extent)
+        image = applyEdgeSoftness(image, amount: fx.edgeSoftness, extent: extent)
         image = applyLightLeak(image, amount: fx.lightLeak, extent: extent, seed: options.seed)
         image = applyVignette(image, amount: fx.vignette, extent: extent)
         image = applyGrain(image, amount: fx.grain, size: fx.grainSize, extent: extent, seed: options.seed)
@@ -228,6 +229,27 @@ public final class FilmProcessor: @unchecked Sendable {
                 kCIInputIntensityKey: CGFloat(amount) * 0.8
             ])
             .cropped(to: extent)
+    }
+
+    /// 边缘柔化：中心清晰、四角轻微失焦（模拟便宜镜头的场曲）。
+    private func applyEdgeSoftness(_ image: CIImage, amount: Float, extent: CGRect) -> CIImage {
+        guard amount > 0.001 else { return image }
+        let minDim = min(extent.width, extent.height)
+        let blurred = image.clampedToExtent()
+            .applyingFilter("CIGaussianBlur", parameters: [kCIInputRadiusKey: minDim * 0.012 * CGFloat(amount)])
+            .cropped(to: extent)
+        let radius = hypot(extent.width, extent.height) / 2
+        guard let mask = CIFilter(name: "CIRadialGradient", parameters: [
+            "inputCenter": CIVector(x: extent.midX, y: extent.midY),
+            "inputRadius0": radius * 0.55,
+            "inputRadius1": radius * 1.0,
+            "inputColor0": CIColor(red: 0, green: 0, blue: 0, alpha: 1),
+            "inputColor1": CIColor(red: 1, green: 1, blue: 1, alpha: 1)
+        ])?.outputImage?.cropped(to: extent) else { return image }
+        return blurred.applyingFilter("CIBlendWithMask", parameters: [
+            kCIInputBackgroundImageKey: image,
+            kCIInputMaskImageKey: mask
+        ]).cropped(to: extent)
     }
 
     /// 漏光：从某条边渗进来的暖色光。

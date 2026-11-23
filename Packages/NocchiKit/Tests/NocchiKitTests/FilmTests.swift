@@ -25,7 +25,7 @@ final class FilmCatalogTests: XCTestCase {
             if let hex = stock.tone.highlightTint { XCTAssertNotNil(RGB(hex: hex), stock.id) }
             if let hex = stock.tone.monoTone { XCTAssertNotNil(RGB(hex: hex), stock.id) }
             let fx = stock.effects
-            for v in [fx.grain, fx.halation, fx.bloom, fx.vignette, fx.lightLeak] {
+            for v in [fx.grain, fx.halation, fx.bloom, fx.vignette, fx.lightLeak, fx.edgeSoftness] {
                 XCTAssertTrue((0...1).contains(v), "\(stock.id) effect out of range")
             }
         }

@@ -14,20 +14,23 @@ public struct FilmEffects: Codable, Hashable, Sendable {
     public var vignette: Float
     /// 漏光。
     public var lightLeak: Float
+    /// 边缘柔化：即显相机镜头在四角的轻微失焦。
+    public var edgeSoftness: Float
 
-    public init(grain: Float = 0, grainSize: Float = 1, halation: Float = 0, bloom: Float = 0, vignette: Float = 0, lightLeak: Float = 0) {
+    public init(grain: Float = 0, grainSize: Float = 1, halation: Float = 0, bloom: Float = 0, vignette: Float = 0, lightLeak: Float = 0, edgeSoftness: Float = 0) {
         self.grain = grain
         self.grainSize = grainSize
         self.halation = halation
         self.bloom = bloom
         self.vignette = vignette
         self.lightLeak = lightLeak
+        self.edgeSoftness = edgeSoftness
     }
 
     public static let clean = FilmEffects()
 
     private enum CodingKeys: String, CodingKey {
-        case grain, grainSize, halation, bloom, vignette, lightLeak
+        case grain, grainSize, halation, bloom, vignette, lightLeak, edgeSoftness
     }
 
     public init(from decoder: Decoder) throws {
@@ -39,6 +42,7 @@ public struct FilmEffects: Codable, Hashable, Sendable {
         bloom = try c.decode(.bloom, default: d.bloom)
         vignette = try c.decode(.vignette, default: d.vignette)
         lightLeak = try c.decode(.lightLeak, default: d.lightLeak)
+        edgeSoftness = try c.decode(.edgeSoftness, default: d.edgeSoftness)
     }
 }
 

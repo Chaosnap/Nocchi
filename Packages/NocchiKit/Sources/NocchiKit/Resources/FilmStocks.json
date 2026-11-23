@@ -16,7 +16,7 @@
         "shadowTint": "#5A7A6A", "shadowTintAmount": 0.35,
         "highlightTint": "#F2D9A8", "highlightTintAmount": 0.35
       },
-      "effects": { "grain": 0.18, "grainSize": 1.2, "halation": 0.1, "bloom": 0.15, "vignette": 0.25 },
+      "effects": { "grain": 0.18, "grainSize": 1.2, "halation": 0.1, "bloom": 0.15, "vignette": 0.25, "edgeSoftness": 0.45 },
       "paper": { "color": "#F6F2E8", "ink": "#2B2A28" }
     },
     {
@@ -34,7 +34,7 @@
         "shadowTint": "#7A6040", "shadowTintAmount": 0.25,
         "highlightTint": "#FFD28A", "highlightTintAmount": 0.45
       },
-      "effects": { "grain": 0.15, "grainSize": 1.0, "halation": 0.12, "bloom": 0.1, "vignette": 0.15, "lightLeak": 0.05 },
+      "effects": { "grain": 0.15, "grainSize": 1.0, "halation": 0.12, "bloom": 0.1, "vignette": 0.15, "lightLeak": 0.05, "edgeSoftness": 0.25 },
       "paper": { "color": "#F8F3E6" }
     },
     {
@@ -70,7 +70,7 @@
         "shadowTint": "#7A5A8A", "shadowTintAmount": 0.35,
         "highlightTint": "#FFD0DC", "highlightTintAmount": 0.45
       },
-      "effects": { "grain": 0.12, "halation": 0.1, "bloom": 0.45, "vignette": 0.12 },
+      "effects": { "grain": 0.12, "halation": 0.1, "bloom": 0.45, "vignette": 0.12, "edgeSoftness": 0.35 },
       "paper": { "color": "#FBF1F2", "ink": "#5A3A4A" }
     },
     {
@@ -104,7 +104,7 @@
         "shadowTint": "#3F6B4A", "shadowTintAmount": 0.45,
         "highlightTint": "#E8EDC8", "highlightTintAmount": 0.3
       },
-      "effects": { "grain": 0.2, "bloom": 0.1, "vignette": 0.2, "lightLeak": 0.25 },
+      "effects": { "grain": 0.2, "bloom": 0.1, "vignette": 0.2, "lightLeak": 0.25, "edgeSoftness": 0.25 },
       "paper": { "color": "#F3F3EA" }
     },
     {
@@ -158,8 +158,25 @@
         "shadowTint": "#7A5050", "shadowTintAmount": 0.35,
         "highlightTint": "#F0D8A0", "highlightTintAmount": 0.5
       },
-      "effects": { "grain": 0.25, "bloom": 0.1, "vignette": 0.35, "lightLeak": 0.1 },
+      "effects": { "grain": 0.25, "bloom": 0.1, "vignette": 0.35, "lightLeak": 0.1, "edgeSoftness": 0.35 },
       "paper": { "color": "#EFE6D2", "ink": "#4A3A2A" }
+    },
+    {
+      "id": "sepia-80",
+      "name": "旧时光 80",
+      "englishName": "Old Days 80",
+      "iso": 80,
+      "exposures": 10,
+      "summary": "棕褐色调的老照片：低反差、柔边、暗角、明显颗粒",
+      "swatch": ["#E8D5B0", "#A07850", "#3A2818"],
+      "tags": ["bw", "vintage", "sepia"],
+      "tone": {
+        "monochrome": true, "monoMix": [0.4, 0.45, 0.15],
+        "contrast": 0.9, "blackLift": 0.08, "whiteCap": 0.92,
+        "monoTone": "#B08850", "monoToneAmount": 0.75
+      },
+      "effects": { "grain": 0.4, "grainSize": 1.4, "bloom": 0.15, "vignette": 0.45, "edgeSoftness": 0.5 },
+      "paper": { "color": "#F1EADB", "ink": "#3A2A1A" }
     },
     {
       "id": "sunset-200",
@@ -192,7 +209,7 @@
         "contrast": 0.95, "blackLift": 0.06, "whiteCap": 0.95,
         "monoTone": "#C8A880", "monoToneAmount": 0.35
       },
-      "effects": { "grain": 0.35, "bloom": 0.1, "vignette": 0.25 },
+      "effects": { "grain": 0.35, "bloom": 0.1, "vignette": 0.25, "edgeSoftness": 0.2 },
       "paper": { "color": "#F3EEE4", "ink": "#2A2622" }
     },
     {
@@ -245,7 +262,7 @@
         "blackLift": 0.02,
         "highlightTint": "#FFF6F0", "highlightTintAmount": 0.3
       },
-      "effects": { "grain": 0.15, "bloom": 0.3, "vignette": 0.2 },
+      "effects": { "grain": 0.15, "bloom": 0.3, "vignette": 0.2, "edgeSoftness": 0.15 },
       "paper": { "color": "#FFFFFF" }
     }
   ]

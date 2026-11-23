@@ -62,3 +62,47 @@ final class GeometryTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(se.rect.minY, 20)
     }
 }
+
+final class PileLayoutTests: XCTestCase {
+    func testNewestIsOnTopAndNearAnchor() {
+        let newest = PileLayout.slot(index: 0, seed: 11)
+        XCTAssertLessThan(abs(newest.offset.width), 4)
+        XCTAssertLessThan(abs(newest.offset.height), 4)
+        let older = PileLayout.slot(index: 2, seed: 11)
+        XCTAssertGreaterThan(newest.zIndex, older.zIndex)
+        XCTAssertLessThan(older.offset.width, -40, "旧照片被挤到左边")
+        XCTAssertGreaterThan(older.offset.height, 20)
+    }
+
+    func testSpreadIsCapped() {
+        let a = PileLayout.slot(index: PileLayout.maxSpread, seed: 1)
+        let b = PileLayout.slot(index: PileLayout.maxSpread + 20, seed: 1)
+        XCTAssertEqual(a.offset, b.offset)
+        XCTAssertLessThanOrEqual(abs(a.rotation), 6)
+    }
+
+    func testBlotchesAreDistributedAcrossFrames() {
+        var record = PhotoRecord(source: .booth, body: .photoBooth, stock: FilmCatalog.defaultStock, seed: 3)
+        record.negatives = ["a", "b", "c", "d"]
+        record.blotches = (0..<5).map { Blotch.make(seed: 3, index: $0) }
+        XCTAssertEqual(record.blotches(forFrame: 0).count, 2)
+        XCTAssertEqual(record.blotches(forFrame: 1).count, 1)
+        XCTAssertEqual(record.blotches(forFrame: 3).count, 1)
+        XCTAssertFalse(PhotoRecord.defaultCaption.isEmpty)
+    }
+}
+
+final class EdgeSoftnessTests: XCTestCase {
+    func testEdgeSoftnessKeepsCenterSharp() throws {
+        let processor = TestContext.processor
+        let input = TestImages.gradient(width: 200, height: 200)
+        let soft = FilmStock(id: "soft", name: "柔", effects: FilmEffects(edgeSoftness: 1))
+        let plain = FilmStock(id: "plain", name: "平")
+        let a = PixelBuffer(try XCTUnwrap(processor.process(input, stock: soft, options: ProcessOptions(maxLongEdge: 400))))
+        let b = PixelBuffer(try XCTUnwrap(processor.process(input, stock: plain, options: ProcessOptions(maxLongEdge: 400))))
+        XCTAssertEqual(a.width, b.width)
+        // 中心几乎不变。
+        let ca = a.rgb(100, 60), cb = b.rgb(100, 60)
+        XCTAssertLessThanOrEqual(abs(ca.r - cb.r) + abs(ca.g - cb.g) + abs(ca.b - cb.b), 12)
+    }
+}
