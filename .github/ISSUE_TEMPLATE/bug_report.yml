@@ -1,0 +1,72 @@
+name: 问题反馈
+description: Nocchi 哪里不对劲？告诉我们怎么复现。
+title: "[问题] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        谢谢反馈！安全问题请不要在这里提交，按 [SECURITY.md](https://github.com/Chaosnap/Nocchi/blob/main/SECURITY.md) 私下报告。
+  - type: input
+    id: version
+    attributes:
+      label: Nocchi 版本
+      description: 「设置 → 关于」里能看到；CI 构建请写下载的 zip 名字。
+      placeholder: "0.2.0 或 Nocchi-macOS-abc1234.zip"
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: 系统与机型
+      placeholder: "macOS 15.1 · MacBook Pro 14 英寸（有刘海）"
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: 哪一部分
+      options:
+        - 刘海 / 灵动岛
+        - 屏幕快门
+        - 自拍
+        - 大头贴机
+        - 从照片冲印
+        - 显影与桌面相片
+        - 装饰台（涂鸦、贴纸、模板）
+        - 相册（软木板 / 卡片盒 / 胶卷 / 日历）
+        - 胶卷与滤镜
+        - 设置
+        - 其他
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. 把鼠标移到刘海上
+        2. 点「自拍」
+        3. ……
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望的结果
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际的结果
+      description: 有截图或录屏更好（请只放你自己拍的画面）。
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 确认
+      options:
+        - label: 我搜过已有的 Issue，没有重复。
+          required: true

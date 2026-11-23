@@ -11,6 +11,8 @@
 
 <p align="center">
   <a href="https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml"><img src="https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-C4593B" alt="License: Apache-2.0"></a>
+  <a href="https://github.com/Chaosnap/Nocchi/releases"><img src="https://img.shields.io/github/v/release/Chaosnap/Nocchi?color=4A3021" alt="Release"></a>
 </p>
 
 ## 现在做到哪了
@@ -54,4 +56,15 @@
 - [架构](docs/ARCHITECTURE.md) · [决策记录](docs/DECISIONS.md) · [胶卷](docs/FILM_STOCKS.md) · [美术素材](docs/ASSETS.md) · [CI](docs/CI.md)
 - [更新日志](CHANGELOG.md) · [协作规则](CLAUDE.md)
 
+## 参与
+
+- [贡献指南](CONTRIBUTING.md) · [行为准则](CODE_OF_CONDUCT.md) · [安全政策](SECURITY.md) · [隐私说明](PRIVACY.md)
+- 问题与建议请用 [Issue](https://github.com/Chaosnap/Nocchi/issues/new/choose)；安全问题请私下报告。
+
 照片只保存在本机，不上传。
+
+## 许可
+
+- **代码**：[Apache License 2.0](LICENSE)（另见 [NOTICE](NOTICE)）。
+- **美术素材**（App 图标、机身、纹理、3D 渲染等，位于 `Shared/Art.xcassets/`、`design/`）：© 2026 Chaosnap，保留所有权利，见 [LICENSE-ASSETS.md](LICENSE-ASSETS.md)。
+- 胶卷、机身和相纸模板的名字都是原创的，与任何相机或胶片厂商无关。

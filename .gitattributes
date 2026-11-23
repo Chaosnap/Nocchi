@@ -1,0 +1,11 @@
+# 二进制素材：不做换行转换，也不做文本 diff。
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.heic binary
+*.blend binary
+*.usdz binary
+
+# GitHub 语言统计：设计源文件（Blender / 图标脚本）不算进 App 的代码。
+design/** linguist-documentation

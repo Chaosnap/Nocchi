@@ -1,0 +1,31 @@
+name: 功能建议
+description: 想要一个新机身、新胶卷、新玩法？
+title: "[建议] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: 想要什么
+      description: 尽量具体：在哪里出现、怎么操作、看起来是什么样。
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: 为什么想要
+      description: 它解决了什么问题，或者让哪个瞬间更好玩？
+    validations:
+      required: true
+  - type: textarea
+    id: reference
+    attributes:
+      label: 参考
+      description: 可以贴链接或描述参考对象。Nocchi 的美术都是原创复古风格，不会照搬真实品牌的外观。
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 确认
+      options:
+        - label: 我搜过已有的 Issue，没有重复。
+          required: true
