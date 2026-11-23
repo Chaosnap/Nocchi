@@ -6,7 +6,8 @@
 
 - **严格禁止本地构建与测试。** 不在本机运行 `xcodebuild`、`swift build`、`swift test`、`xcodegen`，也不启动模拟器或真机调试。
 - 所有编译、单元测试、打包都由 `.github/workflows/ci.yml` 在 GitHub Actions 上完成。
-- 日常开发推送到 `develop` 分支，CI 自动运行；`main` 只接收经 PR 合并的版本（由仓库所有者决定何时接受）。
+- 直接在 `main` 上开发并推送（仓库所有者 2026-11-23 的决定），每次推送 CI 自动运行；`develop` 分支已停用。
+- 发行版：CI 全绿后推送 `vX.Y.Z` 标签，`.github/workflows/release.yml` 会构建并发布 GitHub Release（附 macOS zip 与 SHA-256）。发版前在 `CHANGELOG.md` 写好 `## [X.Y.Z]` 一节。
 - 读取 CI 结果：仓库是公开的，可以用 GitHub REST API 读取运行状态和 Check Run 注解。失败时 `scripts/ci/annotate-failure.sh` 会把日志尾部写成注解，便于在没有登录的情况下读取错误。
 - 每次 CI 失败都要修到绿色再继续堆功能。
 

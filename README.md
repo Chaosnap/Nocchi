@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml"><img src="https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml/badge.svg?branch=develop" alt="CI"></a>
+  <a href="https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml"><img src="https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
 </p>
 
 ## 现在做到哪了
@@ -21,10 +21,8 @@
 
 本项目采用 **GitHub Actions-Only** 工作流：本地不编译、不测试，所有构建都在 CI 完成。
 
-1. 打开 [Actions → CI](https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml)，点进最新的绿色运行（`develop` 分支）。
-2. 在页面底部 **Artifacts** 下载：
-   - `Nocchi-macOS`：Mac 版（ad-hoc 签名的 `.app`，首次打开见 [docs/CI.md](docs/CI.md#macos-测试版)）
-   - `Nocchi-iOS-unsigned`：iPhone 版（未签名 `.ipa`，需要自行签名）
+- **正式版本**：[Releases](https://github.com/Chaosnap/Nocchi/releases) 下载 `Nocchi-macOS-<版本>.zip`（首次打开见 [docs/CI.md](docs/CI.md#macos-测试版)）。
+- **最新构建**：[Actions → CI](https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml) 里最新的绿色运行 → Artifacts。
 
 ## 玩法速览（macOS）
 

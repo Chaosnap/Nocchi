@@ -6,8 +6,8 @@
 
 | 事件 | 分支 |
 | --- | --- |
-| push | `main`、`develop`、`feat/**`、`fix/**` |
-| pull_request | 目标为 `main` 或 `develop` |
+| push | `main`（日常开发分支）以及 `feat/**`、`fix/**` |
+| pull_request | 目标为 `main` |
 | 手动 | Actions 页面 → CI → Run workflow |
 
 同一分支的新推送会取消旧的运行（`concurrency`）。
@@ -22,6 +22,14 @@
 
 运行环境：`macos-15`，Xcode 选 `latest-stable`（`maxim-lobanov/setup-xcode`）。XcodeGen、xcbeautify 用 Homebrew 安装。
 
+## 发行版（Release）
+
+`.github/workflows/release.yml`：
+
+1. 推送标签 `vX.Y.Z`（或在 Actions 页面手动运行 Release 并填写版本号）。
+2. 工作流跑 NocchiKit 测试 → 从 SVG 渲染图标 → Release 构建 macOS App（版本号取自标签，构建号取自运行序号）→ 打包 zip 与 `SHA256SUMS.txt`。
+3. 从 `CHANGELOG.md` 取对应版本的一节作为发布说明，创建 GitHub Release 并上传附件。
+
 ## 读取失败原因
 
 - 编译错误由 `xcbeautify --renderer github-actions` 转成带文件和行号的注解。
@@ -29,7 +37,7 @@
 - 仓库是公开的，注解可以不登录直接通过 REST API 读取：
 
 ```bash
-curl -s "https://api.github.com/repos/Chaosnap/Nocchi/actions/runs?branch=develop&per_page=1"
+curl -s "https://api.github.com/repos/Chaosnap/Nocchi/actions/runs?branch=main&per_page=1"
 ```
 
 ```bash
@@ -38,8 +46,8 @@ curl -s "https://api.github.com/repos/Chaosnap/Nocchi/check-runs/<job_id>/annota
 
 ## 下载构建产物
 
-1. 打开 [Actions → CI](https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml)，点进最新的绿色运行。
-2. 页面底部 **Artifacts** 里下载 `Nocchi-macOS` 或 `Nocchi-iOS-unsigned`（需要登录 GitHub）。
+- **正式版本**：[Releases](https://github.com/Chaosnap/Nocchi/releases) 页面直接下载（不需要登录）。
+- **每次推送的构建**：打开 [Actions → CI](https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml)，点进最新的绿色运行，页面底部 **Artifacts** 里下载（需要登录 GitHub）。
 
 ### macOS 测试版
 
