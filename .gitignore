@@ -1,0 +1,26 @@
+# macOS
+.DS_Store
+
+# 第三方参考图（来自社交平台，版权不属于本项目）——只留在本地，不进公开仓库
+Ref_Image/
+
+# Xcode / XcodeGen：工程文件由 CI 从 project.yml 生成，不入库
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+DerivedData/
+build/
+dist/
+
+# SwiftPM
+.build/
+.swiftpm/
+
+# XcodeGen 生成的 Info.plist / entitlements（以 project.yml 为准）
+macOS/Nocchi/Info.plist
+macOS/Nocchi/Nocchi.entitlements
+iOS/Nocchi/Info.plist
+iOS/NocchiWidgets/Info.plist
+
+# 设计草稿
+design/scratch/
