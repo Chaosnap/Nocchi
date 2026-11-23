@@ -1,5 +1,6 @@
 import AppKit
 import NocchiKit
+import NocchiUI
 import SwiftUI
 
 /// 相册数据（所有照片记录，新的在前）。
@@ -54,9 +55,64 @@ final class ThumbnailCache: ObservableObject {
     }
 }
 
-/// 软木板相册：按月份把照片钉在软木板上。
+/// 相册：两种看法——软木板（按月份钉着）和卡片盒（3D 木抽屉，按首字母抽出来叠着看）。
 struct AlbumView: View {
+    enum Mode: String, CaseIterable, Identifiable {
+        case cork = "软木板"
+        case cardBox = "卡片盒"
+        var id: String { rawValue }
+    }
+
     @ObservedObject private var store = LibraryStore.shared
+    @AppStorage("album.mode") private var modeRaw = Mode.cardBox.rawValue
+    @StateObject private var cardBox: CardBoxModel = {
+        let library = Services.library
+        let model = CardBoxModel(loader: CardBoxModel.defaultLoader(library: library) { stockID in
+            FilmCatalog.stock(id: stockID).paper
+        })
+        model.onOpen = { record in
+            if let print = record.printFile {
+                NSWorkspace.shared.open(library.printURL(print))
+            }
+        }
+        return model
+    }()
+
+    private var mode: Mode { Mode(rawValue: modeRaw) ?? .cardBox }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Picker("", selection: $modeRaw) {
+                ForEach(Mode.allCases) { mode in
+                    Text(mode.rawValue).tag(mode.rawValue)
+                }
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .frame(width: 220)
+            .padding(.vertical, 10)
+
+            switch mode {
+            case .cork:
+                CorkBoard(store: store)
+            case .cardBox:
+                CardBoxView(model: cardBox)
+            }
+        }
+        .frame(minWidth: 760, minHeight: 560)
+        .onAppear {
+            store.reload()
+            cardBox.update(records: store.records)
+        }
+        .onReceive(store.$records) { records in
+            cardBox.update(records: records)
+        }
+    }
+}
+
+/// 软木板：按月份把照片钉在软木板上。
+private struct CorkBoard: View {
+    @ObservedObject var store: LibraryStore
 
     var body: some View {
         ZStack {
@@ -99,8 +155,6 @@ struct AlbumView: View {
                 }
             }
         }
-        .frame(minWidth: 680, minHeight: 520)
-        .onAppear { store.reload() }
     }
 }
 

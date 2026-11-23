@@ -30,6 +30,8 @@ targets:
       - path: ../Shared/Art.xcassets
     dependencies:
       - package: NocchiKit
+      - package: NocchiKit
+        product: NocchiUI
     info:
       path: Nocchi/Info.plist
       properties:

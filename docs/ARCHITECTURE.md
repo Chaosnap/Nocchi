@@ -3,6 +3,7 @@
 ```text
 Nocchi/
 ├── Packages/NocchiKit      共享内核（Swift Package，两个 App 共用，CI 跑单元测试）
+│   └── Sources/NocchiUI    共享的 3D 照片卡片盒（SceneKit + SwiftUI）
 ├── macOS/                  刘海出片口 App（XcodeGen：macOS/project.yml）
 ├── iOS/                    灵动岛出片口 App + Live Activity 扩展（XcodeGen：iOS/project.yml）
 ├── Shared/Art.xcassets     两个 App 共用的原创美术（机身、纹理）
@@ -40,6 +41,17 @@ FilmProcessor（胶卷配方 + seed）──► 底片 negatives/*.jpg
       ▼
 PhotoComposer（白边 + 题字 + 日期 + 手写）──► 成片 ~/Pictures/Nocchi/<年-月>/*.jpg
 ```
+
+## NocchiUI · 照片卡片盒
+
+| 文件 | 作用 |
+| --- | --- |
+| `CardBoxModel.swift` | 状态：哪些相片在抽屉里、哪些叠在桌上、谁在最上面；抽出 / 放回 / 翻页；读图（成片或用底片临时合成） |
+| `CardBox/CardBoxScene.swift` | SceneKit 场景：木质抽屉（面板、燕尾榫、拉手、黄铜标签框）、相片卡（光面涂层）、A–Z 分隔卡；抽出 / 放回 / 叠放动画；点击命中 |
+| `CardBox/ProceduralTextures.swift` | 程序化贴图：木纹、点阵桌面、环境光、字母标签 |
+| `CardBox/CardBoxView.swift` | SwiftUI 外壳：3D 视图 + 首字母检索条 + 「全部放回」 |
+
+每张相片是 holder（位置、偏航）+ card（俯仰：立着 / 平放）两层节点，升起、翻平、落下可以分开编排。
 
 ## macOS App
 
