@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="design/generated/app-icon-v3.png" width="160" alt="Nocchi icon">
+  <img src="design/icon/nocchi-icon.svg" width="160" alt="Nocchi icon">
 </p>
 
 <h1 align="center">Nocchi · 刘海冲印店</h1>

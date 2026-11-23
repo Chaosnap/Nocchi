@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Nocchi · 刘海冲印店 — application icon (full-bleed artwork, 1024 × 1024).
+  Original artwork, hand-authored vector (no external images, fonts or traced material).
+  A darkroom lit by a terracotta safelight: a MacBook-style notch — camera and green "open" light
+  inside — slowly feeds out an instant photo that is still developing (milky at the bottom),
+  above a small pile of finished prints.
+  The macOS tile version is generated from this file in CI by scripts/ci/render-icons.sh.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <radialGradient id="room" cx="50%" cy="12%" r="100%">
+      <stop offset="0" stop-color="#55392e"/>
+      <stop offset="0.42" stop-color="#2c1f1a"/>
+      <stop offset="1" stop-color="#120d0b"/>
+    </radialGradient>
+    <radialGradient id="safelight" cx="50%" cy="0%" r="62%">
+      <stop offset="0" stop-color="#ef7048" stop-opacity="0.9"/>
+      <stop offset="0.34" stop-color="#c4593b" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#c4593b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="pool" cx="50%" cy="100%" r="58%">
+      <stop offset="0" stop-color="#c4593b" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#c4593b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="vignette" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0.55" stop-color="#0b0807" stop-opacity="0"/>
+      <stop offset="1" stop-color="#0b0807" stop-opacity="0.72"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="0" y1="0" x2="0.15" y2="1">
+      <stop offset="0" stop-color="#fbf8f0"/>
+      <stop offset="0.72" stop-color="#f1ead9"/>
+      <stop offset="1" stop-color="#e3d7bd"/>
+    </linearGradient>
+    <linearGradient id="paperDim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e9e0cc"/>
+      <stop offset="1" stop-color="#bfae8c"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f7cf8c"/>
+      <stop offset="0.42" stop-color="#ef9a5c"/>
+      <stop offset="0.72" stop-color="#cc6440"/>
+      <stop offset="1" stop-color="#7a382a"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#fff6dc"/>
+      <stop offset="0.45" stop-color="#ffe0a0"/>
+      <stop offset="1" stop-color="#ffd08a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e4e0d3" stop-opacity="0"/>
+      <stop offset="0.42" stop-color="#e4e0d3" stop-opacity="0.05"/>
+      <stop offset="0.78" stop-color="#e4e0d3" stop-opacity="0.72"/>
+      <stop offset="1" stop-color="#e8e5da" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b9d3cf"/>
+      <stop offset="0.5" stop-color="#6f9fa2"/>
+      <stop offset="1" stop-color="#2f5e63"/>
+    </linearGradient>
+    <linearGradient id="sepia" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ead8b2"/>
+      <stop offset="1" stop-color="#9c7650"/>
+    </linearGradient>
+    <linearGradient id="notch" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000000"/>
+      <stop offset="1" stop-color="#0d0a09"/>
+    </linearGradient>
+    <radialGradient id="lens" cx="40%" cy="35%" r="70%">
+      <stop offset="0" stop-color="#3a3f5c"/>
+      <stop offset="0.5" stop-color="#14151d"/>
+      <stop offset="1" stop-color="#050506"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="20"/>
+    </filter>
+    <filter id="tight" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5"/>
+    </filter>
+    <filter id="glow" x="-200%" y="-200%" width="500%" height="500%">
+      <feGaussianBlur stdDeviation="9"/>
+    </filter>
+    <clipPath id="windowA">
+      <rect x="310" y="124" width="404" height="404"/>
+    </clipPath>
+    <clipPath id="windowB">
+      <rect x="560" y="784" width="268" height="268"/>
+    </clipPath>
+    <clipPath id="windowC">
+      <rect x="203" y="812" width="254" height="254"/>
+    </clipPath>
+  </defs>
+
+  <!-- Darkroom -->
+  <rect x="0" y="0" width="1024" height="1024" fill="url(#room)"/>
+  <rect x="0" y="0" width="1024" height="1024" fill="url(#safelight)"/>
+  <rect x="0" y="0" width="1024" height="1024" fill="url(#pool)"/>
+  <g fill="#f3d9c4" fill-opacity="0.16">
+    <circle cx="132" cy="214" r="2.6"/>
+    <circle cx="884" cy="318" r="2.2"/>
+    <circle cx="96" cy="602" r="1.8"/>
+    <circle cx="930" cy="640" r="2.4"/>
+    <circle cx="210" cy="420" r="1.6"/>
+    <circle cx="812" cy="168" r="1.8"/>
+  </g>
+
+  <!-- Pile of finished prints -->
+  <g transform="rotate(-13 330 940)">
+    <rect x="190" y="806" width="282" height="343" rx="6" fill="#000" fill-opacity="0.55" filter="url(#soft)"/>
+    <rect x="186" y="790" width="288" height="350" rx="5" fill="url(#paperDim)"/>
+    <g clip-path="url(#windowC)">
+      <rect x="203" y="812" width="254" height="254" fill="url(#sepia)"/>
+      <circle cx="330" cy="905" r="40" fill="#5b4330" fill-opacity="0.7"/>
+      <path d="M250 1066 C270 980 390 980 410 1066 Z" fill="#5b4330" fill-opacity="0.7"/>
+    </g>
+  </g>
+  <g transform="rotate(9 694 920)">
+    <rect x="552" y="780" width="296" height="360" rx="6" fill="#000" fill-opacity="0.55" filter="url(#soft)"/>
+    <rect x="542" y="764" width="304" height="370" rx="5" fill="url(#paperDim)"/>
+    <g clip-path="url(#windowB)">
+      <rect x="560" y="784" width="268" height="268" fill="url(#sea)"/>
+      <circle cx="742" cy="852" r="26" fill="#fff3d6" fill-opacity="0.85"/>
+      <path d="M560 916 L828 908 L828 1052 L560 1052 Z" fill="#2a5559" fill-opacity="0.55"/>
+      <path d="M560 916 L828 908" stroke="#f4e7cf" stroke-opacity="0.5" stroke-width="3"/>
+    </g>
+  </g>
+  <rect x="0" y="0" width="1024" height="1024" fill="url(#vignette)"/>
+
+  <!-- The photo coming out of the notch, still developing -->
+  <g transform="rotate(-3.5 512 110)">
+    <rect x="300" y="150" width="440" height="520" rx="8" fill="#000" fill-opacity="0.62" filter="url(#soft)"/>
+    <rect x="287" y="96" width="450" height="547" rx="5" fill="url(#paper)"/>
+    <g clip-path="url(#windowA)">
+      <rect x="310" y="124" width="404" height="404" fill="url(#sky)"/>
+      <circle cx="574" cy="318" r="96" fill="url(#sun)"/>
+      <circle cx="574" cy="318" r="34" fill="#fff4d8"/>
+      <path d="M310 392 C372 352 432 360 498 384 C560 406 622 370 714 352 L714 528 L310 528 Z" fill="#b65a3d" fill-opacity="0.85"/>
+      <path d="M310 440 C386 410 468 424 540 446 C602 464 660 440 714 426 L714 528 L310 528 Z" fill="#6f3a2d"/>
+      <path d="M310 486 C404 466 512 478 714 470 L714 528 L310 528 Z" fill="#45251d"/>
+      <g stroke="#45251d" stroke-width="3" stroke-linecap="round">
+        <path d="M352 488 L344 456"/>
+        <path d="M364 490 L366 452"/>
+        <path d="M376 488 L388 460"/>
+        <path d="M640 474 L632 446"/>
+        <path d="M652 476 L656 440"/>
+      </g>
+      <rect x="310" y="124" width="404" height="404" fill="url(#haze)"/>
+    </g>
+    <rect x="310" y="124" width="404" height="404" fill="none" stroke="#000" stroke-opacity="0.14" stroke-width="2"/>
+    <!-- handwritten caption on the thick bottom border -->
+    <path d="M356 590 c10 -22 24 -24 30 -4 c6 18 18 18 26 -2 c6 -14 18 -14 22 2 c4 14 16 14 24 0 m26 -18 c-4 16 -2 30 10 30 c10 0 14 -14 12 -26 m28 6 c14 -8 28 -6 30 10 c2 14 -14 18 -26 10" fill="none" stroke="#2b2a28" stroke-opacity="0.78" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M556 600 c18 -2 40 -6 64 -4" fill="none" stroke="#2b2a28" stroke-opacity="0.45" stroke-width="5" stroke-linecap="round"/>
+    <!-- paper sheen -->
+    <path d="M287 96 L737 96 L560 643 L287 643 Z" fill="#ffffff" fill-opacity="0.07"/>
+  </g>
+
+  <!-- The notch: camera, green "open" light, a slot lip -->
+  <path d="M162 0 Q196 0 196 34 L196 66 Q196 118 248 118 L776 118 Q828 118 828 66 L828 34 Q828 0 862 0 Z" fill="url(#notch)"/>
+  <path d="M248 116 L776 116" stroke="#ffffff" stroke-opacity="0.07" stroke-width="3"/>
+  <circle cx="488" cy="52" r="20" fill="#0b0b0f"/>
+  <circle cx="488" cy="52" r="14" fill="url(#lens)"/>
+  <circle cx="483" cy="47" r="4" fill="#8f95c8" fill-opacity="0.55"/>
+  <circle cx="540" cy="52" r="18" fill="#6af089" fill-opacity="0.55" filter="url(#glow)"/>
+  <circle cx="540" cy="52" r="6.5" fill="#8dffa6"/>
+</svg>

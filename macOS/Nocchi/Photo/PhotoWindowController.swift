@@ -298,8 +298,10 @@ final class PhotoWindowController: NSObject {
     func paperPoint(fromView point: CGPoint, viewSize: CGSize) -> CGPoint {
         let center = CGPoint(x: viewSize.width / 2, y: viewSize.height / 2)
         let v = CGPoint(x: point.x - center.x, y: point.y - center.y)
-        let angle = -model.tilt * .pi / 180
-        let rotated = CGPoint(x: v.x * cos(angle) - v.y * sin(angle), y: v.x * sin(angle) + v.y * cos(angle))
+        let angle = CGFloat(-model.tilt * Double.pi / 180)
+        let c = CGFloat(Foundation.cos(Double(angle)))
+        let sn = CGFloat(Foundation.sin(Double(angle)))
+        let rotated = CGPoint(x: v.x * c - v.y * sn, y: v.x * sn + v.y * c)
         return CGPoint(x: rotated.x + model.paperSize.width / 2, y: rotated.y + model.paperSize.height / 2)
     }
 

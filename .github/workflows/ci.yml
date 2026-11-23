@@ -67,8 +67,11 @@ jobs:
         with:
           xcode-version: latest-stable
 
-      - name: Install XcodeGen & xcbeautify
-        run: brew install xcodegen xcbeautify
+      - name: Install XcodeGen, xcbeautify & librsvg
+        run: brew install xcodegen xcbeautify librsvg
+
+      - name: Render app icons from SVG
+        run: bash scripts/ci/render-icons.sh
 
       - name: Generate Xcode project
         run: |

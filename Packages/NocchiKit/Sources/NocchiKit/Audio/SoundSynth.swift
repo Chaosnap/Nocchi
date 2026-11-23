@@ -30,6 +30,8 @@ public enum SoundEffect: String, CaseIterable, Sendable {
     case magnet
     /// 甩出色块时「啪」的一下。
     case splat
+    /// 卡片从卡片盒里抽出 / 放回的纸张摩擦声。
+    case cardSlide
 }
 
 /// 简单的程序化合成器：噪声爆发、衰减正弦、滤波。
@@ -108,6 +110,10 @@ public enum SoundSynth {
             buf = silence(0.28)
             addNoise(&buf, start: 0, duration: 0.25, amp: 0.5, decay: 0.06, lowpass: 900, rng: &rng)
             addTone(&buf, start: 0, frequency: 160, duration: 0.15, amp: 0.4, decay: 0.05)
+        case .cardSlide:
+            buf = silence(0.24)
+            addNoise(&buf, start: 0, duration: 0.22, amp: 0.45, decay: 0.09, lowpass: 5200, highpass: 1400, rng: &rng)
+            addClick(&buf, at: 0.19, amp: 0.25, decay: 0.003, rng: &rng)
         }
         normalize(&buf, peak: 0.85)
         return buf

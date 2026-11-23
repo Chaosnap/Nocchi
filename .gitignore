@@ -24,3 +24,7 @@ iOS/NocchiWidgets/Info.plist
 
 # 设计草稿
 design/scratch/
+
+# App 图标由 CI 从 design/icon/nocchi-icon.svg 渲染（scripts/ci/render-icons.sh）
+macOS/Nocchi/Resources/Assets.xcassets/AppIcon.appiconset/*.png
+iOS/Nocchi/Resources/Assets.xcassets/AppIcon.appiconset/*.png

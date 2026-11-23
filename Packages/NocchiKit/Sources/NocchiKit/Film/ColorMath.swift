@@ -88,7 +88,7 @@ public extension SIMD3 where Scalar == Float {
 
     /// `#RRGGBB` 字符串。
     var hexString: String {
-        func byte(_ v: Float) -> Int { Int((min(max(v, 0), 1) * 255).rounded()) }
+        func byte(_ v: Float) -> Int { Int((Swift.min(Swift.max(v, 0), 1) * 255).rounded()) }
         return String(format: "#%02X%02X%02X", byte(x), byte(y), byte(z))
     }
 }

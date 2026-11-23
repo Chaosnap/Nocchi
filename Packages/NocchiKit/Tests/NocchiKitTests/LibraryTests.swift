@@ -157,3 +157,31 @@ final class PhotoComposerTests: XCTestCase {
         XCTAssertEqual(rect.midX, 50)
     }
 }
+
+final class IndexLetterTests: XCTestCase {
+    func testLatinAndChineseInitials() {
+        XCTAssertEqual(IndexLetter.letter(for: "Flowers from Karin"), "F")
+        XCTAssertEqual(IndexLetter.letter(for: "  apple"), "A")
+        XCTAssertEqual(IndexLetter.letter(for: "écrit"), "E")
+        XCTAssertEqual(IndexLetter.letter(for: "我可以见你吗？"), "W")
+        XCTAssertEqual(IndexLetter.letter(for: "暖阳"), "N")
+        XCTAssertEqual(IndexLetter.letter(for: "2026 夏天"), "#")
+        XCTAssertEqual(IndexLetter.letter(for: nil), "#")
+        XCTAssertEqual(IndexLetter.letter(for: "   "), "#")
+    }
+
+    func testAllLettersAndGrouping() {
+        XCTAssertEqual(IndexLetter.all.count, 27)
+        XCTAssertEqual(IndexLetter.all.first, "A")
+        XCTAssertEqual(IndexLetter.all.last, "#")
+        let stock = FilmCatalog.defaultStock
+        var a = PhotoRecord(source: .screen, body: .instant, stock: stock, seed: 1)
+        a.caption = "Apple"
+        var b = PhotoRecord(source: .screen, body: .instant, stock: stock, seed: 2)
+        b.caption = "我可以见你吗？"
+        let c = PhotoRecord(source: .screen, body: .instant, stock: stock, seed: 3)
+        let groups = IndexLetter.group([b, c, a])
+        XCTAssertEqual(groups.map { $0.letter }, ["A", "W", "#"])
+        XCTAssertEqual(c.indexTitle, stock.name)
+    }
+}

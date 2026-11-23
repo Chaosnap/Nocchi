@@ -12,7 +12,8 @@ let package = Package(
         .iOS(.v17)
     ],
     products: [
-        .library(name: "NocchiKit", targets: ["NocchiKit"])
+        .library(name: "NocchiKit", targets: ["NocchiKit"]),
+        .library(name: "NocchiUI", targets: ["NocchiUI"])
     ],
     targets: [
         .target(
@@ -20,6 +21,10 @@ let package = Package(
             resources: [
                 .process("Resources")
             ]
+        ),
+        .target(
+            name: "NocchiUI",
+            dependencies: ["NocchiKit"]
         ),
         .testTarget(
             name: "NocchiKitTests",

@@ -4,13 +4,17 @@
 
 | 素材 | 文件 | 用途 |
 | --- | --- | --- |
-| App 图标（iOS，满版） | `design/generated/app-icon-v3.png` → `iOS/Nocchi/Resources/Assets.xcassets/AppIcon` | iPhone 图标 |
-| App 图标（macOS，圆角方块 + 阴影） | `design/generated/app-icon-mac-1024.png` → `macOS/Nocchi/Resources/Assets.xcassets/AppIcon`（16–1024 全尺寸） | Mac 图标 |
+| **App 图标（矢量源文件）** | `design/icon/nocchi-icon.svg`（手写 SVG） | CI 用 `scripts/ci/render-icons.sh` 渲染出 macOS 全尺寸（圆角方块 + 阴影）与 iOS 1024（满版、无透明通道）；PNG 不入库 |
+| 旧版写实图标（备用） | `design/generated/app-icon-v3.png`、`app-icon-mac-1024.png` | 已不再使用 |
 | 即显相机机身 | `design/generated/camera-instant-v3.png` → `Shared/Art.xcassets/CameraInstant` | iPhone 主界面（镜头里放实时取景）、相机柜 |
 | 大头贴机 | `design/generated/camera-booth-v3.png` → `Shared/Art.xcassets/CameraBooth` | 相机柜 |
 | 软木板纹理 | `design/generated/texture-cork.png` → `CorkTexture` | 相册背景 |
 | 相纸纹理 | `design/generated/texture-paper.png` → `PaperTexture` | 相纸白边的纸感 |
 | 陶土橙丝绒布帘 | `design/generated/texture-curtain-v2.png` → `CurtainTexture` | 大头贴机拉帘 |
+
+## App 图标设计
+
+暗房里亮着陶土橙安全灯；顶部是 MacBook 式的刘海，里面有摄像头和绿色的「营业中」指示灯；一张即显相片正从刘海里吐出来，下半部分还是乳白色（正在显影），白边上有一行手写；下方桌面上散着两张已经冲好的照片。全部是手写矢量（渐变、模糊滤镜、裁切），没有外部图片和字体。
 
 ## 配色
 
