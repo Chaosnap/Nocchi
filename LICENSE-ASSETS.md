@@ -2,29 +2,32 @@
 
 **中文**
 
-Nocchi 的源代码按 [Apache License 2.0](LICENSE) 开放，但**美术素材不在开放范围内**，版权归 Chaosnap 所有，保留所有权利（All rights reserved）。
+Nocchi 的美术素材版权归 Chaosnap 所有，按 [知识共享 署名-非商业性使用 4.0 国际许可协议（CC BY-NC 4.0）](https://creativecommons.org/licenses/by-nc/4.0/deed.zh-hans) 授权。
 
 美术素材包括：
 
-- `Shared/Art.xcassets/` 里的全部图片（机身、纹理、3D 渲染的卡片盒、胶卷罐、图标、图钉、放大镜等）；
+- `Shared/Art.xcassets/` 里的全部图片（机身、纹理、3D 渲染的卡片盒、胶卷罐、模式图标、图钉、放大镜等）；
 - `design/` 目录下的全部内容（图标源文件与生成脚本、Blender 建模与渲染脚本、生成图、部件坐标）；
-- App 图标（`macOS/…/AppIcon.appiconset/`、`iOS/…/AppIcon.appiconset/`，由 CI 从 `design/icon/` 渲染）；
-- 「Nocchi」「刘海冲印店」名称与图标所代表的产品形象。
+- App 图标（`macOS/…/AppIcon.appiconset/`、`iOS/…/AppIcon.appiconset/`，由 CI 从 `design/icon/` 渲染）。
 
-你可以：在阅读、学习、为本项目贡献代码、构建本仓库自用的过程中使用这些素材。
+**非商业用途随便用**：可以复制、分享、修改、二次创作，只要注明出处（例如「美术素材来自 Nocchi · © 2026 Chaosnap · CC BY-NC 4.0」并附上本仓库链接），并说明是否做了修改。
 
-未经书面许可，你不可以：把这些素材（或与其近似的改作）用在其他 App、网站、商品或作品里，也不可以用它们发布本项目的改版或「换皮」版本。基于本项目代码发布衍生作品时，请换上你自己的美术素材和名称。
+**商业用途**（卖钱的 App、商品、付费服务、广告等）需要先取得 Chaosnap 的书面许可，请在本仓库开 Issue 联系。
 
-向本仓库提交美术素材，即表示你确认素材是你的原创作品，并同意 Chaosnap 按本文件的条款在本项目中使用、修改和发布它。
+源代码另按 PolyForm Noncommercial License 1.0.0 授权，见 [LICENSE](LICENSE)。「Nocchi」「刘海冲印店」是本产品的名字，许可不包括用它们来命名你自己的产品。
+
+完整法律文本：<https://creativecommons.org/licenses/by-nc/4.0/legalcode.zh-hans>
 
 ---
 
 **English**
 
-The source code of Nocchi is available under the [Apache License 2.0](LICENSE). **The artwork is not**: it is Copyright © 2026 Chaosnap, all rights reserved.
+The artwork of Nocchi is Copyright © 2026 Chaosnap and licensed under the [Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/).
 
-"Artwork" means every image in `Shared/Art.xcassets/`, everything under `design/` (icon sources and generators, Blender modeling and rendering scripts, generated images, part coordinates), the app icons rendered from `design/icon/`, and the product identity represented by the names "Nocchi" and "刘海冲印店" and the icon.
+"Artwork" means every image in `Shared/Art.xcassets/`, everything under `design/` (icon sources and generators, Blender modeling and rendering scripts, generated images, part coordinates) and the app icons rendered from `design/icon/`.
 
-You may use the artwork to read, study, build and run this repository for yourself, and to contribute to this project. Without prior written permission you may not use the artwork (or close derivatives of it) in any other app, website, product or work, nor ship a modified or re-skinned version of this project with it. If you distribute a derivative of the code, replace the artwork and the names with your own.
+For non-commercial purposes you may copy, share, remix and adapt it, as long as you give credit (e.g. "Artwork from Nocchi · © 2026 Chaosnap · CC BY-NC 4.0" with a link to this repository) and indicate if changes were made. Commercial use requires prior written permission from Chaosnap — open an issue in this repository to ask.
 
-By contributing artwork to this repository you confirm it is your original work and agree that Chaosnap may use, modify and distribute it in this project under these terms.
+The source code is licensed separately under the PolyForm Noncommercial License 1.0.0 (see [LICENSE](LICENSE)). The names "Nocchi" and "刘海冲印店" are not licensed for naming your own products.
+
+Legal code: <https://creativecommons.org/licenses/by-nc/4.0/legalcode>

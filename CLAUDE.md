@@ -36,7 +36,7 @@
 - `Ref_Image/` 是第三方参考图，**不提交**到公开仓库。
 - 机身、相纸、图标等素材必须原创；不得使用真实相机或胶片品牌的名称、logo 和标志性外观。
 - 胶卷色调由参数配方在运行时生成 3D LUT，不打包第三方 LUT 文件；引用开源代码前先核对许可证（GPL / CC BY-SA 不直接并入）。
-- 许可：代码 Apache-2.0（`LICENSE`、`NOTICE`）；美术素材（`Shared/Art.xcassets/`、`design/`、App 图标）保留所有权利（`LICENSE-ASSETS.md`），不要把它们改成开放授权。
+- 许可：非商业用途随便用，版权归 Chaosnap，商用需书面许可——代码按 PolyForm Noncommercial 1.0.0（`LICENSE`），美术素材（`Shared/Art.xcassets/`、`design/`、App 图标）按 CC BY-NC 4.0（`LICENSE-ASSETS.md`）。不要引入会与之冲突的第三方代码或素材。
 - 视觉方向是「复古」，不是手绘风格；设计规范与跨模块接口见 `docs/DESIGN.md`。
 
 ## 5. 代码约定

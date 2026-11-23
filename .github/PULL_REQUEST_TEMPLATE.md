@@ -16,4 +16,4 @@
 - [ ] 更新了 `docs/PROGRESS.md`、`CHANGELOG.md` 和受影响的文档
 - [ ] 界面文案是简体中文，视觉符合 `docs/DESIGN.md`（复古，不要手绘风格）
 - [ ] 新素材是原创的，没有真实相机 / 胶片品牌的名称、logo 或标志性外观
-- [ ] 我同意代码按 Apache-2.0、美术按 LICENSE-ASSETS.md 授权给本项目
+- [ ] 我同意按 CONTRIBUTING.md「许可」一节的条款授权我的贡献

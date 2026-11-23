@@ -36,12 +36,17 @@
 - 所有素材必须是**原创**：不使用真实相机或胶片品牌的名称、logo 和标志性外观；胶卷色调用参数配方生成，不打包第三方 LUT。
 - 第三方参考图只留在本地的 `Ref_Image/`，**不要提交**。
 - 引用开源代码前先核对许可证；GPL、CC BY-SA 等「传染性」许可的代码不直接并入。
-- 美术素材不在 Apache-2.0 范围内，保留所有权利，见 [LICENSE-ASSETS.md](LICENSE-ASSETS.md)。
+- 美术素材按 CC BY-NC 4.0 授权，见 [LICENSE-ASSETS.md](LICENSE-ASSETS.md)。
 
 ## 许可
 
-- 你提交的代码按 [Apache License 2.0](LICENSE) 第 5 条授权给本项目。
-- 你提交的美术素材按 [LICENSE-ASSETS.md](LICENSE-ASSETS.md) 的条款授权给本项目。
+本项目是「源码公开、非商用」：代码按 [PolyForm Noncommercial 1.0.0](LICENSE)，美术素材按 [CC BY-NC 4.0](LICENSE-ASSETS.md)，版权归 Chaosnap，商业用途需要书面许可。
+
+提交贡献（代码、文档或美术）即表示你确认：
+
+1. 这是你的原创作品，或者你有权提交它；
+2. 你保留自己贡献部分的版权，同时授予 Chaosnap 一项永久、全球、免费、不可撤销、非独占的许可，可以以任何方式（包括商业用途）使用、修改、再授权和发布你的贡献；
+3. 其他人按本项目的许可（代码 PolyForm Noncommercial 1.0.0、美术 CC BY-NC 4.0）获得你的贡献。
 
 ## 报告问题
 

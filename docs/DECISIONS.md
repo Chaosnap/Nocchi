@@ -46,8 +46,11 @@
 - 仓库所有者明确：「我不要手绘风格，我要的是复古」。Little Still、MySketchBooth 只借鉴功能（贴纸、模板、照片条展示、日历、心情 / 地点 / 标签），视觉语言来自真实老物件：胶片、相纸、黄铜、胡桃木、软木、凸版印刷、打字机、日期机数码字、70 年代配色。
 - 设计规范与跨模块接口集中写在 `docs/DESIGN.md`。
 
-### D18 · 许可证：代码 Apache-2.0，美术保留所有权利
-- 仓库所有者选择：源代码按 Apache License 2.0 开放（`LICENSE`、`NOTICE`）；图标、机身、纹理、3D 渲染等美术素材（`Shared/Art.xcassets/`、`design/`、App 图标）不在开放范围内，保留所有权利（`LICENSE-ASSETS.md`），防止原样换皮上架。「Nocchi」「刘海冲印店」名称不随许可证授权（Apache-2.0 第 6 条）。
+### D18 · 许可：非商用随便用，版权归 Chaosnap
+- 仓库所有者：「非商用随便怎么弄，我保留原始版权」。代码按 PolyForm Noncommercial License 1.0.0（`LICENSE`，开头有 `Required Notice`），美术素材（`Shared/Art.xcassets/`、`design/`、App 图标）按 CC BY-NC 4.0（`LICENSE-ASSETS.md`）：任何人都可以为非商业目的使用、修改、分享，保留版权声明 / 署名即可；商业用途需要书面许可。「Nocchi」「刘海冲印店」名称不随许可授权。
+- 这是「源码公开、非商用」，不是 OSI 定义的开源；文档里不再称「开源」。
+- 外部贡献者保留自己贡献的版权，同时授予 Chaosnap 可商用、可再授权的许可（`CONTRIBUTING.md`），以后做收费版本也能用。
+- 当天最初选的是「代码 Apache-2.0 + 美术保留所有权利」（提交 d339eb0），随后按所有者的本意改为本条。
 - 同时补齐 `CODE_OF_CONDUCT.md`（改编自 Contributor Covenant 2.1）、`CONTRIBUTING.md`、`SECURITY.md`、`PRIVACY.md`、Issue / PR 模板；举报与安全问题只走 GitHub（私密漏洞报告 + Issue），不公开邮箱。
 
 ### D17 · 覆盖层安全规则（任何情况下都能退出）
