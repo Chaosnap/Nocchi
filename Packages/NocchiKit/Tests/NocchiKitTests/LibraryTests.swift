@@ -119,9 +119,11 @@ final class PhotoComposerTests: XCTestCase {
         XCTAssertEqual(image.height, 1070)
         let pixels = PixelBuffer(image)
         // 左上白边是相纸颜色（红），窗口中心是底片（蓝）。
-        let border = pixels.rgb(20, 20)
-        XCTAssertGreaterThan(border.r, 240)
-        XCTAssertLessThan(border.b, 15)
+        // 纸面带渐变、颗粒和四周做旧，所以只要求「明显是红色相纸」。
+        let border = pixels.rgb(60, 30)
+        XCTAssertGreaterThan(border.r, 190)
+        XCTAssertLessThan(border.b, 60)
+        XCTAssertGreaterThan(border.r - border.b, 150)
         let center = pixels.rgb(440, 450)
         XCTAssertGreaterThan(center.b, 240)
         XCTAssertLessThan(center.r, 15)

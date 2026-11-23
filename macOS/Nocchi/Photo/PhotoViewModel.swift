@@ -20,6 +20,8 @@ final class PhotoViewModel: ObservableObject, Identifiable {
     @Published var lifted = false
     @Published var penMode = false
     @Published var liveStroke: InkStroke?
+    /// 光面高光位置（0…1），随相片在屏幕上的位置移动。
+    @Published var sheen = CGPoint(x: 0.32, y: 0.22)
     @Published private(set) var developments: [DevelopmentModel]
     /// 出片完成后才开始显影。
     var developingStarted = false
@@ -28,7 +30,7 @@ final class PhotoViewModel: ObservableObject, Identifiable {
     let paperWidth: CGFloat
 
     /// 窗口四周给阴影和倾斜留的空间。
-    static let padding: CGFloat = 32
+    static let padding: CGFloat = 34
 
     init(record: PhotoRecord, negatives: [CGImage], paper: PaperStyle, developed: Bool, developSeconds: Double) {
         id = record.id

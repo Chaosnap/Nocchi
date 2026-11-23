@@ -39,9 +39,10 @@ public struct PrintSpec {
 ///
 /// 界面上的 SwiftUI 相纸使用同一套 `PaperLayout` 几何和同样的字体，导出结果与屏幕上一致。
 public enum PhotoComposer {
-    /// 题字字体（马克笔风格，系统自带；中文字形由系统自动回落）。
-    public static let captionFontName = "MarkerFelt-Wide"
-    public static let dateFontName = "MarkerFelt-Thin"
+    /// 题字字体：自然的钢笔手写体（macOS / iOS 都自带；中文字形由系统自动回落）。
+    public static let captionFontName = "BradleyHandITCTT-Bold"
+    /// 日期字体：复古打字机体。
+    public static let dateFontName = "AmericanTypewriter"
 
     /// 题字字号（相对相纸宽度）。
     public static func captionFontSize(paperWidth: CGFloat, layout: PaperLayout) -> CGFloat {
@@ -78,11 +79,17 @@ public enum PhotoComposer {
         let paperRect = CGRect(x: 0, y: 0, width: width, height: height)
         let paperColor = spec.paper.paperRGB
 
-        // 相纸
+        // 相纸：暖白渐变 + 极细颗粒 + 边缘做旧（与屏幕上的 PrintSurface 一致）
         let corner = layout.cornerRadius * s
-        ctx.addPath(CGPath(roundedRect: paperRect, cornerWidth: corner, cornerHeight: corner, transform: nil))
-        ctx.setFillColor(cgColor(paperColor))
-        ctx.fillPath()
+        let paperPath = CGPath(roundedRect: paperRect, cornerWidth: corner, cornerHeight: corner, transform: nil)
+        ctx.saveGState()
+        ctx.addPath(paperPath)
+        ctx.clip()
+        drawPaper(ctx, rect: paperRect, paper: spec.paper)
+        if layout.windows.count == 1, layout.captionArea.height > layout.paperSize.height * 0.12 {
+            drawPodRidge(ctx, y: PrintGeometry.podRidgeY(layout: layout, width: width), width: width, dark: spec.paper.isDark)
+        }
+        ctx.restoreGState()
 
         // 图像窗口
         for (index, window) in layout.windows.enumerated() {
@@ -98,11 +105,12 @@ public enum PhotoComposer {
                 target = target.offsetBy(dx: CGFloat(offset.dx) * rect.width, dy: CGFloat(offset.dy) * rect.height)
                 drawImage(ctx, image, in: target)
             }
+            drawRecess(ctx, rect: rect)
             ctx.restoreGState()
-            // 窗口边缘一圈很淡的压痕
-            ctx.setStrokeColor(CGColor(srgbRed: 0, green: 0, blue: 0, alpha: spec.paper.isDark ? 0.35 : 0.10))
-            ctx.setLineWidth(max(1, s * 0.22))
-            ctx.stroke(rect)
+            // 窗口发丝边
+            ctx.setStrokeColor(CGColor(srgbRed: 0, green: 0, blue: 0, alpha: spec.paper.isDark ? 0.45 : 0.22))
+            ctx.setLineWidth(max(1, rect.width * 0.0035))
+            ctx.stroke(rect.insetBy(dx: max(0.5, rect.width * 0.00175), dy: max(0.5, rect.width * 0.00175)))
         }
 
         // 题字与日期
@@ -111,12 +119,12 @@ public enum PhotoComposer {
         if let text = spec.caption, !text.isEmpty {
             let size = captionFontSize(paperWidth: width, layout: layout)
             let baselineY = spec.dateText == nil ? caption.midY + size * 0.35 : caption.minY + caption.height * 0.5
-            drawText(ctx, text, fontName: captionFontName, size: size, color: ink, centerX: caption.midX, baselineY: baselineY, maxWidth: caption.width)
+            drawText(ctx, text, fontName: captionFontName, size: size, color: ink, centerX: caption.midX, baselineY: baselineY, maxWidth: caption.width, alpha: 0.88)
         }
         if let date = spec.dateText {
             let size = dateFontSize(paperWidth: width, layout: layout)
             let baselineY = (spec.caption?.isEmpty == false) ? caption.minY + caption.height * 0.86 : caption.midY + size * 0.35
-            drawText(ctx, date, fontName: dateFontName, size: size, color: ink, centerX: caption.midX, baselineY: baselineY, maxWidth: caption.width, alpha: 0.75)
+            drawText(ctx, date, fontName: dateFontName, size: size, color: ink, centerX: caption.midX, baselineY: baselineY, maxWidth: caption.width, alpha: 0.6, tracking: size * 0.08)
         }
 
         // 手写
@@ -145,6 +153,67 @@ public enum PhotoComposer {
         return ctx.makeImage()
     }
 
+    // MARK: - Paper details
+
+    /// 纸面：上亮下暖的渐变、细颗粒、四周做旧。
+    static func drawPaper(_ ctx: CGContext, rect: CGRect, paper: PaperStyle) {
+        let base = paper.paperRGB
+        let warm = RGB(0.86, 0.80, 0.68)
+        let top = paper.isDark ? base * 1.08 : ColorMath.clamp01(base * 1.012)
+        let bottom = paper.isDark ? base * 0.92 : ColorMath.mix(base, warm, 0.10)
+        if let space = CGColorSpace(name: CGColorSpace.sRGB),
+           let gradient = CGGradient(colorsSpace: space, colors: [cgColor(top), cgColor(bottom)] as CFArray, locations: [0, 1]) {
+            ctx.drawLinearGradient(gradient, start: CGPoint(x: rect.midX, y: rect.minY), end: CGPoint(x: rect.midX, y: rect.maxY), options: [])
+        } else {
+            ctx.setFillColor(cgColor(base))
+            ctx.fill(rect)
+        }
+        // 细颗粒（确定性，和屏幕上一样细）
+        var rng = SeededRandom(seed: 0x9A9E2)
+        let count = Int(rect.width * rect.height / 260)
+        let dot = max(1, rect.width / 900)
+        for _ in 0..<count {
+            let x = rect.minX + CGFloat(rng.unit()) * rect.width
+            let y = rect.minY + CGFloat(rng.unit()) * rect.height
+            let shade = CGFloat(rng.range(0.55, 0.85))
+            let alpha = CGFloat(rng.range(0.03, 0.09)) * (paper.isDark ? 0.5 : 1)
+            ctx.setFillColor(CGColor(srgbRed: shade, green: shade * 0.98, blue: shade * 0.94, alpha: alpha))
+            ctx.fill(CGRect(x: x, y: y, width: dot, height: dot))
+        }
+        // 四周做旧
+        let ageColor = paper.isDark ? CGColor(srgbRed: 0, green: 0, blue: 0, alpha: 0.25) : cgColor(warm * 0.9, alpha: 0.22)
+        if let space = CGColorSpace(name: CGColorSpace.sRGB),
+           let vignette = CGGradient(colorsSpace: space, colors: [cgColor(top, alpha: 0), ageColor] as CFArray, locations: [0, 1]) {
+            let center = CGPoint(x: rect.midX, y: rect.midY)
+            ctx.drawRadialGradient(vignette, startCenter: center, startRadius: rect.width * 0.42, endCenter: center, endRadius: rect.height * 0.78, options: [.drawsAfterEndLocation])
+        }
+    }
+
+    /// 底边药包的细微隆起：一道极淡的阴影线和一道高光线。
+    static func drawPodRidge(_ ctx: CGContext, y: CGFloat, width: CGFloat, dark: Bool) {
+        let line = max(1, width * 0.003)
+        ctx.setFillColor(CGColor(srgbRed: 0, green: 0, blue: 0, alpha: dark ? 0.25 : 0.05))
+        ctx.fill(CGRect(x: width * 0.05, y: y, width: width * 0.9, height: line))
+        ctx.setFillColor(CGColor(srgbRed: 1, green: 1, blue: 1, alpha: dark ? 0.05 : 0.45))
+        ctx.fill(CGRect(x: width * 0.05, y: y + line, width: width * 0.9, height: line))
+    }
+
+    /// 窗口内凹：上边和左边的细影、下边的反光（在已裁到窗口的上下文里调用）。
+    static func drawRecess(_ ctx: CGContext, rect: CGRect) {
+        guard let space = CGColorSpace(name: CGColorSpace.sRGB) else { return }
+        let depth = PrintGeometry.recessDepth(windowWidth: rect.width)
+        func band(_ from: CGPoint, _ to: CGPoint, _ color: CGColor, _ clear: CGColor) {
+            if let g = CGGradient(colorsSpace: space, colors: [color, clear] as CFArray, locations: [0, 1]) {
+                ctx.drawLinearGradient(g, start: from, end: to, options: [])
+            }
+        }
+        let clearBlack = CGColor(srgbRed: 0, green: 0, blue: 0, alpha: 0)
+        let clearWhite = CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 0)
+        band(CGPoint(x: rect.midX, y: rect.minY), CGPoint(x: rect.midX, y: rect.minY + depth), CGColor(srgbRed: 0, green: 0, blue: 0, alpha: 0.26), clearBlack)
+        band(CGPoint(x: rect.minX, y: rect.midY), CGPoint(x: rect.minX + depth, y: rect.midY), CGColor(srgbRed: 0, green: 0, blue: 0, alpha: 0.16), clearBlack)
+        band(CGPoint(x: rect.midX, y: rect.maxY), CGPoint(x: rect.midX, y: rect.maxY - depth), CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 0.14), clearWhite)
+    }
+
     // MARK: - Helpers
 
     static func cgColor(_ c: RGB, alpha: CGFloat = 1) -> CGColor {
@@ -169,16 +238,19 @@ public enum PhotoComposer {
     }
 
     /// 在已翻转的上下文里画一行居中文字。
-    static func drawText(_ ctx: CGContext, _ text: String, fontName: String, size: CGFloat, color: RGB, centerX: CGFloat, baselineY: CGFloat, maxWidth: CGFloat, alpha: CGFloat = 1) {
+    static func drawText(_ ctx: CGContext, _ text: String, fontName: String, size: CGFloat, color: RGB, centerX: CGFloat, baselineY: CGFloat, maxWidth: CGFloat, alpha: CGFloat = 1, tracking: CGFloat = 0) {
         var fontSize = size
         var line: CTLine
         var bounds: CGRect
         repeat {
             let font = CTFontCreateWithName(fontName as CFString, fontSize, nil)
-            let attributes: [NSAttributedString.Key: Any] = [
+            var attributes: [NSAttributedString.Key: Any] = [
                 NSAttributedString.Key(kCTFontAttributeName as String): font,
                 NSAttributedString.Key(kCTForegroundColorAttributeName as String): cgColor(color, alpha: alpha)
             ]
+            if tracking != 0 {
+                attributes[NSAttributedString.Key(kCTKernAttributeName as String)] = tracking * fontSize / size
+            }
             line = CTLineCreateWithAttributedString(NSAttributedString(string: text, attributes: attributes))
             bounds = CTLineGetBoundsWithOptions(line, [])
             fontSize *= 0.92
@@ -190,5 +262,20 @@ public enum PhotoComposer {
         ctx.textPosition = .zero
         CTLineDraw(line, ctx)
         ctx.restoreGState()
+    }
+}
+
+/// 屏幕上的 PrintSurface 与导出的 PhotoComposer 共用的细节几何。
+public enum PrintGeometry {
+    /// 药包隆起线的位置（左上原点）：在厚底边靠下约三分之一处。
+    public static func podRidgeY(layout: PaperLayout, width: CGFloat) -> CGFloat {
+        let caption = layout.scaled(layout.captionArea, toWidth: width)
+        let paperHeight = width / layout.aspect
+        return caption.maxY + (paperHeight - caption.maxY) * 0.35
+    }
+
+    /// 窗口内凹阴影的深度（像素 / 点）。
+    public static func recessDepth(windowWidth: CGFloat) -> CGFloat {
+        max(1.5, windowWidth * 0.022)
     }
 }

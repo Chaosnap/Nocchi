@@ -28,6 +28,7 @@ final class CameraService: NSObject, ObservableObject, @unchecked Sendable {
     private let queue = DispatchQueue(label: "app.nocchi.camera")
     private var configured = false
     private var pending: CheckedContinuation<CGImage, Error>?
+    private var captureToken = 0
 
     static func describe(_ error: Error) -> String {
         (error as? LocalizedError)?.errorDescription ?? "摄像头出错了"
@@ -71,7 +72,8 @@ final class CameraService: NSObject, ObservableObject, @unchecked Sendable {
         }
     }
 
-    func capture() async throws -> CGImage {
+    /// 拍一张。超过 `timeout` 秒没拿到照片就报错——保证白屏闪光、布帘这些覆盖层一定会撤掉。
+    func capture(timeout: TimeInterval = 5) async throws -> CGImage {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<CGImage, Error>) in
             queue.async {
                 guard self.session.isRunning, self.pending == nil else {
@@ -79,7 +81,14 @@ final class CameraService: NSObject, ObservableObject, @unchecked Sendable {
                     return
                 }
                 self.pending = continuation
+                self.captureToken += 1
+                let token = self.captureToken
                 self.output.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
+                self.queue.asyncAfter(deadline: .now() + timeout) {
+                    guard token == self.captureToken, let stuck = self.pending else { return }
+                    self.pending = nil
+                    stuck.resume(throwing: CameraError.captureFailed)
+                }
             }
         }
     }
@@ -118,6 +127,29 @@ extension CameraService: AVCapturePhotoCaptureDelegate {
             return
         }
         finish(.success(image))
+    }
+}
+
+/// 摄像头权限：在显示任何覆盖层之前先问，避免系统权限弹窗被挡住。
+@MainActor
+enum CameraAccess {
+    /// 已授权返回 true；未决定时弹出系统权限窗口（此时屏幕上没有任何 Nocchi 覆盖层）。
+    static func ensure() async -> Bool {
+        await CameraService.requestAccess()
+    }
+
+    /// 被拒绝时说明原因，并提供打开系统设置的入口。
+    static func presentDeniedAlert() {
+        NSApp.activate()
+        let alert = NSAlert()
+        alert.messageText = "Nocchi 需要使用摄像头"
+        alert.informativeText = "自拍和大头贴机要用到刘海里的摄像头。请在「系统设置 → 隐私与安全性 → 摄像头」里打开 Nocchi，然后再试一次。"
+        alert.addButton(withTitle: "打开系统设置")
+        alert.addButton(withTitle: "取消")
+        if alert.runModal() == .alertFirstButtonReturn,
+           let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Camera") {
+            NSWorkspace.shared.open(url)
+        }
     }
 }
 

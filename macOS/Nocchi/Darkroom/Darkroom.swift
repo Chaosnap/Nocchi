@@ -31,6 +31,16 @@ final class Darkroom {
         Task { await develop([image], source: .systemScreenshot, body: .instant, mirror: false) }
     }
 
+    /// 从 Finder 拖到刘海上的图片：冲印成拍立得。
+    func developDroppedFile(at url: URL) {
+        guard let image = ImageIOKit.load(url, maxPixel: 3200) else {
+            NotchController.shared.showToast("这个文件不是图片", symbol: "questionmark.circle.fill")
+            return
+        }
+        Sound.play(.shutter)
+        Task { await develop([image], source: .library, body: .instant, mirror: false) }
+    }
+
     /// 自拍：倒数 → 白屏补光 → 拍。
     func takeSelfie() async {
         let notch = NotchController.shared
@@ -50,7 +60,8 @@ final class Darkroom {
         Sound.play(.shutter)
         Haptics.heavy()
         try? await Task.sleep(nanoseconds: 90_000_000)
-        let photo = try? await camera.capture()
+        // capture 自带超时：无论如何闪光都会撤掉。
+        let photo = try? await camera.capture(timeout: 4)
         flash.off()
         notch.exitSelfie()
         guard let photo else {

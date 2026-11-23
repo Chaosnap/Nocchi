@@ -135,6 +135,7 @@ final class PhotoWindowController: NSObject {
         panel.setFrameOrigin(origin)
         applyLayer()
         panel.orderFrontRegardless()
+        updateSheen()
     }
 
     /// 移动到某个位置（照片堆整理时用）。
@@ -155,6 +156,10 @@ final class PhotoWindowController: NSObject {
         model.record.desk?.x = Double(origin.x)
         model.record.desk?.y = Double(origin.y)
         scheduleSave()
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: animated ? 820_000_000 : 0)
+            withAnimation(.easeInOut(duration: 0.6)) { self?.updateSheen() }
+        }
     }
 
     func applyLayer() {
@@ -199,6 +204,8 @@ final class PhotoWindowController: NSObject {
     }
 
     func dragMoved(to point: NSPoint, time: TimeInterval) {
+        updateSheen()
+        NotchController.shared.photoDragMoved(to: point)
         guard let event = shakeDetector.add(position: point, at: time) else { return }
         guard !model.isDeveloped, model.developingStarted else { return }
         model.shake(energy: event.energy)
@@ -213,6 +220,10 @@ final class PhotoWindowController: NSObject {
         isDragging = false
         model.lifted = false
         guard moved else { return }
+        if NotchController.shared.finishPhotoDrag(at: NSEvent.mouseLocation) {
+            stashIntoNotch()
+            return
+        }
         inPile = false
         snapToEdges()
         updatePlacement()
@@ -281,6 +292,15 @@ final class PhotoWindowController: NSObject {
         Haptics.align()
     }
 
+    /// 光面高光跟着相片在屏幕上的位置走（像一盏固定在屏幕左上方的灯）。
+    func updateSheen() {
+        guard let screen = panel.screen ?? NSScreen.main else { return }
+        let frame = screen.frame
+        let x = (panel.frame.midX - frame.minX) / max(frame.width, 1)
+        let y = 1 - (panel.frame.midY - frame.minY) / max(frame.height, 1)
+        model.sheen = CGPoint(x: 1 - min(max(x, 0), 1), y: min(max(y, 0), 1) * 0.6)
+    }
+
     private func updatePlacement() {
         let origin = panel.frame.origin
         if model.record.desk == nil {
@@ -290,6 +310,29 @@ final class PhotoWindowController: NSObject {
         model.record.desk?.y = Double(origin.y)
         model.record.desk?.rotation = model.tilt
         scheduleSave()
+    }
+
+    /// 收进刘海暂存架：相片缩小着滑进刘海。
+    func stashIntoNotch() {
+        let notch = NotchController.shared.metrics.rect
+        let target = NSRect(x: notch.midX - 12, y: notch.minY - 4, width: 24, height: 24)
+        panel.ignoresMouseEvents = true
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = 0.32
+            context.timingFunction = CAMediaTimingFunction(name: .easeIn)
+            self.panel.animator().setFrame(target, display: true)
+            self.panel.animator().alphaValue = 0
+        }, completionHandler: {
+            MainActor.assumeIsolated {
+                self.model.record.desk = nil
+                self.saveNow()
+                NotchShelf.shared.add(self.model.record)
+                Sound.play(.cardSlide)
+                Haptics.tick()
+                NotchController.shared.showToast("放进刘海暂存了（\(NotchShelf.shared.items.count) 张）", symbol: "tray.full.fill")
+                self.close()
+            }
+        })
     }
 
     // MARK: - Ink

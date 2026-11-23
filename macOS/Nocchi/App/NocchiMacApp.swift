@@ -29,6 +29,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NotchController.shared.install()
         HotKeys.registerDefaults()
         LibraryStore.shared.reload()
+        NotchShelf.shared.load()
         DesktopBoard.shared.restore()
 
         ScreenshotWatcher.shared.setEnabled(model.takeOverScreenshots)

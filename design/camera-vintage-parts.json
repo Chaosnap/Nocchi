@@ -1,0 +1,9 @@
+{
+  "image": "camera-vintage.png",
+  "note": "Normalized to the image size, origin top-left. 80s box-style body (second camera skin).",
+  "lens": { "centerX": 0.4960, "centerY": 0.4660, "radius": 0.0919 },
+  "shutter": { "centerX": 0.1758, "centerY": 0.5352, "radius": 0.0566 },
+  "flashGlass": { "x": 0.6348, "y": 0.1094, "width": 0.2393, "height": 0.1328 },
+  "viewfinderGlass": { "x": 0.7500, "y": 0.3760, "width": 0.1074, "height": 0.1074 },
+  "frontSlot": { "x": 0.0977, "y": 0.7930, "width": 0.8008, "height": 0.0547 }
+}

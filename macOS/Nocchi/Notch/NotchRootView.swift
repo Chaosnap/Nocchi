@@ -48,6 +48,8 @@ struct NotchRootView: View {
         case .selfie: return 34
         case .ejecting: return 9
         case .toast: return 14
+        case .shelf: return 30
+        case .dropTarget: return 26
         }
     }
 
@@ -72,6 +74,12 @@ struct NotchRootView: View {
             }
         case .toast:
             ToastBand(notch: notch, notchHeight: notchHeight)
+                .transition(.opacity)
+        case .shelf:
+            ShelfPanel(notch: notch, shelf: NotchShelf.shared, notchHeight: notchHeight)
+                .transition(.opacity.combined(with: .scale(scale: 0.96, anchor: .top)))
+        case .dropTarget:
+            DropTargetPanel(notch: notch, notchHeight: notchHeight)
                 .transition(.opacity)
         }
     }
@@ -111,6 +119,11 @@ private struct HoverPanel: View {
                 }
                 NotchActionButton(symbol: "square.grid.2x2", title: "大头贴", hint: "⌃⌥⌘B") {
                     PhotoBoothController.shared.start()
+                }
+                if !NotchShelf.shared.isEmpty {
+                    NotchActionButton(symbol: "tray.full.fill", title: "暂存", hint: "\(NotchShelf.shared.items.count) 张") {
+                        notch.openShelf()
+                    }
                 }
                 Rectangle()
                     .fill(Color.white.opacity(0.12))

@@ -10,7 +10,10 @@
 | 大头贴机 | `design/generated/camera-booth-v3.png` → `Shared/Art.xcassets/CameraBooth` | 相机柜 |
 | 软木板纹理 | `design/generated/texture-cork.png` → `CorkTexture` | 相册背景 |
 | 相纸纹理 | `design/generated/texture-paper.png` → `PaperTexture` | 相纸白边的纸感 |
-| 陶土橙丝绒布帘 | `design/generated/texture-curtain-v2.png` → `CurtainTexture` | 大头贴机拉帘 |
+| 陶土橙丝绒布帘 | `design/generated/texture-curtain-v2.png` → `CurtainTexture` | 旧版 2D 布帘（备用） |
+| 陶土橙丝绒面料 | `design/generated/texture-velvet.png` → `VelvetTexture` | 3D 布帘的面料 |
+| 胡桃木纹理 | `design/generated/texture-wood.png` → `WoodTexture` | 3D 卡片盒抽屉 |
+| 80 年代方盒款机身 | `design/generated/camera-vintage.png` → `CameraVintage`（部件坐标 `design/camera-vintage-parts.json`） | 第二种机身外观 |
 
 ## App 图标设计
 
@@ -35,6 +38,5 @@ macOS 圆角瓷砖规格（1024 画布上 824px 圆角方块，圆角 184，带�
 
 ## 待生成
 
-- 80 年代方盒款复古机身（黑色机身 + 香槟银面板，原创造型）——Codex 当日额度用完，额度恢复后补上。
 - 相机柜其余机身（一次性相机、日期机、半格、双反、针孔、摇摆 3D）。
 - 大头贴装饰贴纸。

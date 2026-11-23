@@ -15,6 +15,16 @@ enum NotchMode: Equatable {
     case ejecting
     /// 小提示：刘海两侧显示一行字。
     case toast
+    /// 暂存架：展开显示暂存的相片。
+    case shelf
+    /// 有东西被拖到刘海上方：相片 → 暂存；图片文件 → 冲印。
+    case dropTarget
+}
+
+/// 拖到刘海上的是什么。
+enum NotchDropKind: Equatable {
+    case photo
+    case files
 }
 
 /// 管理刘海上方的透明面板：定位、悬停展开、出片口、提示。
@@ -30,6 +40,7 @@ final class NotchController: ObservableObject {
     /// 自拍倒数（nil 表示不在倒数）。
     @Published var countdown: Int?
     @Published private(set) var isCapturing = false
+    @Published private(set) var dropKind: NotchDropKind = .photo
 
     /// 面板固定尺寸，足够容纳最大的「自拍」状态。
     let panelSize = CGSize(width: 760, height: 420)
@@ -42,6 +53,8 @@ final class NotchController: ObservableObject {
     private var collapseWork: DispatchWorkItem?
     private var toastWork: DispatchWorkItem?
     private var screenObserver: NSObjectProtocol?
+    private var dragPasteboardCount = NSPasteboard(name: .drag).changeCount
+    private var dropResetWork: DispatchWorkItem?
 
     private init() {}
 
@@ -62,6 +75,12 @@ final class NotchController: ObservableObject {
         }
         if let global = NSEvent.addGlobalMonitorForEvents(matching: [.mouseMoved, .leftMouseDragged], handler: handler) {
             monitors.append(global)
+        }
+        // 从 Finder 等处拖文件过来：拖动中靠近刘海就变成「冲印」投放区。
+        if let fileDrag = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDragged, .leftMouseUp], handler: { [weak self] event in
+            MainActor.assumeIsolated { self?.externalDrag(event) }
+        }) {
+            monitors.append(fileDrag)
         }
         if let local = NSEvent.addLocalMonitorForEvents(matching: [.mouseMoved, .leftMouseDragged], handler: { event in
             handler(event)
@@ -110,7 +129,8 @@ final class NotchController: ObservableObject {
         case .idle:
             return CGSize(width: w0, height: h0)
         case .hover:
-            return CGSize(width: max(w0 + 330, 560), height: h0 + 112)
+            let extra: CGFloat = NotchShelf.shared.isEmpty ? 0 : 104
+            return CGSize(width: max(w0 + 330, 560) + extra, height: h0 + 112)
         case .selfie:
             return CGSize(width: max(w0 + 190, 440), height: h0 + 300)
         case .ejecting:
@@ -118,6 +138,10 @@ final class NotchController: ObservableObject {
         case .toast:
             let textWidth = min(CGFloat(toastText.count) * 13 + 40, 300)
             return CGSize(width: w0 + 2 * max(textWidth, 70), height: h0)
+        case .shelf:
+            return CGSize(width: max(w0 + 360, 620), height: h0 + 196)
+        case .dropTarget:
+            return CGSize(width: max(w0 + 200, 420), height: h0 + 86)
         }
     }
 
@@ -153,20 +177,28 @@ final class NotchController: ObservableObject {
             } else {
                 hoverWork?.cancel()
             }
-        case .hover:
-            if islandScreenRect(for: .hover).insetBy(dx: -18, dy: -18).contains(location) {
+        case .hover, .shelf:
+            if islandScreenRect(for: mode).insetBy(dx: -18, dy: -18).contains(location) {
                 collapseWork?.cancel()
             } else {
                 scheduleCollapse()
             }
-        case .selfie, .ejecting:
+        case .selfie, .ejecting, .dropTarget:
             break
         }
         updateMousePassThrough(location)
     }
 
     private func updateMousePassThrough(_ location: NSPoint) {
-        let interactive = (mode == .hover || mode == .selfie) && islandScreenRect(for: mode).contains(location)
+        let interactive: Bool
+        switch mode {
+        case .hover, .selfie, .shelf:
+            interactive = islandScreenRect(for: mode).contains(location)
+        case .dropTarget:
+            interactive = dropKind == .files
+        default:
+            interactive = false
+        }
         panel?.ignoresMouseEvents = !interactive
     }
 
@@ -192,7 +224,7 @@ final class NotchController: ObservableObject {
             MainActor.assumeIsolated {
                 guard let self else { return }
                 self.collapseWork = nil
-                if self.mode == .hover { self.collapse() }
+                if self.mode == .hover || self.mode == .shelf { self.collapse() }
             }
         }
         collapseWork = work
@@ -209,9 +241,95 @@ final class NotchController: ObservableObject {
     func collapse() {
         hoverWork?.cancel()
         collapseWork?.cancel()
-        if mode == .hover || mode == .toast {
+        if mode == .hover || mode == .toast || mode == .shelf {
             setMode(.idle)
         }
+    }
+
+    // MARK: - Shelf & drops
+
+    func openShelf() {
+        guard mode == .hover || mode == .idle || mode == .toast else { return }
+        setMode(.shelf)
+        Sound.play(.cardSlide)
+    }
+
+    func closeShelf() {
+        if mode == .shelf { setMode(.idle) }
+    }
+
+    /// 投放区（屏幕坐标）：刘海附近一块宽松的区域。
+    private var dropZone: CGRect {
+        metrics.rect.insetBy(dx: -110, dy: -70)
+    }
+
+    /// 桌上的相片被拖着移动。
+    func photoDragMoved(to location: NSPoint) {
+        let inside = dropZone.contains(location)
+        if inside, mode == .idle || mode == .hover || mode == .toast || mode == .shelf {
+            dropKind = .photo
+            setMode(.dropTarget)
+            Haptics.align()
+        } else if !inside, mode == .dropTarget, dropKind == .photo {
+            setMode(.idle)
+        }
+    }
+
+    /// 相片在刘海上方松手：返回 true 表示被暂存架接住。
+    func finishPhotoDrag(at location: NSPoint) -> Bool {
+        guard mode == .dropTarget, dropKind == .photo else { return false }
+        setMode(.idle)
+        return dropZone.contains(location)
+    }
+
+    private func externalDrag(_ event: NSEvent) {
+        let location = NSEvent.mouseLocation
+        switch event.type {
+        case .leftMouseDragged:
+            let count = NSPasteboard(name: .drag).changeCount
+            let dragging = count != dragPasteboardCount
+            guard dragging else { return }
+            if dropZone.contains(location) {
+                if mode == .idle || mode == .hover || mode == .toast || mode == .shelf {
+                    dropKind = .files
+                    setMode(.dropTarget)
+                    Haptics.align()
+                }
+            } else if mode == .dropTarget, dropKind == .files {
+                setMode(.idle)
+            }
+        case .leftMouseUp:
+            dragPasteboardCount = NSPasteboard(name: .drag).changeCount
+            if mode == .dropTarget, dropKind == .files {
+                // 给 onDrop 一点时间接收文件，再收起。
+                dropResetWork?.cancel()
+                let work = DispatchWorkItem { [weak self] in
+                    MainActor.assumeIsolated {
+                        if self?.mode == .dropTarget { self?.setMode(.idle) }
+                    }
+                }
+                dropResetWork = work
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6, execute: work)
+            }
+        default:
+            break
+        }
+    }
+
+    /// 从 Finder 拖来的图片文件：每张都冲印成拍立得。
+    func acceptDroppedFiles(_ providers: [NSItemProvider]) -> Bool {
+        var accepted = false
+        for provider in providers where provider.canLoadObject(ofClass: NSURL.self) {
+            accepted = true
+            _ = provider.loadObject(ofClass: NSURL.self) { object, _ in
+                guard let url = object as? URL ?? (object as? NSURL).map({ $0 as URL }) else { return }
+                Task { @MainActor in
+                    Darkroom.shared.developDroppedFile(at: url)
+                }
+            }
+        }
+        setMode(.idle)
+        return accepted
     }
 
     func showToast(_ text: String, symbol: String, duration: TimeInterval = 2.4) {
@@ -241,13 +359,23 @@ final class NotchController: ObservableObject {
 
     // MARK: - Selfie
 
+    private var isPreparingCamera = false
+
     func enterSelfie() {
-        guard mode != .selfie, mode != .ejecting, !PhotoBoothController.shared.isActive else { return }
-        setMode(.selfie)
-        Sound.play(.powerOn)
-        panel?.makeKey()
-        installKeyMonitor()
+        guard mode != .selfie, mode != .ejecting, !isPreparingCamera, !PhotoBoothController.shared.isActive else { return }
+        isPreparingCamera = true
+        collapse()
         Task {
+            defer { self.isPreparingCamera = false }
+            // 先拿到摄像头权限（系统弹窗不会被任何 Nocchi 界面挡住），再展开取景器。
+            guard await CameraAccess.ensure() else {
+                CameraAccess.presentDeniedAlert()
+                return
+            }
+            self.setMode(.selfie)
+            Sound.play(.powerOn)
+            self.panel?.makeKey()
+            self.installKeyMonitor()
             do {
                 try await CameraService.shared.start()
             } catch {

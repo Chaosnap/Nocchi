@@ -9,7 +9,10 @@ final class KeyableWindow: NSWindow {
     override var canBecomeMain: Bool { true }
 }
 
-/// 大头贴机：拉帘 → 请看镜头 → 3、2、1 → 白屏闪光 × 4 → 拉开帘子 → 四格条从刘海出片。
+/// 大头贴机：先拿到摄像头权限 → 拉帘 → 请看镜头 → 3、2、1 → 白屏闪光 × 4 → 拉开帘子 → 四格条从刘海出片。
+///
+/// 任何情况下都能离开：权限在显示布帘之前就问好；布帘窗口在菜单栏之下（菜单栏里的「退出」始终可点）；
+/// 有「离开」按钮、Esc、⌘Q；拍照有超时；整个流程有看门狗。
 @MainActor
 final class PhotoBoothController: ObservableObject {
     static let shared = PhotoBoothController()
@@ -28,42 +31,73 @@ final class PhotoBoothController: ObservableObject {
     @Published private(set) var shot = 0
     @Published private(set) var curtainDown: CGFloat = 0
     let totalShots = 4
+    let curtain = CurtainScene()
 
     private var window: KeyableWindow?
     private var task: Task<Void, Never>?
     private var keyMonitor: Any?
+    private var session = 0
+    private var isPreparing = false
 
-    var isActive: Bool { phase != .idle }
+    var isActive: Bool { phase != .idle || isPreparing }
 
     private init() {}
 
     func start() {
         guard !isActive, NotchController.shared.mode != .selfie else { return }
-        guard let screen = NotchController.shared.targetScreen else { return }
+        isPreparing = true
         NotchController.shared.collapse()
-        phase = .closingCurtain
-        shot = 0
-        showWindow(on: screen)
-        task = Task { await run() }
+        Task {
+            // 1. 先拿权限：此时屏幕上没有任何 Nocchi 覆盖层，系统弹窗一定点得到。
+            let granted = await CameraAccess.ensure()
+            self.isPreparing = false
+            guard granted else {
+                CameraAccess.presentDeniedAlert()
+                return
+            }
+            guard let screen = NotchController.shared.targetScreen, self.phase == .idle else { return }
+            self.session += 1
+            let current = self.session
+            self.phase = .closingCurtain
+            self.shot = 0
+            self.showWindow(on: screen)
+            self.task = Task { await self.run(session: current) }
+            // 2. 看门狗：60 秒还没结束就强制收起。
+            Task {
+                try? await Task.sleep(nanoseconds: 60_000_000_000)
+                if self.session == current, self.phase != .idle {
+                    self.cancel()
+                    NotchController.shared.showToast("大头贴机超时了，已经收起", symbol: "exclamationmark.triangle.fill")
+                }
+            }
+        }
     }
 
+    /// 立刻离开（不等拍摄流程结束）。
     func cancel() {
+        guard phase != .idle else { return }
+        session += 1
         task?.cancel()
+        CameraService.shared.stop()
+        teardown()
     }
 
-    private func run() async {
+    private func run(session current: Int) async {
         let camera = CameraService.shared
         var frames: [CGImage] = []
         do {
             Sound.play(.coin)
-            try await pause(0.45)
+            try await pause(0.4)
             Sound.play(.curtain)
+            curtain.drop(duration: 0.9)
             withAnimation(.easeInOut(duration: 0.9)) { curtainDown = 1 }
             try await camera.start()
             try await pause(0.9)
+            try checkSession(current)
             phase = .lookHere
             try await pause(1.3)
             for index in 0..<totalShots {
+                try checkSession(current)
                 shot = index
                 for n in [3, 2, 1] {
                     phase = .countdown(n)
@@ -74,7 +108,7 @@ final class PhotoBoothController: ObservableObject {
                 Sound.play(.shutterBooth)
                 Haptics.heavy()
                 try await pause(0.07)
-                if let image = try? await camera.capture() {
+                if let image = try? await camera.capture(timeout: 4) {
                     frames.append(image)
                 }
                 try await pause(0.16)
@@ -84,9 +118,11 @@ final class PhotoBoothController: ObservableObject {
             camera.stop()
             phase = .openingCurtain
             Sound.play(.curtain)
+            curtain.raise(duration: 0.8)
             withAnimation(.easeInOut(duration: 0.8)) { curtainDown = 0 }
             try await pause(0.85)
         } catch {
+            guard session == current else { return }
             camera.stop()
             teardown()
             if !(error is CancellationError) {
@@ -94,6 +130,7 @@ final class PhotoBoothController: ObservableObject {
             }
             return
         }
+        guard session == current else { return }
         teardown()
         guard !frames.isEmpty else {
             NotchController.shared.showToast("大头贴没拍到，再来一次", symbol: "exclamationmark.triangle.fill")
@@ -106,19 +143,25 @@ final class PhotoBoothController: ObservableObject {
         await Darkroom.shared.develop(frames, source: .booth, body: .photoBooth, mirror: true)
     }
 
+    private func checkSession(_ current: Int) throws {
+        if session != current || Task.isCancelled { throw CancellationError() }
+    }
+
     private func pause(_ seconds: Double) async throws {
         try await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
     }
 
     private func showWindow(on screen: NSScreen) {
         let window = KeyableWindow(contentRect: screen.frame, styleMask: .borderless, backing: .buffered, defer: false)
-        window.level = NSWindow.Level(rawValue: NSWindow.Level.mainMenu.rawValue + 1)
+        // 在菜单栏之下：菜单栏里的 Nocchi →「退出」永远点得到，系统弹窗也不会被挡住。
+        window.level = .floating
         window.backgroundColor = .clear
         window.isOpaque = false
         window.hasShadow = false
         window.isReleasedWhenClosed = false
-        window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary, .ignoresCycle]
+        window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .ignoresCycle]
         window.setFrame(screen.frame, display: false)
+        curtain.build(screen: screen.frame.size, gap: 780)
         let host = NSHostingView(rootView: BoothCurtainView(booth: self, session: CameraService.shared.session, camera: CameraService.shared))
         host.sizingOptions = []
         window.contentView = host
@@ -130,6 +173,11 @@ final class PhotoBoothController: ObservableObject {
             MainActor.assumeIsolated {
                 if event.keyCode == 53 {
                     self?.cancel()
+                    return nil
+                }
+                if event.modifierFlags.contains(.command), event.charactersIgnoringModifiers?.lowercased() == "q" {
+                    self?.cancel()
+                    NSApp.terminate(nil)
                     return nil
                 }
                 return event
@@ -150,7 +198,7 @@ final class PhotoBoothController: ObservableObject {
     }
 }
 
-/// 布帘、取景框、倒数、闪光。
+/// 布帘（3D）、取景框、倒数、闪光，以及始终可见的「离开」按钮。
 struct BoothCurtainView: View {
     @ObservedObject var booth: PhotoBoothController
     let session: AVCaptureSession
@@ -158,9 +206,6 @@ struct BoothCurtainView: View {
 
     var body: some View {
         GeometryReader { geo in
-            let size = geo.size
-            let gap: CGFloat = 760
-            let side = max(0, (size.width - gap) / 2)
             ZStack {
                 Color.black.opacity(0.62 * booth.curtainDown)
 
@@ -168,21 +213,36 @@ struct BoothCurtainView: View {
                     .opacity(Double(booth.curtainDown))
                     .scaleEffect(0.96 + 0.04 * booth.curtainDown)
 
-                HStack(spacing: 0) {
-                    CurtainPanel(edge: .trailing)
-                        .frame(width: side + 40)
-                    Spacer(minLength: 0)
-                    CurtainPanel(edge: .leading)
-                        .frame(width: side + 40)
-                }
-                .frame(width: size.width, height: size.height)
-                .offset(y: -size.height * (1 - booth.curtainDown))
+                CurtainSceneView(curtain: booth.curtain)
+                    .allowsHitTesting(false)
 
                 Color.white
                     .opacity(booth.phase == .flash ? 1 : 0)
                     .animation(.easeOut(duration: booth.phase == .flash ? 0.04 : 0.35), value: booth.phase)
+                    .allowsHitTesting(false)
+
+                VStack {
+                    HStack {
+                        Button {
+                            booth.cancel()
+                        } label: {
+                            Label("离开大头贴机", systemImage: "xmark")
+                                .font(.system(size: 13, weight: .semibold, design: .rounded))
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 8)
+                                .background(.ultraThinMaterial, in: Capsule())
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(.white)
+                        .keyboardShortcut(.cancelAction)
+                        Spacer()
+                    }
+                    Spacer()
+                }
+                .padding(.top, 52)
+                .padding(.leading, 24)
             }
-            .frame(width: size.width, height: size.height)
+            .frame(width: geo.size.width, height: geo.size.height)
         }
         .ignoresSafeArea()
     }
@@ -257,24 +317,5 @@ private struct PhaseOverlay: View {
         default:
             EmptyView()
         }
-    }
-}
-
-/// 一侧布帘：陶土橙丝绒纹理 + 内侧的阴影。
-private struct CurtainPanel: View {
-    let edge: HorizontalEdge
-
-    var body: some View {
-        ZStack {
-            Palette.terracotta
-            Image("CurtainTexture")
-                .resizable(resizingMode: .tile)
-            LinearGradient(
-                colors: [Color.black.opacity(0), Color.black.opacity(0.45)],
-                startPoint: edge == .trailing ? .leading : .trailing,
-                endPoint: edge == .trailing ? .trailing : .leading
-            )
-        }
-        .clipped()
     }
 }

@@ -52,7 +52,15 @@ public final class CardBoxScene: ObservableObject {
     private var boxYaw: Float = 0.32
     private var pileCenter = SIMD3<Float>(0.15, 0, 0.04)
 
-    private lazy var woodImage = ProceduralTextures.wood()
+    /// 木纹：优先用 Codex 生成的胡桃木素材（App 资源里的 WoodTexture），没有时退回程序生成。
+    private lazy var woodImage: Any? = {
+        #if canImport(UIKit)
+        if let image = UIImage(named: "WoodTexture") { return image }
+        #elseif canImport(AppKit)
+        if let image = NSImage(named: "WoodTexture") { return image }
+        #endif
+        return ProceduralTextures.wood()
+    }()
     private lazy var paperMaterial = material(color: SceneColor(red: 0.96, green: 0.94, blue: 0.89, alpha: 1), roughness: 0.78)
     private lazy var dividerMaterial = material(color: SceneColor(red: 0.90, green: 0.84, blue: 0.70, alpha: 1), roughness: 0.86)
 
