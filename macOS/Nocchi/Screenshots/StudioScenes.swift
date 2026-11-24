@@ -196,6 +196,7 @@ struct PrintGalleryScene: View {
 struct BoothScene: View {
     @ObservedObject var booth: PhotoBoothController
     var curtain: NSImage?
+    var size = CGSize(width: 1300, height: 1100)
 
     var body: some View {
         ZStack {
@@ -205,20 +206,20 @@ struct BoothScene: View {
                 RadialGradient(colors: [Color(hex: 0xFFE2B8, opacity: 0.16), .clear], center: .top, startRadius: 10, endRadius: 640)
                 Image(nsImage: curtain)
                     .resizable()
-                    .frame(width: 1200, height: 900)
+                    .frame(width: size.width, height: size.height)
                 BoothInterior(booth: booth, session: CameraService.shared.session, camera: CameraService.shared)
             } else {
                 Image("VelvetTexture")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .frame(width: 1200, height: 900)
+                    .frame(width: size.width, height: size.height)
                     .clipped()
                 Color.black.opacity(0.5)
                 RadialGradient(colors: [Color(hex: 0xFFE2B8, opacity: 0.2), .clear], center: .top, startRadius: 10, endRadius: 720)
                 BoothInterior(booth: booth, session: CameraService.shared.session, camera: CameraService.shared)
             }
         }
-        .frame(width: 1200, height: 900)
+        .frame(width: size.width, height: size.height)
         .clipped()
     }
 }

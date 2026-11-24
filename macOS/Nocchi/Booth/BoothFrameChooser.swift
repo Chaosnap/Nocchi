@@ -203,7 +203,7 @@ private struct SampleShowcase: View {
 }
 
 /// 挂样张的小铜夹。
-private struct BrassClip: View {
+struct BrassClip: View {
     var body: some View {
         ZStack(alignment: .top) {
             RoundedRectangle(cornerRadius: 2.5, style: .continuous)

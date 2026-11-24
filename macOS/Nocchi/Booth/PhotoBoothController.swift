@@ -409,9 +409,10 @@ struct BoothCurtainView: View {
         .ignoresSafeArea()
     }
 
-    /// 矮屏幕（比如 800pt 高的外接显示器）上整体缩小，别让灯泡钻到菜单栏下面。
+    /// 矮屏幕上整体缩小，别让招牌钻到菜单栏下面（整机 960 点高，加上下面一行提示约 1000 点）。
     static func fitScale(_ size: CGSize) -> CGFloat {
-        min(1, max(0.72, (size.height - 80) / 780))
+        let content: CGFloat = BoothMachine.isAvailable ? 1000 : 780
+        return min(1, max(0.6, (size.height - 70) / content))
     }
 }
 
@@ -424,6 +425,20 @@ struct BoothInterior: View {
     private var choosing: Bool { booth.phase == .choosingFrame || booth.phase == .closingCurtain }
 
     var body: some View {
+        if BoothMachine.isAvailable {
+            VStack(spacing: 14) {
+                BoothMachine(booth: booth, previews: booth.previews, session: session, camera: camera)
+                Text(choosing ? "← → 换相框 · ↑ ↓ 四格条 / 四宫格 · Return 开始 · Esc 离开" : "Esc 取消 · 一次一条，不能重拍")
+                    .font(.system(size: 13, weight: .medium, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.7))
+            }
+        } else {
+            drawn
+        }
+    }
+
+    /// 渲染图缺失时的退路：画出来的招牌 + 面板 + 取景框。
+    private var drawn: some View {
         VStack(spacing: 18) {
             BoothSign()
 
@@ -547,7 +562,7 @@ private struct CameraWindow: View {
     }
 }
 
-private struct PhaseOverlay: View {
+struct PhaseOverlay: View {
     let phase: PhotoBoothController.Phase
 
     var body: some View {

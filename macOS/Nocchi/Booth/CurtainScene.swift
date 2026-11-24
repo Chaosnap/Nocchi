@@ -88,16 +88,15 @@ final class CurtainScene {
         scene.rootNode.addChildNode(rimNode)
         lightNodes.append(rimNode)
 
-        // 中间大头贴机的暖光，打在两幅帘子靠里的褶上。
+        // 中间大头贴机的暖光：从正前方轻轻补一点暖色。原来是离帘子 0.4 的点光源，PBR 衰减下实测比主光亮 5 倍以上
+        // （标定条第 4 格全白），丝绒的褶峰全被打爆，改成很弱的平行光（灰卡上约 0.14 倍）。
         let booth = SCNLight()
-        booth.type = .omni
-        booth.intensity = 260
+        booth.type = .directional
+        booth.intensity = 150
         booth.color = NSColor(red: 1.0, green: 0.78, blue: 0.52, alpha: 1)
-        booth.attenuationStartDistance = 0.25
-        booth.attenuationEndDistance = 1.2
         let boothNode = SCNNode()
         boothNode.light = booth
-        boothNode.simdPosition = SIMD3(0, 0.08, 0.4)
+        boothNode.simdEulerAngles = SIMD3(-0.12, 0, 0)
         scene.rootNode.addChildNode(boothNode)
         lightNodes.append(boothNode)
 

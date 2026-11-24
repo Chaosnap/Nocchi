@@ -132,9 +132,10 @@ private final class Studio {
         if let strip = CurtainScene().calibrationStrip() {
             save(strip, name: "debug-curtain-lights", method: "scenekit")
         }
-        let velvet = CurtainScene().renderClosed(size: CGSize(width: 1200, height: 900), gap: 780)
+        let boothSize = CGSize(width: 1300, height: 1100)
+        let velvet = CurtainScene().renderClosed(size: boothSize, gap: 780)
         say("SHOT curtain=\(velvet == nil ? "flat-fallback" : "scenekit")")
-        render("booth", size: CGSize(width: 1200, height: 900), BoothScene(booth: booth, curtain: velvet))
+        render("booth", size: boothSize, BoothScene(booth: booth, curtain: velvet, size: boothSize))
         booth.endShowcase()
     }
 
