@@ -104,7 +104,7 @@ Every picture here is rendered from the app itself by [GitHub Actions](.github/w
 
 <table>
   <tr>
-    <td width="50%"><img src="website/public/screenshots/en/album-corkboard.jpg" width="100%" alt="The corkboard: prints pinned by month"><br><sub>Corkboard</sub></td>
+    <td width="50%"><img src="website/public/screenshots/en/album-corkboard-night.jpg" width="100%" alt="The corkboard at night, lit by a beam from the top-right corner"><br><sub>Corkboard at night, lit from the top right</sub></td>
     <td width="50%"><img src="website/public/screenshots/en/album-cardbox.jpg" width="100%" alt="The card box: cards rise out of the box and fan out"><br><sub>Card box</sub></td>
   </tr>
   <tr>

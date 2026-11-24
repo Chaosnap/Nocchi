@@ -26,6 +26,8 @@
 
 ![软木板：照片按月份钉在板上](/screenshots/album-corkboard.jpg)
 
+![夜里的软木板：一束光从右上角斜照下来](/screenshots/album-corkboard-night.jpg)
+
 ![卡片盒：卡片从盒子里升起、摊开](/screenshots/album-cardbox.jpg)
 
 ![胶卷光台：照片排成 35mm 胶片条，还有放大镜](/screenshots/album-film.jpg)

@@ -26,6 +26,8 @@ These pictures are rendered from the app itself on a GitHub-hosted Mac: a screen
 
 ![The corkboard: prints pinned by month](/screenshots/en/album-corkboard.jpg)
 
+![The corkboard at night: a beam of light slants down from the top-right corner](/screenshots/en/album-corkboard-night.jpg)
+
 ![The card box: cards rise out of the box and fan out](/screenshots/en/album-cardbox.jpg)
 
 ![The film light table: prints as 35 mm strips, with a loupe](/screenshots/en/album-film.jpg)
