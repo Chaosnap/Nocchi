@@ -20,6 +20,8 @@ final class CurtainScene {
     let scene = SCNScene()
     private let cameraNode = SCNNode()
     private let root = SCNNode()
+    /// 四盏灯（标定图要一盏一盏单独开）。
+    private var lightNodes: [SCNNode] = []
     private let valanceRoot = SCNNode()
     private var panels: [CurtainPanel] = []
     private var fringeMaterial: SCNMaterial?
@@ -74,6 +76,7 @@ final class CurtainScene {
         keyNode.light = key
         keyNode.simdEulerAngles = SIMD3(-0.5, -0.8, 0)
         scene.rootNode.addChildNode(keyNode)
+        lightNodes.append(keyNode)
 
         let rim = SCNLight()
         rim.type = .directional
@@ -83,6 +86,7 @@ final class CurtainScene {
         rimNode.light = rim
         rimNode.simdEulerAngles = SIMD3(-0.15, 1.0, 0)
         scene.rootNode.addChildNode(rimNode)
+        lightNodes.append(rimNode)
 
         // 中间大头贴机的暖光，打在两幅帘子靠里的褶上。
         let booth = SCNLight()
@@ -95,6 +99,7 @@ final class CurtainScene {
         boothNode.light = booth
         boothNode.simdPosition = SIMD3(0, 0.08, 0.4)
         scene.rootNode.addChildNode(boothNode)
+        lightNodes.append(boothNode)
 
         let ambient = SCNLight()
         ambient.type = .ambient
@@ -103,6 +108,7 @@ final class CurtainScene {
         let ambientNode = SCNNode()
         ambientNode.light = ambient
         scene.rootNode.addChildNode(ambientNode)
+        lightNodes.append(ambientNode)
     }
 
     func makeView() -> SCNView {
@@ -240,6 +246,57 @@ final class CurtainScene {
         renderer.scene = scene
         renderer.pointOfView = cameraNode
         return renderer.snapshot(atTime: 1, with: CGSize(width: size.width * scale, height: size.height * scale), antialiasingMode: .multisampling4X)
+    }
+
+    /// 截图工作室的标定条（调试用）：一块正对镜头的平面，分别只开一盏灯渲成小图，量出 SceneKit 的灯实际有多亮。
+    /// 顺序：全部灯 / 主光 / 侧光 / 中间暖光 / 环境光 / 环境图（都是线性 0.18 的灰色 PBR 平面）、全部灯下的丝绒、全部灯下的金色。
+    func calibrationStrip(tile: Int = 160) -> CGImage? {
+        guard let device = MTLCreateSystemDefaultDevice() else { return nil }
+        build(screen: CGSize(width: 400, height: 400), gap: 200)
+        root.isHidden = true
+        let plane = SCNPlane(width: 2, height: 2)
+        let gray = SCNMaterial()
+        gray.lightingModel = .physicallyBased
+        gray.diffuse.contents = NSColor(srgbRed: 0.4614, green: 0.4614, blue: 0.4614, alpha: 1)
+        gray.roughness.contents = 0.9
+        gray.metalness.contents = 0.0
+        let velvet = Self.velvetMaterial(breathingTop: nil, height: 0.4, aoCenter: 0, aoDepth: 0.018)
+        let gold = Self.brassMaterial()
+        let probe = SCNNode(geometry: plane)
+        probe.simdPosition = SIMD3(-0.1, 0, 0)
+        scene.rootNode.addChildNode(probe)
+        defer { probe.removeFromParentNode(); root.isHidden = false }
+        let environment = scene.lightingEnvironment.contents
+        let renderer = SCNRenderer(device: device, options: nil)
+        renderer.scene = scene
+        renderer.pointOfView = cameraNode
+        var tiles: [CGImage] = []
+        let variants: [(lights: [Int], env: Bool, material: SCNMaterial)] = [
+            ([0, 1, 2, 3], true, gray), ([0], false, gray), ([1], false, gray), ([2], false, gray),
+            ([3], false, gray), ([], true, gray), ([0, 1, 2, 3], true, velvet), ([0, 1, 2, 3], true, gold)
+        ]
+        for variant in variants {
+            for (index, node) in lightNodes.enumerated() {
+                node.isHidden = !variant.lights.contains(index)
+            }
+            scene.lightingEnvironment.contents = variant.env ? environment : nil
+            plane.materials = [variant.material]
+            let image = renderer.snapshot(atTime: 1, with: CGSize(width: tile, height: tile), antialiasingMode: .none)
+            if let cg = image.cgImage(forProposedRect: nil, context: nil, hints: nil) {
+                tiles.append(cg)
+            }
+        }
+        lightNodes.forEach { $0.isHidden = false }
+        scene.lightingEnvironment.contents = environment
+        guard tiles.count == variants.count,
+              let space = CGColorSpace(name: CGColorSpace.sRGB),
+              let ctx = CGContext(data: nil, width: tile * tiles.count, height: tile, bitsPerComponent: 8, bytesPerRow: 0, space: space, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
+        ctx.setFillColor(CGColor(srgbRed: 1, green: 0, blue: 1, alpha: 1))
+        ctx.fill(CGRect(x: 0, y: 0, width: tile * tiles.count, height: tile))
+        for (i, cg) in tiles.enumerated() {
+            ctx.draw(cg, in: CGRect(x: i * tile, y: 0, width: tile, height: tile))
+        }
+        return ctx.makeImage()
     }
 
     // MARK: - 动态
