@@ -105,7 +105,7 @@ struct TemplateSwatchRow: View {
             .onAppear { proxy.scrollTo(selection, anchor: .center) }
         }
         .task(id: "\(format.rawValue)|\(stock.id)|\(model.defaultCaption)|\(model.defaultCaptionFont.rawValue)") {
-            await previews.prefetch(templates.map(request))
+            await previews.prefetch(templates.map { request($0) })
         }
     }
 }
