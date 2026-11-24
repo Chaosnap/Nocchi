@@ -22,6 +22,10 @@ final class PhotoViewModel: ObservableObject, Identifiable {
     @Published var liveStroke: InkStroke?
     /// 光面高光位置（0…1），随相片在屏幕上的位置移动。
     @Published var sheen = CGPoint(x: 0.32, y: 0.22)
+    /// 出片时挂在出片口上的摆动（度，绕出片口转）。
+    @Published var ejectSway: Double = 0
+    /// 出片时滚轮推一下的左右小抖动（点）。
+    @Published var ejectJitter: CGFloat = 0
     @Published private(set) var developments: [DevelopmentModel]
     /// 出片完成后才开始显影。
     var developingStarted = false

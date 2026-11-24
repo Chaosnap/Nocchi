@@ -27,7 +27,19 @@ struct InstantPhotoView: View {
         .shadow(color: .black.opacity(model.lifted ? 0.16 : 0.14), radius: model.lifted ? 7 : 3.5, x: 0, y: model.lifted ? 6 : 2.5)
         .shadow(color: .black.opacity(model.lifted ? 0.20 : 0.10), radius: model.lifted ? 17 : 12, x: 0, y: model.lifted ? 13 : 8)
         .offset(y: -size.height * (1 - model.ejectProgress))
+        .offset(x: model.masking ? model.ejectJitter : 0)
         .frame(width: window.width, height: window.height)
+        // 刚出出片口的那一截在口沿的阴影里。
+        .overlay(alignment: .top) {
+            if model.masking {
+                LinearGradient(colors: [Color.black.opacity(0.32), .clear], startPoint: .top, endPoint: .bottom)
+                    .frame(width: size.width, height: 22)
+                    .offset(y: pad)
+                    .allowsHitTesting(false)
+            }
+        }
+        // 挂在出片口上的纸，绕出片口摆。
+        .rotationEffect(.degrees(model.ejectSway), anchor: UnitPoint(x: 0.5, y: pad / max(window.height, 1)))
         .mask(alignment: .bottom) {
             Rectangle()
                 .frame(width: window.width, height: model.masking ? window.height - pad : window.height)

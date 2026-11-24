@@ -32,6 +32,8 @@ public enum SoundEffect: String, CaseIterable, Sendable {
     case splat
     /// 卡片从卡片盒里抽出 / 放回的纸张摩擦声。
     case cardSlide
+    /// 相片从出片口落到桌面上的轻「嗒」：低沉的一下 + 一点纸声。
+    case paperLand
 }
 
 /// 简单的程序化合成器：噪声爆发、衰减正弦、滤波。
@@ -114,6 +116,11 @@ public enum SoundSynth {
             buf = silence(0.24)
             addNoise(&buf, start: 0, duration: 0.22, amp: 0.45, decay: 0.09, lowpass: 5200, highpass: 1400, rng: &rng)
             addClick(&buf, at: 0.19, amp: 0.25, decay: 0.003, rng: &rng)
+        case .paperLand:
+            buf = silence(0.22)
+            addTone(&buf, start: 0, frequency: 92, duration: 0.14, amp: 0.42, decay: 0.035)
+            addNoise(&buf, start: 0, duration: 0.1, amp: 0.3, decay: 0.028, lowpass: 3600, highpass: 500, rng: &rng)
+            addClick(&buf, at: 0.003, amp: 0.16, decay: 0.002, rng: &rng)
         }
         normalize(&buf, peak: 0.85)
         return buf

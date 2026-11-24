@@ -54,8 +54,11 @@ public final class CustomStickerStore: @unchecked Sendable {
     public init(directory: URL) {
         self.directory = directory
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        // 清单用 ISO 8601 写日期（`saveLocked`），读的时候要用同样的格式。
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
         if let data = try? Data(contentsOf: manifestURL),
-           let decoded = try? JSONDecoder().decode([CustomSticker].self, from: data) {
+           let decoded = try? decoder.decode([CustomSticker].self, from: data) {
             entries = decoded
         }
     }

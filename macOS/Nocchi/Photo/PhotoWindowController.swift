@@ -66,11 +66,27 @@ final class PhotoWindowController: NSObject {
 
     // MARK: - Presenting
 
-    /// 从刘海出片：窗口顶边对齐出片口下沿，相纸由上往下一截一截地吐出来。
+    /// 出片时挂在出片口上的摆（度、度 / 秒）。
+    private struct Swing {
+        var angle: Double = 0
+        var velocity: Double = 0
+
+        /// 单摆一步：伸出来越长摆得越慢（ω² ∝ 1 / L），带空气阻尼。
+        mutating func step(_ dt: TimeInterval, length: CGFloat, damping: Double = 2.4) {
+            let omega2 = 9000 / Double(max(length, 12))
+            velocity += (-omega2 * angle - damping * velocity) * dt
+            angle = min(max(angle + velocity * dt, -2.6), 2.6)
+        }
+    }
+
+    /// 从刘海出片：窗口顶边对齐出片口下沿，滚轮一步一步把相纸推出来（每一步先快后慢、末尾带一点齿轮间隙的回弹），
+    /// 推出来的那一截挂在出片口上像单摆一样轻轻摆、每推一下给它一点冲量；光泽随纸移动扫过去。
     func presentEjecting(windowOrigin: NSPoint, duration: TimeInterval, completion: @escaping () -> Void) {
         isEjecting = true
         model.masking = true
         model.ejectProgress = 0
+        model.ejectSway = 0
+        model.ejectJitter = 0
         model.tilt = 0
         panel.level = NSWindow.Level(rawValue: NSWindow.Level.mainMenu.rawValue + 2)
         panel.ignoresMouseEvents = true
@@ -79,23 +95,35 @@ final class PhotoWindowController: NSObject {
         Sound.play(.motor, duration: duration)
 
         let steps = 8
+        let length = model.paperSize.height
         var elapsed: TimeInterval = 0
         var lastStep = -1
+        var swing = Swing()
+        var rng = SeededRandom(seed: record.seed ^ 0xE1EC7)
         let ticker = FrameTicker { [weak self] dt in
             guard let self else { return false }
             elapsed += dt
             let t = min(1, elapsed / duration)
             let raw = t * Double(steps)
             let step = min(Int(raw), steps - 1)
-            let within = min(1, (raw - Double(step)) * 1.3)
-            let eased = (Double(step) + (1 - pow(1 - within, 3))) / Double(steps)
-            self.model.ejectProgress = CGFloat(t >= 1 ? 1 : min(1, eased))
+            let within = min(1, (raw - Double(step)) * 1.25)
+            // 每一步：滚轮先快后慢地推出去，推到头往回让一点点（齿轮间隙）。
+            let push = 1 - pow(1 - within, 3)
+            let backlash = sin(within * .pi) * 0.05
+            let eased = (Double(step) + push - backlash) / Double(steps)
+            let progress = t >= 1 ? 1 : min(1, max(0, eased))
+            self.model.ejectProgress = CGFloat(progress)
             if step != lastStep {
                 lastStep = step
                 Haptics.tick()
+                swing.velocity += rng.range(-1, 1) * 9 + (step % 2 == 0 ? 3.5 : -3.5)
+                self.model.ejectJitter = CGFloat(rng.range(-0.45, 0.45))
             }
+            swing.step(dt, length: CGFloat(progress) * length)
+            self.model.ejectSway = swing.angle
+            self.model.sheen = CGPoint(x: 0.22 + 0.5 * progress, y: 0.08 + 0.22 * progress)
             if t >= 1 {
-                self.finishEjecting(completion)
+                self.finishEjecting(swing: swing, completion)
                 return false
             }
             return true
@@ -104,28 +132,89 @@ final class PhotoWindowController: NSObject {
         ticker.start()
     }
 
-    private func finishEjecting(_ completion: @escaping () -> Void) {
+    /// 吐完：滚轮再夹一小会儿（余摆），松开 → 纸在重力下落到桌上（一点横向漂移、像落叶那样转到随手的角度），
+    /// 落地时轻轻一弹、阴影收紧、「嗒」的一声。
+    private func finishEjecting(swing: Swing, _ completion: @escaping () -> Void) {
         ejectTicker = nil
-        isEjecting = false
-        model.masking = false
         model.ejectProgress = 1
+        model.ejectJitter = 0
         model.developingStarted = true
         panel.level = .floating
-        panel.ignoresMouseEvents = false
 
-        // 「啪」地掉下来一点，再随手歪一下。
-        var frame = panel.frame
-        frame.origin.y -= 46
-        NSAnimationContext.runAnimationGroup { context in
-            context.duration = 0.3
-            context.timingFunction = CAMediaTimingFunction(name: .easeIn)
-            self.panel.animator().setFrame(frame, display: true)
+        let start = panel.frame.origin
+        let restTilt = record.desk?.rotation ?? 0
+        let length = model.paperSize.height
+        var rng = SeededRandom(seed: record.seed ^ 0xFA11)
+        let drop = CGFloat(rng.range(50, 66))
+        let drift = CGFloat(rng.range(-12, 12))
+        let hold: TimeInterval = 0.14
+        let gravity: CGFloat = 2600
+        var hanging = swing
+        var time: TimeInterval = 0
+        var released = false
+        var landed = false
+        var bounced = false
+        var y: CGFloat = 0
+        var vy: CGFloat = 0
+        var angle = 0.0
+        var spin = 0.0
+        let ticker = FrameTicker { [weak self] dt in
+            guard let self else { return false }
+            time += dt
+            if !released {
+                // 还夹在滚轮里：只剩余摆。
+                hanging.step(dt, length: length, damping: 3)
+                self.model.ejectSway = hanging.angle
+                guard time >= hold else { return true }
+                released = true
+                // 摆动换成绕纸中心的转动，接着落下；出片口合上。
+                angle = hanging.angle
+                spin = hanging.velocity * 0.6 + Double(drift) * 0.4
+                self.model.ejectSway = 0
+                self.model.tilt = angle
+                self.model.masking = false
+                self.model.lifted = true
+                self.isEjecting = false
+                completion()
+                return true
+            }
+            if !landed {
+                vy += gravity * CGFloat(dt)
+                vy *= 1 - 0.8 * CGFloat(dt)
+                y += vy * CGFloat(dt)
+                if y >= drop {
+                    y = drop
+                    if !bounced, vy > 240 {
+                        bounced = true
+                        vy = -vy * 0.14
+                        Haptics.tick()
+                        Sound.play(.paperLand)
+                        self.model.lifted = false
+                    } else {
+                        vy = 0
+                        landed = true
+                    }
+                }
+            }
+            // 像落叶那样转到随手的角度：欠阻尼的弹簧（落地后摩擦更大，很快停住）。
+            let omega2 = landed ? 140.0 : 70.0
+            let damping = landed ? 14.0 : 3.6
+            spin += (-omega2 * (angle - restTilt) - damping * spin) * dt
+            angle += spin * dt
+            self.model.tilt = angle
+            let progress = min(1, y / max(drop, 1))
+            self.panel.setFrameOrigin(NSPoint(x: start.x + drift * progress, y: start.y - y))
+            if landed, abs(angle - restTilt) < 0.05, abs(spin) < 0.6 {
+                self.model.tilt = restTilt
+                self.panel.ignoresMouseEvents = false
+                self.updatePlacement()
+                self.ejectTicker = nil
+                return false
+            }
+            return true
         }
-        withAnimation(.spring(response: 0.5, dampingFraction: 0.55)) {
-            model.tilt = record.desk?.rotation ?? 0
-        }
-        updatePlacement()
-        completion()
+        ejectTicker = ticker
+        ticker.start()
     }
 
     /// 恢复到桌面上（已显影或接着显影）。
