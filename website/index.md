@@ -23,39 +23,66 @@ hero:
       link: https://github.com/Chaosnap/Nocchi
 
 features:
-  - icon: 📷
+  - icon:
+      src: /icons/feature-shoot.svg
+      width: 48
+      height: 48
     title: Shoot from the notch
     details: Hover over the notch for the camera panel. A screen shutter, a selfie viewfinder that grows out of the notch, a photo booth, and printing from Files or Photos.
     link: /guide/shooting
-  - icon: 🧪
+  - icon:
+      src: /icons/feature-develop.svg
+      width: 48
+      height: 48
     title: Prints that develop
     details: Each print slides out of the notch to the whirr of a motor and develops in about fifteen seconds. Shake it to hurry it along; shake too hard and the chemicals blotch.
     link: /guide/developing
-  - icon: 🎞️
+  - icon:
+      src: /icons/feature-film.svg
+      width: 48
+      height: 48
     title: 26 film stocks
     details: Instant films, color negatives, night and cinema stocks, black and white, and two booth stocks, each with a rendered canister in the notch's film cabinet. Bring your own .cube LUTs.
     link: /guide/developing
-  - icon: 🖼️
+  - icon:
+      src: /icons/feature-papers.svg
+      width: 48
+      height: 48
     title: Six papers, sixteen templates
     details: Square, mini and wide instant film, a 3:2 lab print, a booth strip and a 2×2 grid. Deckle edges, a date stamp, film frames, postage stamps, 70s stripes and booth themes.
     link: /guide/developing
-  - icon: 🎭
+  - icon:
+      src: /icons/feature-booth.svg
+      width: 48
+      height: 48
     title: A photo booth
     details: A velvet curtain closes, you pick a frame in a brass showcase, drop a coin, and smile for four flashes.
     link: /guide/booth
-  - icon: ✏️
+  - icon:
+      src: /icons/feature-decorate.svg
+      width: 48
+      height: 48
     title: The decorating desk
-    details: Pens, markers and crayons in enamel colors, 60+ printed stickers, captions with a place and #tags, and posters to share.
+    details: "Pens, markers and crayons in enamel colors, 60+ printed stickers, captions with a place and #tags, and posters to share."
     link: /guide/decorating
-  - icon: 🗂️
+  - icon:
+      src: /icons/feature-album.svg
+      width: 48
+      height: 48
     title: An album, four ways
     details: A corkboard, a beechwood card box with A–Z dividers, a film light table with a loupe, and a wall calendar. Search by caption, tag, place, film or date.
     link: /guide/album
-  - icon: 📥
+  - icon:
+      src: /icons/feature-shelf.svg
+      width: 48
+      height: 48
     title: A shelf in the notch
     details: Drag prints into the notch to stash them, and drag them out again as image files.
     link: /guide/album
-  - icon: 🔒
+  - icon:
+      src: /icons/feature-privacy.svg
+      width: 48
+      height: 48
     title: Yours alone
     details: No account, no cloud, no telemetry. Nocchi never goes online, and your photos never leave your Mac.
     link: /guide/privacy

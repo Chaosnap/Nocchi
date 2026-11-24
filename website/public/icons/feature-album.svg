@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 56 56">
+  <defs>
+    <linearGradient id="album-g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8F8A4F"/>
+      <stop offset="1" stop-color="#585430"/>
+    </linearGradient>
+    <linearGradient id="album-h" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.42"/>
+      <stop offset="0.45" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="album-s" cx="0.32" cy="0.12" r="0.75">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect x="3" y="4.5" width="50" height="50" rx="12.5" fill="#000000" fill-opacity="0.18"/>
+  <rect x="3" y="2.5" width="50" height="50" rx="12.5" fill="url(#album-g)"/>
+  <rect x="3" y="2.5" width="50" height="50" rx="12.5" fill="url(#album-s)"/>
+  <rect x="3.5" y="3" width="49" height="49" rx="12" fill="none" stroke="url(#album-h)" stroke-width="1"/>
+  <g transform="translate(12 11.5) scale(1.333)" fill="none" stroke="#FBF3E7" color="#FBF3E7" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 H21 V19.6 A1.4 1.4 0 0 1 19.6 21 H4.4 A1.4 1.4 0 0 1 3 19.6 Z"/>
+        <path d="M5.4 11.5 V6.6 H9.4 L10.4 5 H12 V11.5"/>
+        <path d="M13 11.5 V5.4 H18.6 V11.5"/>
+        <path d="M10 16 H14"/></g>
+</svg>

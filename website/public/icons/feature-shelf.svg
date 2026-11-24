@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 56 56">
+  <defs>
+    <linearGradient id="shelf-g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5C5751"/>
+      <stop offset="1" stop-color="#2A2725"/>
+    </linearGradient>
+    <linearGradient id="shelf-h" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.42"/>
+      <stop offset="0.45" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="shelf-s" cx="0.32" cy="0.12" r="0.75">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect x="3" y="4.5" width="50" height="50" rx="12.5" fill="#000000" fill-opacity="0.18"/>
+  <rect x="3" y="2.5" width="50" height="50" rx="12.5" fill="url(#shelf-g)"/>
+  <rect x="3" y="2.5" width="50" height="50" rx="12.5" fill="url(#shelf-s)"/>
+  <rect x="3.5" y="3" width="49" height="49" rx="12" fill="none" stroke="url(#shelf-h)" stroke-width="1"/>
+  <g transform="translate(12 11.5) scale(1.333)" fill="none" stroke="#FBF3E7" color="#FBF3E7" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3 H17 C17 4.6 16.1 5.5 14.6 5.5 H9.4 C7.9 5.5 7 4.6 7 3 Z"/>
+        <path d="M12 8.3 V14.6 M9.2 11.9 L12 14.7 L14.8 11.9"/>
+        <path d="M4 15 V19 A1.5 1.5 0 0 0 5.5 20.5 H18.5 A1.5 1.5 0 0 0 20 19 V15"/></g>
+</svg>

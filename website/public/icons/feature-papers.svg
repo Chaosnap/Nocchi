@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 56 56">
+  <defs>
+    <linearGradient id="papers-g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4A8580"/>
+      <stop offset="1" stop-color="#244A47"/>
+    </linearGradient>
+    <linearGradient id="papers-h" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.42"/>
+      <stop offset="0.45" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="papers-s" cx="0.32" cy="0.12" r="0.75">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect x="3" y="4.5" width="50" height="50" rx="12.5" fill="#000000" fill-opacity="0.18"/>
+  <rect x="3" y="2.5" width="50" height="50" rx="12.5" fill="url(#papers-g)"/>
+  <rect x="3" y="2.5" width="50" height="50" rx="12.5" fill="url(#papers-s)"/>
+  <rect x="3.5" y="3" width="49" height="49" rx="12" fill="none" stroke="url(#papers-h)" stroke-width="1"/>
+  <g transform="translate(12 11.5) scale(1.333)" fill="none" stroke="#FBF3E7" color="#FBF3E7" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(-9 9 12.5)"><rect x="3.5" y="5" width="11" height="14.5" rx="1.2"/></g>
+        <g transform="rotate(7 15 11.5)"><rect x="9.5" y="3.8" width="11" height="14.5" rx="1.2"/>
+        <rect x="11.3" y="5.6" width="7.4" height="7.4" rx="0.5"/><path d="M12 15.8 H16"/></g></g>
+</svg>
