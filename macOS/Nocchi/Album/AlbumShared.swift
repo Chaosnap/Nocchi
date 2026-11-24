@@ -69,14 +69,19 @@ final class StickerImageCache {
         return cache
     }()
 
+    /// 自定义贴纸改了（换模切边、删掉）：丢掉所有缓存的图。
+    func removeAll() {
+        cache.removeAllObjects()
+    }
+
     func image(_ id: String, width: CGFloat, seed: UInt64 = 1) -> NSImage? {
-        guard let kind = StickerCatalog.kind(id: id) else { return nil }
+        guard let kind = StickerArt.kind(forID: id) else { return nil }
         return image(kind, pixelWidth: Int(width * 2), tint: nil, text: nil, seed: seed, pointWidth: width)
     }
 
     /// 相纸上的一枚贴纸（装饰台）：像素宽按 32 取整，缩放时不必每一帧都重画。
     func image(for placement: StickerPlacement, width: CGFloat) -> NSImage? {
-        guard width > 1, let kind = StickerCatalog.kind(id: placement.kindID) else { return nil }
+        guard width > 1, let kind = StickerArt.kind(forID: placement.kindID) else { return nil }
         let bucket = max(32, Int((width * 2 / 32).rounded(.up)) * 32)
         return image(kind, pixelWidth: bucket, tint: placement.tint, text: placement.text, seed: placement.stableSeed, pointWidth: width)
     }

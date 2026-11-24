@@ -26,8 +26,25 @@ public enum StickerArt {
 
     // MARK: - 公开接口
 
+    /// 自定义贴纸（「我的贴纸」，`custom.<UUID>`）的图：App 启动时注入，例如
+    /// `StickerArt.customProvider = { store.art(forKindID: $0) }`。没注入或找不到图时，自定义贴纸不画。
+    nonisolated(unsafe) public static var customProvider: (@Sendable (String) -> CustomStickerArt?)?
+
+    /// 内置贴纸或自定义贴纸的种类（自定义的宽高比来自图片）。
+    public static func kind(forID id: String) -> StickerKind? {
+        if let builtIn = StickerCatalog.kind(id: id) { return builtIn }
+        guard id.hasPrefix(CustomStickerStore.prefix), let art = customProvider?(id) else { return nil }
+        return StickerKind(id: id, name: "", category: .badge, aspect: art.aspect, defaultSize: 0.25)
+    }
+
     /// 在 rect 里画出贴纸。ctx 已是左上角原点、y 向下。
     public static func draw(_ kind: StickerKind, in ctx: CGContext, rect: CGRect, tint: RGB?, text: String?, seed: UInt64) {
+        if kind.id.hasPrefix(CustomStickerStore.prefix) {
+            if let art = customProvider?(kind.id) {
+                drawCustom(art, in: ctx, rect: rect)
+            }
+            return
+        }
         let height = 100 / CGFloat(max(kind.aspect, 0.05))
         let inkHex = tint.map { hex($0) } ?? kind.defaultTint ?? ink
         let words = (text?.isEmpty == false ? text : nil) ?? kind.defaultText
@@ -46,7 +63,7 @@ public enum StickerArt {
 
     /// 按相纸上的摆放画一枚贴纸（中心、大小、顺时针旋转、水平翻转）。paperWidth 是相纸的像素宽度。
     public static func draw(_ placement: StickerPlacement, in ctx: CGContext, paperWidth: CGFloat) {
-        guard let kind = StickerCatalog.kind(id: placement.kindID) else { return }
+        guard let kind = Self.kind(forID: placement.kindID) else { return }
         let frame = frame(of: placement, paperWidth: paperWidth)
         guard frame.width > 1, frame.height > 1 else { return }
         ctx.saveGState()
@@ -62,7 +79,7 @@ public enum StickerArt {
 
     /// 摆放的外框（未旋转，像素，左上原点）。
     public static func frame(of placement: StickerPlacement, paperWidth: CGFloat) -> CGRect {
-        let aspect = CGFloat(StickerCatalog.kind(id: placement.kindID)?.aspect ?? 1)
+        let aspect = CGFloat(Self.kind(forID: placement.kindID)?.aspect ?? 1)
         let width = CGFloat(placement.size) * paperWidth
         let height = width / max(aspect, 0.05)
         return CGRect(x: CGFloat(placement.x) * paperWidth - width / 2, y: CGFloat(placement.y) * paperWidth - height / 2, width: width, height: height)
@@ -79,6 +96,40 @@ public enum StickerArt {
         ctx.scaleBy(x: 1, y: -1)
         draw(kind, in: ctx, rect: CGRect(x: 0, y: 0, width: CGFloat(width), height: CGFloat(height)), tint: tint, text: text, seed: seed)
         return ctx.makeImage()
+    }
+
+    /// 一枚摆好的贴纸单独渲染成透明图（装饰台上可拖动的那一层；内置和自定义都行）。
+    public static func image(for placement: StickerPlacement, pixelWidth: Int) -> CGImage? {
+        guard let kind = Self.kind(forID: placement.kindID) else { return nil }
+        return image(kind, pixelWidth: pixelWidth, tint: placement.tint.flatMap { RGB(hex: $0) }, text: placement.text, seed: placement.stableSeed)
+    }
+
+    /// 自定义贴纸：图片本身（裁过透明边）+ 可选的白色模切边 + 柔和投影。rect 是像素。
+    static func drawCustom(_ art: CustomStickerArt, in ctx: CGContext, rect: CGRect) {
+        let u = max(rect.width, rect.height) / 100
+        ctx.saveGState()
+        ctx.interpolationQuality = .high
+        if art.dieCut {
+            let border = 2.6 * u
+            let inner = rect.insetBy(dx: border + u * 0.6, dy: border + u * 0.6)
+            ctx.setShadow(offset: CGSize(width: 0.5 * u, height: -1.1 * u), blur: 2.6 * u, color: CGColor(srgbRed: 0.1, green: 0.07, blue: 0.04, alpha: 0.3))
+            ctx.beginTransparencyLayer(auxiliaryInfo: nil)
+            for i in 0..<16 {
+                let a = CGFloat(i) * .pi / 8
+                drawUpright(ctx, art.image, in: inner.offsetBy(dx: cos(a) * border, dy: sin(a) * border))
+            }
+            drawUpright(ctx, art.image, in: inner)
+            ctx.setBlendMode(.sourceIn)
+            ctx.setFillColor(c("#FBF8F1"))
+            ctx.fill(rect.insetBy(dx: -border, dy: -border))
+            ctx.endTransparencyLayer()
+            ctx.restoreGState()
+            drawUpright(ctx, art.image, in: inner)
+        } else {
+            ctx.setShadow(offset: CGSize(width: 0.4 * u, height: -0.9 * u), blur: 2 * u, color: CGColor(srgbRed: 0.1, green: 0.07, blue: 0.04, alpha: 0.28))
+            drawUpright(ctx, art.image, in: rect)
+            ctx.restoreGState()
+        }
     }
 
     static func hex(_ c: RGB) -> String {

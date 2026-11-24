@@ -40,7 +40,7 @@
 | # | 哪里 | 要什么 | 相关文件 | 建议做法 |
 | --- | --- | --- | --- | --- |
 | 1 🟢 | 装饰台 · 「格式文字」页 | 文字要看得清：系统深色模式下 `TextField`、`DatePicker`、分段 `Picker` 的字是白的，落在浅色纸面上几乎看不见（所有者截图）；分享页选中的胶囊、主按钮是白字（这个对） | `Editor/Inspector.swift`、`Editor/DecorateDesk.swift` | 装饰台窗口固定浅色外观（`window.appearance = NSAppearance(named: .aqua)`）或检查器 `.environment(\.colorScheme, .light)`；逐个控件检查对比度 |
-| 2 | 装饰台 · 贴纸 | **自定义贴纸**：导入自己的图片（PNG / JPG / HEIC，可拖放）做成贴纸，并能管理（重命名、删除、排序，单独一类「我的贴纸」） | `NocchiKit/Decorate/StickerCatalog.swift`、`StickerArt.swift`、`Editor/Inspector.swift` | NocchiKit 加 `CustomStickerStore`（照片库目录下 `stickers/`，复制原图 + 缩略图，JSON 清单，单元测试）；`kindID` 用 `custom.<uuid>`；`StickerArt` 画自定义贴纸时读位图、可选白色模切边 + 投影；`PhotoComposer` 通过注入的位图提供者拿到图（NocchiKit 不直接依赖 App 目录）；缺图时有退路 |
+| 2 🟢 | 装饰台 · 贴纸 | **自定义贴纸**：导入自己的图片（PNG / JPG / HEIC，可拖放）做成贴纸，并能管理（重命名、删除、排序，单独一类「我的贴纸」） | `NocchiKit/Decorate/StickerCatalog.swift`、`StickerArt.swift`、`Editor/Inspector.swift` | NocchiKit 加 `CustomStickerStore`（照片库目录下 `stickers/`，复制原图 + 缩略图，JSON 清单，单元测试）；`kindID` 用 `custom.<uuid>`；`StickerArt` 画自定义贴纸时读位图、可选白色模切边 + 投影；`PhotoComposer` 通过注入的位图提供者拿到图（NocchiKit 不直接依赖 App 目录）；缺图时有退路 |
 | 3 | 大头贴机 | 布帘、整台机器、黄铜箭头、拨杆开关、发光的「开始」按钮都用 **Blender 建模**，要非常精细精美；整台大头贴机也要更精美 | `Booth/BoothFrameChooser.swift`、`Booth/CurtainScene.swift`、`design/blender/` | 照卡片盒的做法（决策 D22）：`design/blender/booth/*.py` 出分层 PNG（机身底图；拨杆左 / 右两态；按钮按下 / 抬起；开始按钮亮 / 暗；布帘几帧或分层），热区坐标导出 JSON；SwiftUI 只叠图和做动画 |
 | 4 | 相框 · 情人节 | `booth-heart` 不够精美，要更精致 | `NocchiKit/Decorate/TemplateArt`（模板绘制）、`PhotoComposer.swift` | 给模板加「位图图层」：Blender 渲染烫金 / 压纹 / 丝带边框（四格条、四宫格各一套），合成时叠在相纸上；屏幕与导出同源 |
 | 5 | 相框（全部） | 相框也可以用 Blender 建模，更精细 | 同上 | 同 4，先做大头贴主题和照相馆卡纸、胶片框 |
@@ -127,6 +127,7 @@
 
 ## 最近更新（新的在上）
 
+- **2026-11-24 · 第 34 次推送** 自定义贴纸（交接表第 2 项）：NocchiKit `CustomStickerStore`（照片库 `stickers/`：导入图片 → 最长边 1600、裁透明边、存 PNG，`stickers.json` 清单；重命名、模切边、排序、删掉 = 隐藏，已贴的照样能画）与 `StickerArt.customProvider`（App 启动时注入，`custom.<UUID>` 用图片 + 16 向偏移的白色模切边 + 投影画出来，成片 / 桌面相纸 / 装饰台一致）；装饰台贴纸页「我的」：导入格、拖放、右键管理（`Editor/StickerShelf.swift`），图片拖到照片上直接贴在放下的位置。新增 `CustomStickerTests`。
 - **2026-11-24 · 第 33 次推送** 照片上任意位置的文字框与自定义字体（所有者 2026-11-24 新要求）：NocchiKit 新增 `TextPlacement`（照片记录 `texts`，旧库照常读取）与 `TextArt`（Core Text 多行排版、对齐、字距、粗斜体，样式：无 / 白边 / 纸标签 / 投影），`PhotoComposer` 把文字框画在贴纸上面、笔画下面；`FontBook` 改成线程安全、可刷新，能注册导入的字体；`CustomFontStore` 管理照片库 `fonts/` 里导入的字体，App 启动时注册。装饰台：「T」文字工具、可拖动缩放旋转的文字框（`TextItem`，屏幕与导出同一个画法）、检查器「照片上的文字」编辑器与可搜索的字体选择器（导入 / 删除字体）。新增 `TextArtTests`。
 - **2026-11-24 · 第 32 次推送** 软木板（交接表第 10–12 项）：`design/blender/textures/make_cork.py` 渲染柔和的无缝软木（4D 噪声映射到环面、@2x 资源 `CorkSoft`）；`Album/CorkLighting.swift`——灯光设置（方向、色温、亮度、暗角、阴影、纸张卷曲、固定方式，UserDefaults）、左下角「灯光」铜牌、打字机调节卡片（黄铜拨盘与滑杆）；照片、图钉、标签带、旧物的阴影方向和深浅都由灯光算出，照片上有顺着灯的卷曲明暗（柔光混合）；照片钉上去时下落回弹、图钉按进去，鼠标拂过按横向速度给一个摆动（欠阻尼弹簧，绕挂点转），胶带贴的不摆。所有者补充：这一轮主要改 macOS，iOS 之后再跟，能共用的部分（NocchiKit / NocchiUI）顺手一起做。
 - **2026-11-24 · 第 31 次推送** 卡片盒（交接表第 7、8 项 + 所有者 2026-11-24 新要求「照片像参考图那样层次堆叠」「检索字母的标签要精致」）：`SlotGeometry` 由热点算出每个字母那一格（格口线、分隔卡方向），卡片先以斜切变换（`CardSkew`）立在格子里、被格口线以下的遮罩（`SlotMask`）挡住，沿分隔卡往上抽出、在盒口上方转正，再落到右边；放回时反过来。右边改成松散的一叠（`PileLayout`），可拖动摆放、靠近另一张会叠上去，位置存在 `CardBoxModel.spots`（UserDefaults），「重新叠好」清掉。卡片的字母标签改成模切纸标签（`IndexTabShape`），分隔卡悬停提示改成吊牌。

@@ -30,6 +30,9 @@ enum Services {
 
     /// 用户导入的字体（照片库的 `fonts/`，启动时在本进程注册）。
     static let fonts = CustomFontStore(directory: library.root.appendingPathComponent("fonts", isDirectory: true))
+
+    /// 「我的贴纸」（照片库的 `stickers/`）；启动时把它注入 `StickerArt.customProvider`。
+    static let stickers = CustomStickerStore(directory: library.root.appendingPathComponent("stickers", isDirectory: true))
 }
 
 /// 音效（安静模式由 `SoundPlayer.isMuted` 控制）。

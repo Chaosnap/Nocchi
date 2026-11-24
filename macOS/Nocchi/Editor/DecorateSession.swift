@@ -143,12 +143,12 @@ final class DecorateSession: ObservableObject {
 
     // MARK: - 贴纸
 
-    func addSticker(_ kind: StickerKind) {
+    func addSticker(_ kind: StickerKind, at point: CGPoint? = nil) {
         let date = record.displayDate
         let placement = StickerPlacement(
             kindID: kind.id,
-            x: 0.5 + Double.random(in: -0.06...0.06),
-            y: paperHeightRatio * 0.42 + Double.random(in: -0.05...0.05),
+            x: point.map { Double($0.x) } ?? 0.5 + Double.random(in: -0.06...0.06),
+            y: point.map { Double($0.y) } ?? paperHeightRatio * 0.42 + Double.random(in: -0.05...0.05),
             size: kind.defaultSize,
             rotation: Double.random(in: -8...8),
             tint: kind.defaultTint,

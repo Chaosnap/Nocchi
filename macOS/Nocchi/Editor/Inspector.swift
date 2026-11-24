@@ -104,28 +104,100 @@ private struct Pill: View {
 
 private struct StickersTab: View {
     @ObservedObject var session: DecorateSession
-    @State private var category: StickerCategory = .badge
+    @ObservedObject private var shelf = StickerShelf.shared
+    /// nil = 我的贴纸。
+    @State private var category: StickerCategory? = .badge
+    @State private var dropTargeted = false
 
     private let columns = [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)]
 
+    init(session: DecorateSession) {
+        self.session = session
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            if let id = session.selectedSticker, let placement = session.sticker(id), let kind = StickerCatalog.kind(id: placement.kindID) {
+            if let id = session.selectedSticker, let placement = session.sticker(id), let kind = StickerArt.kind(forID: placement.kindID) {
                 SelectedStickerPanel(session: session, placement: placement, kind: kind)
             }
-            HStack(spacing: 5) {
+            FlowLayout(spacing: 5) {
+                Pill(title: "我的", selected: category == nil) { category = nil }
                 ForEach(StickerCategory.allCases) { item in
                     Pill(title: item.displayName, selected: category == item) { category = item }
                 }
             }
-            LazyVGrid(columns: columns, spacing: 10) {
-                ForEach(StickerCatalog.kinds(in: category)) { kind in
-                    StickerTile(kind: kind) { session.addSticker(kind) }
+            if let category {
+                LazyVGrid(columns: columns, spacing: 10) {
+                    ForEach(StickerCatalog.kinds(in: category)) { kind in
+                        StickerTile(kind: kind) { session.addSticker(kind) }
+                    }
                 }
+            } else {
+                mine
             }
             Text("点一下贴到相纸中央；拖动移动，右下角手柄缩放旋转，⌫ 删除。")
                 .font(.system(size: 11))
                 .foregroundStyle(Palette.inkSoft)
+        }
+    }
+
+    /// 我的贴纸：导入（点或拖图片进来）+ 自己的贴纸（右键重命名、模切边、排序、删掉）。
+    private var mine: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            LazyVGrid(columns: columns, spacing: 10) {
+                Button {
+                    shelf.importWithPanel()
+                } label: {
+                    VStack(spacing: 5) {
+                        Image(systemName: "plus")
+                            .font(.system(size: 18, weight: .semibold))
+                        Text("导入图片")
+                            .font(RetroFont.typewriter(10))
+                    }
+                    .foregroundStyle(Palette.terracotta)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 84)
+                    .background(
+                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                            .strokeBorder(Palette.terracotta.opacity(dropTargeted ? 0.9 : 0.45), style: StrokeStyle(lineWidth: 1.2, dash: [4, 3]))
+                    )
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .help("选几张图片做成贴纸，也可以直接把图片拖进来")
+                ForEach(shelf.stickers) { sticker in
+                    StickerTile(kind: sticker.kind) { session.addSticker(sticker.kind) }
+                        .contextMenu {
+                            Button("重命名…") { shelf.rename(sticker) }
+                            Button(sticker.dieCut ? "去掉白色模切边" : "加上白色模切边") { shelf.toggleDieCut(sticker) }
+                            Button("往前挪") { shelf.move(sticker, by: -1) }
+                            Button("往后挪") { shelf.move(sticker, by: 1) }
+                            Divider()
+                            Button("从贴纸库删掉", role: .destructive) { shelf.remove(sticker) }
+                        }
+                }
+            }
+            .padding(4)
+            .background(
+                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    .fill(Palette.terracotta.opacity(dropTargeted ? 0.08 : 0))
+            )
+            .dropDestination(for: URL.self) { urls, _ in
+                shelf.importFiles(urls)
+                return true
+            } isTargeted: { targeted in
+                dropTargeted = targeted
+            }
+            if let message = shelf.message {
+                Text(message)
+                    .font(.system(size: 11))
+                    .foregroundStyle(Palette.inkSoft)
+            } else if shelf.stickers.isEmpty {
+                Text("把喜欢的图标、手账素材、小照片拖进来，就成了自己的贴纸；右键可以重命名、换模切边、排序。")
+                    .font(.system(size: 11))
+                    .foregroundStyle(Palette.inkSoft)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
     }
 }

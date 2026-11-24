@@ -42,6 +42,15 @@ struct PaperStage: View {
         }
         .frame(width: width, height: height)
         .coordinateSpace(name: PaperStage.space)
+        // 把图片直接拖到照片上：做成「我的贴纸」，贴在放下的地方。
+        .dropDestination(for: URL.self) { urls, location in
+            let added = StickerShelf.shared.importFiles(urls)
+            for (index, sticker) in added.enumerated() {
+                let offset = CGFloat(index) * 0.04
+                session.addSticker(sticker.kind, at: CGPoint(x: location.x / width + offset, y: location.y / width + offset))
+            }
+            return !added.isEmpty
+        }
         .focusable()
         .focused($focused)
         .focusEffectDisabled()
@@ -165,7 +174,9 @@ private struct StickerItem: View {
                         .resizable()
                         .interpolation(.high)
                 } else {
-                    RoundedRectangle(cornerRadius: 3).fill(Palette.ivory)
+                    // 自定义贴纸的图片找不到了：留一个虚线框，删掉或换一枚。
+                    RoundedRectangle(cornerRadius: 3)
+                        .strokeBorder(Palette.inkSoft.opacity(0.6), style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
                 }
             }
             .scaleEffect(x: sticker.flipped ? -1 : 1, y: 1)
