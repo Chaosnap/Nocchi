@@ -26,10 +26,10 @@ final class DecorateSession: ObservableObject {
 
         var title: String {
             switch self {
-            case .stickers: "贴纸"
-            case .templates: "模板"
-            case .text: "文字"
-            case .share: "分享"
+            case .stickers: String(localized: "贴纸")
+            case .templates: String(localized: "模板")
+            case .text: String(localized: "文字")
+            case .share: String(localized: "分享")
             }
         }
 
@@ -51,10 +51,10 @@ final class DecorateSession: ObservableObject {
 
     /// 颜料：8 个珐琅色。
     nonisolated static let paints: [Paint] = [
-        Paint(name: "墨黑", hex: "#2B2A28"), Paint(name: "陶土", hex: "#C4593B"),
-        Paint(name: "钴蓝", hex: "#2F4C8A"), Paint(name: "石油绿", hex: "#2F5F5C"),
-        Paint(name: "芥末", hex: "#D9A441"), Paint(name: "印刷红", hex: "#B23A2A"),
-        Paint(name: "象牙白", hex: "#F4F1EA"), Paint(name: "金", hex: "#B8955A")
+        Paint(name: String(localized: "墨黑"), hex: "#2B2A28"), Paint(name: String(localized: "陶土"), hex: "#C4593B"),
+        Paint(name: String(localized: "钴蓝"), hex: "#2F4C8A"), Paint(name: String(localized: "石油绿"), hex: "#2F5F5C"),
+        Paint(name: String(localized: "芥末"), hex: "#D9A441"), Paint(name: String(localized: "印刷红"), hex: "#B23A2A"),
+        Paint(name: String(localized: "象牙白"), hex: "#F4F1EA"), Paint(name: String(localized: "金"), hex: "#B8955A")
     ]
 
     @Published var record: PhotoRecord
@@ -203,7 +203,7 @@ final class DecorateSession: ObservableObject {
     /// 加一个文字框（`point` 是相纸宽度单位；nil 放在相纸中间偏上）。
     func addText(at point: CGPoint? = nil) {
         let placement = TextPlacement(
-            text: "写点什么",
+            text: String(localized: "写点什么"),
             fontFamily: lastFontFamily,
             size: 0.075,
             color: paint == "#F4F1EA" ? "#2B2A28" : paint,

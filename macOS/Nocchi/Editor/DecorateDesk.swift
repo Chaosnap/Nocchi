@@ -65,7 +65,7 @@ final class DecorateDesk {
             backing: .buffered,
             defer: false
         )
-        window.title = "装饰台"
+        window.title = String(localized: "装饰台")
         window.titlebarAppearsTransparent = true
         window.titleVisibility = .hidden
         window.titlebarSeparatorStyle = .none
@@ -199,7 +199,7 @@ private struct ToolRail: View {
 
     var body: some View {
         VStack(spacing: 6) {
-            RailButton(symbol: "cursorarrow", help: "选择、移动贴纸", selected: session.tool == .select) {
+            RailButton(symbol: "cursorarrow", help: String(localized: "选择、移动贴纸"), selected: session.tool == .select) {
                 session.tool = .select
             }
             ForEach(InkTool.allCases) { ink in
@@ -208,11 +208,11 @@ private struct ToolRail: View {
                     session.selectedSticker = nil
                 }
             }
-            RailButton(symbol: "eraser", help: "橡皮：点哪条笔画删哪条", selected: session.tool == .eraser) {
+            RailButton(symbol: "eraser", help: String(localized: "橡皮：点哪条笔画删哪条"), selected: session.tool == .eraser) {
                 session.tool = .eraser
                 session.selectedSticker = nil
             }
-            RailButton(symbol: "t.square", help: "文字：在照片上点一下加一段字", selected: session.tool == .text) {
+            RailButton(symbol: "t.square", help: String(localized: "文字：在照片上点一下加一段字"), selected: session.tool == .text) {
                 session.tool = .text
                 session.selectedSticker = nil
             }
@@ -228,10 +228,10 @@ private struct ToolRail: View {
             RailDivider()
             ThicknessDial(value: $session.thickness)
             RailDivider()
-            RailButton(symbol: "arrow.uturn.backward", help: "撤销（⌘Z）", selected: false, enabled: session.canUndo) {
+            RailButton(symbol: "arrow.uturn.backward", help: String(localized: "撤销（⌘Z）"), selected: false, enabled: session.canUndo) {
                 session.undo()
             }
-            RailButton(symbol: "arrow.uturn.forward", help: "重做（⇧⌘Z）", selected: false, enabled: session.canRedo) {
+            RailButton(symbol: "arrow.uturn.forward", help: String(localized: "重做（⇧⌘Z）"), selected: false, enabled: session.canRedo) {
                 session.redo()
             }
         }
@@ -335,7 +335,7 @@ private struct ThicknessDial: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .help(level < 1 ? "细" : (level > 1 ? "粗" : "中"))
+                .help(level < 1 ? String(localized: "细") : (level > 1 ? String(localized: "粗") : String(localized: "中等")))
             }
         }
     }

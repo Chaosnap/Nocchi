@@ -573,14 +573,14 @@ public enum StickerArt {
             ctx.stroke(CGRect(x: 4, y: 4, width: 92, height: h - 8))
             ctx.setLineWidth(0.9)
             ctx.stroke(CGRect(x: 8, y: 8, width: 84, height: h - 16))
-            RetroPrint.text(ctx, "已显影", fonts: RetroPrint.chineseSerif, size: 20, color: inkColor, x: 50, baseline: h / 2 + 3, maxWidth: 76, tracking: 3)
+            RetroPrint.text(ctx, "已显影", fonts: RetroPrint.chineseSerif, size: 20, color: inkColor, x: 50, baseline: h / 2 + 3, maxWidth: 76, tracking: 3) // i18n-ok：贴纸上印的字（图案的一部分）
             RetroPrint.text(ctx, "DEVELOPED · NOCCHI", fonts: RetroPrint.typewriter, size: 5.6, color: inkColor, x: 50, baseline: h - 12, maxWidth: 76, tracking: 0.6)
         case "stamp.seal":
             ctx.addPath(rounded(CGRect(x: 7, y: 7, width: 86, height: 86), 6))
             ctx.fillPath()
             ctx.setBlendMode(.destinationOut)
-            RetroPrint.text(ctx, "珍", fonts: RetroPrint.chineseSerif, size: 38, color: c("#000000"), x: 30, baseline: 64)
-            RetroPrint.text(ctx, "藏", fonts: RetroPrint.chineseSerif, size: 38, color: c("#000000"), x: 70, baseline: 64)
+            RetroPrint.text(ctx, "珍", fonts: RetroPrint.chineseSerif, size: 38, color: c("#000000"), x: 30, baseline: 64) // i18n-ok：贴纸上印的字（图案的一部分）
+            RetroPrint.text(ctx, "藏", fonts: RetroPrint.chineseSerif, size: 38, color: c("#000000"), x: 70, baseline: 64) // i18n-ok：贴纸上印的字（图案的一部分）
             ctx.setLineWidth(2)
             ctx.setStrokeColor(c("#000000"))
             ctx.addPath(rounded(CGRect(x: 13, y: 13, width: 74, height: 74), 3))
@@ -598,7 +598,7 @@ public enum StickerArt {
                 ctx.addLine(to: CGPoint(x: 50 + cos(a) * 37, y: 50 + sin(a) * 37))
             }
             ctx.strokePath()
-            RetroPrint.text(ctx, "好天气", fonts: RetroPrint.chineseSerif, size: 15, color: inkColor, x: 50, baseline: 55, maxWidth: 52)
+            RetroPrint.text(ctx, "好天气", fonts: RetroPrint.chineseSerif, size: 15, color: inkColor, x: 50, baseline: 55, maxWidth: 52) // i18n-ok：贴纸上印的字（图案的一部分）
             RetroPrint.text(ctx, "FINE DAY", fonts: RetroPrint.typewriter, size: 5.5, color: inkColor, x: 50, baseline: 66, maxWidth: 50, tracking: 0.8)
         case "stamp.best":
             let ribbon = CGMutablePath()
@@ -616,7 +616,7 @@ public enum StickerArt {
             ctx.addPath(frame)
             ctx.strokePath()
             RetroPrint.text(ctx, "NOCCHI PHOTO LAB", fonts: RetroPrint.typewriter, size: 6, color: inkColor, x: 50, baseline: 14, maxWidth: 80, tracking: 0.8)
-            RetroPrint.text(ctx, "冲印店", fonts: RetroPrint.chineseSerif, size: 20, color: inkColor, x: 50, baseline: h / 2 + 7, maxWidth: 80, tracking: 4)
+            RetroPrint.text(ctx, "冲印店", fonts: RetroPrint.chineseSerif, size: 20, color: inkColor, x: 50, baseline: h / 2 + 7, maxWidth: 80, tracking: 4) // i18n-ok：贴纸上印的字（图案的一部分）
             RetroPrint.text(ctx, "EST. 2026", fonts: RetroPrint.typewriter, size: 5.5, color: inkColor, x: 50, baseline: h - 9, maxWidth: 80, tracking: 1)
         case "stamp.date":
             ctx.setLineWidth(1.6)
@@ -697,7 +697,7 @@ public enum StickerArt {
             ctx.setStrokeColor(c(ink, 0.6))
             ctx.setLineWidth(0.6)
             ctx.stroke(picture)
-            RetroPrint.text(ctx, "8分", fonts: RetroPrint.chineseSerif, size: 9, color: c(red), x: 18, baseline: picture.minY + 10, align: -1)
+            RetroPrint.text(ctx, "8分", fonts: RetroPrint.chineseSerif, size: 9, color: c(red), x: 18, baseline: picture.minY + 10, align: -1) // i18n-ok：贴纸上印的字（图案的一部分）
             RetroPrint.text(ctx, "NOCCHI POST", fonts: RetroPrint.typewriter, size: 6.5, color: c(ink, 0.85), x: 50, baseline: h - 17, maxWidth: 70, tracking: 0.8)
             RetroPrint.punch(ctx, RetroPrint.perforations(outer, hole: 2.6, spacing: 7))
             ctx.endTransparencyLayer()
@@ -801,7 +801,7 @@ public enum StickerArt {
             }
             slip.closeSubpath()
             RetroPrint.paperShadow(ctx, shape: slip, px: px, fill: c("#FBF8F0"))
-            let lines = ["NOCCHI PHOTO LAB", "刘海冲印店", "- - - - - - - - - -", "冲印 × 1     ¥0", "胶卷 × 1     ¥0", "- - - - - - - - - -", "合计          ¥0", "", "谢谢光临", number]
+            let lines = ["NOCCHI PHOTO LAB", "刘海冲印店", "- - - - - - - - - -", "冲印 × 1     ¥0", "胶卷 × 1     ¥0", "- - - - - - - - - -", "合计          ¥0", "", "谢谢光临", number] // i18n-ok：贴纸上印的字（图案的一部分）
             var y: CGFloat = 16
             for line in lines {
                 if !line.isEmpty {
@@ -936,7 +936,7 @@ public enum StickerArt {
             ctx.clip(to: slip)
             RetroPrint.speckle(ctx, rect: slip, seed: seed, density: 1, alpha: 0.06)
             ctx.restoreGState()
-            RetroPrint.text(ctx, text ?? "今天也很好", fonts: ["AmericanTypewriter", "Courier", "STSongti-SC-Regular"], size: 9, color: c(ink, 0.88), x: 50, baseline: h / 2 + 3, maxWidth: 86, tracking: 0.4)
+            RetroPrint.text(ctx, text ?? "今天也很好", fonts: ["AmericanTypewriter", "Courier", "STSongti-SC-Regular"], size: 9, color: c(ink, 0.88), x: 50, baseline: h / 2 + 3, maxWidth: 86, tracking: 0.4) // i18n-ok：贴纸上印的字（图案的一部分）
             return
         }
         let tape = rounded(CGRect(x: 2, y: 3, width: 96, height: h - 6), 2.2)

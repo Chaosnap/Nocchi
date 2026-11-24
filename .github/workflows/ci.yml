@@ -69,6 +69,9 @@ jobs:
         with:
           xcode-version: latest-stable
 
+      - name: Check translations (every UI string has English, same format specifiers)
+        run: python3 scripts/i18n/strings.py check
+
       - name: Install XcodeGen, xcbeautify & librsvg
         run: brew install xcodegen xcbeautify librsvg
 

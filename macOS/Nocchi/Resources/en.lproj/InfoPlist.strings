@@ -1,0 +1,9 @@
+/* Info.plist 的英文（权限说明等）。 */
+"CFBundleDisplayName" = "Nocchi";
+"NSCameraUsageDescription" = "Nocchi uses the camera in the notch for selfies and the photo booth. Photos stay on this Mac.";
+"NSDesktopFolderUsageDescription" = "With “Take over system screenshots” on, Nocchi reads the screenshot you just took and develops it into an instant print.";
+"NSDocumentsFolderUsageDescription" = "Nocchi reads screenshots saved here and develops them into instant prints.";
+"NSDownloadsFolderUsageDescription" = "Nocchi reads screenshots saved here and develops them into instant prints.";
+"NSRemovableVolumesUsageDescription" = "When you keep your prints on an external disk, Nocchi needs to save photos there.";
+"NSNetworkVolumesUsageDescription" = "When you keep your prints on a network disk, Nocchi needs to save photos there.";
+"NSHumanReadableCopyright" = "© 2026 Nocchi · The Notch Photo Shop";

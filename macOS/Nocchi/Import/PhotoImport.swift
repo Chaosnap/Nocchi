@@ -16,9 +16,9 @@ enum PhotoImport {
         NSApp.activate()
         let model = AppModel.shared
         let panel = NSOpenPanel()
-        panel.title = "冲印照片"
-        panel.message = "选几张照片（最多 \(maxCount) 张），每张都会用「\(model.currentStock.name)」冲印成一张\(model.instantFormat.displayName)。"
-        panel.prompt = "冲印"
+        panel.title = String(localized: "冲印照片")
+        panel.message = String(localized: "选几张照片（最多 \(maxCount) 张），每张都会用「\(model.currentStock.name)」冲印成一张\(model.instantFormat.displayName)。")
+        panel.prompt = String(localized: "冲印")
         panel.allowsMultipleSelection = true
         panel.canChooseDirectories = false
         panel.allowedContentTypes = [.image]
@@ -30,7 +30,7 @@ enum PhotoImport {
                 urls.compactMap { ImageIOKit.load($0, maxPixel: 3200) }
             }.value
             guard !images.isEmpty else {
-                NotchController.shared.showToast("这些文件不是图片", symbol: "questionmark.circle.fill")
+                NotchController.shared.showToast(String(localized: "这些文件不是图片"), symbol: "questionmark.circle.fill")
                 return
             }
             await Darkroom.shared.developImported(images)
@@ -64,7 +64,7 @@ final class PhotoLibraryPickerWindow {
             backing: .buffered,
             defer: false
         )
-        window.title = "从「照片」图库冲印"
+        window.title = String(localized: "从「照片」图库冲印")
         window.titlebarAppearsTransparent = true
         window.isReleasedWhenClosed = false
         window.contentView = NSHostingView(rootView: PhotoLibraryPickerView(onDone: { [weak self] in
@@ -97,7 +97,7 @@ private struct PhotoLibraryPickerView: View {
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 340)
             PhotosPicker(selection: $selection, maxSelectionCount: PhotoImport.maxCount, matching: .images) {
-                Label(isLoading ? "正在读取…" : "选择照片…", systemImage: "photo.stack")
+                Label(isLoading ? String(localized: "正在读取…") : String(localized: "选择照片…"), systemImage: "photo.stack")
                     .font(.system(size: 13, weight: .semibold, design: .rounded))
                     .padding(.horizontal, 18)
                     .padding(.vertical, 9)
@@ -135,7 +135,7 @@ private struct PhotoLibraryPickerView: View {
             selection = []
             onDone()
             guard !images.isEmpty else {
-                NotchController.shared.showToast("没读到照片", symbol: "questionmark.circle.fill")
+                NotchController.shared.showToast(String(localized: "没读到照片"), symbol: "questionmark.circle.fill")
                 return
             }
             await Darkroom.shared.developImported(images)

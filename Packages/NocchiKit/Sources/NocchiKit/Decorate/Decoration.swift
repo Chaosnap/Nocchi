@@ -23,10 +23,10 @@ public enum InkTool: String, Codable, CaseIterable, Identifiable, Sendable {
 
     public var displayName: String {
         switch self {
-        case .pen: return "钢笔"
-        case .marker: return "马克笔"
-        case .grease: return "油性蜡笔"
-        case .paint: return "漆笔"
+        case .pen: return String(localized: "钢笔")
+        case .marker: return String(localized: "马克笔")
+        case .grease: return String(localized: "油性蜡笔")
+        case .paint: return String(localized: "漆笔")
         }
     }
 
@@ -74,9 +74,9 @@ public enum CaptionFont: String, Codable, CaseIterable, Identifiable, Sendable {
 
     public var displayName: String {
         switch self {
-        case .handwriting: return "手写"
-        case .typewriter: return "打字机"
-        case .serif: return "铅字"
+        case .handwriting: return String(localized: "手写")
+        case .typewriter: return String(localized: "打字机")
+        case .serif: return String(localized: "铅字")
         }
     }
 }
@@ -100,12 +100,12 @@ public enum StickerCategory: String, Codable, CaseIterable, Identifiable, Sendab
 
     public var displayName: String {
         switch self {
-        case .badge: return "徽章"
-        case .stamp: return "印章"
-        case .ephemera: return "旧物"
-        case .tape: return "胶带"
-        case .label: return "标签"
-        case .emoji: return "表情"
+        case .badge: return String(localized: "徽章")
+        case .stamp: return String(localized: "印章")
+        case .ephemera: return String(localized: "旧物")
+        case .tape: return String(localized: "胶带")
+        case .label: return String(localized: "标签")
+        case .emoji: return String(localized: "表情")
         }
     }
 }

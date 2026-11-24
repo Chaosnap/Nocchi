@@ -8,6 +8,11 @@ import SwiftUI
 struct NocchiMacApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
+    init() {
+        // 界面语言要在查任何翻译之前定下来（默认中文）。
+        AppLanguage.applyAtLaunch()
+    }
+
     var body: some Scene {
         MenuBarExtra {
             MenuContent()
@@ -87,14 +92,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             entry.target = self
             menu.addItem(entry)
         }
-        item("屏幕快门", #selector(dockScreenShutter))
-        item("自拍", #selector(dockSelfie))
-        item("大头贴机", #selector(dockBooth))
+        item(String(localized: "屏幕快门"), #selector(dockScreenShutter))
+        item(String(localized: "自拍"), #selector(dockSelfie))
+        item(String(localized: "大头贴机"), #selector(dockBooth))
         menu.addItem(.separator())
-        item("冲印照片…", #selector(dockImportFiles))
-        item("从「照片」图库冲印…", #selector(dockImportLibrary))
+        item(String(localized: "冲印照片…"), #selector(dockImportFiles))
+        item(String(localized: "从「照片」图库冲印…"), #selector(dockImportLibrary))
         menu.addItem(.separator())
-        item("打开相册", #selector(dockAlbum))
+        item(String(localized: "打开相册"), #selector(dockAlbum))
         return menu
     }
 
@@ -113,7 +118,7 @@ struct NocchiCommands: Commands {
             Button("设置…") { WindowManager.shared.showSettings() }
                 .keyboardShortcut(",", modifiers: .command)
         }
-        CommandMenu("相机") {
+        CommandMenu(String(localized: "相机")) {
             Button("屏幕快门") { Darkroom.shared.screenShutter() }
                 .keyboardShortcut("s", modifiers: [.control, .option, .command])
             Button("自拍") { NotchController.shared.enterSelfie() }
@@ -126,7 +131,7 @@ struct NocchiCommands: Commands {
             Button("从「照片」图库冲印…") { PhotoImport.choosePhotosLibrary() }
                 .keyboardShortcut("o", modifiers: [.shift, .command])
         }
-        CommandMenu("相册") {
+        CommandMenu(String(localized: "相册")) {
             Button("打开相册") { WindowManager.shared.showAlbum() }
                 .keyboardShortcut("0", modifiers: .command)
             Divider()

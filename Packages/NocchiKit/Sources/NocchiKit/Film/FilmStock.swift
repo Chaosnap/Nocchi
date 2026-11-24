@@ -164,7 +164,7 @@ public struct FilmStock: Codable, Hashable, Identifiable, Sendable {
             englishName: base,
             iso: 200,
             exposures: 24,
-            summary: "自定义 LUT 胶卷",
+            summary: String(localized: "自定义 LUT 胶卷"),
             swatch: ["#D8CFC0", "#9A8C7A", "#3A3530"],
             tags: ["custom"],
             tone: .neutral,
@@ -204,7 +204,8 @@ public enum FilmCatalog {
               let stocks = try? decode(data), !stocks.isEmpty else {
             return [fallback]
         }
-        return stocks
+        // 英文界面：胶卷名用英文名，简介查翻译表（照片记录里存的胶卷名是拍的时候的界面语言）。
+        return UILanguage.current.isEnglish ? stocks.map { $0.localizedForEnglish() } : stocks
     }()
 
     public static func decode(_ data: Data) throws -> [FilmStock] {
@@ -218,5 +219,17 @@ public enum FilmCatalog {
         if let s = custom.first(where: { $0.id == id }) { return s }
         if let s = builtIn.first(where: { $0.id == id }) { return s }
         return defaultStock
+    }
+}
+
+extension FilmStock {
+    /// 英文界面里的这卷胶卷：名字换成英文名（有的话），简介查翻译表。
+    func localizedForEnglish() -> FilmStock {
+        var copy = self
+        if !englishName.isEmpty {
+            copy.name = englishName
+        }
+        copy.summary = Localized.string(summary)
+        return copy
     }
 }

@@ -143,7 +143,7 @@ private struct FilmTab: View {
         let panel = NSOpenPanel()
         panel.allowedContentTypes = [UTType(filenameExtension: "cube") ?? .data]
         panel.allowsMultipleSelection = false
-        panel.message = "选择一个 .cube LUT 文件，它会变成一卷自定义胶卷。"
+        panel.message = String(localized: "选择一个 .cube LUT 文件，它会变成一卷自定义胶卷。")
         guard panel.runModal() == .OK, let url = panel.url else { return }
         do {
             let result = try Services.library.importLUT(from: url)
@@ -152,7 +152,7 @@ private struct FilmTab: View {
             model.stockID = stock.id
             importError = nil
         } catch {
-            importError = (error as? LocalizedError)?.errorDescription ?? "导入失败：\(error.localizedDescription)"
+            importError = (error as? LocalizedError)?.errorDescription ?? String(localized: "导入失败：\(error.localizedDescription)")
         }
     }
 
@@ -203,6 +203,16 @@ private struct GeneralTab: View {
 
     var body: some View {
         Form {
+            Section("语言") {
+                Picker("界面语言", selection: Binding(get: { AppLanguage.saved }, set: { AppLanguage.choose($0) })) {
+                    ForEach(UILanguage.allCases) { language in
+                        Text(verbatim: language.nativeName).tag(language)
+                    }
+                }
+                Text("默认简体中文。换了以后重新打开 Nocchi 生效。")
+                    .font(.system(size: 11))
+                    .foregroundStyle(.secondary)
+            }
             Section("程序") {
                 Toggle("启动时打开相册（卡片盒）", isOn: $model.openAlbumOnLaunch)
                 Toggle("在程序坞显示图标", isOn: $model.showsDockIcon)
@@ -311,7 +321,7 @@ private struct PrintTab: View {
     private var instantTemplateNote: String? {
         guard let chosen = TemplateCatalog.template(id: model.defaultInstantTemplateID),
               !chosen.formats.contains(model.instantFormat) else { return nil }
-        return "「\(chosen.name)」不适用于\(model.instantFormat.displayName)，这种相纸会用「经典」。"
+        return String(localized: "「\(chosen.name)」不适用于\(model.instantFormat.displayName)，这种相纸会用「经典」。")
     }
 }
 
@@ -366,7 +376,7 @@ private struct CameraTab: View {
             preview
             ScrollView {
                 VStack(spacing: 6) {
-                    CameraRow(title: "系统默认", detail: "跟随 macOS 的默认摄像头", symbol: "camera", badge: nil, selected: model.cameraDeviceID == nil) {
+                    CameraRow(title: String(localized: "系统默认"), detail: String(localized: "跟随 macOS 的默认摄像头"), symbol: "camera", badge: nil, selected: model.cameraDeviceID == nil) {
                         model.cameraDeviceID = nil
                     }
                     ForEach(camera.devices) { device in
@@ -413,7 +423,7 @@ private struct CameraTab: View {
                 VStack(spacing: 6) {
                     Image(systemName: denied ? "video.slash" : "video")
                         .font(.system(size: 22))
-                    Text(denied ? "没有摄像头权限（系统设置 → 隐私与安全性 → 摄像头）" : "正在打开摄像头…")
+                    Text(denied ? String(localized: "没有摄像头权限（系统设置 → 隐私与安全性 → 摄像头）") : String(localized: "正在打开摄像头…"))
                         .font(.system(size: 12))
                 }
                 .foregroundStyle(.white.opacity(0.6))

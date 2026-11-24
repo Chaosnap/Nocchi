@@ -14,11 +14,11 @@ struct CorkLighting: Codable, Equatable {
 
         var title: String {
             switch self {
-            case .mixed: "混搭"
-            case .brass: "黄铜钉"
-            case .mapPin: "地图针"
-            case .tape: "胶带"
-            case .clip: "木夹"
+            case .mixed: String(localized: "混搭")
+            case .brass: String(localized: "黄铜钉")
+            case .mapPin: String(localized: "地图针")
+            case .tape: String(localized: "胶带")
+            case .clip: String(localized: "木夹")
             }
         }
     }
@@ -63,7 +63,7 @@ struct CorkLighting: Codable, Equatable {
 
     /// 方向的中文说法（「左上」）。
     var directionName: String {
-        let names = ["右", "右上", "上", "左上", "左", "左下", "下", "右下"]
+        let names = [String(localized: "右"), String(localized: "右上"), String(localized: "上"), String(localized: "左上"), String(localized: "左"), String(localized: "左下"), String(localized: "下"), String(localized: "右下")]
         let normalized = (angle.truncatingRemainder(dividingBy: 360) + 360).truncatingRemainder(dividingBy: 360)
         return names[Int((normalized + 22.5) / 45) % 8]
     }
@@ -208,12 +208,12 @@ struct LightingPanel: View {
                 }
             }
 
-            PanelSlider(title: "色温", value: $store.lighting.temperature, leading: "暖", trailing: "冷",
+            PanelSlider(title: String(localized: "色温"), value: $store.lighting.temperature, leading: String(localized: "暖"), trailing: String(localized: "冷"),
                         groove: [Color(hex: 0xF2B46A), Color(hex: 0xFFF1DA), Color(hex: 0xCFE0F5)])
-            PanelSlider(title: "亮度", value: $store.lighting.intensity, leading: "暗", trailing: "亮")
-            PanelSlider(title: "暗角", value: $store.lighting.vignette, leading: "无", trailing: "浓")
-            PanelSlider(title: "阴影", value: $store.lighting.shadow, leading: "浅", trailing: "深")
-            PanelSlider(title: "纸张卷曲", value: $store.lighting.curl, leading: "平", trailing: "卷")
+            PanelSlider(title: String(localized: "亮度"), value: $store.lighting.intensity, leading: String(localized: "暗"), trailing: String(localized: "亮"))
+            PanelSlider(title: String(localized: "暗角"), value: $store.lighting.vignette, leading: String(localized: "无"), trailing: String(localized: "浓"))
+            PanelSlider(title: String(localized: "阴影"), value: $store.lighting.shadow, leading: String(localized: "浅"), trailing: String(localized: "深"))
+            PanelSlider(title: String(localized: "纸张卷曲"), value: $store.lighting.curl, leading: String(localized: "平"), trailing: String(localized: "卷"))
 
             VStack(alignment: .leading, spacing: 6) {
                 Text("固定方式")

@@ -102,8 +102,8 @@ private struct CalendarPage: View {
     let onToday: () -> Void
 
     private static let english = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"]
-    private static let chinese = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"]
-    private static let weekdays = ["一", "二", "三", "四", "五", "六", "日"]
+    private static let chinese = [String(localized: "一月"), String(localized: "二月"), String(localized: "三月"), String(localized: "四月"), String(localized: "五月"), String(localized: "六月"), String(localized: "七月"), String(localized: "八月"), String(localized: "九月"), String(localized: "十月"), String(localized: "十一月"), String(localized: "十二月")]
+    private static let weekdays = [String(localized: "一"), String(localized: "二"), String(localized: "三"), String(localized: "四"), String(localized: "五"), String(localized: "六"), String(localized: "日")]
 
     var body: some View {
         VStack(spacing: 0) {
@@ -142,7 +142,10 @@ private struct CalendarPage: View {
                 .monospacedDigit()
                 .frame(minWidth: 120, alignment: .leading)
             VStack(alignment: .leading, spacing: 6) {
-                Text("\(Self.english[(page.month - 1 + 12) % 12]) · \(Self.chinese[(page.month - 1 + 12) % 12])")
+                // 英文界面只写英文月份（「NOVEMBER · November」是重复的）。
+                Text(UILanguage.current.isEnglish
+                    ? Self.english[(page.month - 1 + 12) % 12]
+                    : "\(Self.english[(page.month - 1 + 12) % 12]) · \(Self.chinese[(page.month - 1 + 12) % 12])")
                     .font(RetroFont.serif(16, weight: .semibold))
                     .tracking(2.5)
                     .foregroundStyle(Palette.ink)
@@ -153,9 +156,9 @@ private struct CalendarPage: View {
             }
             Spacer()
             HStack(spacing: 8) {
-                BrassButton(symbol: "chevron.left", help: "上个月") { onStep(-1) }
-                BrassButton(title: "今天", help: "回到这个月") { onToday() }
-                BrassButton(symbol: "chevron.right", help: "下个月") { onStep(1) }
+                BrassButton(symbol: "chevron.left", help: String(localized: "上个月")) { onStep(-1) }
+                BrassButton(title: String(localized: "今天"), help: String(localized: "回到这个月")) { onToday() }
+                BrassButton(symbol: "chevron.right", help: String(localized: "下个月")) { onStep(1) }
             }
         }
     }
@@ -215,10 +218,10 @@ private struct CalendarPage: View {
     }
 
     private var summary: String {
-        guard page.photoCount > 0 else { return "本月还没有照片" }
-        var parts = ["本月 \(page.photoCount) 张", "用了 \(page.stockCount) 卷胶卷"]
+        guard page.photoCount > 0 else { return String(localized: "本月还没有照片") }
+        var parts = [String(localized: "本月 \(page.photoCount) 张"), String(localized: "用了 \(page.stockCount) 卷胶卷")]
         if let tag = page.topTag {
-            parts.append("最常写 #\(tag)")
+            parts.append(String(localized: "最常写 #\(tag)"))
         }
         return parts.joined(separator: " · ")
     }
@@ -255,7 +258,7 @@ private struct DayCell: View {
                     .opacity(day.isInMonth ? 1 : 0.5)
             }
         }
-        .help(day.records.isEmpty ? "" : "\(day.records.count) 张 · 点一下展开")
+        .help(day.records.isEmpty ? "" : String(localized: "\(day.records.count) 张 · 点一下展开"))
     }
 }
 
@@ -392,7 +395,7 @@ private struct DayTray: View {
 
     private var title: String {
         let parts = CalendarWallView.calendar.dateComponents([.month, .day], from: day.date)
-        return "\(parts.month ?? 0) 月 \(parts.day ?? 0) 日 · \(day.records.count) 张"
+        return String(localized: "\(parts.month ?? 0) 月 \(parts.day ?? 0) 日 · \(day.records.count) 张")
     }
 }
 

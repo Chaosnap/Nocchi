@@ -18,10 +18,10 @@ public struct TextPlacement: Codable, Hashable, Identifiable, Sendable {
 
         public var displayName: String {
             switch self {
-            case .plain: return "无"
-            case .outline: return "白边"
-            case .label: return "纸标签"
-            case .shadow: return "投影"
+            case .plain: return String(localized: "无")
+            case .outline: return String(localized: "白边")
+            case .label: return String(localized: "纸标签")
+            case .shadow: return String(localized: "投影")
             }
         }
     }

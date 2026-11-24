@@ -262,9 +262,9 @@ private struct StatusPill: View {
 
     private var text: String? {
         switch booth.phase {
-        case .lookHere: return "请看镜头"
-        case .countdown, .flash, .pause: return "第 \(min(booth.shot + 1, booth.totalShots)) 张 · 共 \(booth.totalShots) 张"
-        case .openingCurtain: return "冲印中"
+        case .lookHere: return String(localized: "请看镜头")
+        case .countdown, .flash, .pause: return String(localized: "第 \(min(booth.shot + 1, booth.totalShots)) 张 · 共 \(booth.totalShots) 张")
+        case .openingCurtain: return String(localized: "冲印中")
         default: return nil
         }
     }
@@ -383,10 +383,10 @@ private struct MachineControls: View {
             }
             .help("黑白 / 彩色")
 
-            labelTarget("四格条") { booth.setFormat(.boothStrip) }
-            labelTarget("四宫格") { booth.setFormat(.boothGrid) }
-            labelTarget("黑白") { booth.setMonochrome(true) }
-            labelTarget("彩色") { booth.setMonochrome(false) }
+            labelTarget("四格条") { booth.setFormat(.boothStrip) } // i18n-ok：BoothMachineLayout.labels 的键
+            labelTarget("四宫格") { booth.setFormat(.boothGrid) } // i18n-ok：BoothMachineLayout.labels 的键
+            labelTarget("黑白") { booth.setMonochrome(true) } // i18n-ok：BoothMachineLayout.labels 的键
+            labelTarget("彩色") { booth.setMonochrome(false) } // i18n-ok：BoothMachineLayout.labels 的键
 
             part(L.start) {
                 Button { booth.confirmFrame() } label: { EmptyView() }

@@ -15,8 +15,8 @@ struct CameraDevice: Identifiable, Hashable, Sendable {
 
         var badge: String {
             switch self {
-            case .builtIn: return "内建"
-            case .external: return "外接 / 虚拟"
+            case .builtIn: return String(localized: "内建")
+            case .external: return String(localized: "外接 / 虚拟")
             case .continuity: return "iPhone"
             }
         }
@@ -54,9 +54,9 @@ final class CameraService: NSObject, ObservableObject, @unchecked Sendable {
 
         var errorDescription: String? {
             switch self {
-            case .denied: return "需要摄像头权限（系统设置 → 隐私与安全性 → 摄像头）"
-            case .unavailable: return "没有找到摄像头"
-            case .captureFailed: return "没拍到，再试一次"
+            case .denied: return String(localized: "需要摄像头权限（系统设置 → 隐私与安全性 → 摄像头）")
+            case .unavailable: return String(localized: "没有找到摄像头")
+            case .captureFailed: return String(localized: "没拍到，再试一次")
             }
         }
     }
@@ -161,14 +161,14 @@ final class CameraService: NSObject, ObservableObject, @unchecked Sendable {
             self.session.commitConfiguration()
             DispatchQueue.main.async {
                 MainActor.assumeIsolated {
-                    NotchController.shared.showToast("摄像头断开了，换回默认摄像头", symbol: "video.slash.fill", duration: 3)
+                    NotchController.shared.showToast(String(localized: "摄像头断开了，换回默认摄像头"), symbol: "video.slash.fill", duration: 3)
                 }
             }
         }
     }
 
     static func describe(_ error: Error) -> String {
-        (error as? LocalizedError)?.errorDescription ?? "摄像头出错了"
+        (error as? LocalizedError)?.errorDescription ?? String(localized: "摄像头出错了")
     }
 
     static func requestAccess() async -> Bool {
@@ -278,10 +278,10 @@ enum CameraAccess {
     static func presentDeniedAlert() {
         NSApp.activate()
         let alert = NSAlert()
-        alert.messageText = "Nocchi 需要使用摄像头"
-        alert.informativeText = "自拍和大头贴机要用到刘海里的摄像头。请在「系统设置 → 隐私与安全性 → 摄像头」里打开 Nocchi，然后再试一次。"
-        alert.addButton(withTitle: "打开系统设置")
-        alert.addButton(withTitle: "取消")
+        alert.messageText = String(localized: "Nocchi 需要使用摄像头")
+        alert.informativeText = String(localized: "自拍和大头贴机要用到刘海里的摄像头。请在「系统设置 → 隐私与安全性 → 摄像头」里打开 Nocchi，然后再试一次。")
+        alert.addButton(withTitle: String(localized: "打开系统设置"))
+        alert.addButton(withTitle: String(localized: "取消"))
         if alert.runModal() == .alertFirstButtonReturn,
            let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Camera") {
             NSWorkspace.shared.open(url)

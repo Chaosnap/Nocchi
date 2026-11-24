@@ -214,7 +214,7 @@ final class PhotoBoothController: ObservableObject {
             try? await Task.sleep(nanoseconds: 60_000_000_000)
             if self.session == current, self.phase != .idle, self.phase != .choosingFrame {
                 self.cancel()
-                NotchController.shared.showToast("大头贴机超时了，已经收起", symbol: "exclamationmark.triangle.fill")
+                NotchController.shared.showToast(String(localized: "大头贴机超时了，已经收起"), symbol: "exclamationmark.triangle.fill")
             }
         }
     }
@@ -283,7 +283,7 @@ final class PhotoBoothController: ObservableObject {
         guard session == current else { return }
         teardown()
         guard !frames.isEmpty else {
-            NotchController.shared.showToast("大头贴没拍到，再来一次", symbol: "exclamationmark.triangle.fill")
+            NotchController.shared.showToast(String(localized: "大头贴没拍到，再来一次"), symbol: "exclamationmark.triangle.fill")
             return
         }
         // 少拍了的格子用最后一张补上（不能重拍，就是这么任性）。
@@ -428,7 +428,7 @@ struct BoothInterior: View {
         if BoothMachine.isAvailable {
             VStack(spacing: 14) {
                 BoothMachine(booth: booth, previews: booth.previews, session: session, camera: camera)
-                Text(choosing ? "← → 换相框 · ↑ ↓ 四格条 / 四宫格 · Return 开始 · Esc 离开" : "Esc 取消 · 一次一条，不能重拍")
+                Text(choosing ? String(localized: "← → 换相框 · ↑ ↓ 四格条 / 四宫格 · Return 开始 · Esc 离开") : String(localized: "Esc 取消 · 一次一条，不能重拍"))
                     .font(.system(size: 13, weight: .medium, design: .rounded))
                     .foregroundStyle(.white.opacity(0.7))
             }

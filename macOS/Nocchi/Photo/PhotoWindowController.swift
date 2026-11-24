@@ -418,7 +418,7 @@ final class PhotoWindowController: NSObject {
                 NotchShelf.shared.add(self.model.record)
                 Sound.play(.cardSlide)
                 Haptics.tick()
-                NotchController.shared.showToast("放进刘海暂存了（\(NotchShelf.shared.items.count) 张）", symbol: "tray.full.fill")
+                NotchController.shared.showToast(String(localized: "放进刘海暂存了（\(NotchShelf.shared.items.count) 张）"), symbol: "tray.full.fill")
                 self.close()
             }
         })
@@ -522,25 +522,25 @@ final class PhotoWindowController: NSObject {
             menu.addItem(menuItem)
         }
         let hasPrint = record.printFile != nil
-        item("装饰…", #selector(decorate))
+        item(String(localized: "装饰…"), #selector(decorate))
         menu.addItem(.separator())
-        item("在 Finder 中显示", #selector(revealInFinderAction), enabled: hasPrint)
-        item("用「预览」打开", #selector(openInPreview), enabled: hasPrint)
-        item("拷贝", #selector(copyToPasteboard), enabled: hasPrint)
-        item("共享…", #selector(share), enabled: hasPrint)
+        item(String(localized: "在 Finder 中显示"), #selector(revealInFinderAction), enabled: hasPrint)
+        item(String(localized: "用「预览」打开"), #selector(openInPreview), enabled: hasPrint)
+        item(String(localized: "拷贝"), #selector(copyToPasteboard), enabled: hasPrint)
+        item(String(localized: "共享…"), #selector(share), enabled: hasPrint)
         menu.addItem(.separator())
-        item(model.penMode ? "写完了" : "在白边上写字", #selector(togglePen))
-        item("写一句题字…", #selector(editCaption))
-        item(record.showsDate ? "不印日期" : "印上日期", #selector(toggleDate))
+        item(model.penMode ? String(localized: "写完了") : String(localized: "在白边上写字"), #selector(togglePen))
+        item(String(localized: "写一句题字…"), #selector(editCaption))
+        item(record.showsDate ? String(localized: "不印日期") : String(localized: "印上日期"), #selector(toggleDate))
         if !record.strokes.isEmpty {
-            item("擦掉笔迹", #selector(clearInk))
+            item(String(localized: "擦掉笔迹"), #selector(clearInk))
         }
         menu.addItem(.separator())
         let onDesktop = record.desk?.layer == .desktop
-        item(onDesktop ? "浮到最上层" : "贴到桌面层（在窗口后面）", #selector(toggleLayer))
-        item("收进相册", #selector(collect))
+        item(onDesktop ? String(localized: "浮到最上层") : String(localized: "贴到桌面层（在窗口后面）"), #selector(toggleLayer))
+        item(String(localized: "收进相册"), #selector(collect))
         menu.addItem(.separator())
-        item("移到废纸篓…", #selector(trash))
+        item(String(localized: "移到废纸篓…"), #selector(trash))
         return menu
     }
 
@@ -553,7 +553,7 @@ final class PhotoWindowController: NSObject {
 
     func revealInFinder() {
         guard let relative = record.printFile else {
-            NotchController.shared.showToast("还在显影，等一下", symbol: "hourglass")
+            NotchController.shared.showToast(String(localized: "还在显影，等一下"), symbol: "hourglass")
             return
         }
         NSWorkspace.shared.activateFileViewerSelecting([Services.library.printURL(relative)])
@@ -587,21 +587,21 @@ final class PhotoWindowController: NSObject {
         model.penMode.toggle()
         panel.invalidateCursorRects(for: interaction)
         if model.penMode {
-            NotchController.shared.showToast("在下面的白边上写字", symbol: "pencil.tip")
+            NotchController.shared.showToast(String(localized: "在下面的白边上写字"), symbol: "pencil.tip")
         }
     }
 
     @objc private func editCaption() {
         NSApp.activate()
         let alert = NSAlert()
-        alert.messageText = "写一句题字"
-        alert.informativeText = "会印在照片下面的白边上。"
+        alert.messageText = String(localized: "写一句题字")
+        alert.informativeText = String(localized: "会印在照片下面的白边上。")
         let field = NSTextField(frame: NSRect(x: 0, y: 0, width: 260, height: 24))
         field.stringValue = record.caption ?? ""
         field.placeholderString = PhotoRecord.defaultCaption
         alert.accessoryView = field
-        alert.addButton(withTitle: "好")
-        alert.addButton(withTitle: "取消")
+        alert.addButton(withTitle: String(localized: "好"))
+        alert.addButton(withTitle: String(localized: "取消"))
         alert.window.initialFirstResponder = field
         guard alert.runModal() == .alertFirstButtonReturn else { return }
         let text = field.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -639,10 +639,10 @@ final class PhotoWindowController: NSObject {
     @objc private func trash() {
         NSApp.activate()
         let alert = NSAlert()
-        alert.messageText = "把这张照片移到废纸篓？"
-        alert.informativeText = "成片会移到废纸篓（可以从废纸篓恢复）；相册里的这张记录和底片会被删除。"
-        alert.addButton(withTitle: "移到废纸篓")
-        alert.addButton(withTitle: "取消")
+        alert.messageText = String(localized: "把这张照片移到废纸篓？")
+        alert.informativeText = String(localized: "成片会移到废纸篓（可以从废纸篓恢复）；相册里的这张记录和底片会被删除。")
+        alert.addButton(withTitle: String(localized: "移到废纸篓"))
+        alert.addButton(withTitle: String(localized: "取消"))
         guard alert.runModal() == .alertFirstButtonReturn else { return }
         let record = model.record
         if let relative = record.printFile {

@@ -23,21 +23,21 @@ public struct CubeLUT: Equatable, Sendable {
         public var errorDescription: String? {
             switch self {
             case .fileTooLarge(let bytes):
-                return "LUT 文件太大（\(bytes / 1024) KB），上限 \(CubeLUT.maxFileBytes / 1024 / 1024) MB。"
+                return String(localized: "LUT 文件太大（\(bytes / 1024) KB），上限 \(CubeLUT.maxFileBytes / 1024 / 1024) MB。")
             case .unreadableText:
-                return "无法以文本方式读取这个 LUT 文件。"
+                return String(localized: "无法以文本方式读取这个 LUT 文件。")
             case .missingSize:
-                return "缺少 LUT_3D_SIZE 或 LUT_1D_SIZE。"
+                return String(localized: "缺少 LUT_3D_SIZE 或 LUT_1D_SIZE。")
             case .invalidSize(let n):
-                return "不支持的 LUT 尺寸：\(n)。"
+                return String(localized: "不支持的 LUT 尺寸：\(n)。")
             case .malformedLine(let line):
-                return "第 \(line) 行格式不正确。"
+                return String(localized: "第 \(line) 行格式不正确。")
             case .nonFiniteValue(let line):
-                return "第 \(line) 行包含无效数值。"
+                return String(localized: "第 \(line) 行包含无效数值。")
             case .entryCountMismatch(let expected, let actual):
-                return "数据行数量不符：需要 \(expected) 行，实际 \(actual) 行。"
+                return String(localized: "数据行数量不符：需要 \(expected) 行，实际 \(actual) 行。")
             case .invalidDomain:
-                return "DOMAIN_MIN 必须小于 DOMAIN_MAX。"
+                return String(localized: "DOMAIN_MIN 必须小于 DOMAIN_MAX。")
             }
         }
     }

@@ -18,14 +18,14 @@ enum PosterBackground: String, CaseIterable, Identifiable, Sendable {
 
     var title: String {
         switch self {
-        case .linen: "亚麻"
-        case .walnut: "胡桃木"
-        case .kraft: "牛皮纸"
-        case .velvet: "丝绒"
-        case .cork: "软木"
-        case .seventies: "70 年代"
-        case .sky: "晴空"
-        case .darkroom: "暗房红光"
+        case .linen: String(localized: "亚麻")
+        case .walnut: String(localized: "胡桃木")
+        case .kraft: String(localized: "牛皮纸")
+        case .velvet: String(localized: "丝绒")
+        case .cork: String(localized: "软木")
+        case .seventies: String(localized: "70 年代")
+        case .sky: String(localized: "晴空")
+        case .darkroom: String(localized: "暗房红光")
         }
     }
 
@@ -74,9 +74,9 @@ enum PosterArrangement: String, CaseIterable, Identifiable, Sendable {
 
     var title: String {
         switch self {
-        case .centered: "居中"
-        case .tilted: "微斜"
-        case .stacked: "两张叠放"
+        case .centered: String(localized: "居中")
+        case .tilted: String(localized: "微斜")
+        case .stacked: String(localized: "两张叠放")
         }
     }
 }

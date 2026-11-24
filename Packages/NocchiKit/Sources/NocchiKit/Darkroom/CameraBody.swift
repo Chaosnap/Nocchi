@@ -15,27 +15,27 @@ public enum CameraBody: String, Codable, CaseIterable, Identifiable, Sendable {
 
     public var displayName: String {
         switch self {
-        case .instant: return "即显相机"
-        case .photoBooth: return "大头贴机"
-        case .disposable: return "一次性相机"
-        case .dateStamp: return "日期机"
-        case .halfFrame: return "半格相机"
-        case .twinLens: return "双反相机"
-        case .pinhole: return "针孔相机"
-        case .wiggle: return "摇摆 3D 相机"
+        case .instant: return String(localized: "即显相机")
+        case .photoBooth: return String(localized: "大头贴机")
+        case .disposable: return String(localized: "一次性相机")
+        case .dateStamp: return String(localized: "日期机")
+        case .halfFrame: return String(localized: "半格相机")
+        case .twinLens: return String(localized: "双反相机")
+        case .pinhole: return String(localized: "针孔相机")
+        case .wiggle: return String(localized: "摇摆 3D 相机")
         }
     }
 
     public var tagline: String {
         switch self {
-        case .instant: return "一张一出，甩一甩加速显影，白边可以写字"
-        case .photoBooth: return "拉帘、倒数、闪光、四连拍"
-        case .disposable: return "一卷 27 张，拍完前不能看，第二天早上冲好"
-        case .dateStamp: return "右下角印上橙色日期，年份可以调成 1998"
-        case .halfFrame: return "连拍两张，自动拼成一对"
-        case .twinLens: return "磨砂玻璃取景，画面左右颠倒"
-        case .pinhole: return "曝光 5 秒，一动就有重影"
-        case .wiggle: return "四张合成左右晃动的立体 GIF"
+        case .instant: return String(localized: "一张一出，甩一甩加速显影，白边可以写字")
+        case .photoBooth: return String(localized: "拉帘、倒数、闪光、四连拍")
+        case .disposable: return String(localized: "一卷 27 张，拍完前不能看，第二天早上冲好")
+        case .dateStamp: return String(localized: "右下角印上橙色日期，年份可以调成 1998")
+        case .halfFrame: return String(localized: "连拍两张，自动拼成一对")
+        case .twinLens: return String(localized: "磨砂玻璃取景，画面左右颠倒")
+        case .pinhole: return String(localized: "曝光 5 秒，一动就有重影")
+        case .wiggle: return String(localized: "四张合成左右晃动的立体 GIF")
         }
     }
 

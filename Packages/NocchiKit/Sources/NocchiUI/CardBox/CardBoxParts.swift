@@ -563,7 +563,7 @@ struct PutBackButton: View {
     let action: () -> Void
     @State private var hovering = false
 
-    init(title: String = "全部放回", symbol: String = "arrow.uturn.backward", action: @escaping () -> Void) {
+    init(title: String = String(localized: "全部放回"), symbol: String = "arrow.uturn.backward", action: @escaping () -> Void) {
         self.title = title
         self.symbol = symbol
         self.action = action
@@ -594,7 +594,7 @@ struct PutBackButton: View {
         .onHover { inside in
             withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) { hovering = inside }
         }
-        .help(title == "全部放回" ? "把摊开的卡片全部放回盒子" : "让拖开的卡片回到那一叠")
+        .help(title == String(localized: "全部放回") ? String(localized: "把摊开的卡片全部放回盒子") : String(localized: "让拖开的卡片回到那一叠"))
     }
 }
 
@@ -604,7 +604,7 @@ struct SpreadCaption: View {
     let more: Bool
 
     var body: some View {
-        Text(more ? "\(text) · 左右拖动翻看" : text)
+        Text(more ? String(localized: "\(text) · 左右拖动翻看") : text)
             .font(.custom("American Typewriter", size: 11.5))
             .foregroundStyle(CardInk.inkSoft)
             .tracking(0.4)

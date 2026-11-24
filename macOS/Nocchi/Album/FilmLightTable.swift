@@ -23,7 +23,7 @@ struct FilmLightTable: View {
                 let scale = stripHeight / FilmGeometry.length(frames: 4)
                 Lightbox {
                     if libraryIsEmpty {
-                        TypedSlip(text: "光台上还没有底片 · 拍几张再来看", size: 14, tilt: -1.5)
+                        TypedSlip(text: String(localized: "光台上还没有底片 · 拍几张再来看"), size: 14, tilt: -1.5)
                     } else {
                         ScrollView(.horizontal) {
                             HStack(alignment: .center, spacing: 34) {
@@ -76,7 +76,7 @@ struct FilmLightTable: View {
         }
     }
 
-    private static let monthNames = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"]
+    private static let monthNames = [String(localized: "一月"), String(localized: "二月"), String(localized: "三月"), String(localized: "四月"), String(localized: "五月"), String(localized: "六月"), String(localized: "七月"), String(localized: "八月"), String(localized: "九月"), String(localized: "十月"), String(localized: "十一月"), String(localized: "十二月")]
 
     /// 新的月份在左；每个月一张纸条，后面是这个月的胶片条（新的在前，洗过就按 seed 打乱）。
     static func items(_ strips: [FilmStrip], shuffleSeed: UInt64) -> [TableItem] {
@@ -535,8 +535,8 @@ private struct PositiveNegativeToggle: View {
 
     var body: some View {
         HStack(spacing: 2) {
-            segment("正片", selected: !negative) { negative = false }
-            segment("负片", selected: negative) { negative = true }
+            segment(String(localized: "正片"), selected: !negative) { negative = false }
+            segment(String(localized: "负片"), selected: negative) { negative = true }
         }
         .padding(3)
         .background(

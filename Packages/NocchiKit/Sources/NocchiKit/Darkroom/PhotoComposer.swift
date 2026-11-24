@@ -296,7 +296,7 @@ public enum PhotoComposer {
         let caption = (written?.isEmpty == false ? written : nil) ?? TemplateArt.defaultCaption(spec.template)
         let date = spec.template.style == .datebook ? nil : spec.dateText
         var details: [String] = []
-        if let location = spec.locationLine { details.append("「\(location)」") }
+        if let location = spec.locationLine { details.append(String(localized: "「\(location)」")) }
         if let tags = spec.tagLine { details.append(tags) }
 
         // 自动标签贴纸：题字区右端一到两枚小贴纸。

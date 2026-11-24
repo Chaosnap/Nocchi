@@ -148,7 +148,7 @@ private struct ModeSegment: View {
     }
 
     private var tooltip: String {
-        "\(item.title)（⌘\(String(item.key.character))）"
+        String(localized: "\(item.title)（⌘\(String(item.key.character))）")
     }
 }
 

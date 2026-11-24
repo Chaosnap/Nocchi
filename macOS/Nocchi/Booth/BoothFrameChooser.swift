@@ -39,10 +39,10 @@ struct BoothFrameChooser: View {
             PageDots(count: booth.templates.count, index: booth.templateIndex) { booth.select(index: $0) }
 
             HStack(spacing: 22) {
-                LeverSwitch(left: "四格条", right: "四宫格", isRight: booth.boothFormat == .boothGrid) { right in
+                LeverSwitch(left: String(localized: "四格条"), right: String(localized: "四宫格"), isRight: booth.boothFormat == .boothGrid) { right in
                     booth.setFormat(right ? .boothGrid : .boothStrip)
                 }
-                LeverSwitch(left: "黑白", right: "彩色", isRight: !booth.monochrome) { right in
+                LeverSwitch(left: String(localized: "黑白"), right: String(localized: "彩色"), isRight: !booth.monochrome) { right in
                     booth.setMonochrome(!right)
                 }
             }
@@ -233,7 +233,7 @@ private struct BrassArrowButton: View {
         if BundledImage.has("BoothArrow") {
             Button(action: action) { EmptyView() }
                 .buttonStyle(RenderedButtonStyle(up: "BoothArrow", down: "BoothArrowPressed", size: CGSize(width: 60, height: 60), mirrored: pointsLeft))
-                .help(pointsLeft ? "上一款（←）" : "下一款（→）")
+                .help(pointsLeft ? String(localized: "上一款（←）") : String(localized: "下一款（→）"))
         } else {
             drawn
         }
@@ -261,7 +261,7 @@ private struct BrassArrowButton: View {
             .contentShape(Circle())
         }
         .buttonStyle(BoothPressStyle())
-        .help(pointsLeft ? "上一款（←）" : "下一款（→）")
+        .help(pointsLeft ? String(localized: "上一款（←）") : String(localized: "下一款（→）"))
     }
 }
 

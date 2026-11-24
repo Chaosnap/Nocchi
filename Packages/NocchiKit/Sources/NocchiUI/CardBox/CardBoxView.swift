@@ -304,10 +304,10 @@ public struct CardBoxView: View {
             if !model.pulled.isEmpty {
                 HStack(spacing: 8) {
                     if !model.spots.isEmpty {
-                        PutBackButton(title: "重新叠好", symbol: "square.stack") { model.clearSpots() }
+                        PutBackButton(title: String(localized: "重新叠好"), symbol: "square.stack") { model.clearSpots() }
                             .transition(.opacity)
                     }
-                    PutBackButton(title: "全部放回", symbol: "arrow.uturn.backward") { model.putBackAll() }
+                    PutBackButton(title: String(localized: "全部放回"), symbol: "arrow.uturn.backward") { model.putBackAll() }
                 }
                 .position(x: stage.spread.maxX - (model.spots.isEmpty ? 62 : 120), y: stage.spread.minY + 4)
                 .transition(.opacity)

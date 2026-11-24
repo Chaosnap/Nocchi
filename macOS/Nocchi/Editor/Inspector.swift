@@ -121,7 +121,7 @@ private struct StickersTab: View {
                 SelectedStickerPanel(session: session, placement: placement, kind: kind)
             }
             FlowLayout(spacing: 5) {
-                Pill(title: "我的", selected: category == nil) { category = nil }
+                Pill(title: String(localized: "我的"), selected: category == nil) { category = nil }
                 ForEach(StickerCategory.allCases) { item in
                     Pill(title: item.displayName, selected: category == item) { category = item }
                 }
@@ -169,7 +169,7 @@ private struct StickersTab: View {
                     StickerTile(kind: sticker.kind) { session.addSticker(sticker.kind) }
                         .contextMenu {
                             Button("重命名…") { shelf.rename(sticker) }
-                            Button(sticker.dieCut ? "去掉白色模切边" : "加上白色模切边") { shelf.toggleDieCut(sticker) }
+                            Button(sticker.dieCut ? String(localized: "去掉白色模切边") : String(localized: "加上白色模切边")) { shelf.toggleDieCut(sticker) }
                             Button("往前挪") { shelf.move(sticker, by: -1) }
                             Button("往后挪") { shelf.move(sticker, by: 1) }
                             Divider()
@@ -253,7 +253,7 @@ private struct SelectedStickerPanel: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            SectionTitle(text: "选中：\(kind.name)")
+            SectionTitle(text: String(localized: "选中：\(kind.name)"))
             if kind.acceptsText {
                 TextField("贴纸上的字", text: Binding(
                     get: { placement.text ?? "" },
@@ -278,9 +278,9 @@ private struct SelectedStickerPanel: View {
                 }
             }
             HStack(spacing: 8) {
-                Pill(title: "翻转", selected: false) { session.editSticker(placement.id) { $0.flipped.toggle() } }
-                Pill(title: "置顶", selected: false) { session.bringSelectedToFront() }
-                Pill(title: "删除", selected: false) { session.deleteSelectedSticker() }
+                Pill(title: String(localized: "翻转"), selected: false) { session.editSticker(placement.id) { $0.flipped.toggle() } }
+                Pill(title: String(localized: "置顶"), selected: false) { session.bringSelectedToFront() }
+                Pill(title: String(localized: "删除"), selected: false) { session.deleteSelectedSticker() }
             }
         }
         .padding(12)
@@ -299,7 +299,7 @@ private struct TemplatesTab: View {
     var body: some View {
         let templates = TemplateCatalog.templates(for: session.record.format)
         VStack(alignment: .leading, spacing: 12) {
-            SectionTitle(text: "相纸模板 · \(session.record.format.displayName)")
+            SectionTitle(text: String(localized: "相纸模板 · \(session.record.format.displayName)"))
             LazyVGrid(columns: columns, spacing: 14) {
                 ForEach(templates) { template in
                     TemplateTile(
@@ -389,7 +389,7 @@ private struct TextTab: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 8) {
-                SectionTitle(text: "照片上的文字")
+                SectionTitle(text: String(localized: "照片上的文字"))
                 if let id = session.selectedText, let placement = session.text(id) {
                     TextBoxEditor(session: session, placement: placement)
                 } else {
@@ -398,11 +398,11 @@ private struct TextTab: View {
                         .foregroundStyle(Palette.inkSoft)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-                Pill(title: "＋ 加一段字", selected: session.selectedText == nil) { session.addText() }
+                Pill(title: String(localized: "＋ 加一段字"), selected: session.selectedText == nil) { session.addText() }
             }
 
             VStack(alignment: .leading, spacing: 8) {
-                SectionTitle(text: "题字 / 心情")
+                SectionTitle(text: String(localized: "题字 / 心情"))
                 TextField("写一句题字…", text: binding(\.caption), axis: .vertical)
                     .lineLimit(1...3)
                     .textFieldStyle(.roundedBorder)
@@ -419,7 +419,7 @@ private struct TextTab: View {
             }
 
             VStack(alignment: .leading, spacing: 8) {
-                SectionTitle(text: "日期")
+                SectionTitle(text: String(localized: "日期"))
                 DatePicker("拍摄时间", selection: Binding(
                     get: { session.record.displayDate },
                     set: { value in session.edit { $0.takenAt = value } }
@@ -432,13 +432,13 @@ private struct TextTab: View {
             }
 
             VStack(alignment: .leading, spacing: 8) {
-                SectionTitle(text: "地点")
+                SectionTitle(text: String(localized: "地点"))
                 TextField("例如：上海 · 武康路", text: binding(\.location))
                     .textFieldStyle(.roundedBorder)
             }
 
             VStack(alignment: .leading, spacing: 8) {
-                SectionTitle(text: "标签")
+                SectionTitle(text: String(localized: "标签"))
                 TagFlow(tags: StickerCatalog.suggestedTags, selected: Set(session.record.tags)) { tag in
                     toggleTag(tag)
                 }
@@ -460,7 +460,7 @@ private struct TextTab: View {
             }
 
             VStack(alignment: .leading, spacing: 6) {
-                SectionTitle(text: "印在相纸上")
+                SectionTitle(text: String(localized: "印在相纸上"))
                 Toggle("印标签", isOn: flag(\.showsTags))
                 Toggle("印地点", isOn: flag(\.showsLocation))
                 Toggle("标签配小贴纸（#阳光 → 太阳徽章）", isOn: flag(\.showsTagStickers))
@@ -574,7 +574,7 @@ private struct ShareTab: View {
             .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
             .shadow(color: .black.opacity(0.18), radius: 6, y: 3)
 
-            SectionTitle(text: "背景")
+            SectionTitle(text: String(localized: "背景"))
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 4), spacing: 8) {
                 ForEach(PosterBackground.allCases) { item in
                     Button {
@@ -598,7 +598,7 @@ private struct ShareTab: View {
                 }
             }
 
-            SectionTitle(text: "摆法")
+            SectionTitle(text: String(localized: "摆法"))
             HStack(spacing: 6) {
                 ForEach(PosterArrangement.allCases) { item in
                     Pill(title: item.title, selected: arrangement == item) { arrangement = item }
@@ -608,9 +608,9 @@ private struct ShareTab: View {
                 .toggleStyle(.checkbox)
 
             HStack(spacing: 8) {
-                Pill(title: "导出图片…", selected: true) { export() }
-                Pill(title: "拷贝", selected: false) { copy() }
-                Pill(title: "分享…", selected: false) { share() }
+                Pill(title: String(localized: "导出图片…"), selected: true) { export() }
+                Pill(title: String(localized: "拷贝"), selected: false) { copy() }
+                Pill(title: String(localized: "分享…"), selected: false) { share() }
             }
         }
         .task(id: "\(background.rawValue)#\(arrangement.rawValue)#\(signature)#\(session.record.hashValue)") {
@@ -727,8 +727,8 @@ private struct TextBoxEditor: View {
                     .environment(\.colorScheme, .light)
                     .scrollIndicators(.never)
                 }
-                Toggle("粗", isOn: Binding(get: { placement.bold }, set: { value in session.editText(placement.id) { $0.bold = value } }))
-                Toggle("斜", isOn: Binding(get: { placement.italic }, set: { value in session.editText(placement.id) { $0.italic = value } }))
+                Toggle("粗体", isOn: Binding(get: { placement.bold }, set: { value in session.editText(placement.id) { $0.bold = value } }))
+                Toggle("斜体", isOn: Binding(get: { placement.italic }, set: { value in session.editText(placement.id) { $0.italic = value } }))
             }
             .toggleStyle(.checkbox)
 
@@ -754,7 +754,7 @@ private struct TextBoxEditor: View {
             }
 
             HStack(spacing: 6) {
-                ForEach(DecorateSession.paints + [DecorateSession.Paint(name: "纸白", hex: "#FFFFFF")]) { paint in
+                ForEach(DecorateSession.paints + [DecorateSession.Paint(name: String(localized: "纸白"), hex: "#FFFFFF")]) { paint in
                     Button {
                         session.editText(placement.id) { $0.color = paint.hex }
                     } label: {
@@ -823,7 +823,7 @@ private struct FontPicker: View {
                     let filter = query.trimmingCharacters(in: .whitespacesAndNewlines)
                     let recommended = Self.recommendedNames.filter { FontBook.isInstalled($0) }
                     if !imported.isEmpty {
-                        header("我导入的")
+                        header(String(localized: "我导入的"))
                         ForEach(matching(imported, filter), id: \.self) { name in
                             row(name)
                                 .contextMenu {
@@ -836,10 +836,10 @@ private struct FontPicker: View {
                         }
                     }
                     if filter.isEmpty {
-                        header("推荐")
+                        header(String(localized: "推荐"))
                         ForEach(recommended, id: \.self) { row($0) }
                     }
-                    header(filter.isEmpty ? "全部字体" : "搜索结果")
+                    header(filter.isEmpty ? String(localized: "全部字体") : String(localized: "搜索结果"))
                     ForEach(matching(families, filter), id: \.self) { row($0) }
                 }
             }
@@ -902,7 +902,7 @@ private struct FontPicker: View {
         panel.allowedContentTypes = [.font]
         panel.allowsMultipleSelection = true
         panel.canChooseDirectories = false
-        panel.message = "选几个字体文件（.ttf / .otf / .ttc），导入后只在 Nocchi 里用"
+        panel.message = String(localized: "选几个字体文件（.ttf / .otf / .ttc），导入后只在 Nocchi 里用")
         guard panel.runModal() == .OK else { return }
         var added: [String] = []
         var failed = 0
@@ -918,6 +918,6 @@ private struct FontPicker: View {
         if let first = added.first {
             choose(first)
         }
-        message = failed > 0 ? "有 \(failed) 个文件读不出字体" : (added.isEmpty ? nil : "导入了 \(added.count) 个字体")
+        message = failed > 0 ? String(localized: "有 \(failed) 个文件读不出字体") : (added.isEmpty ? nil : String(localized: "导入了 \(added.count) 个字体"))
     }
 }

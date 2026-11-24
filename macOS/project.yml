@@ -35,6 +35,10 @@ targets:
     info:
       path: Nocchi/Info.plist
       properties:
+        CFBundleDevelopmentRegion: zh-Hans
+        CFBundleLocalizations:
+          - zh-Hans
+          - en
         CFBundleDisplayName: Nocchi
         CFBundleName: Nocchi
         CFBundleShortVersionString: $(MARKETING_VERSION)

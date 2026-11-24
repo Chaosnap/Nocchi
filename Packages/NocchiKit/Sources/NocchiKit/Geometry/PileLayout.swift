@@ -39,5 +39,5 @@ public extension PhotoRecord {
     }
 
     /// 默认题字（参考拍立得玩法里的小彩蛋）。
-    static let defaultCaption = "我可以见你吗？"
+    static let defaultCaption = String(localized: "我可以见你吗？")
 }

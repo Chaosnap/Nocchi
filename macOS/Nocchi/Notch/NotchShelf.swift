@@ -227,7 +227,7 @@ struct DropTargetPanel: View {
                     HStack(spacing: 10) {
                         Image(systemName: notch.dropKind == .files ? "photo.badge.plus" : "tray.and.arrow.down.fill")
                             .font(.system(size: 20, weight: .semibold))
-                        Text(notch.dropKind == .files ? "松手，冲印成拍立得" : "松手，放进刘海暂存")
+                        Text(notch.dropKind == .files ? String(localized: "松手，冲印成拍立得") : String(localized: "松手，放进刘海暂存"))
                             .font(.system(size: 13, weight: .semibold, design: .rounded))
                     }
                     .foregroundStyle(.white)

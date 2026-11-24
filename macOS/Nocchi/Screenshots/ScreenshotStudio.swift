@@ -154,7 +154,7 @@ private final class Studio {
         let views: [(AlbumMode, String)] = [(.cork, "album-corkboard"), (.cardBox, "album-cardbox"), (.film, "album-film"), (.calendar, "album-calendar")]
         for (mode, name) in views {
             AlbumRouter.shared.mode = mode
-            await capture(name, title: "相册", size: CGSize(width: 1220, height: 820), settle: mode == .cardBox ? 4.0 : 2.5)
+            await capture(name, title: String(localized: "相册"), size: CGSize(width: 1220, height: 820), settle: mode == .cardBox ? 4.0 : 2.5)
         }
         // 卡片盒按月归档：分隔卡上印「11月」「10月」……
         let cardBox = AlbumRouter.shared.cardBox
@@ -163,23 +163,23 @@ private final class Studio {
         cardBox.showRecent()
         // 第一格的分隔卡像悬停时那样抬起一截（「准备抽出来」）。
         cardBox.peekSlot = 0
-        await capture("album-cardbox-month", title: "相册", size: CGSize(width: 1220, height: 820), settle: 4.0)
+        await capture("album-cardbox-month", title: String(localized: "相册"), size: CGSize(width: 1220, height: 820), settle: 4.0)
         cardBox.peekSlot = nil
         cardBox.indexMode = .letter
-        window(titled: "相册")?.close()
+        window(titled: String(localized: "相册"))?.close()
     }
 
     private func captureDecorateDesk() async {
         guard let latte = prints["latte"] else { return }
         DecorateDesk.shared.open(latte.record)
-        await capture("decorate", title: "装饰台", size: CGSize(width: 1180, height: 800), settle: 3.5)
+        await capture("decorate", title: String(localized: "装饰台"), size: CGSize(width: 1180, height: 800), settle: 3.5)
         DecorateDesk.shared.close()
     }
 
     private func captureSettings() async {
         WindowManager.shared.showSettings()
-        await capture("settings", title: "Nocchi 设置", size: nil, settle: 2.0)
-        window(titled: "Nocchi 设置")?.close()
+        await capture("settings", title: String(localized: "Nocchi 设置"), size: nil, settle: 2.0)
+        window(titled: String(localized: "Nocchi 设置"))?.close()
     }
 
     /// 真的刘海面板：悬停面板和胶卷柜（面板窗口是透明的，叠到壁纸 + 菜单栏上）。

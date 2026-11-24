@@ -268,6 +268,16 @@ public final class PhotoLibrary: @unchecked Sendable {
         public var records: [PhotoRecord]
     }
 
+    private static let englishMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
+    /// 月份分组的标题：「2026 年 11 月」，英文界面「November 2026」。
+    static func monthTitle(year: String, month: Int) -> String {
+        if UILanguage.current.isEnglish, (1...12).contains(month) {
+            return "\(englishMonths[month - 1]) \(year)"
+        }
+        return "\(year) 年 \(month) 月" // i18n-ok：中文按原样
+    }
+
     /// 按月份分组（软木板相册），新的月份在前。
     public static func groupedByMonth(_ records: [PhotoRecord], calendar: Calendar = .current) -> [MonthGroup] {
         var groups: [String: [PhotoRecord]] = [:]
@@ -276,7 +286,7 @@ public final class PhotoLibrary: @unchecked Sendable {
         }
         return groups.keys.sorted(by: >).map { key in
             let parts = key.split(separator: "-")
-            let title = parts.count == 2 ? "\(parts[0]) 年 \(Int(parts[1]) ?? 0) 月" : key
+            let title = parts.count == 2 ? monthTitle(year: String(parts[0]), month: Int(parts[1]) ?? 0) : key
             let items = (groups[key] ?? []).sorted { $0.createdAt > $1.createdAt }
             return MonthGroup(key: key, title: title, records: items)
         }

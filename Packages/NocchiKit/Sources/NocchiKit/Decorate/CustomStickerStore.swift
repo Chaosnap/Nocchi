@@ -112,7 +112,7 @@ public final class CustomStickerStore: @unchecked Sendable {
         try ImageIOKit.writePNG(trimmed, to: directory.appendingPathComponent(fileName))
         let entry = CustomSticker(
             id: id,
-            name: name.isEmpty ? "我的贴纸" : name,
+            name: name.isEmpty ? String(localized: "我的贴纸") : name,
             fileName: fileName,
             aspect: Double(trimmed.width) / Double(max(trimmed.height, 1)),
             dieCut: true,

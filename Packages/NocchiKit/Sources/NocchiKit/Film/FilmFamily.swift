@@ -20,12 +20,12 @@ public enum FilmFamily: String, CaseIterable, Identifiable, Sendable {
 
     public var displayName: String {
         switch self {
-        case .instant: return "即显相纸"
-        case .color: return "彩色负片"
-        case .cine: return "夜景与电影"
-        case .bw: return "黑白"
-        case .booth: return "大头贴"
-        case .custom: return "自定义 LUT"
+        case .instant: return String(localized: "即显相纸")
+        case .color: return String(localized: "彩色负片")
+        case .cine: return String(localized: "夜景与电影")
+        case .bw: return String(localized: "黑白")
+        case .booth: return String(localized: "大头贴")
+        case .custom: return String(localized: "自定义 LUT")
         }
     }
 }

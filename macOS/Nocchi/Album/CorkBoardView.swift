@@ -69,13 +69,13 @@ private struct CorkMonth: View {
     let group: PhotoLibrary.MonthGroup
     let lighting: CorkLighting
 
-    private static let monthNames = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"]
+    private static let monthNames = [String(localized: "一月"), String(localized: "二月"), String(localized: "三月"), String(localized: "四月"), String(localized: "五月"), String(localized: "六月"), String(localized: "七月"), String(localized: "八月"), String(localized: "九月"), String(localized: "十月"), String(localized: "十一月"), String(localized: "十二月")]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 30) {
             HStack(alignment: .center, spacing: 16) {
                 LabelTape(text: title, color: tapeColor, lighting: lighting)
-                TypedSlip(text: "\(group.records.count) 张", size: 11.5, tilt: 2.2)
+                TypedSlip(text: String(localized: "\(group.records.count) 张"), size: 11.5, tilt: 2.2)
             }
             .padding(.leading, 4)
 

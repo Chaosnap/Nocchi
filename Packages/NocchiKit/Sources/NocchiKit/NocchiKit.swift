@@ -5,7 +5,7 @@ public enum NocchiKit {
     public static let version = "0.1.0"
 
     /// 产品名（中文 / 英文）。
-    public static let productName = "刘海冲印店"
+    public static let productName = String(localized: "刘海冲印店")
     public static let productNameEnglish = "Nocchi"
 }
 

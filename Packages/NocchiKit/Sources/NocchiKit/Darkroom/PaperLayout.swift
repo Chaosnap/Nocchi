@@ -137,24 +137,24 @@ public enum FilmFormat: String, Codable, CaseIterable, Identifiable, Sendable {
     /// 中文名。
     public var displayName: String {
         switch self {
-        case .instantSquare: return "方形即显"
-        case .instantMini: return "迷你即显"
-        case .instantWide: return "宽幅即显"
-        case .landscape: return "冲印小照"
-        case .boothStrip: return "四格条"
-        case .boothGrid: return "四宫格"
+        case .instantSquare: return String(localized: "方形即显")
+        case .instantMini: return String(localized: "迷你即显")
+        case .instantWide: return String(localized: "宽幅即显")
+        case .landscape: return String(localized: "冲印小照")
+        case .boothStrip: return String(localized: "四格条")
+        case .boothGrid: return String(localized: "四宫格")
         }
     }
 
     /// 一句话规格说明。
     public var note: String {
         switch self {
-        case .instantSquare: return "88×107 · 方形画面 · 厚底边可以写字"
-        case .instantMini: return "54×86 · 竖幅小卡 · 能放进钱包"
-        case .instantWide: return "108×86 · 横幅画面 · 适合合照与风景"
-        case .landscape: return "102×76 · 3:2 白边冲印小照"
-        case .boothStrip: return "52×160 · 四格竖条"
-        case .boothGrid: return "102×152 · 2×2 四宫格"
+        case .instantSquare: return String(localized: "88×107 · 方形画面 · 厚底边可以写字")
+        case .instantMini: return String(localized: "54×86 · 竖幅小卡 · 能放进钱包")
+        case .instantWide: return String(localized: "108×86 · 横幅画面 · 适合合照与风景")
+        case .landscape: return String(localized: "102×76 · 3:2 白边冲印小照")
+        case .boothStrip: return String(localized: "52×160 · 四格竖条")
+        case .boothGrid: return String(localized: "102×152 · 2×2 四宫格")
         }
     }
 

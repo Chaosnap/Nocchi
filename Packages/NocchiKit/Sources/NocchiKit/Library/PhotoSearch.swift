@@ -183,10 +183,10 @@ public enum PhotoSearch {
         forms.append("\(yyyy).\(mm).\(dd)")
         forms.append("\(yyyy)/\(m)/\(d)")
         forms.append("\(yyyy)-\(m)-\(d)")
-        forms.append("\(yyyy)年\(m)月")
-        forms.append("\(yyyy)年\(m)月\(d)日")
-        forms.append("\(m)月")
-        forms.append("\(m)月\(d)日")
+        forms.append("\(yyyy)年\(m)月") // i18n-ok：搜索用的日期写法
+        forms.append("\(yyyy)年\(m)月\(d)日") // i18n-ok：搜索用的日期写法
+        forms.append("\(m)月") // i18n-ok：搜索用的日期写法
+        forms.append("\(m)月\(d)日") // i18n-ok：搜索用的日期写法
         forms.append("\(mm)/\(dd)")
         forms.append("\(m)/\(d)")
         return forms

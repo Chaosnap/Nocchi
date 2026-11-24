@@ -13,7 +13,7 @@ final class WindowManager {
     private init() {}
 
     func showSettings() {
-        settingsWindow = present(settingsWindow, title: "Nocchi 设置", size: NSSize(width: 640, height: 560), autosave: "NocchiSettings") {
+        settingsWindow = present(settingsWindow, title: String(localized: "Nocchi 设置"), size: NSSize(width: 640, height: 560), autosave: "NocchiSettings") {
             SettingsView()
         }
     }
@@ -22,7 +22,7 @@ final class WindowManager {
     func showAlbum() {
         albumWindow = present(
             albumWindow,
-            title: "相册",
+            title: String(localized: "相册"),
             size: NSSize(width: 1220, height: 820),
             minSize: NSSize(width: 980, height: 700),
             autosave: "NocchiAlbumV2",

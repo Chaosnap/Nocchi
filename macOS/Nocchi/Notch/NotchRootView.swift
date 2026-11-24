@@ -105,20 +105,20 @@ private struct HoverPanel: View {
             header
                 .frame(height: notchHeight)
             HStack(spacing: 8) {
-                NotchActionButton(symbol: "camera.viewfinder", title: "屏幕快门", hint: "⌃⌥⌘S") {
+                NotchActionButton(symbol: "camera.viewfinder", title: String(localized: "屏幕快门"), hint: "⌃⌥⌘S") {
                     Darkroom.shared.screenShutter()
                 }
-                NotchActionButton(symbol: "face.smiling", title: "自拍", hint: "⌃⌥⌘F") {
+                NotchActionButton(symbol: "face.smiling", title: String(localized: "自拍"), hint: "⌃⌥⌘F") {
                     notch.enterSelfie()
                 }
-                NotchActionButton(symbol: "square.grid.2x2", title: "大头贴", hint: "⌃⌥⌘B") {
+                NotchActionButton(symbol: "square.grid.2x2", title: String(localized: "大头贴"), hint: "⌃⌥⌘B") {
                     PhotoBoothController.shared.start()
                 }
-                NotchActionButton(symbol: "photo.on.rectangle.angled", title: "冲印照片", hint: "⌘O") {
+                NotchActionButton(symbol: "photo.on.rectangle.angled", title: String(localized: "冲印照片"), hint: "⌘O") {
                     PhotoImport.chooseFiles()
                 }
                 if !NotchShelf.shared.isEmpty {
-                    NotchActionButton(symbol: "tray.full.fill", title: "暂存", hint: "\(NotchShelf.shared.items.count) 张") {
+                    NotchActionButton(symbol: "tray.full.fill", title: String(localized: "暂存"), hint: String(localized: "\(NotchShelf.shared.items.count) 张")) {
                         notch.openShelf()
                     }
                 }
@@ -138,11 +138,11 @@ private struct HoverPanel: View {
                     Haptics.tick()
                 }
                 VStack(spacing: 10) {
-                    SmallIconButton(symbol: "rectangle.stack", help: "相册") { WindowManager.shared.showAlbum() }
-                    SmallIconButton(symbol: model.quietMode ? "speaker.slash.fill" : "speaker.wave.2.fill", help: "安静模式") {
+                    SmallIconButton(symbol: "rectangle.stack", help: String(localized: "相册")) { WindowManager.shared.showAlbum() }
+                    SmallIconButton(symbol: model.quietMode ? "speaker.slash.fill" : "speaker.wave.2.fill", help: String(localized: "安静模式")) {
                         model.quietMode.toggle()
                     }
-                    SmallIconButton(symbol: "gearshape.fill", help: "设置") { WindowManager.shared.showSettings() }
+                    SmallIconButton(symbol: "gearshape.fill", help: String(localized: "设置")) { WindowManager.shared.showSettings() }
                 }
                 .foregroundStyle(.white.opacity(0.85))
             }
@@ -514,13 +514,13 @@ private struct SelfiePanel: View {
 
     private var controls: some View {
         HStack(spacing: 40) {
-            RoundControlButton(symbol: "xmark", isOn: false, help: "退出自拍（Esc）") {
+            RoundControlButton(symbol: "xmark", isOn: false, help: String(localized: "退出自拍（Esc）")) {
                 notch.exitSelfie()
             }
             ShutterButton(enabled: camera.isRunning && !notch.isCapturing) {
                 notch.selfieShutter()
             }
-            RoundControlButton(symbol: "timer", isOn: model.selfieCountdown, help: "自拍倒数 3 秒") {
+            RoundControlButton(symbol: "timer", isOn: model.selfieCountdown, help: String(localized: "自拍倒数 3 秒")) {
                 model.selfieCountdown.toggle()
             }
         }

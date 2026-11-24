@@ -30,9 +30,9 @@ final class StickerShelf: ObservableObject {
         }
         refresh()
         if failed > 0 {
-            message = "有 \(failed) 个文件读不出图片"
+            message = String(localized: "有 \(failed) 个文件读不出图片")
         } else if !added.isEmpty {
-            message = "做好了 \(added.count) 枚贴纸"
+            message = String(localized: "做好了 \(added.count) 枚贴纸")
             SoundPlayer.shared.play(.cardSlide)
         }
         return added
@@ -43,19 +43,19 @@ final class StickerShelf: ObservableObject {
         panel.allowedContentTypes = [.image]
         panel.allowsMultipleSelection = true
         panel.canChooseDirectories = false
-        panel.message = "选几张图片做成贴纸（透明背景的 PNG 效果最好）"
+        panel.message = String(localized: "选几张图片做成贴纸（透明背景的 PNG 效果最好）")
         guard panel.runModal() == .OK else { return }
         importFiles(panel.urls)
     }
 
     func rename(_ sticker: CustomSticker) {
         let alert = NSAlert()
-        alert.messageText = "给贴纸起个名字"
+        alert.messageText = String(localized: "给贴纸起个名字")
         let field = NSTextField(string: sticker.name)
         field.frame = NSRect(x: 0, y: 0, width: 240, height: 24)
         alert.accessoryView = field
-        alert.addButton(withTitle: "好")
-        alert.addButton(withTitle: "取消")
+        alert.addButton(withTitle: String(localized: "好"))
+        alert.addButton(withTitle: String(localized: "取消"))
         alert.window.initialFirstResponder = field
         guard alert.runModal() == .alertFirstButtonReturn else { return }
         Services.stickers.rename(sticker.id, to: field.stringValue)
@@ -75,7 +75,7 @@ final class StickerShelf: ObservableObject {
     func remove(_ sticker: CustomSticker) {
         Services.stickers.remove(sticker.id)
         refresh()
-        message = "已从贴纸库拿掉（已经贴在照片上的不会消失）"
+        message = String(localized: "已从贴纸库拿掉（已经贴在照片上的不会消失）")
     }
 
     private func refresh() {

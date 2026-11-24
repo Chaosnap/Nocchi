@@ -72,8 +72,8 @@ enum TemplateArt {
     /// 没写题字时模板自带的字。
     static func defaultCaption(_ template: PrintTemplate) -> String? {
         switch template.style {
-        case .boothBirthday: return "生日快乐"
-        case .boothNewYear: return "新年快乐"
+        case .boothBirthday: return String(localized: "生日快乐")
+        case .boothNewYear: return String(localized: "新年快乐")
         default: return nil
         }
     }
@@ -148,7 +148,7 @@ enum TemplateArt {
             let top = layout.scaled(layout.windows[0], toWidth: size.width).minY
             let textSize = min(top * 0.42, 2.4 * s)
             RetroPrint.text(ctx, "NOCCHI POST", fonts: RetroPrint.typewriter, size: textSize, color: c("#2F4C8A"), x: inset + 1.2 * s, baseline: top - 0.9 * s, align: -1, tracking: 0.3 * s)
-            RetroPrint.text(ctx, "8分", fonts: RetroPrint.chineseSerif, size: textSize * 1.2, color: c("#B23A2A"), x: size.width - inset - 1.2 * s, baseline: top - 0.9 * s, align: 1)
+            RetroPrint.text(ctx, "8分", fonts: RetroPrint.chineseSerif, size: textSize * 1.2, color: c("#B23A2A"), x: size.width - inset - 1.2 * s, baseline: top - 0.9 * s, align: 1) // i18n-ok：邮票面值（图案）
         case .seventies:
             let colors = ["#D9A441", "#C4593B", "#5A3A28"]
             let band = 1.5 * s

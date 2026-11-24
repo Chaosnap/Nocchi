@@ -341,7 +341,7 @@ final class NotchController: ObservableObject {
         Haptics.align()
         collapse()
         if changed {
-            showToast("装上了 \(stock.name)", symbol: "film")
+            showToast(String(localized: "装上了 \(stock.name)"), symbol: "film")
         }
     }
 
@@ -461,11 +461,11 @@ final class NotchController: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak self] in
             MainActor.assumeIsolated {
                 guard let self else { return }
-                self.showToast("营业中", symbol: AppModel.shared.currentBody.symbolName, duration: 1.6, live: true)
+                self.showToast(String(localized: "营业中"), symbol: AppModel.shared.currentBody.symbolName, duration: 1.6, live: true)
                 guard firstLaunch else { return }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.1) { [weak self] in
                     MainActor.assumeIsolated {
-                        self?.showToast("把鼠标移到刘海上试试", symbol: "hand.point.up.left.fill", duration: 4)
+                        self?.showToast(String(localized: "把鼠标移到刘海上试试"), symbol: "hand.point.up.left.fill", duration: 4)
                     }
                 }
             }

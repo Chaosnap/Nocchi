@@ -124,10 +124,10 @@ enum AlbumMode: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .cork: "软木板"
-        case .cardBox: "卡片盒"
-        case .film: "胶卷"
-        case .calendar: "日历"
+        case .cork: String(localized: "软木板")
+        case .cardBox: String(localized: "卡片盒")
+        case .film: String(localized: "胶卷")
+        case .calendar: String(localized: "日历")
         }
     }
 
@@ -243,10 +243,10 @@ enum AlbumActions {
 
     static func trash(_ record: PhotoRecord) {
         let alert = NSAlert()
-        alert.messageText = "把这张照片移到废纸篓？"
-        alert.informativeText = "成片会移到废纸篓（可以恢复）；记录和底片会被删除。"
-        alert.addButton(withTitle: "移到废纸篓")
-        alert.addButton(withTitle: "取消")
+        alert.messageText = String(localized: "把这张照片移到废纸篓？")
+        alert.informativeText = String(localized: "成片会移到废纸篓（可以恢复）；记录和底片会被删除。")
+        alert.addButton(withTitle: String(localized: "移到废纸篓"))
+        alert.addButton(withTitle: String(localized: "取消"))
         guard alert.runModal() == .alertFirstButtonReturn else { return }
         if let controller = DesktopBoard.shared.controllers[record.id] {
             controller.close()
@@ -344,7 +344,7 @@ struct NoResultsSlip: View {
 
     var body: some View {
         VStack(spacing: 6) {
-            TypedSlip(text: "没有找到『\(query.trimmingCharacters(in: .whitespacesAndNewlines))』", size: 14, tilt: -1.2)
+            TypedSlip(text: String(localized: "没有找到『\(query.trimmingCharacters(in: .whitespacesAndNewlines))』"), size: 14, tilt: -1.2)
             Text("试试题字、#标签、地点、胶卷名，或者「2026/11」这样的日期")
                 .font(.system(size: 11.5))
                 .foregroundStyle(Palette.inkSoft)

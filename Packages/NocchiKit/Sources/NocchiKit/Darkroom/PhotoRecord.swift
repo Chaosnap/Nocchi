@@ -333,7 +333,7 @@ public struct PhotoRecord: Codable, Hashable, Identifiable, Sendable {
     /// 去掉首尾空白和开头的「#」/「＃」。
     public static func normalizedTag(_ tag: String) -> String {
         var t = tag.trimmingCharacters(in: .whitespacesAndNewlines)
-        while let first = t.first, first == "#" || first == "＃" {
+        while let first = t.first, first == "#" || first == "＃" { // i18n-ok：标签规整，不是界面文字
             t.removeFirst()
         }
         return t.trimmingCharacters(in: .whitespacesAndNewlines)

@@ -41,7 +41,7 @@ final class Darkroom {
         var frames: [CGImage] = []
         for index in 0..<total {
             if index > 0 {
-                NotchController.shared.showToast("再框一张 · \(index + 1)/\(total)", symbol: "rectangle.dashed", duration: 1.6)
+                NotchController.shared.showToast(String(localized: "再框一张 · \(index + 1)/\(total)"), symbol: "rectangle.dashed", duration: 1.6)
                 try? await Task.sleep(nanoseconds: 650_000_000)
             }
             guard let image = await ScreenShutter.captureInteractive() else { break }
@@ -75,7 +75,7 @@ final class Darkroom {
                 picked.compactMap { ImageIOKit.load($0, maxPixel: 3200) }
             }.value
             guard !images.isEmpty else {
-                NotchController.shared.showToast("这个文件不是图片", symbol: "questionmark.circle.fill")
+                NotchController.shared.showToast(String(localized: "这个文件不是图片"), symbol: "questionmark.circle.fill")
                 return
             }
             await developImported(images)
@@ -110,7 +110,7 @@ final class Darkroom {
         flash.off()
         notch.exitSelfie()
         guard let photo else {
-            notch.showToast("没拍到，再试一次", symbol: "exclamationmark.triangle.fill")
+            notch.showToast(String(localized: "没拍到，再试一次"), symbol: "exclamationmark.triangle.fill")
             return
         }
         await develop([photo], source: .selfie, body: .instant, mirror: AppModel.shared.mirrorSelfie)
@@ -151,7 +151,7 @@ final class Darkroom {
         }
         notch.exitSelfie()
         guard !frames.isEmpty else {
-            notch.showToast("大头贴没拍到，再来一次", symbol: "exclamationmark.triangle.fill")
+            notch.showToast(String(localized: "大头贴没拍到，再来一次"), symbol: "exclamationmark.triangle.fill")
             return
         }
         await develop(Self.filled(frames, to: total), source: .booth, body: .photoBooth, mirror: model.mirrorSelfie, booth: model.boothSetup())
@@ -244,7 +244,7 @@ final class Darkroom {
         }.value
 
         guard !result.negatives.isEmpty else {
-            NotchController.shared.showToast("冲洗失败了", symbol: "exclamationmark.triangle.fill")
+            NotchController.shared.showToast(String(localized: "冲洗失败了"), symbol: "exclamationmark.triangle.fill")
             return
         }
         record.negatives = result.names
@@ -257,7 +257,7 @@ final class Darkroom {
             Task { @MainActor in
                 try? await Task.sleep(nanoseconds: 3_500_000_000)
                 Sound.play(.gearClick)
-                NotchController.shared.showToast("这一卷拍完了，换上新的 \(stock.name)", symbol: "film.stack")
+                NotchController.shared.showToast(String(localized: "这一卷拍完了，换上新的 \(stock.name)"), symbol: "film.stack")
             }
         }
     }

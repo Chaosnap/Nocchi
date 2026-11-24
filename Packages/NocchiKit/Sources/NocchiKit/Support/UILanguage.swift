@@ -25,7 +25,7 @@ public enum UILanguage: String, CaseIterable, Codable, Sendable, Identifiable {
     /// 语言自己的名字（不翻译：在英文界面里也写「简体中文」）。
     public var nativeName: String {
         switch self {
-        case .chinese: return "简体中文"
+        case .chinese: return "简体中文" // i18n-ok：语言自己的名字
         case .english: return "English"
         }
     }
@@ -33,4 +33,14 @@ public enum UILanguage: String, CaseIterable, Codable, Sendable, Identifiable {
     public var locale: Locale { Locale(identifier: rawValue) }
 
     public var isEnglish: Bool { self == .english }
+}
+
+/// 动态文字的翻译（不是写在源码里的字面量，比如胶卷简介）：键是中文原文，英文在 App 的
+/// `en.lproj/Localizable.strings` 里；中文界面直接返回原文，找不到翻译时也是原文。
+/// 写在源码里的字用 `String(localized:)`（SwiftUI 的 `Text("…")` 会自己查表）。
+public enum Localized {
+    public static func string(_ key: String) -> String {
+        guard UILanguage.current.isEnglish, !key.isEmpty else { return key }
+        return Bundle.main.localizedString(forKey: key, value: key, table: nil)
+    }
 }

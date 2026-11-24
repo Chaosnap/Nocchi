@@ -1,0 +1,5893 @@
+{
+ "%@  ·  %lld 张": {
+  "source": "\\(stock.name)  ·  \\(stock.exposures) 张",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/App/MenuContent.swift:29",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "%@ · %@（点一下换下一台）": {
+  "source": "\\(camera.displayName) · \\(camera.tagline)（点一下换下一台）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:244",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "%@ · %lld 张": {
+  "source": "\\(groupName(tab)) · \\(tab.count) 张",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBoxModel.swift:216",
+    "context": "localized"
+   }
+  ]
+ },
+ "%@ · 左右拖动翻看": {
+  "source": "\\(text) · 左右拖动翻看",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:607",
+    "context": "localized"
+   }
+  ]
+ },
+ "%@ 组": {
+  "source": "\\(tab.title) 组",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBoxModel.swift:144",
+    "context": "localized"
+   }
+  ]
+ },
+ "%@还是空的": {
+  "source": "\\(name)还是空的",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift:297",
+    "context": "localized"
+   }
+  ]
+ },
+ "%@（⌘%@）": {
+  "source": "\\(item.title)（⌘\\(String(item.key.character))）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumHeader.swift:151",
+    "context": "localized"
+   }
+  ]
+ },
+ "%@（点一下换下一种）": {
+  "source": "\\(format.note)（点一下换下一种）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:304",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "%lld · %lld 张": {
+  "source": "\\(stock.iso) · \\(stock.exposures) 张",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/FilmCabinetPanel.swift:156",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "%lld 张": {
+  "source": "\\(NotchShelf.shared.items.count) 张",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:121",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Notch/NotchShelf.swift:183",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:78",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:515",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "%lld 张 · 点一下展开": {
+  "source": "\\(day.records.count) 张 · 点一下展开",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:261",
+    "context": "localized"
+   }
+  ]
+ },
+ "%lld 月 %lld 日 · %lld 张": {
+  "source": "\\(parts.month ?? 0) 月 \\(parts.day ?? 0) 日 · \\(day.records.count) 张",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:398",
+    "context": "localized"
+   }
+  ]
+ },
+ "%lld 秒": {
+  "source": "\\(Int(model.developSeconds)) 秒",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:230",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "102×152 · 2×2 四宫格": {
+  "source": "102×152 · 2×2 四宫格",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/PaperLayout.swift:157",
+    "context": "localized"
+   }
+  ]
+ },
+ "102×76 · 3:2 白边冲印小照": {
+  "source": "102×76 · 3:2 白边冲印小照",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/PaperLayout.swift:155",
+    "context": "localized"
+   }
+  ]
+ },
+ "108×86 · 横幅画面 · 适合合照与风景": {
+  "source": "108×86 · 横幅画面 · 适合合照与风景",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/PaperLayout.swift:154",
+    "context": "localized"
+   }
+  ]
+ },
+ "50 年代照片的扇贝毛边和压纹边框": {
+  "source": "50 年代照片的扇贝毛边和压纹边框",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:118",
+    "context": "localized"
+   }
+  ]
+ },
+ "52×160 · 四格竖条": {
+  "source": "52×160 · 四格竖条",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/PaperLayout.swift:156",
+    "context": "localized"
+   }
+  ]
+ },
+ "54×86 · 竖幅小卡 · 能放进钱包": {
+  "source": "54×86 · 竖幅小卡 · 能放进钱包",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/PaperLayout.swift:153",
+    "context": "localized"
+   }
+  ]
+ },
+ "70 年代": {
+  "source": "70 年代",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/PosterRenderer.swift:26",
+    "context": "localized"
+   }
+  ]
+ },
+ "70 年代条纹": {
+  "source": "70 年代条纹",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:125",
+    "context": "localized"
+   }
+  ]
+ },
+ "70 年代褪色的冲印：暖红偏色、黑位发灰、颜色像晒过太阳": {
+  "source": "70 年代褪色的冲印：暖红偏色、黑位发灰、颜色像晒过太阳",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (old-album-100)",
+    "context": "data"
+   }
+  ]
+ },
+ "88×107 · 方形画面 · 厚底边可以写字": {
+  "source": "88×107 · 方形画面 · 厚底边可以写字",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/PaperLayout.swift:152",
+    "context": "localized"
+   }
+  ]
+ },
+ "DOMAIN_MIN 必须小于 DOMAIN_MAX。": {
+  "source": "DOMAIN_MIN 必须小于 DOMAIN_MAX。",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Film/CubeLUT.swift:40",
+    "context": "localized"
+   }
+  ]
+ },
+ "Esc 取消 · 一次一条，不能重拍": {
+  "source": "Esc 取消 · 一次一条，不能重拍",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:431",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:470",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "ISO %lld · %lld 张 · %@": {
+  "source": "ISO \\(stock.iso) · \\(stock.exposures) 张 · \\(stock.family.displayName)",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:184",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "LUT 文件太大（%lld KB），上限 %lld MB。": {
+  "source": "LUT 文件太大（\\(bytes / 1024) KB），上限 \\(CubeLUT.maxFileBytes / 1024 / 1024) MB。",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Film/CubeLUT.swift:26",
+    "context": "localized"
+   }
+  ]
+ },
+ "M月d日 EEE": {
+  "source": "M月d日 EEE",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioScenes.swift:34",
+    "context": "string"
+   }
+  ]
+ },
+ "NOCCHI 冲印店 · 挂历": {
+  "source": "NOCCHI 冲印店 · 挂历",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:213",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "Nocchi · 刘海冲印店": {
+  "source": "Nocchi · 刘海冲印店",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:518",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "Nocchi 设置": {
+  "source": "Nocchi 设置",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/WindowManager.swift:16",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:181",
+    "context": "string"
+   },
+   {
+    "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:182",
+    "context": "string"
+   }
+  ]
+ },
+ "Nocchi 需要使用摄像头": {
+  "source": "Nocchi 需要使用摄像头",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Capture/CameraService.swift:281",
+    "context": "localized"
+   }
+  ]
+ },
+ "OBS、Camo 等以「摄像头扩展」形式安装的虚拟摄像头会出现在「外接 / 虚拟」里。正在用的摄像头拔掉时，Nocchi 会自动换回默认摄像头。": {
+  "source": "OBS、Camo 等以「摄像头扩展」形式安装的虚拟摄像头会出现在「外接 / 虚拟」里。正在用的摄像头拔掉时，Nocchi 会自动换回默认摄像头。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:392",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "← → 换相框 · ↑ ↓ 四格条 / 四宫格 · Return 开始 · Esc 离开": {
+  "source": "← → 换相框 · ↑ ↓ 四格条 / 四宫格 · Return 开始 · Esc 离开",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:431",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:459",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "「%@」": {
+  "source": "「\\(location)」",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/PhotoComposer.swift:299",
+    "context": "localized"
+   }
+  ]
+ },
+ "「%@」\\n\\n之后冲印的照片都放在这里。": {
+  "source": "「\\(destination.path)」\\n\\n之后冲印的照片都放在这里。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:79",
+    "context": "localized"
+   }
+  ]
+ },
+ "「%@」\\n\\n已有的 %lld 个成片文件会一起搬过去，之后冲印的照片也放在这里。": {
+  "source": "「\\(destination.path)」\\n\\n已有的 \\(count) 个成片文件会一起搬过去，之后冲印的照片也放在这里。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:78",
+    "context": "localized"
+   }
+  ]
+ },
+ "「%@」不适用于%@，这种相纸会用「经典」。": {
+  "source": "「\\(chosen.name)」不适用于\\(model.instantFormat.displayName)，这种相纸会用「经典」。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:324",
+    "context": "localized"
+   }
+  ]
+ },
+ "一": {
+  "source": "一",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
+    "context": "localized"
+   }
+  ]
+ },
+ "一卷 27 张，拍完前不能看，第二天早上冲好": {
+  "source": "一卷 27 张，拍完前不能看，第二天早上冲好",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/CameraBody.swift:33",
+    "context": "localized"
+   }
+  ]
+ },
+ "一张一出，甩一甩加速显影，白边可以写字": {
+  "source": "一张一出，甩一甩加速显影，白边可以写字",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/CameraBody.swift:31",
+    "context": "localized"
+   }
+  ]
+ },
+ "一月": {
+  "source": "一月",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/FilmLightTable.swift:79",
+    "context": "localized"
+   }
+  ]
+ },
+ "一次性相机": {
+  "source": "一次性相机",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/CameraBody.swift:20",
+    "context": "localized"
+   }
+  ]
+ },
+ "七月": {
+  "source": "七月",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/FilmLightTable.swift:79",
+    "context": "localized"
+   }
+  ]
+ },
+ "三": {
+  "source": "三",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
+    "context": "localized"
+   }
+  ]
+ },
+ "三月": {
+  "source": "三月",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/FilmLightTable.swift:79",
+    "context": "localized"
+   }
+  ]
+ },
+ "上": {
+  "source": "上",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:66",
+    "context": "localized"
+   }
+  ]
+ },
+ "上一款（←）": {
+  "source": "上一款（←）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/BoothFrameChooser.swift:236",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Booth/BoothFrameChooser.swift:264",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:361",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "上个月": {
+  "source": "上个月",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:159",
+    "context": "localized"
+   }
+  ]
+ },
+ "上海": {
+  "source": "上海",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:29",
+    "context": "string"
+   }
+  ]
+ },
+ "下": {
+  "source": "下",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:66",
+    "context": "localized"
+   }
+  ]
+ },
+ "下一款（→）": {
+  "source": "下一款（→）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/BoothFrameChooser.swift:236",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Booth/BoothFrameChooser.swift:264",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:366",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "下个月": {
+  "source": "下个月",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:161",
+    "context": "localized"
+   }
+  ]
+ },
+ "下雨": {
+  "source": "下雨",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:13",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:114",
+    "context": "string"
+   }
+  ]
+ },
+ "不印日期": {
+  "source": "不印日期",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:534",
+    "context": "localized"
+   }
+  ]
+ },
+ "不支持的 LUT 尺寸：%lld。": {
+  "source": "不支持的 LUT 尺寸：\\(n)。",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Film/CubeLUT.swift:32",
+    "context": "localized"
+   }
+  ]
+ },
+ "丝绒": {
+  "source": "丝绒",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/PosterRenderer.swift:24",
+    "context": "localized"
+   }
+  ]
+ },
+ "两张叠放": {
+  "source": "两张叠放",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/PosterRenderer.swift:79",
+    "context": "localized"
+   }
+  ]
+ },
+ "中": {
+  "source": "中",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:773",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "中等": {
+  "source": "中等",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateDesk.swift:338",
+    "context": "localized"
+   }
+  ]
+ },
+ "九月": {
+  "source": "九月",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/FilmLightTable.swift:79",
+    "context": "localized"
+   }
+  ]
+ },
+ "二": {
+  "source": "二",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
+    "context": "localized"
+   }
+  ]
+ },
+ "二月": {
+  "source": "二月",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/FilmLightTable.swift:79",
+    "context": "localized"
+   }
+  ]
+ },
+ "五": {
+  "source": "五",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
+    "context": "localized"
+   }
+  ]
+ },
+ "五月": {
+  "source": "五月",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/FilmLightTable.swift:79",
+    "context": "localized"
+   }
+  ]
+ },
+ "亚麻": {
+  "source": "亚麻",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/PosterRenderer.swift:21",
+    "context": "localized"
+   }
+  ]
+ },
+ "京都": {
+  "source": "京都",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:52",
+    "context": "string"
+   }
+  ]
+ },
+ "亮": {
+  "source": "亮",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:213",
+    "context": "localized"
+   }
+  ]
+ },
+ "亮度": {
+  "source": "亮度",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:213",
+    "context": "localized"
+   }
+  ]
+ },
+ "人像负片：暖中性、低反差，肤色奶油般柔和，绿色收敛，高光过渡细腻": {
+  "source": "人像负片：暖中性、低反差，肤色奶油般柔和，绿色收敛，高光过渡细腻",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (portrait-400)",
+    "context": "data"
+   }
+  ]
+ },
+ "人民公园": {
+  "source": "人民公园",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:39",
+    "context": "string"
+   }
+  ]
+ },
+ "今天": {
+  "source": "今天",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:160",
+    "context": "localized"
+   }
+  ]
+ },
+ "今天也很好": {
+  "source": "今天也很好",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:76",
+    "context": "localized"
+   }
+  ]
+ },
+ "从「照片」图库冲印": {
+  "source": "从「照片」图库冲印",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Import/PhotoImport.swift:67",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Import/PhotoImport.swift:91",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "从「照片」图库冲印…": {
+  "source": "从「照片」图库冲印…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/App/MenuContent.swift:17",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:100",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:131",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Album/AlbumHeader.swift:265",
+    "context": "localized"
+   }
+  ]
+ },
+ "从文件冲印…": {
+  "source": "从文件冲印…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumHeader.swift:264",
+    "context": "localized"
+   }
+  ]
+ },
+ "从贴纸库删掉": {
+  "source": "从贴纸库删掉",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:176",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "价签": {
+  "source": "价签",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:51",
+    "context": "localized"
+   }
+  ]
+ },
+ "会印在照片下面的白边上。": {
+  "source": "会印在照片下面的白边上。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:598",
+    "context": "localized"
+   }
+  ]
+ },
+ "例如：上海 · 武康路": {
+  "source": "例如：上海 · 武康路",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:436",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "偏冷的日常负片：浓郁的绿、清脆的反差，阴影里一点青绿": {
+  "source": "偏冷的日常负片：浓郁的绿、清脆的反差，阴影里一点青绿",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (evergreen-400)",
+    "context": "data"
+   }
+  ]
+ },
+ "做好了 %lld 枚贴纸": {
+  "source": "做好了 \\(added.count) 枚贴纸",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/StickerShelf.swift:35",
+    "context": "localized"
+   }
+  ]
+ },
+ "光从%@边来": {
+  "source": "光从\\(store.lighting.directionName)边来",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:202",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "光台上还没有底片 · 拍几张再来看": {
+  "source": "光台上还没有底片 · 拍几张再来看",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/FilmLightTable.swift:26",
+    "context": "localized"
+   }
+  ]
+ },
+ "光的方向": {
+  "source": "光的方向",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:300",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "全部字体": {
+  "source": "全部字体",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:842",
+    "context": "localized"
+   }
+  ]
+ },
+ "全部放回": {
+  "source": "全部放回",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:566",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:597",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift:310",
+    "context": "localized"
+   }
+  ]
+ },
+ "全部放回桌面": {
+  "source": "全部放回桌面",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchShelf.swift:152",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "八月": {
+  "source": "八月",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/FilmLightTable.swift:79",
+    "context": "localized"
+   }
+  ]
+ },
+ "公园里的小狗": {
+  "source": "公园里的小狗",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:39",
+    "context": "string"
+   }
+  ]
+ },
+ "六": {
+  "source": "六",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
+    "context": "localized"
+   }
+  ]
+ },
+ "六月": {
+  "source": "六月",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/FilmLightTable.swift:79",
+    "context": "localized"
+   }
+  ]
+ },
+ "共享…": {
+  "source": "共享…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:530",
+    "context": "localized"
+   }
+  ]
+ },
+ "关于": {
+  "source": "关于",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:21",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "关掉后 Nocchi 只住在菜单栏和刘海里（没有程序坞图标和主菜单）。": {
+  "source": "关掉后 Nocchi 只住在菜单栏和刘海里（没有程序坞图标和主菜单）。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:219",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "内建": {
+  "source": "内建",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Capture/CameraService.swift:18",
+    "context": "localized"
+   }
+  ]
+ },
+ "再框一张 · %lld/%lld": {
+  "source": "再框一张 · \\(index + 1)/\\(total)",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Darkroom/Darkroom.swift:44",
+    "context": "localized"
+   }
+  ]
+ },
+ "写一句题字": {
+  "source": "写一句题字",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:597",
+    "context": "localized"
+   }
+  ]
+ },
+ "写一句题字…": {
+  "source": "写一句题字…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:533",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:406",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "写完了": {
+  "source": "写完了",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:532",
+    "context": "localized"
+   }
+  ]
+ },
+ "写点什么": {
+  "source": "写点什么",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateSession.swift:206",
+    "context": "localized"
+   }
+  ]
+ },
+ "冲印": {
+  "source": "冲印",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Import/PhotoImport.swift:21",
+    "context": "localized"
+   }
+  ]
+ },
+ "冲印中": {
+  "source": "冲印中",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:267",
+    "context": "localized"
+   }
+  ]
+ },
+ "冲印小照": {
+  "source": "冲印小照",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/PaperLayout.swift:143",
+    "context": "localized"
+   }
+  ]
+ },
+ "冲印店": {
+  "source": "冲印店",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:42",
+    "context": "localized"
+   }
+  ]
+ },
+ "冲印照片": {
+  "source": "冲印照片",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:117",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Import/PhotoImport.swift:19",
+    "context": "localized"
+   }
+  ]
+ },
+ "冲印照片…": {
+  "source": "冲印照片…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/App/MenuContent.swift:16",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:99",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:129",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "冲印照片（⌘O）": {
+  "source": "冲印照片（⌘O）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumHeader.swift:274",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "冲洗失败了": {
+  "source": "冲洗失败了",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Darkroom/Darkroom.swift:247",
+    "context": "localized"
+   }
+  ]
+ },
+ "冷": {
+  "source": "冷",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:211",
+    "context": "localized"
+   }
+  ]
+ },
+ "凸字标签（红）": {
+  "source": "凸字标签（红）",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:75",
+    "context": "localized"
+   }
+  ]
+ },
+ "凸字标签（黑）": {
+  "source": "凸字标签（黑）",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:74",
+    "context": "localized"
+   }
+  ]
+ },
+ "分享": {
+  "source": "分享",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateSession.swift:32",
+    "context": "localized"
+   }
+  ]
+ },
+ "分享…": {
+  "source": "分享…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:613",
+    "context": "localized"
+   }
+  ]
+ },
+ "刘海冲印店": {
+  "source": "刘海冲印店",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/NocchiKit.swift:8",
+    "context": "localized"
+   }
+  ]
+ },
+ "刘海暂存": {
+  "source": "刘海暂存",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchShelf.swift:148",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "删掉这枚贴纸": {
+  "source": "删掉这枚贴纸",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/PaperStage.swift:204",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "删掉这段字": {
+  "source": "删掉这段字",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:794",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Editor/PaperStage.swift:348",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "删除": {
+  "source": "删除",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:283",
+    "context": "localized"
+   }
+  ]
+ },
+ "删除这个字体": {
+  "source": "删除这个字体",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:830",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "删除这卷胶卷": {
+  "source": "删除这卷胶卷",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:119",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "加上白色模切边": {
+  "source": "加上白色模切边",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:172",
+    "context": "localized"
+   }
+  ]
+ },
+ "十一月": {
+  "source": "十一月",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/FilmLightTable.swift:79",
+    "context": "localized"
+   }
+  ]
+ },
+ "十二月": {
+  "source": "十二月",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/FilmLightTable.swift:79",
+    "context": "localized"
+   }
+  ]
+ },
+ "十月": {
+  "source": "十月",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/FilmLightTable.swift:79",
+    "context": "localized"
+   }
+  ]
+ },
+ "千岛湖": {
+  "source": "千岛湖",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:80",
+    "context": "string"
+   }
+  ]
+ },
+ "午后的猫": {
+  "source": "午后的猫",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:44",
+    "context": "string"
+   }
+  ]
+ },
+ "半格相机": {
+  "source": "半格相机",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/CameraBody.swift:22",
+    "context": "localized"
+   }
+  ]
+ },
+ "卡片盒": {
+  "source": "卡片盒",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumShared.swift:128",
+    "context": "localized"
+   }
+  ]
+ },
+ "卡片盒归档": {
+  "source": "卡片盒归档",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumHeader.swift:287",
+    "context": "localized"
+   }
+  ]
+ },
+ "卡片盒归档：按首字母或按年 / 月 / 日": {
+  "source": "卡片盒归档：按首字母或按年 / 月 / 日",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumHeader.swift:305",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "卡片盒还是空的": {
+  "source": "卡片盒还是空的",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:619",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "印上日期": {
+  "source": "印上日期",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:534",
+    "context": "localized"
+   }
+  ]
+ },
+ "印刷红": {
+  "source": "印刷红",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateSession.swift:56",
+    "context": "localized"
+   }
+  ]
+ },
+ "印在相纸上": {
+  "source": "印在相纸上",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:463",
+    "context": "localized"
+   }
+  ]
+ },
+ "印地点": {
+  "source": "印地点",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:465",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "印标签": {
+  "source": "印标签",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:464",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "印章": {
+  "source": "印章",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/Decoration.swift:104",
+    "context": "localized"
+   }
+  ]
+ },
+ "即将推出": {
+  "source": "即将推出",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:80",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "即显相机": {
+  "source": "即显相机",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/CameraBody.swift:18",
+    "context": "localized"
+   }
+  ]
+ },
+ "即显相机用的相纸": {
+  "source": "即显相机用的相纸",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:334",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "即显相机（自拍、屏幕快门、冲印照片）": {
+  "source": "即显相机（自拍、屏幕快门、冲印照片）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:258",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "即显相纸": {
+  "source": "即显相纸",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Film/FilmFamily.swift:23",
+    "context": "localized"
+   }
+  ]
+ },
+ "即显相纸的经典奶油色": {
+  "source": "即显相纸的经典奶油色",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Film/FilmStock.swift:193",
+    "context": "string"
+   }
+  ]
+ },
+ "卷": {
+  "source": "卷",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:216",
+    "context": "localized"
+   }
+  ]
+ },
+ "厦门": {
+  "source": "厦门",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:56",
+    "context": "string"
+   }
+  ]
+ },
+ "去掉白色模切边": {
+  "source": "去掉白色模切边",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:172",
+    "context": "localized"
+   }
+  ]
+ },
+ "双反相机": {
+  "source": "双反相机",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/CameraBody.swift:23",
+    "context": "localized"
+   }
+  ]
+ },
+ "取消": {
+  "source": "取消",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:81",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Capture/CameraService.swift:284",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/AlbumShared.swift:249",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:604",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:645",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Editor/DecorateDesk.swift:353",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Editor/StickerShelf.swift:58",
+    "context": "localized"
+   }
+  ]
+ },
+ "右": {
+  "source": "右",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:66",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:774",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "右上": {
+  "source": "右上",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:66",
+    "context": "localized"
+   }
+  ]
+ },
+ "右下": {
+  "source": "右下",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:66",
+    "context": "localized"
+   }
+  ]
+ },
+ "右下角印「Nocchi · 日期」": {
+  "source": "右下角印「Nocchi · 日期」",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:607",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "右下角印上橙色日期，年份可以调成 1998": {
+  "source": "右下角印上橙色日期，年份可以调成 1998",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/CameraBody.swift:34",
+    "context": "localized"
+   }
+  ]
+ },
+ "启动时打开相册（卡片盒）": {
+  "source": "启动时打开相册（卡片盒）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:217",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "和纸胶带": {
+  "source": "和纸胶带",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:64",
+    "context": "localized"
+   }
+  ]
+ },
+ "咖啡": {
+  "source": "咖啡",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:29",
+    "context": "string"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:15",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:110",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:116",
+    "context": "string"
+   }
+  ]
+ },
+ "四": {
+  "source": "四",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
+    "context": "localized"
+   }
+  ]
+ },
+ "四宫格": {
+  "source": "四宫格",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/BoothFrameChooser.swift:42",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Booth/BoothMachineLayout.swift:34",
+    "context": "string"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/PaperLayout.swift:145",
+    "context": "localized"
+   }
+  ]
+ },
+ "四张合成左右晃动的立体 GIF": {
+  "source": "四张合成左右晃动的立体 GIF",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/CameraBody.swift:38",
+    "context": "localized"
+   }
+  ]
+ },
+ "四月": {
+  "source": "四月",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/FilmLightTable.swift:79",
+    "context": "localized"
+   }
+  ]
+ },
+ "四格条": {
+  "source": "四格条",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/BoothFrameChooser.swift:42",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Booth/BoothMachineLayout.swift:33",
+    "context": "string"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/PaperLayout.swift:144",
+    "context": "localized"
+   }
+  ]
+ },
+ "四格条 / 四宫格（↑ ↓）": {
+  "source": "四格条 / 四宫格（↑ ↓）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:376",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "回到这个月": {
+  "source": "回到这个月",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:160",
+    "context": "localized"
+   }
+  ]
+ },
+ "固定方式": {
+  "source": "固定方式",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:219",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "在 Finder 中打开照片文件夹": {
+  "source": "在 Finder 中打开照片文件夹",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/App/MenuContent.swift:60",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:146",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "在 Finder 中显示": {
+  "source": "在 Finder 中显示",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchShelf.swift:153",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Album/AlbumShared.swift:271",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:527",
+    "context": "localized"
+   }
+  ]
+ },
+ "在下面的白边上写字": {
+  "source": "在下面的白边上写字",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:590",
+    "context": "localized"
+   }
+  ]
+ },
+ "在照片上任何地方加一段字，字体、大小、颜色都能换。也可以选左边的「T」，在照片上点一下。": {
+  "source": "在照片上任何地方加一段字，字体、大小、颜色都能换。也可以选左边的「T」，在照片上点一下。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:396",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "在白边上写字": {
+  "source": "在白边上写字",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:532",
+    "context": "localized"
+   }
+  ]
+ },
+ "在白边上印日期": {
+  "source": "在白边上印日期",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:304",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "在相纸上印日期": {
+  "source": "在相纸上印日期",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:428",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "在程序坞显示图标": {
+  "source": "在程序坞显示图标",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:218",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "在访达中打开": {
+  "source": "在访达中打开",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:22",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "在访达中显示": {
+  "source": "在访达中显示",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:33",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "地图针": {
+  "source": "地图针",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:19",
+    "context": "localized"
+   }
+  ]
+ },
+ "地点": {
+  "source": "地点",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:435",
+    "context": "localized"
+   }
+  ]
+ },
+ "墨蓝相纸上撒满烫金小星": {
+  "source": "墨蓝相纸上撒满烫金小星",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:136",
+    "context": "localized"
+   }
+  ]
+ },
+ "墨黑": {
+  "source": "墨黑",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateSession.swift:54",
+    "context": "localized"
+   }
+  ]
+ },
+ "复古横幅和三角彩旗": {
+  "source": "复古横幅和三角彩旗",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:138",
+    "context": "localized"
+   }
+  ]
+ },
+ "外接 / 虚拟": {
+  "source": "外接 / 虚拟",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Capture/CameraService.swift:19",
+    "context": "localized"
+   }
+  ]
+ },
+ "夜晚": {
+  "source": "夜晚",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:52",
+    "context": "string"
+   },
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:72",
+    "context": "string"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:110",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:122",
+    "context": "string"
+   }
+  ]
+ },
+ "夜景与电影": {
+  "source": "夜景与电影",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Film/FilmFamily.swift:25",
+    "context": "localized"
+   }
+  ]
+ },
+ "大头贴": {
+  "source": "大头贴",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:114",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Film/FilmFamily.swift:27",
+    "context": "localized"
+   }
+  ]
+ },
+ "大头贴 · %@": {
+  "source": "大头贴 · \\(model.shootingStock.name)",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:472",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "大头贴机": {
+  "source": "大头贴机",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:242",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:275",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/App/MenuContent.swift:14",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:97",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:126",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:490",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:504",
+    "context": "swiftui"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/CameraBody.swift:19",
+    "context": "localized"
+   }
+  ]
+ },
+ "大头贴机超时了，已经收起": {
+  "source": "大头贴机超时了，已经收起",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:217",
+    "context": "localized"
+   }
+  ]
+ },
+ "大头贴没拍到，再来一次": {
+  "source": "大头贴没拍到，再来一次",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:286",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Darkroom/Darkroom.swift:154",
+    "context": "localized"
+   }
+  ]
+ },
+ "大小": {
+  "source": "大小",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:736",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "太阳": {
+  "source": "太阳",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:12",
+    "context": "localized"
+   }
+  ]
+ },
+ "奶油 600": {
+  "source": "奶油 600",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Film/FilmStock.swift:189",
+    "context": "string"
+   }
+  ]
+ },
+ "奶油白相纸，底下印着编号": {
+  "source": "奶油白相纸，底下印着编号",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:130",
+    "context": "localized"
+   }
+  ]
+ },
+ "好": {
+  "source": "好",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:603",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Editor/StickerShelf.swift:57",
+    "context": "localized"
+   }
+  ]
+ },
+ "好天气": {
+  "source": "好天气",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:40",
+    "context": "localized"
+   }
+  ]
+ },
+ "字体": {
+  "source": "字体",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:409",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "字距": {
+  "source": "字距",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:746",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "存储": {
+  "source": "存储",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:14",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "安静模式": {
+  "source": "安静模式",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:142",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/App/MenuContent.swift:54",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "安静模式（不出声）": {
+  "source": "安静模式（不出声）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:224",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "完成": {
+  "source": "完成",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateDesk.swift:365",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Editor/DecorateDesk.swift:408",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "宽幅即显": {
+  "source": "宽幅即显",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/PaperLayout.swift:142",
+    "context": "localized"
+   }
+  ]
+ },
+ "对齐": {
+  "source": "对齐",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:771",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "导入 .cube 胶卷…": {
+  "source": "导入 .cube 胶卷…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:127",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "导入了 %lld 个字体": {
+  "source": "导入了 \\(added.count) 个字体",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:921",
+    "context": "localized"
+   }
+  ]
+ },
+ "导入图片": {
+  "source": "导入图片",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:154",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "导入失败：%@": {
+  "source": "导入失败：\\(error.localizedDescription)",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:155",
+    "context": "localized"
+   }
+  ]
+ },
+ "导入字体…": {
+  "source": "导入字体…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:848",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "导出为 .cube…": {
+  "source": "导出为 .cube…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:117",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "导出图片…": {
+  "source": "导出图片…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:611",
+    "context": "localized"
+   }
+  ]
+ },
+ "小狗": {
+  "source": "小狗",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:39",
+    "context": "string"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:16",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:110",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:117",
+    "context": "string"
+   }
+  ]
+ },
+ "小猫": {
+  "source": "小猫",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:17",
+    "context": "localized"
+   }
+  ]
+ },
+ "小票": {
+  "source": "小票",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:55",
+    "context": "localized"
+   }
+  ]
+ },
+ "就用这里": {
+  "source": "就用这里",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:80",
+    "context": "localized"
+   }
+  ]
+ },
+ "居中": {
+  "source": "居中",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/PosterRenderer.swift:77",
+    "context": "localized"
+   }
+  ]
+ },
+ "屏幕快门": {
+  "source": "屏幕快门",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:108",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:240",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/App/MenuContent.swift:10",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:95",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:122",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "左": {
+  "source": "左",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:66",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:772",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "左上": {
+  "source": "左上",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:66",
+    "context": "localized"
+   }
+  ]
+ },
+ "左下": {
+  "source": "左下",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:66",
+    "context": "localized"
+   }
+  ]
+ },
+ "已从贴纸库拿掉（已经贴在照片上的不会消失）": {
+  "source": "已从贴纸库拿掉（已经贴在照片上的不会消失）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/StickerShelf.swift:78",
+    "context": "localized"
+   }
+  ]
+ },
+ "已显影": {
+  "source": "已显影",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:38",
+    "context": "localized"
+   }
+  ]
+ },
+ "已装": {
+  "source": "已装",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/FilmCabinetPanel.swift:149",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "带纤维的牛皮纸、深棕墨水": {
+  "source": "带纤维的牛皮纸、深棕墨水",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:116",
+    "context": "localized"
+   }
+  ]
+ },
+ "平": {
+  "source": "平",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:216",
+    "context": "localized"
+   }
+  ]
+ },
+ "平和的日常负片：中性略偏青绿、柔和不抢戏，什么都能拍": {
+  "source": "平和的日常负片：中性略偏青绿、柔和不抢戏，什么都能拍",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (everyday-200)",
+    "context": "data"
+   }
+  ]
+ },
+ "底边三道芥末、陶土、胡桃色条纹": {
+  "source": "底边三道芥末、陶土、胡桃色条纹",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:125",
+    "context": "localized"
+   }
+  ]
+ },
+ "开 始": {
+  "source": "开 始",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/BoothFrameChooser.swift:502",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:481",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "开始": {
+  "source": "开始",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/BoothFrameChooser.swift:431",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "彩色": {
+  "source": "彩色",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/BoothFrameChooser.swift:45",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Booth/BoothMachineLayout.swift:36",
+    "context": "string"
+   }
+  ]
+ },
+ "彩色负片": {
+  "source": "彩色负片",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Film/FilmFamily.swift:24",
+    "context": "localized"
+   }
+  ]
+ },
+ "彩虹": {
+  "source": "彩虹",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:20",
+    "context": "localized"
+   }
+  ]
+ },
+ "往前挪": {
+  "source": "往前挪",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:173",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "往后挪": {
+  "source": "往后挪",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:174",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "微斜": {
+  "source": "微斜",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/PosterRenderer.swift:78",
+    "context": "localized"
+   }
+  ]
+ },
+ "徽章": {
+  "source": "徽章",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/Decoration.swift:103",
+    "context": "localized"
+   }
+  ]
+ },
+ "心形窗口和复古蕾丝花边": {
+  "source": "心形窗口和复古蕾丝花边",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:134",
+    "context": "localized"
+   }
+  ]
+ },
+ "快捷键": {
+  "source": "快捷键",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:239",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "恢复默认": {
+  "source": "恢复默认",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:37",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:243",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "情人节": {
+  "source": "情人节",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:134",
+    "context": "localized"
+   }
+  ]
+ },
+ "情人节快乐": {
+  "source": "情人节快乐",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:60",
+    "context": "string"
+   }
+  ]
+ },
+ "成片": {
+  "source": "成片",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:15",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "成片会移到废纸篓（可以从废纸篓恢复）；相册里的这张记录和底片会被删除。": {
+  "source": "成片会移到废纸篓（可以从废纸篓恢复）；相册里的这张记录和底片会被删除。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:643",
+    "context": "localized"
+   }
+  ]
+ },
+ "成片会移到废纸篓（可以恢复）；记录和底片会被删除。": {
+  "source": "成片会移到废纸篓（可以恢复）；记录和底片会被删除。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumShared.swift:247",
+    "context": "localized"
+   }
+  ]
+ },
+ "我们": {
+  "source": "我们",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:48",
+    "context": "string"
+   }
+  ]
+ },
+ "我可以见你吗？": {
+  "source": "我可以见你吗？",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Geometry/PileLayout.swift:42",
+    "context": "localized"
+   }
+  ]
+ },
+ "我导入的": {
+  "source": "我导入的",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:826",
+    "context": "localized"
+   }
+  ]
+ },
+ "我的": {
+  "source": "我的",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:124",
+    "context": "localized"
+   }
+  ]
+ },
+ "我的贴纸": {
+  "source": "我的贴纸",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/CustomStickerStore.swift:115",
+    "context": "localized"
+   }
+  ]
+ },
+ "所有照片只存在这台 Mac 上，不上传。换位置时，已有的成片会一起搬过去；照片记录和底片留在「应用程序支持」里。": {
+  "source": "所有照片只存在这台 Mac 上，不上传。换位置时，已有的成片会一起搬过去；照片记录和底片留在「应用程序支持」里。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:52",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "手写": {
+  "source": "手写",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/Decoration.swift:77",
+    "context": "localized"
+   }
+  ]
+ },
+ "打字机": {
+  "source": "打字机",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/Decoration.swift:78",
+    "context": "localized"
+   }
+  ]
+ },
+ "打字机纸条": {
+  "source": "打字机纸条",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:76",
+    "context": "localized"
+   }
+  ]
+ },
+ "打开相册": {
+  "source": "打开相册",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/App/MenuContent.swift:58",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:102",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:135",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "打开系统设置": {
+  "source": "打开系统设置",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Capture/CameraService.swift:283",
+    "context": "localized"
+   }
+  ]
+ },
+ "找不到「%@」（外接盘没插上？），这次先存在默认位置。插上后重新打开 Nocchi 就会用回那里。": {
+  "source": "找不到「\\(unavailable.path)」（外接盘没插上？），这次先存在默认位置。插上后重新打开 Nocchi 就会用回那里。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:43",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "把刘海当成复古相机的出片口：截图或自拍之后，照片从刘海里吐出来，像真相纸一样慢慢显影。": {
+  "source": "把刘海当成复古相机的出片口：截图或自拍之后，照片从刘海里吐出来，像真相纸一样慢慢显影。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:522",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "把喜欢的图标、手账素材、小照片拖进来，就成了自己的贴纸；右键可以重命名、换模切边、排序。": {
+  "source": "把喜欢的图标、手账素材、小照片拖进来，就成了自己的贴纸；右键可以重命名、换模切边、排序。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:196",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "把成片放到这里？": {
+  "source": "把成片放到这里？",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:76",
+    "context": "localized"
+   }
+  ]
+ },
+ "把摊开的卡片全部放回盒子": {
+  "source": "把摊开的卡片全部放回盒子",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:597",
+    "context": "localized"
+   }
+  ]
+ },
+ "把桌上的相片拖到刘海上暂存": {
+  "source": "把桌上的相片拖到刘海上暂存",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchShelf.swift:174",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "把这张照片移到废纸篓？": {
+  "source": "把这张照片移到废纸篓？",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumShared.swift:246",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:642",
+    "context": "localized"
+   }
+  ]
+ },
+ "把鼠标移到刘海上试试": {
+  "source": "把鼠标移到刘海上试试",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchController.swift:468",
+    "context": "localized"
+   }
+  ]
+ },
+ "把鼠标移到刘海，按「屏幕快门」或「自拍」拍第一张。": {
+  "source": "把鼠标移到刘海，按「屏幕快门」或「自拍」拍第一张。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:724",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "投币开始（Return）": {
+  "source": "投币开始（Return）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/BoothFrameChooser.swift:405",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Booth/BoothFrameChooser.swift:442",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:397",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "投影": {
+  "source": "投影",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/TextArt.swift:24",
+    "context": "localized"
+   }
+  ]
+ },
+ "抽出 %@": {
+  "source": "抽出 \\(name)",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift:296",
+    "context": "localized"
+   }
+  ]
+ },
+ "拉上布帘后还可以再挑；在大头贴机里换了相框、版式或黑白，下次就从换好的开始。": {
+  "source": "拉上布帘后还可以再挑；在大头贴机里换了相框、版式或黑白，下次就从换好的开始。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:291",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "拉帘、倒数、闪光、四连拍": {
+  "source": "拉帘、倒数、闪光、四连拍",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/CameraBody.swift:32",
+    "context": "localized"
+   }
+  ]
+ },
+ "拍下的照片会按题字的首字母放进盒子里。\\n把鼠标移到刘海，按「屏幕快门」或「自拍」拍第一张。": {
+  "source": "拍下的照片会按题字的首字母放进盒子里。\\n把鼠标移到刘海，按「屏幕快门」或「自拍」拍第一张。",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:625",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "拍完之后": {
+  "source": "拍完之后",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:306",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "拍摄": {
+  "source": "拍摄",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:223",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "拍摄时间": {
+  "source": "拍摄时间",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:423",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "拍照（空格）": {
+  "source": "拍照（空格）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:561",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "拍黑白": {
+  "source": "拍黑白",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:282",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "拖出去即可使用成片；点一下放回桌面": {
+  "source": "拖出去即可使用成片；点一下放回桌面",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchShelf.swift:195",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "拖出去就是成片文件 · 点一下放回桌面": {
+  "source": "拖出去就是成片文件 · 点一下放回桌面",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchShelf.swift:205",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "拖动缩放、旋转": {
+  "source": "拖动缩放、旋转",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/PaperStage.swift:196",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Editor/PaperStage.swift:340",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "拖动铜钮转台灯": {
+  "source": "拖动铜钮转台灯",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:205",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "拷贝": {
+  "source": "拷贝",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:529",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:612",
+    "context": "localized"
+   }
+  ]
+ },
+ "按年": {
+  "source": "按年",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumShared.swift:407",
+    "context": "localized"
+   }
+  ]
+ },
+ "按日": {
+  "source": "按日",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumShared.swift:409",
+    "context": "localized"
+   }
+  ]
+ },
+ "按月": {
+  "source": "按月",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumShared.swift:408",
+    "context": "localized"
+   }
+  ]
+ },
+ "按题字首字母（A–Z）": {
+  "source": "按题字首字母（A–Z）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumShared.swift:406",
+    "context": "localized"
+   }
+  ]
+ },
+ "挑一卷装上": {
+  "source": "挑一卷装上",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/FilmCabinetPanel.swift:64",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "换新卷": {
+  "source": "换新卷",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:137",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "换相机": {
+  "source": "换相机",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:225",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "换胶卷": {
+  "source": "换胶卷",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:187",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "接管系统截图（⇧⌘3 / ⇧⌘4 的截图也冲印成相片）": {
+  "source": "接管系统截图（⇧⌘3 / ⇧⌘4 的截图也冲印成相片）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:226",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "推荐": {
+  "source": "推荐",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:839",
+    "context": "localized"
+   }
+  ]
+ },
+ "推荐 %@": {
+  "source": "推荐 \\(format.displayName)",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/FilmCabinetPanel.swift:111",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "搜索「%@」· %lld 张": {
+  "source": "搜索「\\(trimmed)」· \\(results.count) 张",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBoxModel.swift:300",
+    "context": "localized"
+   }
+  ]
+ },
+ "搜索字体": {
+  "source": "搜索字体",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:819",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "搜索照片…": {
+  "source": "搜索照片…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:142",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "搜索结果": {
+  "source": "搜索结果",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:842",
+    "context": "localized"
+   }
+  ]
+ },
+ "搜索题字、标签、地点、胶卷、日期…": {
+  "source": "搜索题字、标签、地点、胶卷、日期…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumHeader.swift:201",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "搬好了 %lld 个文件；有 %lld 个在新位置已经有同名文件，没有覆盖，留在了原处。": {
+  "source": "搬好了 \\(outcome.moved) 个文件；有 \\(outcome.skipped.count) 个在新位置已经有同名文件，没有覆盖，留在了原处。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:96",
+    "context": "localized"
+   }
+  ]
+ },
+ "搬好了：%lld 个文件。": {
+  "source": "搬好了：\\(outcome.moved) 个文件。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:98",
+    "context": "localized"
+   }
+  ]
+ },
+ "搬过去": {
+  "source": "搬过去",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:80",
+    "context": "localized"
+   }
+  ]
+ },
+ "摄像头": {
+  "source": "摄像头",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:17",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "摄像头出错了": {
+  "source": "摄像头出错了",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Capture/CameraService.swift:171",
+    "context": "localized"
+   }
+  ]
+ },
+ "摄像头断开了，换回默认摄像头": {
+  "source": "摄像头断开了，换回默认摄像头",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Capture/CameraService.swift:164",
+    "context": "localized"
+   }
+  ]
+ },
+ "摆法": {
+  "source": "摆法",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:601",
+    "context": "localized"
+   }
+  ]
+ },
+ "摇摆 3D 相机": {
+  "source": "摇摆 3D 相机",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/CameraBody.swift:25",
+    "context": "localized"
+   }
+  ]
+ },
+ "撤销": {
+  "source": "撤销",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateDesk.swift:404",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "撤销（⌘Z）": {
+  "source": "撤销（⌘Z）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateDesk.swift:231",
+    "context": "localized"
+   }
+  ]
+ },
+ "擦掉笔迹": {
+  "source": "擦掉笔迹",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:536",
+    "context": "localized"
+   }
+  ]
+ },
+ "收起": {
+  "source": "收起",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:360",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:194",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "收起桌面上的照片": {
+  "source": "收起桌面上的照片",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/App/MenuContent.swift:59",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:145",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "收进相册": {
+  "source": "收进相册",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:541",
+    "context": "localized"
+   }
+  ]
+ },
+ "放回桌面": {
+  "source": "放回桌面",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumShared.swift:269",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "放回盒子": {
+  "source": "放回盒子",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift:165",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "放回那一叠": {
+  "source": "放回那一叠",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift:163",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "放进刘海暂存了（%lld 张）": {
+  "source": "放进刘海暂存了（\\(NotchShelf.shared.items.count) 张）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:421",
+    "context": "localized"
+   }
+  ]
+ },
+ "数据行数量不符：需要 %lld 行，实际 %lld 行。": {
+  "source": "数据行数量不符：需要 \\(expected) 行，实际 \\(actual) 行。",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Film/CubeLUT.swift:38",
+    "context": "localized"
+   }
+  ]
+ },
+ "文字": {
+  "source": "文字",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateSession.swift:31",
+    "context": "localized"
+   }
+  ]
+ },
+ "文字：在照片上点一下加一段字": {
+  "source": "文字：在照片上点一下加一段字",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateDesk.swift:215",
+    "context": "localized"
+   }
+  ]
+ },
+ "斜体": {
+  "source": "斜体",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:731",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "新位置不能在现在的成片文件夹里面（或者反过来），换一个文件夹吧。": {
+  "source": "新位置不能在现在的成片文件夹里面（或者反过来），换一个文件夹吧。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:109",
+    "context": "localized"
+   }
+  ]
+ },
+ "新年快乐": {
+  "source": "新年快乐",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:72",
+    "context": "string"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:140",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/TemplateArt.swift:76",
+    "context": "localized"
+   }
+  ]
+ },
+ "新照片放在": {
+  "source": "新照片放在",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:311",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "方形即显": {
+  "source": "方形即显",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/PaperLayout.swift:140",
+    "context": "localized"
+   }
+  ]
+ },
+ "方形即显的经典味道：奶油高光、微青绿阴影、柔和反差": {
+  "source": "方形即显的经典味道：奶油高光、微青绿阴影、柔和反差",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (cream-600)",
+    "context": "data"
+   }
+  ]
+ },
+ "方格胶带": {
+  "source": "方格胶带",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:68",
+    "context": "localized"
+   }
+  ]
+ },
+ "旅行": {
+  "source": "旅行",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:52",
+    "context": "string"
+   },
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:56",
+    "context": "string"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:110",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:119",
+    "context": "string"
+   }
+  ]
+ },
+ "无": {
+  "source": "无",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:214",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/TextArt.swift:21",
+    "context": "localized"
+   }
+  ]
+ },
+ "无法以文本方式读取这个 LUT 文件。": {
+  "source": "无法以文本方式读取这个 LUT 文件。",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Film/CubeLUT.swift:28",
+    "context": "localized"
+   }
+  ]
+ },
+ "日": {
+  "source": "日",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
+    "context": "localized"
+   }
+  ]
+ },
+ "日历": {
+  "source": "日历",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumShared.swift:130",
+    "context": "localized"
+   }
+  ]
+ },
+ "日期": {
+  "source": "日期",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:422",
+    "context": "localized"
+   }
+  ]
+ },
+ "日期戳": {
+  "source": "日期戳",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:43",
+    "context": "localized"
+   }
+  ]
+ },
+ "日期机": {
+  "source": "日期机",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/CameraBody.swift:21",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:120",
+    "context": "localized"
+   }
+  ]
+ },
+ "日系淡彩：通透、微青、抬起的阴影，人像干净": {
+  "source": "日系淡彩：通透、微青、抬起的阴影，人像干净",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (sea-salt-160)",
+    "context": "data"
+   }
+  ]
+ },
+ "旧报纸一样的黑白：极高反差、发黄的纸、粗颗粒": {
+  "source": "旧报纸一样的黑白：极高反差、发黄的纸、粗颗粒",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (old-news-100)",
+    "context": "data"
+   }
+  ]
+ },
+ "旧物": {
+  "source": "旧物",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/Decoration.swift:105",
+    "context": "localized"
+   }
+  ]
+ },
+ "早安，拿铁": {
+  "source": "早安，拿铁",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:29",
+    "context": "string"
+   }
+  ]
+ },
+ "早晨": {
+  "source": "早晨",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:29",
+    "context": "string"
+   }
+  ]
+ },
+ "明亮通透的即显：干净的白、饱满而不艳俗、反差利落、阴影微青": {
+  "source": "明亮通透的即显：干净的白、饱满而不艳俗、反差利落、阴影微青",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (crisp-800)",
+    "context": "data"
+   }
+  ]
+ },
+ "明亮高调：黄绿清爽、饱和但干净，适合晴天": {
+  "source": "明亮高调：黄绿清爽、饱和但干净，适合晴天",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (lemon-soda-100)",
+    "context": "data"
+   }
+  ]
+ },
+ "春天来信": {
+  "source": "春天来信",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:64",
+    "context": "string"
+   }
+  ]
+ },
+ "显影完成后自动打开装饰台": {
+  "source": "显影完成后自动打开装饰台",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:307",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "显影时长": {
+  "source": "显影时长",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:228",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "晚上": {
+  "source": "晚上",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:122",
+    "context": "string"
+   }
+  ]
+ },
+ "晴天": {
+  "source": "晴天",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:113",
+    "context": "string"
+   }
+  ]
+ },
+ "晴空": {
+  "source": "晴空",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/PosterRenderer.swift:27",
+    "context": "localized"
+   }
+  ]
+ },
+ "暂存": {
+  "source": "暂存",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:121",
+    "context": "localized"
+   }
+  ]
+ },
+ "暖": {
+  "source": "暖",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:211",
+    "context": "localized"
+   }
+  ]
+ },
+ "暗": {
+  "source": "暗",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:213",
+    "context": "localized"
+   }
+  ]
+ },
+ "暗房红光": {
+  "source": "暗房红光",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/PosterRenderer.swift:28",
+    "context": "localized"
+   }
+  ]
+ },
+ "暗角": {
+  "source": "暗角",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:214",
+    "context": "localized"
+   }
+  ]
+ },
+ "曝光 5 秒，一动就有重影": {
+  "source": "曝光 5 秒，一动就有重影",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/CameraBody.swift:37",
+    "context": "localized"
+   }
+  ]
+ },
+ "更改…": {
+  "source": "更改…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:39",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "最上层（浮动）": {
+  "source": "最上层（浮动）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:312",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "最多选 %lld 张，每张都会用「%@」冲印成%@，从刘海一张一张吐出来。": {
+  "source": "最多选 \\(PhotoImport.maxCount) 张，每张都会用「\\(model.currentStock.name)」冲印成\\(model.instantFormat.displayName)，从刘海一张一张吐出来。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Import/PhotoImport.swift:94",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "最常写 #%@": {
+  "source": "最常写 #\\(tag)",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:224",
+    "context": "localized"
+   }
+  ]
+ },
+ "最近冲印 · %lld 张": {
+  "source": "最近冲印 · \\(recent.count) 张",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBoxModel.swift:285",
+    "context": "localized"
+   }
+  ]
+ },
+ "月亮": {
+  "source": "月亮",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:26",
+    "context": "localized"
+   }
+  ]
+ },
+ "有 %lld 个文件读不出图片": {
+  "source": "有 \\(failed) 个文件读不出图片",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/StickerShelf.swift:33",
+    "context": "localized"
+   }
+  ]
+ },
+ "有 %lld 个文件读不出字体": {
+  "source": "有 \\(failed) 个文件读不出字体",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:921",
+    "context": "localized"
+   }
+  ]
+ },
+ "朋友": {
+  "source": "朋友",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:72",
+    "context": "string"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:110",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:120",
+    "context": "string"
+   }
+  ]
+ },
+ "木夹": {
+  "source": "木夹",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:21",
+    "context": "localized"
+   }
+  ]
+ },
+ "本月 %lld 张": {
+  "source": "本月 \\(page.photoCount) 张",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:222",
+    "context": "localized"
+   }
+  ]
+ },
+ "本月还没有照片": {
+  "source": "本月还没有照片",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:221",
+    "context": "localized"
+   }
+  ]
+ },
+ "朱红相纸和金色回纹": {
+  "source": "朱红相纸和金色回纹",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:140",
+    "context": "localized"
+   }
+  ]
+ },
+ "机身": {
+  "source": "机身",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/App/MenuContent.swift:21",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "条纹胶带": {
+  "source": "条纹胶带",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:65",
+    "context": "localized"
+   }
+  ]
+ },
+ "松手，冲印成拍立得": {
+  "source": "松手，冲印成拍立得",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchShelf.swift:230",
+    "context": "localized"
+   }
+  ]
+ },
+ "松手，放进刘海暂存": {
+  "source": "松手，放进刘海暂存",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchShelf.swift:230",
+    "context": "localized"
+   }
+  ]
+ },
+ "柔和黑白：低反差、略带暖调的银盐纸": {
+  "source": "柔和黑白：低反差、略带暖调的银盐纸",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (silver-400)",
+    "context": "data"
+   }
+  ]
+ },
+ "柠檬": {
+  "source": "柠檬",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:22",
+    "context": "localized"
+   }
+  ]
+ },
+ "标签": {
+  "source": "标签",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:441",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/Decoration.swift:107",
+    "context": "localized"
+   }
+  ]
+ },
+ "标签配小贴纸（#阳光 → 太阳徽章）": {
+  "source": "标签配小贴纸（#阳光 → 太阳徽章）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:466",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "格纹胶带": {
+  "source": "格纹胶带",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:66",
+    "context": "localized"
+   }
+  ]
+ },
+ "桌面层（在窗口后面）": {
+  "source": "桌面层（在窗口后面）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:313",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "棕褐色调的老照片：低反差、柔边、暗角、明显颗粒": {
+  "source": "棕褐色调的老照片：低反差、柔边、暗角、明显颗粒",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (sepia-80)",
+    "context": "data"
+   }
+  ]
+ },
+ "模板": {
+  "source": "模板",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateSession.swift:30",
+    "context": "localized"
+   }
+  ]
+ },
+ "樱桃": {
+  "source": "樱桃",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:21",
+    "context": "localized"
+   }
+  ]
+ },
+ "橙粉色的高光、青绿色的阴影，傍晚出门就带它": {
+  "source": "橙粉色的高光、青绿色的阴影，傍晚出门就带它",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (sunset-200)",
+    "context": "data"
+   }
+  ]
+ },
+ "橡皮：点哪条笔画删哪条": {
+  "source": "橡皮：点哪条笔画删哪条",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateDesk.swift:211",
+    "context": "localized"
+   }
+  ]
+ },
+ "正在打开摄像头…": {
+  "source": "正在打开摄像头…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:426",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:196",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:548",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "正在搬成片…": {
+  "source": "正在搬成片…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:28",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "正在读取…": {
+  "source": "正在读取…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Import/PhotoImport.swift:100",
+    "context": "localized"
+   }
+  ]
+ },
+ "正片": {
+  "source": "正片",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/FilmLightTable.swift:538",
+    "context": "localized"
+   }
+  ]
+ },
+ "毛边相纸": {
+  "source": "毛边相纸",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:118",
+    "context": "localized"
+   }
+  ]
+ },
+ "没拍到，再试一次": {
+  "source": "没拍到，再试一次",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Capture/CameraService.swift:59",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Darkroom/Darkroom.swift:113",
+    "context": "localized"
+   }
+  ]
+ },
+ "没搬成，成片还在原来的位置：%@": {
+  "source": "没搬成，成片还在原来的位置：\\(error.localizedDescription)",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:113",
+    "context": "localized"
+   }
+  ]
+ },
+ "没有找到『%@』": {
+  "source": "没有找到『\\(query.trimmingCharacters(in: .whitespacesAndNewlines))』",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumShared.swift:347",
+    "context": "localized"
+   }
+  ]
+ },
+ "没有找到摄像头": {
+  "source": "没有找到摄像头",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Capture/CameraService.swift:58",
+    "context": "localized"
+   }
+  ]
+ },
+ "没有摄像头权限（系统设置 → 隐私与安全性 → 摄像头）": {
+  "source": "没有摄像头权限（系统设置 → 隐私与安全性 → 摄像头）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:426",
+    "context": "localized"
+   }
+  ]
+ },
+ "没读到照片": {
+  "source": "没读到照片",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Import/PhotoImport.swift:138",
+    "context": "localized"
+   }
+  ]
+ },
+ "油性蜡笔": {
+  "source": "油性蜡笔",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/Decoration.swift:28",
+    "context": "localized"
+   }
+  ]
+ },
+ "波点胶带": {
+  "source": "波点胶带",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:67",
+    "context": "localized"
+   }
+  ]
+ },
+ "洗一洗": {
+  "source": "洗一洗",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/FilmLightTable.swift:497",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "浅": {
+  "source": "浅",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:215",
+    "context": "localized"
+   }
+  ]
+ },
+ "浓": {
+  "source": "浓",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:214",
+    "context": "localized"
+   }
+  ]
+ },
+ "浮到最上层": {
+  "source": "浮到最上层",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:540",
+    "context": "localized"
+   }
+  ]
+ },
+ "海边的日落": {
+  "source": "海边的日落",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:56",
+    "context": "string"
+   }
+  ]
+ },
+ "深": {
+  "source": "深",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:215",
+    "context": "localized"
+   }
+  ]
+ },
+ "深棕卡纸、烫金双线框和店名": {
+  "source": "深棕卡纸、烫金双线框和店名",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:128",
+    "context": "localized"
+   }
+  ]
+ },
+ "混搭": {
+  "source": "混搭",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:17",
+    "context": "localized"
+   }
+  ]
+ },
+ "清晨的湖": {
+  "source": "清晨的湖",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:80",
+    "context": "string"
+   }
+  ]
+ },
+ "清空搜索": {
+  "source": "清空搜索",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumHeader.swift:216",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "清空暂存（仍保留在相册）": {
+  "source": "清空暂存（仍保留在相册）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchShelf.swift:155",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "漆笔": {
+  "source": "漆笔",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/Decoration.swift:29",
+    "context": "localized"
+   }
+  ]
+ },
+ "火柴盒": {
+  "source": "火柴盒",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:56",
+    "context": "localized"
+   }
+  ]
+ },
+ "灯光": {
+  "source": "灯光",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:146",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "灯光 · 显示": {
+  "source": "灯光 · 显示",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:184",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "炭黑": {
+  "source": "炭黑",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:114",
+    "context": "localized"
+   }
+  ]
+ },
+ "炭黑相纸、象牙白字，照片更跳": {
+  "source": "炭黑相纸、象牙白字，照片更跳",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:114",
+    "context": "localized"
+   }
+  ]
+ },
+ "点一下贴到相纸中央；拖动移动，右下角手柄缩放旋转，⌫ 删除。": {
+  "source": "点一下贴到相纸中央；拖动移动，右下角手柄缩放旋转，⌫ 删除。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:138",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "照片上的文字": {
+  "source": "照片上的文字",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:392",
+    "context": "localized"
+   }
+  ]
+ },
+ "照片右下角印上橙色的数码日期": {
+  "source": "照片右下角印上橙色的数码日期",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:120",
+    "context": "localized"
+   }
+  ]
+ },
+ "照片角": {
+  "source": "照片角",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:54",
+    "context": "localized"
+   }
+  ]
+ },
+ "照相亭的白光闪灯：明亮的肤色、清脆的反差、高光微微过曝": {
+  "source": "照相亭的白光闪灯：明亮的肤色、清脆的反差、高光微微过曝",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (booth-flash-400)",
+    "context": "data"
+   }
+  ]
+ },
+ "照相馆卡纸": {
+  "source": "照相馆卡纸",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:128",
+    "context": "localized"
+   }
+  ]
+ },
+ "爱心": {
+  "source": "爱心",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:18",
+    "context": "localized"
+   }
+  ]
+ },
+ "版式": {
+  "source": "版式",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:276",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/App/MenuContent.swift:41",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "版本 %@": {
+  "source": "版本 \\(Bundle.main.object(forInfoDictionaryKey: \"CFBundleShortVersionString\") as? String ?? \"–\")",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:520",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "牛皮纸": {
+  "source": "牛皮纸",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/PosterRenderer.swift:23",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:116",
+    "context": "localized"
+   }
+  ]
+ },
+ "牛皮纸胶带": {
+  "source": "牛皮纸胶带",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:63",
+    "context": "localized"
+   }
+  ]
+ },
+ "狗": {
+  "source": "狗",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:117",
+    "context": "string"
+   }
+  ]
+ },
+ "猫": {
+  "source": "猫",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:118",
+    "context": "string"
+   }
+  ]
+ },
+ "猫咪": {
+  "source": "猫咪",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:44",
+    "context": "string"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:110",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:118",
+    "context": "string"
+   }
+  ]
+ },
+ "珍藏": {
+  "source": "珍藏",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:39",
+    "context": "localized"
+   }
+  ]
+ },
+ "生日": {
+  "source": "生日",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:110",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:121",
+    "context": "string"
+   }
+  ]
+ },
+ "生日快乐": {
+  "source": "生日快乐",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:138",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/TemplateArt.swift:75",
+    "context": "localized"
+   }
+  ]
+ },
+ "用「预览」打开": {
+  "source": "用「预览」打开",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumShared.swift:272",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:528",
+    "context": "localized"
+   }
+  ]
+ },
+ "用了 %lld 卷胶卷": {
+  "source": "用了 \\(page.stockCount) 卷胶卷",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:222",
+    "context": "localized"
+   }
+  ]
+ },
+ "用这个文件夹": {
+  "source": "用这个文件夹",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:64",
+    "context": "localized"
+   }
+  ]
+ },
+ "电影卷改的夜景卷：钨丝灯下偏冷、青色阴影，灯光周围一圈红色光晕": {
+  "source": "电影卷改的夜景卷：钨丝灯下偏冷、青色阴影，灯光周围一圈红色光晕",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (tungsten-800)",
+    "context": "data"
+   }
+  ]
+ },
+ "电影票": {
+  "source": "电影票",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:49",
+    "context": "localized"
+   }
+  ]
+ },
+ "界面语言": {
+  "source": "界面语言",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:207",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "白边": {
+  "source": "白边",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/TextArt.swift:22",
+    "context": "localized"
+   }
+  ]
+ },
+ "相册": {
+  "source": "相册",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:141",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Settings/WindowManager.swift:25",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:157",
+    "context": "string"
+   },
+   {
+    "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:166",
+    "context": "string"
+   },
+   {
+    "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:169",
+    "context": "string"
+   },
+   {
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:134",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/AlbumHeader.swift:67",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "相机": {
+  "source": "相机",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:121",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:24",
+    "context": "localized"
+   }
+  ]
+ },
+ "相机柜": {
+  "source": "相机柜",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:11",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "相片一显影好就打开装饰台，可以马上贴贴纸、换模板、写字。": {
+  "source": "相片一显影好就打开装饰台，可以马上贴贴纸、换模板、写字。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:308",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "相纸": {
+  "source": "相纸",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:289",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:15",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/App/MenuContent.swift:47",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "相纸模板 · %@": {
+  "source": "相纸模板 · \\(session.record.format.displayName)",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:302",
+    "context": "localized"
+   }
+  ]
+ },
+ "石油绿": {
+  "source": "石油绿",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateSession.swift:55",
+    "context": "localized"
+   }
+  ]
+ },
+ "磨砂玻璃取景，画面左右颠倒": {
+  "source": "磨砂玻璃取景，画面左右颠倒",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/CameraBody.swift:36",
+    "context": "localized"
+   }
+  ]
+ },
+ "离开大头贴机": {
+  "source": "离开大头贴机",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:391",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "移到废纸篓": {
+  "source": "移到废纸篓",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumShared.swift:248",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/AlbumShared.swift:275",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:644",
+    "context": "localized"
+   }
+  ]
+ },
+ "移到废纸篓…": {
+  "source": "移到废纸篓…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:543",
+    "context": "localized"
+   }
+  ]
+ },
+ "程序": {
+  "source": "程序",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:216",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "空": {
+  "source": "空",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:517",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "空格拍照 · Esc 退出": {
+  "source": "空格拍照 · Esc 退出",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:483",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "空格连拍四张 · Esc 退出": {
+  "source": "空格连拍四张 · Esc 退出",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:481",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "第 %lld 张 · 共 %lld 张": {
+  "source": "第 \\(min(booth.shot + 1, booth.totalShots)) 张 · 共 \\(booth.totalShots) 张",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:266",
+    "context": "localized"
+   }
+  ]
+ },
+ "第 %lld 行包含无效数值。": {
+  "source": "第 \\(line) 行包含无效数值。",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Film/CubeLUT.swift:36",
+    "context": "localized"
+   }
+  ]
+ },
+ "第 %lld 行格式不正确。": {
+  "source": "第 \\(line) 行格式不正确。",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Film/CubeLUT.swift:34",
+    "context": "localized"
+   }
+  ]
+ },
+ "第 %lld/4 张": {
+  "source": "第 \\(shot)/4 张",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:479",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "粉紫淡彩：低饱和、柔光，像下过雨的春天": {
+  "source": "粉紫淡彩：低饱和、柔光，像下过雨的春天",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (sakura-rain-200)",
+    "context": "data"
+   }
+  ]
+ },
+ "粗": {
+  "source": "粗",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateDesk.swift:338",
+    "context": "localized"
+   }
+  ]
+ },
+ "粗体": {
+  "source": "粗体",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:730",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "系统默认": {
+  "source": "系统默认",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:379",
+    "context": "localized"
+   }
+  ]
+ },
+ "纸张卷曲": {
+  "source": "纸张卷曲",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:216",
+    "context": "localized"
+   }
+  ]
+ },
+ "纸标签": {
+  "source": "纸标签",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/TextArt.swift:23",
+    "context": "localized"
+   }
+  ]
+ },
+ "纸白": {
+  "source": "纸白",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:757",
+    "context": "localized"
+   }
+  ]
+ },
+ "细": {
+  "source": "细",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateDesk.swift:338",
+    "context": "localized"
+   }
+  ]
+ },
+ "细腻黑白：灰阶丰富、颗粒极细，中间调像丝绒": {
+  "source": "细腻黑白：灰阶丰富、颗粒极细，中间调像丝绒",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (fine-100)",
+    "context": "data"
+   }
+  ]
+ },
+ "经典": {
+  "source": "经典",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:106",
+    "context": "localized"
+   }
+  ]
+ },
+ "经典高反差黑白：深黑、亮白、颗粒粗犷，街头和人像都有劲": {
+  "source": "经典高反差黑白：深黑、亮白、颗粒粗犷，街头和人像都有劲",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (grit-400)",
+    "context": "data"
+   }
+  ]
+ },
+ "给贴纸起个名字": {
+  "source": "给贴纸起个名字",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/StickerShelf.swift:53",
+    "context": "localized"
+   }
+  ]
+ },
+ "编号标签": {
+  "source": "编号标签",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:57",
+    "context": "localized"
+   }
+  ]
+ },
+ "缺少 LUT_3D_SIZE 或 LUT_1D_SIZE。": {
+  "source": "缺少 LUT_3D_SIZE 或 LUT_1D_SIZE。",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Film/CubeLUT.swift:30",
+    "context": "localized"
+   }
+  ]
+ },
+ "置顶": {
+  "source": "置顶",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:282",
+    "context": "localized"
+   }
+  ]
+ },
+ "翻转": {
+  "source": "翻转",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:281",
+    "context": "localized"
+   }
+  ]
+ },
+ "老式照相亭的黑白：闪光直打、高反差，印在略暖的银盐纸上": {
+  "source": "老式照相亭的黑白：闪光直打、高反差，印在略暖的银盐纸上",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (booth-silver-400)",
+    "context": "data"
+   }
+  ]
+ },
+ "老照相亭": {
+  "source": "老照相亭",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:84",
+    "context": "string"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:130",
+    "context": "localized"
+   }
+  ]
+ },
+ "老相册": {
+  "source": "老相册",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:126",
+    "context": "localized"
+   }
+  ]
+ },
+ "背景": {
+  "source": "背景",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:577",
+    "context": "localized"
+   }
+  ]
+ },
+ "胡桃木": {
+  "source": "胡桃木",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/PosterRenderer.swift:22",
+    "context": "localized"
+   }
+  ]
+ },
+ "胶卷": {
+  "source": "胶卷",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:13",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/App/MenuContent.swift:26",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Album/AlbumShared.swift:129",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:25",
+    "context": "localized"
+   }
+  ]
+ },
+ "胶卷 · %@": {
+  "source": "胶卷 · \\(booth.stock.name)",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/BoothFrameChooser.swift:50",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:45",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "胶卷柜": {
+  "source": "胶卷柜",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/FilmCabinetPanel.swift:61",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "胶卷自带的相纸，干干净净": {
+  "source": "胶卷自带的相纸，干干净净",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:107",
+    "context": "localized"
+   }
+  ]
+ },
+ "胶带": {
+  "source": "胶带",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:20",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/Decoration.swift:106",
+    "context": "localized"
+   }
+  ]
+ },
+ "胶片": {
+  "source": "胶片",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:53",
+    "context": "localized"
+   }
+  ]
+ },
+ "胶片框": {
+  "source": "胶片框",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:121",
+    "context": "localized"
+   }
+  ]
+ },
+ "自定义 LUT": {
+  "source": "自定义 LUT",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Film/FilmFamily.swift:28",
+    "context": "localized"
+   }
+  ]
+ },
+ "自定义 LUT 胶卷": {
+  "source": "自定义 LUT 胶卷",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Film/FilmStock.swift:167",
+    "context": "localized"
+   }
+  ]
+ },
+ "自己写一个标签，回车添加": {
+  "source": "自己写一个标签，回车添加",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:451",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "自拍": {
+  "source": "自拍",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:111",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:241",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/App/MenuContent.swift:12",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:96",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:124",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "自拍 · %@": {
+  "source": "自拍 · \\(model.currentStock.name)",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:474",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "自拍倒数 3 秒": {
+  "source": "自拍倒数 3 秒",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:523",
+    "context": "localized"
+   }
+  ]
+ },
+ "自拍前倒数 3 秒": {
+  "source": "自拍前倒数 3 秒",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:225",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "自拍和大头贴机要用到刘海里的摄像头。请在「系统设置 → 隐私与安全性 → 摄像头」里打开 Nocchi，然后再试一次。": {
+  "source": "自拍和大头贴机要用到刘海里的摄像头。请在「系统设置 → 隐私与安全性 → 摄像头」里打开 Nocchi，然后再试一次。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Capture/CameraService.swift:282",
+    "context": "localized"
+   }
+  ]
+ },
+ "自拍画面镜像（像照镜子一样）": {
+  "source": "自拍画面镜像（像照镜子一样）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:391",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "色温": {
+  "source": "色温",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:211",
+    "context": "localized"
+   }
+  ]
+ },
+ "芥末": {
+  "source": "芥末",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateSession.swift:56",
+    "context": "localized"
+   }
+  ]
+ },
+ "营业中": {
+  "source": "营业中",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchController.swift:464",
+    "context": "localized"
+   }
+  ]
+ },
+ "蓝调时刻：深蓝阴影、暖橙灯光，中颗粒": {
+  "source": "蓝调时刻：深蓝阴影、暖橙灯光，中颗粒",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (night-flight-800)",
+    "context": "data"
+   }
+  ]
+ },
+ "蛋糕": {
+  "source": "蛋糕",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:27",
+    "context": "localized"
+   }
+  ]
+ },
+ "行李牌": {
+  "source": "行李牌",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:52",
+    "context": "localized"
+   }
+  ]
+ },
+ "表情": {
+  "source": "表情",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/Decoration.swift:108",
+    "context": "localized"
+   }
+  ]
+ },
+ "装上了 %@": {
+  "source": "装上了 \\(stock.name)",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchController.swift:344",
+    "context": "localized"
+   }
+  ]
+ },
+ "装上哪台，刘海就用哪台拍。即显相机：一张一张出片。大头贴机：每次拍一条四格，自拍连拍四张、屏幕快门框选四次、冲印照片每四张拼一条，用「相纸」里大头贴机的版式、相框和黑白设置。刘海面板里点「换相机」也能换。": {
+  "source": "装上哪台，刘海就用哪台拍。即显相机：一张一张出片。大头贴机：每次拍一条四格，自拍连拍四张、屏幕快门框选四次、冲印照片每四张拼一条，用「相纸」里大头贴机的版式、相框和黑白设置。刘海面板里点「换相机」也能换。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:47",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "装饰…": {
+  "source": "装饰…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumShared.swift:267",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:525",
+    "context": "localized"
+   }
+  ]
+ },
+ "装饰台": {
+  "source": "装饰台",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:175",
+    "context": "string"
+   },
+   {
+    "at": "macOS/Nocchi/Editor/DecorateDesk.swift:68",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Editor/DecorateDesk.swift:153",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "褪色的青绿：低反差、橄榄色的绿，一点漏光": {
+  "source": "褪色的青绿：低反差、橄榄色的绿，一点漏光",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (moss-400)",
+    "context": "data"
+   }
+  ]
+ },
+ "让拖开的卡片回到那一叠": {
+  "source": "让拖开的卡片回到那一叠",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:597",
+    "context": "localized"
+   }
+  ]
+ },
+ "设置": {
+  "source": "设置",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:145",
+    "context": "localized"
+   }
+  ]
+ },
+ "设置…": {
+  "source": "设置…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/App/MenuContent.swift:66",
+    "context": "swiftui"
+   },
+   {
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:118",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "试试题字、#标签、地点、胶卷名，或者「2026/11」这样的日期": {
+  "source": "试试题字、#标签、地点、胶卷名，或者「2026/11」这样的日期",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumShared.swift:348",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "语言": {
+  "source": "语言",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:206",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "请看镜头": {
+  "source": "请看镜头",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:265",
+    "context": "localized"
+   }
+  ]
+ },
+ "请看镜头！": {
+  "source": "请看镜头！",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:571",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "调节软木板的灯光与显示效果": {
+  "source": "调节软木板的灯光与显示效果",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:170",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "象牙白": {
+  "source": "象牙白",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateSession.swift:57",
+    "context": "localized"
+   }
+  ]
+ },
+ "负片": {
+  "source": "负片",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/FilmLightTable.swift:539",
+    "context": "localized"
+   }
+  ]
+ },
+ "贴到桌面层（在窗口后面）": {
+  "source": "贴到桌面层（在窗口后面）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:540",
+    "context": "localized"
+   }
+  ]
+ },
+ "贴纸": {
+  "source": "贴纸",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateSession.swift:29",
+    "context": "localized"
+   }
+  ]
+ },
+ "贴纸上的字": {
+  "source": "贴纸上的字",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:258",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "跟随 macOS 的默认摄像头": {
+  "source": "跟随 macOS 的默认摄像头",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:379",
+    "context": "localized"
+   }
+  ]
+ },
+ "软木": {
+  "source": "软木",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/PosterRenderer.swift:25",
+    "context": "localized"
+   }
+  ]
+ },
+ "软木板": {
+  "source": "软木板",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/AlbumShared.swift:127",
+    "context": "localized"
+   }
+  ]
+ },
+ "软木板还空着": {
+  "source": "软木板还空着",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:718",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "返回": {
+  "source": "返回",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/FilmCabinetPanel.swift:60",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "还在显影，等一下": {
+  "source": "还在显影，等一下",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Photo/PhotoWindowController.swift:556",
+    "context": "localized"
+   }
+  ]
+ },
+ "这一卷拍完了，换上新的 %@": {
+  "source": "这一卷拍完了，换上新的 \\(stock.name)",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Darkroom/Darkroom.swift:260",
+    "context": "localized"
+   }
+  ]
+ },
+ "这一卷：%@": {
+  "source": "这一卷：\\(model.roll.counterText)",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/App/MenuContent.swift:53",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "这一卷：%@ · 第 %lld 卷": {
+  "source": "这一卷：\\(model.roll.counterText) · 第 \\(model.roll.rollNumber) 卷",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:134",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "这个文件不是图片": {
+  "source": "这个文件不是图片",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Darkroom/Darkroom.swift:78",
+    "context": "localized"
+   }
+  ]
+ },
+ "这些文件不是图片": {
+  "source": "这些文件不是图片",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Import/PhotoImport.swift:33",
+    "context": "localized"
+   }
+  ]
+ },
+ "连拍两张，自动拼成一对": {
+  "source": "连拍两张，自动拼成一对",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/CameraBody.swift:35",
+    "context": "localized"
+   }
+  ]
+ },
+ "迷你即显": {
+  "source": "迷你即显",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/PaperLayout.swift:141",
+    "context": "localized"
+   }
+  ]
+ },
+ "退出 Nocchi": {
+  "source": "退出 Nocchi",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/App/MenuContent.swift:68",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "退出自拍（Esc）": {
+  "source": "退出自拍（Esc）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Notch/NotchRootView.swift:517",
+    "context": "localized"
+   }
+  ]
+ },
+ "选一个文件夹放成片（之后冲印的照片也放在这里）": {
+  "source": "选一个文件夹放成片（之后冲印的照片也放在这里）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:65",
+    "context": "localized"
+   }
+  ]
+ },
+ "选中：%@": {
+  "source": "选中：\\(kind.name)",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:256",
+    "context": "localized"
+   }
+  ]
+ },
+ "选几个字体文件（.ttf / .otf / .ttc），导入后只在 Nocchi 里用": {
+  "source": "选几个字体文件（.ttf / .otf / .ttc），导入后只在 Nocchi 里用",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:905",
+    "context": "localized"
+   }
+  ]
+ },
+ "选几张图片做成贴纸（透明背景的 PNG 效果最好）": {
+  "source": "选几张图片做成贴纸（透明背景的 PNG 效果最好）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/StickerShelf.swift:46",
+    "context": "localized"
+   }
+  ]
+ },
+ "选几张图片做成贴纸，也可以直接把图片拖进来": {
+  "source": "选几张图片做成贴纸，也可以直接把图片拖进来",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:167",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "选几张照片（最多 %lld 张），每张都会用「%@」冲印成一张%@。": {
+  "source": "选几张照片（最多 \\(maxCount) 张），每张都会用「\\(model.currentStock.name)」冲印成一张\\(model.instantFormat.displayName)。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Import/PhotoImport.swift:20",
+    "context": "localized"
+   }
+  ]
+ },
+ "选择、移动贴纸": {
+  "source": "选择、移动贴纸",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateDesk.swift:202",
+    "context": "localized"
+   }
+  ]
+ },
+ "选择一个 .cube LUT 文件，它会变成一卷自定义胶卷。": {
+  "source": "选择一个 .cube LUT 文件，它会变成一卷自定义胶卷。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:146",
+    "context": "localized"
+   }
+  ]
+ },
+ "选择照片…": {
+  "source": "选择照片…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Import/PhotoImport.swift:100",
+    "context": "localized"
+   }
+  ]
+ },
+ "选的不是文件夹。": {
+  "source": "选的不是文件夹。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/StorageSettings.swift:111",
+    "context": "localized"
+   }
+  ]
+ },
+ "通用": {
+  "source": "通用",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:19",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "通透淡彩：薄荷绿、青蓝天空、粉嫩肤色，像微微过曝的胶片": {
+  "source": "通透淡彩：薄荷绿、青蓝天空、粉嫩肤色，像微微过曝的胶片",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (mint-400)",
+    "context": "data"
+   }
+  ]
+ },
+ "邮戳": {
+  "source": "邮戳",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:35",
+    "context": "localized"
+   }
+  ]
+ },
+ "邮票": {
+  "source": "邮票",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:123",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:50",
+    "context": "localized"
+   }
+  ]
+ },
+ "郁金香": {
+  "source": "郁金香",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:76",
+    "context": "string"
+   }
+  ]
+ },
+ "重做": {
+  "source": "重做",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateDesk.swift:406",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "重做（⇧⌘Z）": {
+  "source": "重做（⇧⌘Z）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateDesk.swift:234",
+    "context": "localized"
+   }
+  ]
+ },
+ "重命名…": {
+  "source": "重命名…",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:171",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "重新叠好": {
+  "source": "重新叠好",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift:307",
+    "context": "localized"
+   }
+  ]
+ },
+ "重新打乱光台上的胶片条": {
+  "source": "重新打乱光台上的胶片条",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/FilmLightTable.swift:517",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "金": {
+  "source": "金",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateSession.swift:57",
+    "context": "localized"
+   }
+  ]
+ },
+ "金星": {
+  "source": "金星",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:136",
+    "context": "localized"
+   }
+  ]
+ },
+ "金黄色的日常负片：暖洋洋、黄与红饱满、黑位微抬，一股旧夏天的味道": {
+  "source": "金黄色的日常负片：暖洋洋、黄与红饱满、黑位微抬，一股旧夏天的味道",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (gold-200)",
+    "context": "data"
+   }
+  ]
+ },
+ "针孔相机": {
+  "source": "针孔相机",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Darkroom/CameraBody.swift:24",
+    "context": "localized"
+   }
+  ]
+ },
+ "钢笔": {
+  "source": "钢笔",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/Decoration.swift:26",
+    "context": "localized"
+   }
+  ]
+ },
+ "钴蓝": {
+  "source": "钴蓝",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateSession.swift:55",
+    "context": "localized"
+   }
+  ]
+ },
+ "铅字": {
+  "source": "铅字",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/Decoration.swift:79",
+    "context": "localized"
+   }
+  ]
+ },
+ "闪光": {
+  "source": "闪光",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:14",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:110",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:115",
+    "context": "string"
+   }
+  ]
+ },
+ "阳光": {
+  "source": "阳光",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:39",
+    "context": "string"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:110",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:113",
+    "context": "string"
+   }
+  ]
+ },
+ "阳光下的万能负片：暖黄、肤色健康、反差适中，带一点点漏光": {
+  "source": "阳光下的万能负片：暖黄、肤色健康、反差适中，带一点点漏光",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (warm-sun-400)",
+    "context": "data"
+   }
+  ]
+ },
+ "阴影": {
+  "source": "阴影",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:215",
+    "context": "localized"
+   }
+  ]
+ },
+ "陶土": {
+  "source": "陶土",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/DecorateSession.swift:54",
+    "context": "localized"
+   }
+  ]
+ },
+ "雏菊": {
+  "source": "雏菊",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:23",
+    "context": "localized"
+   }
+  ]
+ },
+ "雨夜小巷": {
+  "source": "雨夜小巷",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:52",
+    "context": "string"
+   }
+  ]
+ },
+ "雨天": {
+  "source": "雨天",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:110",
+    "context": "localized"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:114",
+    "context": "string"
+   }
+  ]
+ },
+ "需要摄像头权限（系统设置 → 隐私与安全性 → 摄像头）": {
+  "source": "需要摄像头权限（系统设置 → 隐私与安全性 → 摄像头）",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Capture/CameraService.swift:57",
+    "context": "localized"
+   }
+  ]
+ },
+ "霓虹夜：品红与红色饱满、紫色阴影，灯光有光晕": {
+  "source": "霓虹夜：品红与红色饱满、紫色阴影，灯光有光晕",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (neon-800)",
+    "context": "data"
+   }
+  ]
+ },
+ "音符": {
+  "source": "音符",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:28",
+    "context": "localized"
+   }
+  ]
+ },
+ "音量": {
+  "source": "音量",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:235",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "题字": {
+  "source": "题字",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:296",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "题字 / 心情": {
+  "source": "题字 / 心情",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:405",
+    "context": "localized"
+   }
+  ]
+ },
+ "题字字体": {
+  "source": "题字字体",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:298",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "风光负片：高饱和、深邃的蓝天、浓郁的红，颗粒极细、画面利落": {
+  "source": "风光负片：高饱和、深邃的蓝天、浓郁的红，颗粒极细、画面利落",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (vivid-100)",
+    "context": "data"
+   }
+  ]
+ },
+ "飞机": {
+  "source": "飞机",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:29",
+    "context": "localized"
+   }
+  ]
+ },
+ "马克笔": {
+  "source": "马克笔",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/Decoration.swift:27",
+    "context": "localized"
+   }
+  ]
+ },
+ "高感夜拍：粗颗粒、压暗、阴影微绿，像深夜的便利店": {
+  "source": "高感夜拍：粗颗粒、压暗、阴影微绿，像深夜的便利店",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Resources/FilmStocks.json (midnight-1600)",
+    "context": "data"
+   }
+  ]
+ },
+ "黄墙下的单车": {
+  "source": "黄墙下的单车",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:68",
+    "context": "string"
+   }
+  ]
+ },
+ "黄铜钉": {
+  "source": "黄铜钉",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:18",
+    "context": "localized"
+   }
+  ]
+ },
+ "黑卡纸相册页和四个照片角": {
+  "source": "黑卡纸相册页和四个照片角",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:126",
+    "context": "localized"
+   }
+  ]
+ },
+ "黑白": {
+  "source": "黑白",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/BoothFrameChooser.swift:45",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Booth/BoothMachineLayout.swift:35",
+    "context": "string"
+   },
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Film/FilmFamily.swift:26",
+    "context": "localized"
+   }
+  ]
+ },
+ "黑白 / 彩色": {
+  "source": "黑白 / 彩色",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:384",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "黑白照相亭": {
+  "source": "黑白照相亭",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:132",
+    "context": "localized"
+   }
+  ]
+ },
+ "黑色片基、齿孔和橙色片边字": {
+  "source": "黑色片基、齿孔和橙色片边字",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:121",
+    "context": "localized"
+   }
+  ]
+ },
+ "黑色相纸和白色发丝边": {
+  "source": "黑色相纸和白色发丝边",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:132",
+    "context": "localized"
+   }
+  ]
+ },
+ "默认模板": {
+  "source": "默认模板",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:261",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "默认相框": {
+  "source": "默认相框",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:284",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "默认简体中文。换了以后重新打开 Nocchi 生效。": {
+  "source": "默认简体中文。换了以后重新打开 Nocchi 生效。",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:212",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "默认题字": {
+  "source": "默认题字",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Settings/SettingsView.swift:297",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "齿孔边、面值和一枚邮戳": {
+  "source": "齿孔边、面值和一枚邮戳",
+  "uses": [
+   {
+    "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:123",
+    "context": "localized"
+   }
+  ]
+ },
+ "＋ 加一段字": {
+  "source": "＋ 加一段字",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Editor/Inspector.swift:401",
+    "context": "localized"
+   }
+  ]
+ }
+}
