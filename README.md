@@ -148,7 +148,7 @@ Every release comes with `SHA256SUMS.txt`. Builds of the latest commit are attac
 
 ## 🗺️ Where it stands
 
-**Nocchi 1.0** is the "retro photo lab" release: the Dynamic-Island-shaped notch, the film cabinet, 26 film stocks, six paper formats, templates and stickers, the decorating desk, the four album views and the photo booth's frame picker. Next comes the iPhone app. The live progress board is [docs/PROGRESS.md](docs/PROGRESS.md) (in Chinese).
+**Nocchi 2.0** polishes the photo lab: the photo booth is one Blender-modelled art-deco machine (bulb marquee, chrome window, a gilt Nocchi maker's plate) in front of a theatre-red velvet curtain, the Valentine frame is rebuilt with die-cut paper lace and gold foil, you can add text boxes, your own fonts and your own stickers, the corkboard is softer with an adjustable lamp and swinging prints, cards slide out of the card box like real ones, and prints come out of the notch with real physics. Next comes the iPhone app. The live progress board is [docs/PROGRESS.md](docs/PROGRESS.md) (in Chinese).
 
 ## 🛠️ How it's built
 

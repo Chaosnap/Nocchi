@@ -2,6 +2,20 @@
 
 The full changelog, in Chinese, is [CHANGELOG.md](https://github.com/Chaosnap/Nocchi/blob/main/CHANGELOG.md). Downloads are on [Releases](https://github.com/Chaosnap/Nocchi/releases).
 
+## 2.0.0 · 2026-11-24
+
+**Polishing the photo lab.**
+
+- **The photo booth, modelled in Blender as one machine**: a bulb marquee arch with gold lettering on red enamel, a walnut body with fluted pilasters, a chrome-rimmed window, a gilt **Nocchi** maker's plate, a cream enamel console with chrome levers and a glowing start button. The sample hangs in the window while you choose; the camera shows there while you shoot.
+- **A theatre curtain**: dark red velvet with real folds and a festoon valance with gold fringe and tassels that sway.
+- **The Valentine frame, rebuilt in Blender**: rose card, die-cut paper lace with tiny cut-out hearts, lace rings and gold foil around the heart windows, satin bows.
+- **Text boxes and fonts**: put text anywhere on a photo, in any installed font.
+- **My stickers**: import your own images as stickers and manage them.
+- **A softer corkboard** with an adjustable desk lamp and prints that drop, bounce and swing on their pins.
+- **The card box**: cards slide out of their own slot along the divider, then land in a loose pile you can rearrange.
+- **Prints come out with real physics**: fed by the rollers a step at a time, they swing and fall.
+- **Fixes**: photos were developed too dark and too saturated (an additive effect doubled their opacity); legible text on the decorating desk in dark mode; soft, continuous shadows everywhere; no scrollbars anywhere.
+
 ## 1.0.0 · 2026-11-24
 
 **The retro photo lab.** The notch takes the shape of the Dynamic Island and holds a film cabinet; 26 retuned film stocks, six papers, sixteen templates and 60+ printed stickers; a decorating desk for drawing, stickers, templates, captions and posters; an album with four views (corkboard, card box, film light table, wall calendar) and search; a photo booth that lets you choose a frame first.

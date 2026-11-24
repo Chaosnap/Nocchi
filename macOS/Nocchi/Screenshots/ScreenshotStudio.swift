@@ -128,10 +128,6 @@ private final class Studio {
         booth.showcaseFrameChooser()
         await booth.previews.prefetch(booth.prefetchRequests())
         await pause(0.3)
-        // 调试：布帘灯光的标定条（一盏一盏单独开的灰色平面），量完就删。
-        if let strip = CurtainScene().calibrationStrip() {
-            save(strip, name: "debug-curtain-lights", method: "scenekit")
-        }
         let boothSize = CGSize(width: 1300, height: 1100)
         let velvet = CurtainScene().renderClosed(size: boothSize, gap: 780)
         say("SHOT curtain=\(velvet == nil ? "flat-fallback" : "scenekit")")
