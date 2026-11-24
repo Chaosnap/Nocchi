@@ -21,6 +21,10 @@ final class AppModel: ObservableObject {
         static let layer = "photo.defaultLayer"
         static let welcome = "welcome.seen"
         static let caption = "print.defaultCaption"
+        static let dockIcon = "app.showsDockIcon"
+        static let instantFormat = "print.instantFormat"
+        static let cameraDevice = "camera.deviceID"
+        static let mirrorSelfie = "camera.mirrorSelfie"
     }
 
     private let defaults = UserDefaults.standard
@@ -80,6 +84,35 @@ final class AppModel: ObservableObject {
         didSet { defaults.set(defaultLayer.rawValue, forKey: Keys.layer) }
     }
 
+    /// 在程序坞显示图标（关掉后只住在菜单栏和刘海里）。
+    @Published var showsDockIcon: Bool {
+        didSet {
+            defaults.set(showsDockIcon, forKey: Keys.dockIcon)
+            applyActivationPolicy()
+        }
+    }
+
+    /// 即显相机用的相纸（方形 / 迷你 / 宽幅 / 冲印小照）。
+    @Published var instantFormat: FilmFormat {
+        didSet {
+            if !FilmFormat.instantChoices.contains(instantFormat) {
+                instantFormat = .instantSquare
+                return
+            }
+            defaults.set(instantFormat.rawValue, forKey: Keys.instantFormat)
+        }
+    }
+
+    /// 选中的摄像头（`AVCaptureDevice.uniqueID`）；nil 表示系统默认摄像头。
+    @Published var cameraDeviceID: String? {
+        didSet { defaults.set(cameraDeviceID, forKey: Keys.cameraDevice) }
+    }
+
+    /// 自拍画面镜像（像照镜子）。
+    @Published var mirrorSelfie: Bool {
+        didSet { defaults.set(mirrorSelfie, forKey: Keys.mirrorSelfie) }
+    }
+
     @Published private(set) var roll: FilmRoll
     @Published private(set) var customStocks: [FilmStock]
 
@@ -109,6 +142,11 @@ final class AppModel: ObservableObject {
         printDate = d.object(forKey: Keys.printDate) as? Bool ?? true
         defaultCaption = d.string(forKey: Keys.caption) ?? PhotoRecord.defaultCaption
         defaultLayer = DeskPlacement.Layer(rawValue: d.string(forKey: Keys.layer) ?? "") ?? .floating
+        showsDockIcon = d.object(forKey: Keys.dockIcon) as? Bool ?? true
+        let format = FilmFormat(rawValue: d.string(forKey: Keys.instantFormat) ?? "") ?? .instantSquare
+        instantFormat = FilmFormat.instantChoices.contains(format) ? format : .instantSquare
+        cameraDeviceID = d.string(forKey: Keys.cameraDevice)
+        mirrorSelfie = d.object(forKey: Keys.mirrorSelfie) as? Bool ?? true
 
         var custom: [FilmStock] = []
         if let data = d.data(forKey: Keys.custom), let decoded = try? JSONDecoder().decode([FilmStock].self, from: data) {
@@ -126,6 +164,15 @@ final class AppModel: ObservableObject {
     func applyRuntimeSettings() {
         SoundPlayer.shared.isMuted = quietMode
         SoundPlayer.shared.volume = Float(volume)
+        applyActivationPolicy()
+    }
+
+    /// 普通 App（程序坞图标 + 主菜单）或只住在菜单栏里。
+    func applyActivationPolicy() {
+        let policy: NSApplication.ActivationPolicy = showsDockIcon ? .regular : .accessory
+        if NSApp.activationPolicy() != policy {
+            NSApp.setActivationPolicy(policy)
+        }
     }
 
     /// 拍一张。返回 true 表示这次之后胶卷拍完、已自动换上新卷。

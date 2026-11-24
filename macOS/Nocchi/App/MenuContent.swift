@@ -13,6 +13,8 @@ struct MenuContent: View {
             .keyboardShortcut("f", modifiers: [.control, .option, .command])
         Button("大头贴机") { PhotoBoothController.shared.start() }
             .keyboardShortcut("b", modifiers: [.control, .option, .command])
+        Button("冲印照片…") { PhotoImport.chooseFiles() }
+        Button("从「照片」图库冲印…") { PhotoImport.choosePhotosLibrary() }
 
         Divider()
 

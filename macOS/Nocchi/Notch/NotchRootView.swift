@@ -47,7 +47,7 @@ struct NotchRootView: View {
         case .hover: return 26
         case .selfie: return 34
         case .ejecting: return 9
-        case .toast: return 14
+        case .toast: return notch.toastStyle == .banner ? 22 : 14
         case .shelf: return 30
         case .dropTarget: return 26
         }
@@ -217,108 +217,222 @@ struct FilmSwatch: View {
 
 // MARK: - Toast
 
+/// 提示：紧凑（刘海两侧各伸出一小截）或横幅（向下长出一条），都和灵动岛一个比例。
 private struct ToastBand: View {
     @ObservedObject var notch: NotchController
     let notchHeight: CGFloat
 
     var body: some View {
+        switch notch.toastStyle {
+        case .compact:
+            compact
+        case .banner:
+            banner
+        }
+    }
+
+    private var icon: some View {
+        Image(systemName: notch.toastSymbol)
+            .font(.system(size: 13, weight: .semibold))
+            .foregroundStyle(Palette.terracottaLight)
+    }
+
+    private var compact: some View {
         HStack(spacing: 0) {
-            Image(systemName: notch.toastSymbol)
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(Palette.terracottaLight)
+            icon
                 .frame(maxWidth: .infinity)
             Spacer(minLength: notch.metrics.rect.width)
-            Text(notch.toastText)
-                .font(.system(size: 12, weight: .semibold, design: .rounded))
-                .foregroundStyle(.white)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-                .frame(maxWidth: .infinity)
+            HStack(spacing: 5) {
+                if notch.toastLive {
+                    LiveDot()
+                }
+                Text(notch.toastText)
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                    .fixedSize()
+            }
+            .frame(maxWidth: .infinity)
         }
-        .padding(.horizontal, 10)
         .frame(height: notchHeight)
+    }
+
+    private var banner: some View {
+        VStack(spacing: 0) {
+            Color.clear
+                .frame(height: notchHeight)
+            HStack(spacing: 8) {
+                icon
+                Text(notch.toastText)
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
+            .padding(.horizontal, 18)
+            .frame(maxWidth: .infinity)
+            .frame(height: 38)
+        }
+    }
+}
+
+/// 「营业中」的绿色小灯（呼吸）。
+private struct LiveDot: View {
+    @State private var glow = false
+
+    var body: some View {
+        Circle()
+            .fill(Color(red: 0.36, green: 0.84, blue: 0.47))
+            .frame(width: 6, height: 6)
+            .shadow(color: Color(red: 0.36, green: 0.84, blue: 0.47).opacity(glow ? 0.9 : 0.3), radius: glow ? 4 : 1)
+            .onAppear {
+                withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
+                    glow = true
+                }
+            }
     }
 }
 
 // MARK: - Selfie
 
+/// 自拍取景器：刘海那一行 + 镜头 + 按钮行。每一段的高度都来自 `SelfieLayout`，
+/// 岛的高度由同一组常量推出来，所以按钮行永远完整可见。
 private struct SelfiePanel: View {
     @ObservedObject var notch: NotchController
     @ObservedObject var camera: CameraService
+    @ObservedObject var model = AppModel.shared
     let notchHeight: CGFloat
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                Text("自拍 · 即显相机")
-                Spacer(minLength: notch.metrics.rect.width + 24)
-                Text("空格拍照 · Esc 取消")
-                    .opacity(0.6)
-            }
-            .font(.system(size: 12, weight: .semibold, design: .rounded))
-            .foregroundStyle(.white.opacity(0.85))
-            .padding(.horizontal, 18)
-            .frame(height: notchHeight)
-
-            ZStack {
-                LensRing()
-                    .frame(width: 236, height: 236)
-                CameraPreview(session: camera.session, mirrored: true, isRunning: camera.isRunning)
-                    .frame(width: 196, height: 196)
-                    .clipShape(Circle())
-                    .overlay(Circle().stroke(Color.black.opacity(0.6), lineWidth: 3))
-                if !camera.isRunning {
-                    ProgressView()
-                        .controlSize(.small)
-                        .tint(.white)
-                }
-                if let n = notch.countdown {
-                    Text("\(n)")
-                        .font(.system(size: 72, weight: .bold, design: .rounded))
-                        .foregroundStyle(.white)
-                        .shadow(color: .black.opacity(0.6), radius: 8)
-                        .contentTransition(.numericText())
-                }
-            }
-            .padding(.top, 8)
-
-            HStack(spacing: 28) {
-                Button {
-                    notch.exitSelfie()
-                } label: {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 13, weight: .bold))
-                        .frame(width: 34, height: 34)
-                        .background(Circle().fill(Color.white.opacity(0.12)))
-                }
-                .buttonStyle(.plain)
-                .foregroundStyle(.white)
-
-                Button {
-                    notch.selfieShutter()
-                } label: {
-                    ZStack {
-                        Circle().fill(Palette.ivory)
-                        Circle()
-                            .fill(RadialGradient(colors: [Palette.terracottaLight, Palette.terracotta], center: .topLeading, startRadius: 2, endRadius: 40))
-                            .padding(6)
-                        Circle().stroke(Color.black.opacity(0.18), lineWidth: 1).padding(6)
-                    }
-                    .frame(width: 54, height: 54)
-                    .shadow(color: Palette.terracotta.opacity(0.45), radius: 8)
-                }
-                .buttonStyle(.plain)
-                .disabled(!camera.isRunning || notch.isCapturing)
-
-                Toggle(isOn: Binding(get: { AppModel.shared.selfieCountdown }, set: { AppModel.shared.selfieCountdown = $0 })) {
-                    Image(systemName: "timer")
-                }
-                .toggleStyle(.button)
-                .help("自拍倒数 3 秒")
-            }
-            .padding(.top, 14)
-            Spacer(minLength: 0)
+            header
+                .frame(height: notchHeight)
+            lens
+                .frame(width: SelfieLayout.lens, height: SelfieLayout.lens)
+                .padding(.top, SelfieLayout.topGap)
+            controls
+                .frame(height: SelfieLayout.row)
+                .padding(.top, SelfieLayout.rowGap)
+            Spacer(minLength: SelfieLayout.bottomInset)
         }
+    }
+
+    private var header: some View {
+        HStack {
+            Text("自拍 · \(model.currentStock.name)")
+            Spacer(minLength: notch.metrics.rect.width + 24)
+            Text("空格拍照 · Esc 退出")
+                .opacity(0.6)
+        }
+        .font(.system(size: 12, weight: .semibold, design: .rounded))
+        .foregroundStyle(.white.opacity(0.85))
+        .padding(.horizontal, 18)
+    }
+
+    private var lens: some View {
+        ZStack {
+            LensRing()
+            CameraPreview(session: camera.session, mirrored: model.mirrorSelfie, isRunning: camera.isRunning)
+                .frame(width: SelfieLayout.viewfinder, height: SelfieLayout.viewfinder)
+                .clipShape(Circle())
+                .overlay(Circle().stroke(Color.black.opacity(0.6), lineWidth: 3))
+            if !camera.isRunning {
+                ProgressView()
+                    .controlSize(.small)
+                    .tint(.white)
+            }
+            if let n = notch.countdown {
+                Text("\(n)")
+                    .font(.system(size: 72, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.6), radius: 8)
+                    .contentTransition(.numericText())
+            }
+        }
+    }
+
+    private var controls: some View {
+        HStack(spacing: 40) {
+            RoundControlButton(symbol: "xmark", isOn: false, help: "退出自拍（Esc）") {
+                notch.exitSelfie()
+            }
+            ShutterButton(enabled: camera.isRunning && !notch.isCapturing) {
+                notch.selfieShutter()
+            }
+            RoundControlButton(symbol: "timer", isOn: model.selfieCountdown, help: "自拍倒数 3 秒") {
+                model.selfieCountdown.toggle()
+            }
+        }
+    }
+}
+
+/// 快门键：象牙白外圈 + 陶土橙内钮，按下时微微下沉。
+private struct ShutterButton: View {
+    let enabled: Bool
+    let action: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) {
+            ZStack {
+                Circle()
+                    .fill(LinearGradient(colors: [Palette.ivoryLight, Palette.ivoryShade], startPoint: .top, endPoint: .bottom))
+                Circle()
+                    .fill(RadialGradient(colors: [Palette.terracottaLight, Palette.terracotta], center: .topLeading, startRadius: 2, endRadius: 44))
+                    .padding(7)
+                Circle()
+                    .stroke(Color.black.opacity(0.2), lineWidth: 1)
+                    .padding(7)
+                Circle()
+                    .trim(from: 0.55, to: 0.95)
+                    .stroke(Color.white.opacity(0.45), style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
+                    .padding(10)
+            }
+            .frame(width: SelfieLayout.row, height: SelfieLayout.row)
+            .shadow(color: Palette.terracotta.opacity(hovering && enabled ? 0.6 : 0.35), radius: hovering ? 12 : 8)
+            .scaleEffect(hovering && enabled ? 1.04 : 1)
+            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: hovering)
+        }
+        .buttonStyle(PressSinkStyle())
+        .disabled(!enabled)
+        .opacity(enabled ? 1 : 0.55)
+        .onHover { hovering = $0 }
+        .help("拍照（空格）")
+    }
+}
+
+/// 自拍取景器两侧的圆形小按钮（关闭、倒数）。
+private struct RoundControlButton: View {
+    let symbol: String
+    let isOn: Bool
+    let help: String
+    let action: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundStyle(isOn ? Palette.charcoal : .white)
+                .frame(width: 36, height: 36)
+                .background(
+                    Circle().fill(isOn ? AnyShapeStyle(Palette.terracottaLight) : AnyShapeStyle(Color.white.opacity(hovering ? 0.2 : 0.12)))
+                )
+                .overlay(Circle().stroke(Color.white.opacity(0.12), lineWidth: 0.5))
+        }
+        .buttonStyle(PressSinkStyle())
+        .onHover { hovering = $0 }
+        .help(help)
+    }
+}
+
+/// 按下时轻轻下沉、变暗。
+private struct PressSinkStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.94 : 1)
+            .brightness(configuration.isPressed ? -0.06 : 0)
+            .animation(.spring(response: 0.2, dampingFraction: 0.7), value: configuration.isPressed)
     }
 }
 

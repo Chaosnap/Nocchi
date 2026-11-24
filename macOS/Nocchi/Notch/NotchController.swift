@@ -27,6 +27,35 @@ enum NotchDropKind: Equatable {
     case files
 }
 
+/// 提示的样子：和灵动岛一样，短的只在刘海两侧伸出一小截，长的向下长出一条。
+enum NotchToastStyle: Equatable {
+    /// 紧凑：高度与刘海相同，左翼图标、右翼文字。
+    case compact
+    /// 横幅：岛向下长出一条，图标和文字在下面一行。
+    case banner
+}
+
+/// 自拍取景器的版式。岛的高度由这些常量推出来，内容永远不会被裁掉。
+enum SelfieLayout {
+    /// 镜头外圈直径。
+    static let lens: CGFloat = 236
+    /// 取景器（镜头里的实时画面）直径。
+    static let viewfinder: CGFloat = 196
+    /// 刘海那一行下面到镜头的间距。
+    static let topGap: CGFloat = 10
+    /// 镜头到按钮行的间距。
+    static let rowGap: CGFloat = 16
+    /// 按钮行高度（快门键直径）。
+    static let row: CGFloat = 58
+    /// 底边距。
+    static let bottomInset: CGFloat = 20
+    /// 岛主体的最小宽度。
+    static let minWidth: CGFloat = 440
+
+    /// 刘海那一行以下的内容高度。
+    static var contentHeight: CGFloat { topGap + lens + rowGap + row + bottomInset }
+}
+
 /// 管理刘海上方的透明面板：定位、悬停展开、出片口、提示。
 @MainActor
 final class NotchController: ObservableObject {
@@ -41,9 +70,16 @@ final class NotchController: ObservableObject {
     @Published var countdown: Int?
     @Published private(set) var isCapturing = false
     @Published private(set) var dropKind: NotchDropKind = .photo
+    @Published private(set) var toastStyle: NotchToastStyle = .compact
+    /// 提示右翼前面带一颗绿色小圆点（「营业中」）。
+    @Published private(set) var toastLive = false
+    private var toastTextWidth: CGFloat = 0
 
-    /// 面板固定尺寸，足够容纳最大的「自拍」状态。
-    let panelSize = CGSize(width: 760, height: 420)
+    /// 面板固定尺寸，足够容纳最大的状态（自拍、胶卷柜）。
+    let panelSize = CGSize(width: 860, height: 460)
+
+    /// 紧凑提示单侧翼的最小 / 最大宽度。
+    private static let wingRange: ClosedRange<CGFloat> = 44...96
 
     private var panel: NotchPanel?
     private var screen: NSScreen?
@@ -132,12 +168,19 @@ final class NotchController: ObservableObject {
             let extra: CGFloat = NotchShelf.shared.isEmpty ? 0 : 104
             return CGSize(width: max(w0 + 330, 560) + extra, height: h0 + 112)
         case .selfie:
-            return CGSize(width: max(w0 + 190, 440), height: h0 + 300)
+            return CGSize(width: max(w0 + 190, SelfieLayout.minWidth), height: h0 + SelfieLayout.contentHeight)
         case .ejecting:
             return CGSize(width: max(w0, slotWidth + 30), height: h0 + 12)
         case .toast:
-            let textWidth = min(CGFloat(toastText.count) * 13 + 40, 300)
-            return CGSize(width: w0 + 2 * max(textWidth, 70), height: h0)
+            switch toastStyle {
+            case .compact:
+                let extra: CGFloat = toastLive ? 14 : 0
+                let wing = min(max(toastTextWidth + 22 + extra, Self.wingRange.lowerBound), Self.wingRange.upperBound)
+                return CGSize(width: w0 + 2 * wing, height: h0)
+            case .banner:
+                let width = max(w0 + 180, 340, min(toastTextWidth + 84, 560))
+                return CGSize(width: width, height: h0 + 38)
+            }
         case .shelf:
             return CGSize(width: max(w0 + 360, 620), height: h0 + 196)
         case .dropTarget:
@@ -332,10 +375,15 @@ final class NotchController: ObservableObject {
         return accepted
     }
 
-    func showToast(_ text: String, symbol: String, duration: TimeInterval = 2.4) {
+    func showToast(_ text: String, symbol: String, duration: TimeInterval = 2.4, live: Bool = false) {
         guard mode == .idle || mode == .toast else { return }
+        let width = Self.measureToast(text)
         toastText = text
         toastSymbol = symbol
+        toastLive = live
+        toastTextWidth = width
+        let extra: CGFloat = live ? 14 : 0
+        toastStyle = width + 22 + extra <= Self.wingRange.upperBound ? .compact : .banner
         setMode(.toast)
         toastWork?.cancel()
         let work = DispatchWorkItem { [weak self] in
@@ -345,6 +393,30 @@ final class NotchController: ObservableObject {
         }
         toastWork = work
         DispatchQueue.main.asyncAfter(deadline: .now() + duration, execute: work)
+    }
+
+    /// 提示文字的宽度（与 `ToastBand` 里的字体一致：12pt 圆体半粗）。
+    static func measureToast(_ text: String) -> CGFloat {
+        let base = NSFont.systemFont(ofSize: 12, weight: .semibold)
+        let font = base.fontDescriptor.withDesign(.rounded).flatMap { NSFont(descriptor: $0, size: 12) } ?? base
+        let size = (text as NSString).size(withAttributes: [.font: font])
+        return ceil(size.width)
+    }
+
+    /// 启动问候：刘海像灵动岛一样轻轻醒一下（「营业中」），第一次启动再教一下怎么用。
+    func greet(firstLaunch: Bool) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak self] in
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                self.showToast("营业中", symbol: AppModel.shared.currentBody.symbolName, duration: 1.6, live: true)
+                guard firstLaunch else { return }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.1) { [weak self] in
+                    MainActor.assumeIsolated {
+                        self?.showToast("把鼠标移到刘海上试试", symbol: "hand.point.up.left.fill", duration: 4)
+                    }
+                }
+            }
+        }
     }
 
     func beginEjecting(slotWidth: CGFloat) {

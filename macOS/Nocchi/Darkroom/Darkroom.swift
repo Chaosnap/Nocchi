@@ -68,7 +68,23 @@ final class Darkroom {
             notch.showToast("没拍到，再试一次", symbol: "exclamationmark.triangle.fill")
             return
         }
-        await develop([photo], source: .selfie, body: .instant, mirror: true)
+        await develop([photo], source: .selfie, body: .instant, mirror: AppModel.shared.mirrorSelfie)
+    }
+
+    /// 从照片冲印：一张一张来，等上一张出完片再出下一张，刘海不会同时吐两张。
+    func developImported(_ images: [CGImage]) async {
+        for (index, image) in images.enumerated() {
+            if index > 0 {
+                try? await Task.sleep(nanoseconds: 2_600_000_000)
+            }
+            var waited = 0
+            while (isShooting || NotchController.shared.mode == .ejecting), waited < 60 {
+                try? await Task.sleep(nanoseconds: 200_000_000)
+                waited += 1
+            }
+            Sound.play(.shutter)
+            await develop([image], source: .library, body: .instant, mirror: false)
+        }
     }
 
     // MARK: - Develop
@@ -85,12 +101,15 @@ final class Darkroom {
             : model.currentStock
         let reloaded = model.consumeExposure(frames: images.count)
         let seed = SeededRandom.makeSeed()
-        let aspect = body.format.layout.windowAspect
+        // 大头贴机用它自己的版式；其余（自拍、屏幕快门、冲印照片）用你选的即显相纸。
+        let format: FilmFormat = body.format.isBooth ? body.format : model.instantFormat
+        let aspect = format.layout.windowAspect
         let bias = body.exposureBias
         let processor = Services.processor
         let library = Services.library
 
         var record = PhotoRecord(source: source, body: body, stock: stock, seed: seed, showsDate: model.printDate)
+        record.format = format
         let caption = model.defaultCaption.trimmingCharacters(in: .whitespacesAndNewlines)
         record.caption = caption.isEmpty ? nil : caption
         if body == .photoBooth {

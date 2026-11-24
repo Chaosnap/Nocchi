@@ -2,7 +2,8 @@ import AppKit
 import NocchiKit
 import SwiftUI
 
-/// Nocchi for macOS：住在菜单栏里的相机铺，出片口是刘海。
+/// Nocchi for macOS：住在刘海里的相机铺。默认是普通 App（程序坞图标 + 主菜单），
+/// 设置里可以改成只住在菜单栏和刘海里。
 @main
 struct NocchiMacApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
@@ -14,14 +15,15 @@ struct NocchiMacApp: App {
             Image(systemName: "camera.aperture")
         }
         .menuBarExtraStyle(.menu)
+        .commands {
+            NocchiCommands()
+        }
     }
 }
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
-        NSApp.setActivationPolicy(.accessory)
-
         let model = AppModel.shared
         model.applyRuntimeSettings()
         SoundPlayer.shared.preload()
@@ -37,13 +39,82 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             ScreenshotWatcher.shared.setEnabled(enabled)
         }
 
-        if !model.hasSeenWelcome {
-            model.hasSeenWelcome = true
-            NotchController.shared.showToast("把鼠标移到刘海上试试", symbol: "hand.point.up.left.fill", duration: 4)
-        }
+        // 每次启动：刘海像灵动岛一样轻轻「醒」一下；第一次启动再教一下怎么用。
+        NotchController.shared.greet(firstLaunch: !model.hasSeenWelcome)
+        model.hasSeenWelcome = true
     }
 
     func applicationWillTerminate(_ notification: Notification) {
         DesktopBoard.shared.persistAll()
+    }
+
+    /// 点程序坞图标：没有打开的窗口时打开相册。
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        if !flag {
+            WindowManager.shared.showAlbum()
+        }
+        return true
+    }
+
+    /// 关掉最后一个窗口也不退出：相机铺还在刘海里营业。
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        false
+    }
+
+    /// 程序坞图标的右键菜单。
+    func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
+        let menu = NSMenu()
+        func item(_ title: String, _ action: Selector) {
+            let entry = NSMenuItem(title: title, action: action, keyEquivalent: "")
+            entry.target = self
+            menu.addItem(entry)
+        }
+        item("屏幕快门", #selector(dockScreenShutter))
+        item("自拍", #selector(dockSelfie))
+        item("大头贴机", #selector(dockBooth))
+        menu.addItem(.separator())
+        item("冲印照片…", #selector(dockImportFiles))
+        item("从「照片」图库冲印…", #selector(dockImportLibrary))
+        menu.addItem(.separator())
+        item("打开相册", #selector(dockAlbum))
+        return menu
+    }
+
+    @objc private func dockScreenShutter() { Darkroom.shared.screenShutter() }
+    @objc private func dockSelfie() { NotchController.shared.enterSelfie() }
+    @objc private func dockBooth() { PhotoBoothController.shared.start() }
+    @objc private func dockImportFiles() { PhotoImport.chooseFiles() }
+    @objc private func dockImportLibrary() { PhotoImport.choosePhotosLibrary() }
+    @objc private func dockAlbum() { WindowManager.shared.showAlbum() }
+}
+
+/// 主菜单（App 在前台时出现在屏幕顶端）。
+struct NocchiCommands: Commands {
+    var body: some Commands {
+        CommandGroup(replacing: .appSettings) {
+            Button("设置…") { WindowManager.shared.showSettings() }
+                .keyboardShortcut(",", modifiers: .command)
+        }
+        CommandMenu("相机") {
+            Button("屏幕快门") { Darkroom.shared.screenShutter() }
+                .keyboardShortcut("s", modifiers: [.control, .option, .command])
+            Button("自拍") { NotchController.shared.enterSelfie() }
+                .keyboardShortcut("f", modifiers: [.control, .option, .command])
+            Button("大头贴机") { PhotoBoothController.shared.start() }
+                .keyboardShortcut("b", modifiers: [.control, .option, .command])
+            Divider()
+            Button("冲印照片…") { PhotoImport.chooseFiles() }
+                .keyboardShortcut("o", modifiers: .command)
+            Button("从「照片」图库冲印…") { PhotoImport.choosePhotosLibrary() }
+                .keyboardShortcut("o", modifiers: [.shift, .command])
+        }
+        CommandMenu("相册") {
+            Button("打开相册") { WindowManager.shared.showAlbum() }
+                .keyboardShortcut("0", modifiers: .command)
+            Button("收起桌面上的照片") { DesktopBoard.shared.collectAll() }
+            Button("在 Finder 中打开照片文件夹") {
+                NSWorkspace.shared.open(Services.library.printsRoot)
+            }
+        }
     }
 }

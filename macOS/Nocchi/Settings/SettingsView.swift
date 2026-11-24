@@ -211,6 +211,12 @@ private struct GeneralTab: View {
 
     var body: some View {
         Form {
+            Section("程序") {
+                Toggle("在程序坞显示图标", isOn: $model.showsDockIcon)
+                Text("关掉后 Nocchi 只住在菜单栏和刘海里（没有程序坞图标和主菜单）。")
+                    .font(.system(size: 11))
+                    .foregroundStyle(.secondary)
+            }
             Section("拍摄") {
                 Toggle("安静模式（不出声）", isOn: $model.quietMode)
                 Toggle("自拍前倒数 3 秒", isOn: $model.selfieCountdown)
