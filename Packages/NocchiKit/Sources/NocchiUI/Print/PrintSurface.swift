@@ -145,14 +145,19 @@ private struct PaperEdge: View {
 }
 
 /// 窗口形状（模板给的路径是相纸坐标，这里平移到窗口自己的坐标）。
+///
+/// `Shape` 要求 `Sendable`：存 SwiftUI 的 `Path`（Sendable），不存 `CGPath`（不是）。
 struct WindowClip: Shape {
-    let shape: CGPath
+    let shape: Path
     let origin: CGPoint
 
+    init(shape: CGPath, origin: CGPoint) {
+        self.shape = Path(shape)
+        self.origin = origin
+    }
+
     func path(in rect: CGRect) -> Path {
-        var move = CGAffineTransform(translationX: -origin.x, y: -origin.y)
-        guard let local = shape.copy(using: &move) else { return Path(rect) }
-        return Path(local)
+        shape.applying(CGAffineTransform(translationX: -origin.x, y: -origin.y))
     }
 }
 

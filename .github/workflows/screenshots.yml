@@ -38,7 +38,7 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 50
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Select Xcode
         uses: maxim-lobanov/setup-xcode@v1
@@ -73,7 +73,7 @@ jobs:
       - name: Render screenshots
         run: bash scripts/ci/render-screenshots.sh "$RUNNER_TEMP/dd-mac/Build/Products/Release/Nocchi.app" "$RUNNER_TEMP/shots"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: Nocchi-screenshots

@@ -747,8 +747,9 @@ final class PhotoInteractionView: NSView {
         }
     }
 
+    /// NSView 的重写本来就在主线程上：直接返回菜单（`NSMenu` 不能从 `assumeIsolated` 里传出来）。
     override func menu(for event: NSEvent) -> NSMenu? {
-        MainActor.assumeIsolated { controller?.makeContextMenu() }
+        controller?.makeContextMenu()
     }
 
     override func resetCursorRects() {

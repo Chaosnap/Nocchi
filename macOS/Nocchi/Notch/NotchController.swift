@@ -530,20 +530,23 @@ final class NotchController: ObservableObject {
 
     private func installKeyMonitor() {
         removeKeyMonitor()
+        // 主线程里只回答「这个键用掉了没有」（Bool 可以跨并发域传），事件本身在外面放行或吞掉。
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            MainActor.assumeIsolated {
-                guard let self, self.mode == .selfie else { return event }
-                switch event.keyCode {
+            let keyCode = event.keyCode
+            let consumed = MainActor.assumeIsolated { () -> Bool in
+                guard let self, self.mode == .selfie else { return false }
+                switch keyCode {
                 case 53: // esc
                     self.exitSelfie()
-                    return nil
+                    return true
                 case 49, 36, 76: // space, return, enter
                     self.selfieShutter()
-                    return nil
+                    return true
                 default:
-                    return event
+                    return false
                 }
             }
+            return consumed ? nil : event
         }
     }
 

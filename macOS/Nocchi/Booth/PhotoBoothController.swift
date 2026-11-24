@@ -348,29 +348,33 @@ final class PhotoBoothController: ObservableObject {
         window.makeKeyAndOrderFront(nil)
         self.window = window
 
+        // 主线程里只回答「这个键用掉了没有」（Bool 可以跨并发域传），事件本身在外面放行或吞掉。
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            MainActor.assumeIsolated {
-                guard let self else { return event }
-                if event.keyCode == 53 {
+            let keyCode = event.keyCode
+            let quit = event.modifierFlags.contains(.command) && event.charactersIgnoringModifiers?.lowercased() == "q"
+            let consumed = MainActor.assumeIsolated { () -> Bool in
+                guard let self else { return false }
+                if keyCode == 53 {
                     self.cancel()
-                    return nil
+                    return true
                 }
-                if event.modifierFlags.contains(.command), event.charactersIgnoringModifiers?.lowercased() == "q" {
+                if quit {
                     self.cancel()
                     NSApp.terminate(nil)
-                    return nil
+                    return true
                 }
-                guard self.phase == .choosingFrame else { return event }
-                switch event.keyCode {
+                guard self.phase == .choosingFrame else { return false }
+                switch keyCode {
                 case 123: self.step(-1)                       // ←
                 case 124: self.step(1)                        // →
                 case 125, 126:                                // ↓ ↑
                     self.setFormat(self.boothFormat == .boothStrip ? .boothGrid : .boothStrip)
                 case 36, 76: self.confirmFrame()              // Return / Enter
-                default: return event
+                default: return false
                 }
-                return nil
+                return true
             }
+            return consumed ? nil : event
         }
     }
 

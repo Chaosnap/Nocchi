@@ -206,10 +206,8 @@ struct WheelToHorizontalScroll: NSViewRepresentable {
             }
             guard window != nil else { return }
             monitor = NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { [weak self] event in
-                MainActor.assumeIsolated {
-                    guard let self, self.handle(event) else { return event }
-                    return nil
-                }
+                let handled = MainActor.assumeIsolated { self?.handle(event) ?? false }
+                return handled ? nil : event
             }
         }
 
