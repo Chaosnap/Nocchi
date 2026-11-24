@@ -136,6 +136,13 @@
   font-size: 0.85em;
 }
 
+/* Chinese has no true italics: keep the display face upright there. */
+:lang(zh-CN) .VPHero .text,
+:lang(zh-CN) .vp-doc h2 {
+  font-style: normal;
+  letter-spacing: 0.04em;
+}
+
 /* Two screenshots side by side on wide screens. */
 .gallery {
   display: grid;

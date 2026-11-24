@@ -14,7 +14,7 @@
 | 美术素材 | 🟢 第三版 | 复古机身、大头贴机、纹理（象牙白 + 炭黑 + 陶土橙）；**App 图标第三稿**：复古旁轴式即显相机 + 做旧毛边相纸（不出画框），胡桃木圆角瓷砖，CI 渲染各尺寸；80 年代方盒款机身已入库备用 |
 | 照片卡片盒（2.5D） | 🟢 CI 全绿 | Blender 照参考图建模、Cycles 渲染（`CardBoxBase` / `CardBoxFront` + 热点），卡片从盒口升起、扇形摊开 |
 | v0.2「复古冲印店」 | 🟢 全部完成，随 v1.0.0 发布 | 规范见 [DESIGN.md](DESIGN.md)；逐步进度见下面的「v0.2 改版进度」 |
-| 产品文档站与截图 | 🟡 已推送，等 CI | VitePress（英文 + `/zh/` 中文）→ GitHub Pages；截图由 `screenshots.yml` 在 Actions 上从 App 渲染，提交到 `website/public/screenshots/` |
+| 产品文档站与截图 | 🟡 已上线，截图第二轮 | <https://chaosnap.github.io/Nocchi/>（VitePress，英文 + `/zh/` 中文）；截图由 `screenshots.yml` 在 Actions 上从 App 渲染，提交到 `website/public/screenshots/` |
 | 仓库与社区文件 | 🟢 已补齐 | GNU AGPL-3.0（与 Yohaku 一致）；英文的 README、行为准则（Contributor Covenant 3.0）、贡献指南、安全政策、隐私说明、Issue / PR 模板 |
 
 图例：🟢 完成 · 🟡 进行中 / 待验证 · 🔵 编写中 · ⚪ 未开始 · 🔴 阻塞
@@ -89,6 +89,7 @@
 
 ## 最近更新（新的在上）
 
+- **2026-11-24 · 第 27 次推送** 截图第一轮（Screenshots 第 1 次运行）全部 11 张都拍到了：相册四种看法、装饰台、设置、刘海悬停面板与胶卷柜是窗口服务器截的真实窗口（CI 屏幕只有 1024 × 768、1 倍），桌面 / 相纸一览 / 大头贴是 2 倍合成图。看图发现**真问题**：所有彩色胶卷冲出来都比配方暗一个 gamma、阴影压死、颜色过艳（离线预览 `scripts/film/preview_looks.py` 是对的）——Core Image 套色调立方体时没有可靠地在 sRGB 里查表。修复：`FilmProcessor.applyCube` 明确地「工作空间 → sRGB → `CIColorCube` → 工作空间」；新增 `FilmPipelineFidelityTests`（管线逐色对照 CPU 查表、中性配方不改图、整条管线不改变亮度，另有一条注解记录旧滤镜在 CI 上的输出）。刘海截图裁到岛的范围、去掉菜单栏时间；文档站中文页的搜索框翻译成中文、中文标题不再用斜体。文档站已上线：<https://chaosnap.github.io/Nocchi/>。
 - **2026-11-24 · 第 26 次推送** 产品文档站与 CI 截图：`website/`（VitePress，英文默认、可切换中文，13 页指南 × 2 种语言，复古冲印店配色）+ `pages.yml` 发布到 GitHub Pages；App 新增隐藏的截图模式（`macOS/Nocchi/Screenshots/`），`screenshots.yml` 在 Actions 上用 11 张 Codex 生成的原创样片冲印 13 张照片，截下真实的相册四种看法、装饰台、设置、刘海悬停面板与胶卷柜，合成桌面、相纸一览和大头贴「选相框」，提交到 `website/public/screenshots/`；英文 README 加上截图与中英文文档入口。
 - **2026-11-24 · 发行版 v1.0.0** 推送 `v1.0.0` 标签（e704e0a），Release 工作流第 3 次运行全绿，发布 `Nocchi-macOS-1.0.0.zip` 与 `SHA256SUMS.txt`；说明取自 `CHANGELOG` 的 `## [1.0.0]`。这一版起按 AGPL-3.0。
 - **2026-11-24 · 第 25 次推送** 许可改为 GNU AGPL-3.0（与 Yohaku 一致，取代 CC BY-NC 4.0，见决策 D32）；README 按 Yohaku 的结构重写成英文；行为准则换成英文的 Contributor Covenant 3.0 改编版；贡献指南、安全政策、隐私说明、Issue / PR 模板改成英文；CLAUDE.md 的许可规则同步。v1.0.0 按 AGPL-3.0 发布。
@@ -121,12 +122,11 @@
 
 ## 下一步
 
-1. 文档站与截图：等 CI、Screenshots、Pages 三个工作流跑完，看截图效果再调；需要仓库所有者在 Settings → Pages 把 Source 选成「GitHub Actions」。
+1. 确认胶卷偏暗的修复：`FilmPipelineFidelityTests` 全绿、注解里旧滤镜与新管线的对照；截图第二轮的照片亮度应与离线预览一致。
 2. 之后：完成 iOS App 与灵动岛 Live Activity（iOS 用 80 年代方盒款机身外观），接入 CI（未签名 ipa）。
 
 ## 已知问题 / 待你确认
 
 - App 名称、收费方式、Bundle ID 见 [决策记录 · 待你决定](DECISIONS.md#待你决定)（许可已定：GNU AGPL-3.0，见决策 D32）。
-- 请在仓库 **Settings → Pages → Build and deployment → Source** 选「GitHub Actions」，文档站才能发布（<https://chaosnap.github.io/Nocchi/>）。
 - 请在仓库 **Settings → Code security → Private vulnerability reporting** 打开「私密漏洞报告」，`SECURITY.md` 里的举报入口才能用。
 - CI 产物是 ad-hoc 签名，首次打开需要解除隔离（见 [CI.md](CI.md#macos-测试版)）。

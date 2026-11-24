@@ -361,10 +361,15 @@ enum WindowGrab {
         return rep.cgImage
     }
 
-    /// 刘海面板叠到壁纸 + 菜单栏上（面板贴着屏幕顶边，下面多留一点桌面）。
+    /// 刘海面板叠到壁纸 + 菜单栏上：只留黑色的岛和四周一圈桌面（面板窗口本身比岛大得多，大部分是透明的）。
     static func onNotchBackdrop(_ panel: CGImage, scale: CGFloat) -> CGImage? {
-        let width = CGFloat(panel.width)
-        let height = CGFloat(panel.height) + 80 * scale
+        let bounds = opaqueBounds(panel) ?? CGRect(x: 0, y: 0, width: panel.width, height: panel.height)
+        let margin = 64 * scale
+        let left = max(0, bounds.minX - margin)
+        let right = min(CGFloat(panel.width), bounds.maxX + margin)
+        let width = (right - left).rounded()
+        let height = (bounds.maxY + 72 * scale).rounded()
+        guard width > 0, height > 0 else { return nil }
         let renderer = ImageRenderer(content: NotchBackdrop(width: width / scale, height: height / scale))
         renderer.scale = scale
         renderer.isOpaque = true
@@ -375,8 +380,34 @@ enum WindowGrab {
                   space: space, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
               ) else { return nil }
         context.draw(backdrop, in: CGRect(x: 0, y: 0, width: width, height: height))
-        context.draw(panel, in: CGRect(x: 0, y: height - CGFloat(panel.height), width: width, height: CGFloat(panel.height)))
+        context.draw(panel, in: CGRect(x: -left, y: height - CGFloat(panel.height), width: CGFloat(panel.width), height: CGFloat(panel.height)))
         return context.makeImage()
+    }
+
+    /// 不透明部分的外框（像素，原点左上）。
+    static func opaqueBounds(_ image: CGImage) -> CGRect? {
+        let width = image.width
+        let height = image.height
+        var pixels = [UInt8](repeating: 0, count: width * height * 4)
+        return pixels.withUnsafeMutableBytes { buffer -> CGRect? in
+            guard let context = CGContext(
+                data: buffer.baseAddress, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4,
+                space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+            ) else { return nil }
+            context.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
+            var minX = width, minY = height, maxX = -1, maxY = -1
+            for y in 0..<height {
+                let row = y * width * 4
+                for x in 0..<width where buffer[row + x * 4 + 3] > 12 {
+                    minX = min(minX, x)
+                    maxX = max(maxX, x)
+                    minY = min(minY, y)
+                    maxY = max(maxY, y)
+                }
+            }
+            guard maxX >= minX, maxY >= minY else { return nil }
+            return CGRect(x: minX, y: minY, width: maxX - minX + 1, height: maxY - minY + 1)
+        }
     }
 
     /// 把窗口放到 Nocchi 的桌面壁纸上：四周留白、加一层柔和的投影。

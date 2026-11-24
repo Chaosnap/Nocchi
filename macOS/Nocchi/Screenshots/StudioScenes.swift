@@ -25,6 +25,8 @@ struct StudioWallpaper: View {
 /// 屏幕顶上的菜单栏（只画右边的几个图标和时间；刘海在正中间）。
 struct StudioMenuBar: View {
     var width: CGFloat
+    /// 刘海特写里不画右边的图标和时间（真的菜单栏上它们离刘海很远）。
+    var showsItems = true
 
     private var clock: String {
         let formatter = DateFormatter()
@@ -36,10 +38,12 @@ struct StudioMenuBar: View {
     var body: some View {
         HStack(spacing: 15) {
             Spacer()
-            Image(systemName: "camera.aperture")
-            Image(systemName: "wifi")
-            Image(systemName: "battery.75percent")
-            Text(clock)
+            if showsItems {
+                Image(systemName: "camera.aperture")
+                Image(systemName: "wifi")
+                Image(systemName: "battery.75percent")
+                Text(clock)
+            }
         }
         .font(.system(size: 13, weight: .medium))
         .foregroundStyle(Color.white.opacity(0.92))
@@ -215,7 +219,7 @@ struct NotchBackdrop: View {
     var body: some View {
         ZStack(alignment: .top) {
             StudioWallpaper()
-            StudioMenuBar(width: width)
+            StudioMenuBar(width: width, showsItems: false)
         }
         .frame(width: width, height: height)
     }

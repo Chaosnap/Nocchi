@@ -93,7 +93,25 @@ export default defineConfig({
 
   themeConfig: {
     logo: '/images/icon.svg',
-    search: { provider: 'local' },
+    search: {
+      provider: 'local',
+      options: {
+        locales: {
+          zh: {
+            translations: {
+              button: { buttonText: '搜索', buttonAriaLabel: '搜索' },
+              modal: {
+                displayDetails: '显示详细列表',
+                resetButtonTitle: '清除',
+                backButtonTitle: '关闭搜索',
+                noResultsText: '没有找到',
+                footer: { selectText: '打开', navigateText: '切换', closeText: '关闭' },
+              },
+            },
+          },
+        },
+      },
+    },
     socialLinks: [{ icon: 'github', link: repo }],
     footer: {
       message: 'Released under the GNU AGPL-3.0. Screenshots are rendered from the app on GitHub Actions.',

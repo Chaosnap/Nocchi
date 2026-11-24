@@ -172,12 +172,16 @@ public final class FilmProcessor: @unchecked Sendable {
 
     // MARK: - Color
 
+    /// 配方（和导入的 `.cube`）都是在 sRGB 的 gamma 编码值上定义的：先把工作空间（线性）的像素明确地
+    /// 转成 sRGB，查表，再转回工作空间。不依赖 `CIColorCubeWithColorSpace` 是否两头都做色彩转换——
+    /// 只做一头时整张照片会暗一个 gamma（截图工作室在 CI 上发现的问题，见 `FilmPipelineFidelityTests`）。
     private func applyCube(_ image: CIImage, cube: ColorCube) -> CIImage {
-        image.applyingFilter("CIColorCubeWithColorSpace", parameters: [
+        let encoded = image.matchedFromWorkingSpace(to: sRGB) ?? image
+        let graded = encoded.applyingFilter("CIColorCube", parameters: [
             "inputCubeDimension": cube.dimension,
-            "inputCubeData": cube.data,
-            "inputColorSpace": sRGB
+            "inputCubeData": cube.data
         ])
+        return graded.matchedToWorkingSpace(from: sRGB) ?? graded
     }
 
     // MARK: - Effects
