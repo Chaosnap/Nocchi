@@ -124,6 +124,14 @@ final class DesktopBoard {
         controller.saveNow()
     }
 
+    /// 装饰台保存后：桌面上的这张照片换成新的记录（模板、贴纸、笔画、题字都会重画），位置不变。
+    func refresh(_ record: PhotoRecord) {
+        guard let controller = controllers[record.id] else { return }
+        var updated = record
+        updated.desk = controller.model.record.desk
+        controller.model.record = updated
+    }
+
     func collectAll() {
         for controller in Array(controllers.values) {
             controller.collect()

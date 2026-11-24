@@ -59,21 +59,36 @@ final class ThumbnailCache: ObservableObject {
     }
 }
 
-/// 程序化绘制的旧物 / 胶带（`StickerArt`），按种类、宽度、seed 缓存。
+/// 程序化绘制的贴纸 / 旧物 / 胶带（`StickerArt`），按种类、颜色、文字、尺寸、seed 缓存。
 @MainActor
 final class StickerImageCache {
     static let shared = StickerImageCache()
-    private var cache: [String: NSImage] = [:]
+    private let cache: NSCache<NSString, NSImage> = {
+        let cache = NSCache<NSString, NSImage>()
+        cache.countLimit = 240
+        return cache
+    }()
 
     func image(_ id: String, width: CGFloat, seed: UInt64 = 1) -> NSImage? {
-        let cacheKey = "\(id)#\(Int(width))#\(seed)"
-        if let hit = cache[cacheKey] { return hit }
-        guard let kind = StickerCatalog.kind(id: id),
-              let cgImage = StickerArt.image(kind, pixelWidth: Int(width * 2), tint: nil, text: nil, seed: seed),
+        guard let kind = StickerCatalog.kind(id: id) else { return nil }
+        return image(kind, pixelWidth: Int(width * 2), tint: nil, text: nil, seed: seed, pointWidth: width)
+    }
+
+    /// 相纸上的一枚贴纸（装饰台）：像素宽按 32 取整，缩放时不必每一帧都重画。
+    func image(for placement: StickerPlacement, width: CGFloat) -> NSImage? {
+        guard width > 1, let kind = StickerCatalog.kind(id: placement.kindID) else { return nil }
+        let bucket = max(32, Int((width * 2 / 32).rounded(.up)) * 32)
+        return image(kind, pixelWidth: bucket, tint: placement.tint, text: placement.text, seed: placement.stableSeed, pointWidth: width)
+    }
+
+    private func image(_ kind: StickerKind, pixelWidth: Int, tint: String?, text: String?, seed: UInt64, pointWidth: CGFloat) -> NSImage? {
+        let cacheKey = "\(kind.id)#\(tint ?? "")#\(text ?? "")#\(pixelWidth)#\(seed)" as NSString
+        if let hit = cache.object(forKey: cacheKey) { return hit }
+        guard let cgImage = StickerArt.image(kind, pixelWidth: pixelWidth, tint: tint.flatMap { RGB(hex: $0) }, text: text, seed: seed),
               cgImage.width > 0 else { return nil }
-        let size = NSSize(width: width, height: width * CGFloat(cgImage.height) / CGFloat(cgImage.width))
+        let size = NSSize(width: pointWidth, height: pointWidth * CGFloat(cgImage.height) / CGFloat(cgImage.width))
         let image = NSImage(cgImage: cgImage, size: size)
-        cache[cacheKey] = image
+        cache.setObject(image, forKey: cacheKey)
         return image
     }
 }
@@ -187,9 +202,13 @@ enum AlbumActions {
         record.negatives.first.map { Services.library.negativeURL($0) }
     }
 
-    /// 双击照片。
+    /// 双击照片：打开装饰台。
     static func open(_ record: PhotoRecord) {
-        preview(record)
+        decorate(record)
+    }
+
+    static func decorate(_ record: PhotoRecord) {
+        DecorateDesk.shared.open(record)
     }
 
     static func putOnDesk(_ record: PhotoRecord) {
@@ -229,6 +248,8 @@ struct AlbumContextMenu: View {
     let record: PhotoRecord
 
     var body: some View {
+        Button("装饰…") { AlbumActions.decorate(record) }
+        Divider()
         Button("放回桌面") { AlbumActions.putOnDesk(record) }
         if record.printFile != nil {
             Button("在 Finder 中显示") { AlbumActions.reveal(record) }

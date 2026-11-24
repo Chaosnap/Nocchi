@@ -433,6 +433,8 @@ final class PhotoWindowController: NSObject {
             menu.addItem(menuItem)
         }
         let hasPrint = record.printFile != nil
+        item("装饰…", #selector(decorate))
+        menu.addItem(.separator())
         item("在 Finder 中显示", #selector(revealInFinderAction), enabled: hasPrint)
         item("用「预览」打开", #selector(openInPreview), enabled: hasPrint)
         item("拷贝", #selector(copyToPasteboard), enabled: hasPrint)
@@ -454,6 +456,11 @@ final class PhotoWindowController: NSObject {
     }
 
     @objc func revealInFinderAction() { revealInFinder() }
+
+    /// 打开装饰台（右键「装饰…」或双击）。
+    @objc func decorate() {
+        DecorateDesk.shared.open(model.record)
+    }
 
     func revealInFinder() {
         guard let relative = record.printFile else {
@@ -592,7 +599,7 @@ final class PhotoInteractionView: NSView {
             let paper = controller.paperPoint(fromView: local, viewSize: bounds.size)
             guard controller.containsPaperPoint(paper) else { return }
             if event.clickCount == 2 {
-                controller.revealInFinder()
+                controller.decorate()
                 return
             }
             if controller.model.penMode, controller.isCaptionPoint(paper) {
