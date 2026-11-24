@@ -34,6 +34,7 @@
 | 大头贴机 | `design/generated/camera-booth-v3.png` → `Shared/Art.xcassets/CameraBooth` | 相机柜 |
 | 软木板纹理 | `design/generated/texture-cork.png` → `CorkTexture` | 相册背景 |
 | 相纸纹理 | `design/generated/texture-paper.png` → `PaperTexture` | 相纸白边的纸感 |
+| 大头贴机整机（英文版） | `design/blender/booth/make_machine.py --english` → `BoothMachineEN` | 英文界面用：招牌 PHOTO BOOTH、刻字 STRIP / GRID、B&W / COLOUR、PRINTS、COIN；零件图与热区和中文版共用 |
 | 陶土橙丝绒布帘 | `design/generated/texture-curtain-v2.png` → `CurtainTexture` | 旧版 2D 布帘（备用） |
 | 陶土橙丝绒面料 | `design/generated/texture-velvet.png` → `VelvetTexture` | 3D 布帘的面料 |
 | 胡桃木纹理 | `design/generated/texture-wood.png` → `WoodTexture` | 3D 卡片盒抽屉 |

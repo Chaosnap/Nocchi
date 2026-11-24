@@ -39,6 +39,20 @@ SWIFT = os.path.join(S.REPO, "macOS", "Nocchi", "Booth", "BoothMachineLayout.swi
 CANVAS = (72.0, 96.0)
 PX_PER_CM = 20
 SONGTI = "/System/Library/Fonts/Supplemental/Songti.ttc"
+# `--english`：英文界面用的整机图（招牌、刻字换成英文，零件和热区不变），写成 `BoothMachineEN`。
+ENGLISH = "--english" in S.script_args()
+ENGLISH_TEXT = {"大头贴机": "PHOTO BOOTH", "四格条": "STRIP", "四宫格": "GRID", "黑白": "B&W", "彩色": "COLOUR",
+                "出片口": "PRINTS", "投币": "COIN"}
+
+
+def say(body):
+    """招牌和刻字：英文版换成英文。"""
+    return ENGLISH_TEXT.get(body, body) if ENGLISH else body
+
+
+def latin(key):
+    """英文刻字用的字体（中文版返回 None，用宋体）。"""
+    return S.font(key) if ENGLISH else None
 DIDOT = "/System/Library/Fonts/Supplemental/Didot.ttc"
 
 
@@ -341,7 +355,8 @@ def build_machine(scene):
             clipped.append((x, y))
         base.append(prism("ray%d" % k, clipped, 2.55, 2.66, red_ray, bevel=0.03))
     # 立体金字招牌
-    sign = text("sign", "大头贴机", 6.0, (0.0, 36.3), 2.55, gld, face=0, extrude=0.42, bevel=0.07, spacing=1.08)
+    sign = text("sign", say("大头贴机"), 5.4 if ENGLISH else 6.0, (0.0, 36.3), 2.55, gld, face=0, extrude=0.42, bevel=0.07,
+                spacing=1.12 if ENGLISH else 1.08, font=latin("futura-cxb"))
     base.append(sign)
     # 灯泡：沿着胡桃木拱框一圈
     glass = S.principled("bulb-glass", "#FFFFFF", rough=0.04, Transmission_Weight=1.0, IOR=1.45)
@@ -439,7 +454,8 @@ def build_machine(scene):
         base.append(lathe_at("switch-nut%d" % side, [(0, 3.92), (0.85, 3.92), (0.92, 4.0), (0.92, 4.4), (0.82, 4.5), (0.35, 4.5), (0.32, 4.65), (0, 4.65)], (sx, -29.0), (chr_,), 96))
     labels = {"四格条": (-25.0, -29.0), "四宫格": (-11.0, -29.0), "黑白": (12.2, -29.0), "彩色": (23.8, -29.0)}
     for name, (lx, ly) in labels.items():
-        base.append(text("label-" + name, name, 1.6, (lx, ly), 3.5, ink, face=0, extrude=0.02, spacing=1.05))
+        base.append(text("label-" + name, say(name), 1.5 if ENGLISH else 1.6, (lx, ly), 3.5, ink, face=0, extrude=0.02,
+                         spacing=1.1 if ENGLISH else 1.05, font=latin("futura-cxb")))
     base.append(lathe_at("start-seat", [(3.6, 3.35), (4.85, 3.35), (5.05, 3.6), (5.0, 4.15), (4.7, 4.42), (4.05, 4.36), (3.85, 4.0)], (0.0, -29.6), (chr_,), 192))
     base.append(lathe_at("start-collar", [(0, 3.3), (3.86, 3.3), (3.86, 3.95), (0, 3.95)], (0.0, -29.6), (bakelite("collar"),), 128))
 
@@ -448,10 +464,12 @@ def build_machine(scene):
     base.append(prism("kick", rrect(-33.1, -45.3, 33.1, -44.3, 0.3), 0.0, 3.95, chr_, bevel=0.15))
     base.append(prism("slot-frame", rrect(-10.0, -42.4, 10.0, -39.8, 1.0), 3.0, 3.95, chr_, bevel=0.2))
     base.append(prism("slot", rrect(-9.2, -41.8, 9.2, -40.4, 0.45), 3.0, 3.97, black))
-    base.append(text("slot-label", "出片口", 0.95, (0.0, -43.35), 3.6, gld, face=1, extrude=0.02, spacing=1.2))
+    base.append(text("slot-label", say("出片口"), 0.95, (0.0, -43.35), 3.6, gld, face=1, extrude=0.02, spacing=1.2,
+                     font=latin("futura-cxb")))
     base.append(prism("coin-plate", rrect(19.0, -44.0, 27.0, -38.8, 0.8), 3.0, 3.85, chr_, bevel=0.18))
     base.append(prism("coin-slot", rrect(22.65, -41.9, 23.35, -39.5, 0.3), 3.0, 3.87, black))
-    base.append(text("coin-label", "投币", 0.9, (23.0, -43.0), 3.85, ink, face=1, extrude=0.015, spacing=1.2))
+    base.append(text("coin-label", say("投币"), 0.9, (23.0, -43.0), 3.85, ink, face=1, extrude=0.015, spacing=1.2,
+                     font=latin("futura-cxb")))
     base.append(prism("grille-well", rrect(-27.0, -44.0, -19.0, -38.8, 0.8), 3.0, 3.62, black, bevel=0.1))
     base.append(tube("grille-frame", [(x, y, 3.7) for x, y in resample(rrect(-27.0, -44.0, -19.0, -38.8, 0.8), 120, closed=True)], 0.2, brs, cyclic=True))
     for i in range(5):
@@ -692,9 +710,14 @@ def main():
 
     # 整机：零件都藏起来。
     set_visible(all_parts, False)
-    base_png = os.path.join(OUT, "BoothMachine.png")
+    base_png = os.path.join(OUT, "BoothMachineEN.png" if ENGLISH else "BoothMachine.png")
     S.render_to(scene, base_png)
     S.fade_shadow_edges(base_png, margin=0.06)
+    if ENGLISH:
+        # 英文版只换整机图：零件没有字，热区一样。
+        if not preview:
+            write_imageset_2x("BoothMachineEN", base_png)
+        return
 
     # 零件：机身当阴影捕捉器，裁出零件那一块。
     catchers = [o for o in base if o.type in ("MESH", "FONT", "CURVE")]

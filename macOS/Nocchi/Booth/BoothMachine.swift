@@ -17,6 +17,11 @@ struct BoothMachine: View {
     /// 渲染图在不在（缺图时大头贴机退回画出来的那一版）。
     static var isAvailable: Bool { BundledImage.has("BoothMachine") }
 
+    /// 整机图：英文界面用招牌和刻字是英文的那张（`make_machine.py --english`），没有时用中文的。
+    static var baseImage: String {
+        UILanguage.current.isEnglish && BundledImage.has("BoothMachineEN") ? "BoothMachineEN" : "BoothMachine"
+    }
+
     private typealias L = BoothMachineLayout
 
     private var choosing: Bool { booth.phase == .choosingFrame || booth.phase == .closingCurtain }
@@ -28,7 +33,7 @@ struct BoothMachine: View {
                 .clipShape(RoundedRectangle(cornerRadius: L.windowCornerRadius, style: .continuous))
                 .offset(x: L.window.minX, y: L.window.minY)
 
-            Image("BoothMachine")
+            Image(Self.baseImage)
                 .resizable()
                 .interpolation(.high)
                 .frame(width: L.size.width, height: L.size.height)

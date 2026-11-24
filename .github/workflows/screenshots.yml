@@ -86,8 +86,9 @@ jobs:
       - name: Commit the screenshots
         run: |
           set -euo pipefail
-          mkdir -p website/public/screenshots
+          mkdir -p website/public/screenshots website/public/screenshots/en
           cp "$RUNNER_TEMP"/shots/*.jpg website/public/screenshots/
+          cp "$RUNNER_TEMP"/shots/en/*.jpg website/public/screenshots/en/ 2>/dev/null || true
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add website/public/screenshots

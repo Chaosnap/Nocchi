@@ -64,6 +64,9 @@ final class WindowManager {
             window.titleVisibility = .hidden
             window.titlebarSeparatorStyle = .none
             window.backgroundColor = NSColor(Palette.paper)
+            // 相册是纸色的界面：系统深色模式下，搜索框等系统控件的字（和占位字）会变成白色、落在纸上看不见。
+            // 和装饰台一样固定浅色外观。
+            window.appearance = NSAppearance(named: .aqua)
         }
         if let minSize {
             window.contentMinSize = minSize
