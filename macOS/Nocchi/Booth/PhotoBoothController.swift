@@ -175,6 +175,34 @@ final class PhotoBoothController: ObservableObject {
         Haptics.tick()
     }
 
+    // MARK: - 启动后在后台准备（见 `BoothWarmup`）
+
+    /// 按要拉帘子的那块屏幕搭好布帘，让 SceneKit 在后台编译着色器、上传纹理。
+    func prepareCurtain() {
+        guard phase == .idle, window == nil, let screen = NotchController.shared.targetScreen else { return }
+        curtain.prepare(screen: screen.frame.size, gap: Self.curtainGap)
+    }
+
+    /// 先合成默认相框（设置里的版式和黑白）这一圈的样张：第一次拉帘子时橱窗里马上有样张。
+    /// 请求和 `previewRequest(for:)` 一模一样，合成好的就是之后要用的那些。
+    func prewarmPreviews() async {
+        guard phase == .idle else { return }
+        let model = AppModel.shared
+        let format = FilmFormat.boothChoices.contains(model.boothFormat) ? model.boothFormat : .boothStrip
+        let list = TemplateCatalog.boothTemplates(for: format)
+        guard !list.isEmpty else { return }
+        let stockID = model.boothStock(monochrome: model.boothMonochrome).id
+        let first = list.firstIndex { $0.id == model.defaultBoothTemplateID } ?? 0
+        let widthPixels = Int((620 * format.layout.aspect).rounded())
+        let requests = (0..<list.count).map { offset in
+            TemplatePreviewStore.Request.current(templateID: list[(first + offset) % list.count].id, format: format, stockID: stockID, widthPixels: widthPixels)
+        }
+        await previews.prefetch(requests, priority: .utility)
+    }
+
+    /// 布帘中间留给大头贴机的宽度（点）。
+    static let curtainGap: CGFloat = 780
+
     /// 预览请求：橱窗里的样张高约 270pt，按 620px 高合成（Retina 上也清楚）。
     func previewRequest(for template: PrintTemplate) -> TemplatePreviewStore.Request {
         let widthPixels = Int((620 * boothFormat.layout.aspect).rounded())
@@ -311,7 +339,8 @@ final class PhotoBoothController: ObservableObject {
         window.isReleasedWhenClosed = false
         window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .ignoresCycle]
         window.setFrame(screen.frame, display: false)
-        curtain.build(screen: screen.frame.size, gap: 780)
+        // 启动后已经按这块屏幕搭好、准备好的话，这里只把帘子收回屏幕外（不重新搭，着色器也不用再编译）。
+        curtain.build(screen: screen.frame.size, gap: Self.curtainGap)
         let host = NSHostingView(rootView: BoothCurtainView(booth: self, session: CameraService.shared.session, camera: CameraService.shared).scrollIndicators(.never))
         host.sizingOptions = []
         window.contentView = host
@@ -351,11 +380,14 @@ final class PhotoBoothController: ObservableObject {
         }
         keyMonitor = nil
         window?.orderOut(nil)
+        // 先把内容摘下来：布帘的 SceneKit 视图留给下一次用（`CurtainScene.makeView`），不跟着旧窗口走。
+        window?.contentView = nil
         window = nil
+        curtain.suspend()
         curtainDown = 0
         phase = .idle
         task = nil
-        previews.removeAll()
+        // 橱窗里的样张留着（按相框、版式、胶卷、题字分好），下次进来不用重新合成。
     }
 }
 

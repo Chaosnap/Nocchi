@@ -4,6 +4,11 @@
 
 ## 2026-11-24
 
+### D40 · 摄像头会话只在一条队列上改；大头贴机启动后在后台准备
+- 所有者：「为什么点击自拍有时程序会崩溃」「这个点击自拍崩溃仅存在在这个里选择了大头贴机」「booth entry 只有第一次启动时会卡，能不能在进入软件后在后台准备」。
+- 本机的四份崩溃报告（2.0.0、2.1.0）全是同一处：摄像头队列上 `AVCaptureSession.startRunning` 抛出「Collection was mutated while being enumerated」，同一刻主线程在 `CameraPreview.makeNSView` 里给会话挂预览层（`addVideoPreviewLayer`）。所以规定：**会话的任何改动——启动、停止、换输入、挂上 / 摘下预览层、预览层的镜像——都在 `CameraService` 的摄像头队列上做**（`attachPreview` / `detachPreview` / `setPreviewMirroring`）；预览层摘下时由闭包留住，到队列上摘完才释放。拍照前先看视频连接是不是在工作，不在就报「没拍到」，免得 `capturePhoto` 抛 Objective-C 异常。
+- 第一次进大头贴机卡，是一次性的活：SceneKit 编译布帘的着色器（带 shader modifier 的丝绒、流苏）、上传纹理，解码 1440 × 1920 的整机图和零件图，合成一圈样张，合成声音。`BoothWarmup` 在启动 2.5 秒后做掉：布帘的 `SCNView` 只建一个、`prepare` 在后台编译，以后每次都用它（同一块屏幕不重新搭布帘）；整机和零件图在后台解码成位图（`BoothArt`）；样张按默认相框合成并一直留着；声音预先合成。画面不变。
+
 ### D39 · 中英文：Apple 标准本地化，中文原文就是键，默认中文
 - 所有者：「使这个应用支持中英文切换，默认中文」。不自己造一套翻译函数：SwiftUI 的 `Text("…")` 本来就查 `Localizable.strings`，普通 String 用 `String(localized:)`，都用中文原文当键——源码照旧好读，没翻译的地方自动退回中文。
 - 不能在本机编译（不能用 Xcode 自动抽字符串），所以 `scripts/i18n/strings.py` 自己解析 Swift 字面量、按 SwiftUI 的规则算键（插值换成 `%@` / `%lld` / `%lf`），英文在 `scripts/i18n/en.json`，生成 `en.lproj/Localizable.strings`；CI 检查有没有缺的、格式符对不对。

@@ -28,6 +28,11 @@ final class CurtainScene {
     private var height: Float = 0.982
     private var ticker: FrameTicker?
     private var clock: TimeInterval = 0
+    /// 布帘的视图只建一个、反复用：着色器和纹理在 `prepare` 时（启动后在后台）就编译、上传好了。
+    private var view: SCNView?
+    /// 上一次按多大的屏幕、多宽的空档搭的（同一块屏幕再拉帘子时不重新搭，准备好的几何和材质照用）。
+    private var builtSize: CGSize?
+    private var builtGap: CGFloat?
 
     /// 帘杆：0 = 收在两边（屏幕外），1 = 拉上（只留中间的取景框）。
     private var rod: Float = 0
@@ -111,6 +116,10 @@ final class CurtainScene {
     }
 
     func makeView() -> SCNView {
+        if let view {
+            view.isPlaying = true
+            return view
+        }
         let view = SCNView(frame: .zero)
         view.scene = scene
         view.pointOfView = cameraNode
@@ -118,7 +127,25 @@ final class CurtainScene {
         view.antialiasingMode = .multisampling4X
         view.allowsCameraControl = false
         view.isPlaying = true
+        self.view = view
         return view
+    }
+
+    /// 启动后在后台准备（`BoothWarmup`）：按屏幕尺寸搭好布帘、建好视图，让 SceneKit 在后台线程编译着色器、
+    /// 上传纹理——第一次拉帘子时就不卡了。
+    func prepare(screen size: CGSize, gap: CGFloat) {
+        build(screen: size, gap: gap)
+        let view = makeView()
+        view.isPlaying = false
+        view.prepare([scene], completionHandler: nil)
+    }
+
+    /// 布帘窗口关了：视图留着下次用，先停下渲染和计时器。
+    func suspend() {
+        ticker?.stop()
+        ticker = nil
+        rodMove = nil
+        view?.isPlaying = false
     }
 
     /// 按屏幕尺寸（点）搭布帘；`gap` 是中间留给取景框的宽度。搭好时帘子收在屏幕外、帘头在上面。
@@ -126,6 +153,16 @@ final class CurtainScene {
         ticker?.stop()
         ticker = nil
         rodMove = nil
+        if size == builtSize, gap == builtGap, !panels.isEmpty {
+            // 同一块屏幕：布帘已经搭好（材质、着色器也准备好了），只把帘子收回屏幕外、帘头升回去。
+            rod = 0
+            rodVelocity = 0
+            panels.forEach { $0.reset(to: 0) }
+            valanceMove = .rest
+            valanceRoot.simdPosition = SIMD3(0, valanceLift, 0)
+            fringeMaterial?.setValue(NSNumber(value: Float(0)), forKey: "bounce")
+            return
+        }
         root.childNodes.filter { $0 !== valanceRoot }.forEach { $0.removeFromParentNode() }
         valanceRoot.childNodes.forEach { $0.removeFromParentNode() }
         panels.removeAll()
@@ -220,6 +257,8 @@ final class CurtainScene {
         valanceMove = .rest
         valanceRoot.simdPosition = SIMD3(0, valanceLift, 0)
         fringeGold.setValue(NSNumber(value: Float(0)), forKey: "bounce")
+        builtSize = size
+        builtGap = gap
     }
 
     /// 拉上帘子：帘头先落下、弹一下，两幅帘子从两边沿帘杆拉过来，下摆慢半拍、甩一甩再停住。

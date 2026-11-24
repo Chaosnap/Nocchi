@@ -38,8 +38,8 @@ final class TemplatePreviewStore: ObservableObject {
         images[request]
     }
 
-    /// 按顺序合成还没有的预览（已有的、正在合成的跳过）。
-    func prefetch(_ requests: [Request]) async {
+    /// 按顺序合成还没有的预览（已有的、正在合成的跳过）。启动后在后台预先合成时用 `.utility`。
+    func prefetch(_ requests: [Request], priority: TaskPriority = .userInitiated) async {
         for request in requests {
             if Task.isCancelled { return }
             guard images[request] == nil, !pending.contains(request),
@@ -50,7 +50,7 @@ final class TemplatePreviewStore: ObservableObject {
             let caption = request.caption
             let font = request.captionFont
             let width = request.widthPixels
-            let image = await Task.detached(priority: .userInitiated) {
+            let image = await Task.detached(priority: priority) {
                 TemplatePreview.render(template: template, format: format, stock: stock, caption: caption, captionFont: font, widthPixels: width)
             }.value
             pending.remove(request)

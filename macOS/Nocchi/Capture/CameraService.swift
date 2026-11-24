@@ -72,6 +72,8 @@ final class CameraService: NSObject, ObservableObject, @unchecked Sendable {
     /// 只在 `queue` 上读写。
     private var preferredDeviceID: String?
     private var currentInput: AVCaptureDeviceInput?
+    /// 挂在会话上的预览层和它们要不要镜像（只在 `queue` 上读写）。
+    private var previews: [ObjectIdentifier: (layer: AVCaptureVideoPreviewLayer, mirrored: Bool)] = [:]
     private var observers: [NSObjectProtocol] = []
 
     override init() {
@@ -117,8 +119,9 @@ final class CameraService: NSObject, ObservableObject, @unchecked Sendable {
             self.preferredDeviceID = id
             guard self.configured else { return }
             self.session.beginConfiguration()
-            defer { self.session.commitConfiguration() }
             try? self.swapInput()
+            self.session.commitConfiguration()
+            self.reapplyMirroring()
         }
     }
 
@@ -159,6 +162,7 @@ final class CameraService: NSObject, ObservableObject, @unchecked Sendable {
             self.currentInput = nil
             try? self.swapInput()
             self.session.commitConfiguration()
+            self.reapplyMirroring()
             DispatchQueue.main.async {
                 MainActor.assumeIsolated {
                     NotchController.shared.showToast(String(localized: "摄像头断开了，换回默认摄像头"), symbol: "video.slash.fill", duration: 3)
@@ -191,6 +195,8 @@ final class CameraService: NSObject, ObservableObject, @unchecked Sendable {
                     if !self.session.isRunning {
                         self.session.startRunning()
                     }
+                    // 第一次开摄像头时预览层是先挂上、后有连接的：连接有了再把镜像设一遍。
+                    self.reapplyMirroring()
                     DispatchQueue.main.async { self.isRunning = true }
                     continuation.resume()
                 } catch {
@@ -213,7 +219,10 @@ final class CameraService: NSObject, ObservableObject, @unchecked Sendable {
     func capture(timeout: TimeInterval = 5) async throws -> CGImage {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<CGImage, Error>) in
             queue.async {
-                guard self.session.isRunning, self.pending == nil else {
+                // 没有正在工作的视频连接时（摄像头被别的 App 占着、iPhone 摄像头刚断开……）
+                // `capturePhoto` 会抛 Objective-C 异常把 App 弄崩：先查，拍不了就照常报「没拍到」。
+                guard self.session.isRunning, self.pending == nil,
+                      let connection = self.output.connection(with: .video), connection.isEnabled, connection.isActive else {
                     continuation.resume(throwing: CameraError.captureFailed)
                     return
                 }
@@ -227,6 +236,61 @@ final class CameraService: NSObject, ObservableObject, @unchecked Sendable {
                     stuck.resume(throwing: CameraError.captureFailed)
                 }
             }
+        }
+    }
+
+    // MARK: - 预览层
+
+    /// 把预览层挂到会话上。
+    ///
+    /// 和启动、停止、换摄像头排在同一条摄像头队列上：`startRunning` / `stopRunning` 会遍历会话的连接，
+    /// 主线程同时挂上或摘下预览层会改这张表，AVFoundation 就抛出「Collection was mutated while being
+    /// enumerated」让 App 崩溃——2.0 / 2.1 点「自拍」偶尔崩溃的四份崩溃报告都是这样：主线程在
+    /// `CameraPreview.makeNSView` 里 `addVideoPreviewLayer`，摄像头队列在 `startRunning`。
+    func attachPreview(_ layer: AVCaptureVideoPreviewLayer, mirrored: Bool) {
+        queue.async {
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            layer.session = self.session
+            CATransaction.commit()
+            self.previews[ObjectIdentifier(layer)] = (layer, mirrored)
+            Self.applyMirroring(to: layer, mirrored: mirrored)
+        }
+    }
+
+    /// 摘下预览层（闭包留住它，摘下之后才在这条队列上释放，释放时不会再去改会话）。
+    func detachPreview(_ layer: AVCaptureVideoPreviewLayer) {
+        queue.async {
+            self.previews[ObjectIdentifier(layer)] = nil
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            layer.session = nil
+            CATransaction.commit()
+        }
+    }
+
+    func setPreviewMirroring(_ layer: AVCaptureVideoPreviewLayer, mirrored: Bool) {
+        queue.async {
+            guard self.previews[ObjectIdentifier(layer)] != nil else { return }
+            self.previews[ObjectIdentifier(layer)] = (layer, mirrored)
+            Self.applyMirroring(to: layer, mirrored: mirrored)
+        }
+    }
+
+    /// 在 `queue` 上调用。
+    private func reapplyMirroring() {
+        for preview in previews.values {
+            Self.applyMirroring(to: preview.layer, mirrored: preview.mirrored)
+        }
+    }
+
+    private static func applyMirroring(to layer: AVCaptureVideoPreviewLayer, mirrored: Bool) {
+        guard let connection = layer.connection, connection.isVideoMirroringSupported else { return }
+        if connection.automaticallyAdjustsVideoMirroring {
+            connection.automaticallyAdjustsVideoMirroring = false
+        }
+        if connection.isVideoMirrored != mirrored {
+            connection.isVideoMirrored = mirrored
         }
     }
 
@@ -290,6 +354,9 @@ enum CameraAccess {
 }
 
 /// 摄像头实时预览。
+///
+/// 预览层挂到会话上、摘下来、改镜像都交给 `CameraService` 在摄像头队列上做（见 `attachPreview`），
+/// 不会和启动 / 停止摄像头撞在一起。`session` 只能是 `CameraService.shared.session`。
 struct CameraPreview: NSViewRepresentable {
     let session: AVCaptureSession
     var mirrored: Bool
@@ -297,18 +364,23 @@ struct CameraPreview: NSViewRepresentable {
 
     func makeNSView(context: Context) -> PreviewView {
         let view = PreviewView()
-        view.attach(session: session)
-        view.applyMirroring(mirrored)
+        view.attach(mirrored: mirrored)
         return view
     }
 
     func updateNSView(_ nsView: PreviewView, context: Context) {
-        nsView.applyMirroring(mirrored)
+        nsView.setMirrored(mirrored)
+    }
+
+    static func dismantleNSView(_ nsView: PreviewView, coordinator: ()) {
+        nsView.detach()
     }
 }
 
 final class PreviewView: NSView {
     private let previewLayer = AVCaptureVideoPreviewLayer()
+    private var attached = false
+    private var mirrored: Bool?
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -322,14 +394,33 @@ final class PreviewView: NSView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func attach(session: AVCaptureSession) {
-        previewLayer.session = session
+    deinit {
+        // SwiftUI 一般先调 `dismantleNSView`；万一没有，也在摄像头队列上摘下。
+        if attached {
+            CameraService.shared.detachPreview(previewLayer)
+        }
     }
 
-    func applyMirroring(_ mirrored: Bool) {
-        guard let connection = previewLayer.connection, connection.isVideoMirroringSupported else { return }
-        connection.automaticallyAdjustsVideoMirroring = false
-        connection.isVideoMirrored = mirrored
+    func attach(mirrored: Bool) {
+        guard !attached else {
+            setMirrored(mirrored)
+            return
+        }
+        attached = true
+        self.mirrored = mirrored
+        CameraService.shared.attachPreview(previewLayer, mirrored: mirrored)
+    }
+
+    func setMirrored(_ value: Bool) {
+        guard attached, mirrored != value else { return }
+        mirrored = value
+        CameraService.shared.setPreviewMirroring(previewLayer, mirrored: value)
+    }
+
+    func detach() {
+        guard attached else { return }
+        attached = false
+        CameraService.shared.detachPreview(previewLayer)
     }
 
     override func layout() {

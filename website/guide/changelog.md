@@ -2,6 +2,13 @@
 
 The full changelog, in Chinese, is [CHANGELOG.md](https://github.com/Chaosnap/Nocchi/blob/main/CHANGELOG.md). Downloads are on [Releases](https://github.com/Chaosnap/Nocchi/releases).
 
+## 3.0.0 · 2026-11-24
+
+**Steadier and smoother.**
+
+- **Fixed: the selfie could crash Nocchi**, most often with the photo booth loaded. The viewfinder attached its live picture to the camera at the same moment the camera was starting, and the two changed the camera session at once. Attaching and detaching previews, mirroring, starting, stopping and switching cameras now all take turns on one queue. If the camera is taken by another app or unplugged just as you shoot, you get "didn't catch that, try again" instead of a crash.
+- **The first visit to the photo booth no longer stutters**: a few seconds after launch, Nocchi prepares the booth in the background (the curtain's shaders and velvet texture, the machine's large images, the samples in the showcase, the curtain and coin sounds) and keeps it ready. It looks exactly the same.
+
 ## 2.1.0 · 2026-11-24
 
 **English, and a finer card box.**

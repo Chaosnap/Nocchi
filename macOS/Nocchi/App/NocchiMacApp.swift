@@ -54,6 +54,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             ScreenshotWatcher.shared.setEnabled(enabled)
         }
 
+        // 第一次进大头贴机不卡：启动后几秒在后台编译布帘的着色器、解码整机大图、合成样张和声音。
+        BoothWarmup.schedule()
+
         // 每次启动：刘海像灵动岛一样轻轻「醒」一下；第一次启动再教一下怎么用。
         NotchController.shared.greet(firstLaunch: !model.hasSeenWelcome)
         model.hasSeenWelcome = true

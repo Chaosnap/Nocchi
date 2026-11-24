@@ -33,7 +33,7 @@ struct BoothMachine: View {
                 .clipShape(RoundedRectangle(cornerRadius: L.windowCornerRadius, style: .continuous))
                 .offset(x: L.window.minX, y: L.window.minY)
 
-            Image(Self.baseImage)
+            BoothArt.image(Self.baseImage)
                 .resizable()
                 .interpolation(.high)
                 .frame(width: L.size.width, height: L.size.height)
@@ -419,13 +419,13 @@ private struct MachineControls: View {
     private func lever(isRight: Bool, left: (CGRect, String), right: (CGRect, String), change: @escaping (Bool) -> Void) -> some View {
         let union = left.0.union(right.0)
         return ZStack(alignment: .topLeading) {
-            Image(left.1)
+            BoothArt.image(left.1)
                 .resizable()
                 .interpolation(.high)
                 .frame(width: left.0.width, height: left.0.height)
                 .offset(x: left.0.minX - union.minX, y: left.0.minY - union.minY)
                 .opacity(isRight ? 0 : 1)
-            Image(right.1)
+            BoothArt.image(right.1)
                 .resizable()
                 .interpolation(.high)
                 .frame(width: right.0.width, height: right.0.height)
@@ -456,7 +456,7 @@ private struct MachinePartStyle: ButtonStyle {
     let down: String
 
     func makeBody(configuration: Configuration) -> some View {
-        Image(configuration.isPressed ? down : up)
+        BoothArt.image(configuration.isPressed ? down : up)
             .resizable()
             .interpolation(.high)
             .contentShape(Circle())
@@ -471,14 +471,14 @@ private struct StartPartStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         ZStack {
             if configuration.isPressed {
-                Image("BoothMachineStartDown")
+                BoothArt.image("BoothMachineStartDown")
                     .resizable()
                     .interpolation(.high)
             } else {
-                Image("BoothMachineStart")
+                BoothArt.image("BoothMachineStart")
                     .resizable()
                     .interpolation(.high)
-                Image("BoothMachineStartLit")
+                BoothArt.image("BoothMachineStartLit")
                     .resizable()
                     .interpolation(.high)
                     .opacity(glowing ? 1 : 0)

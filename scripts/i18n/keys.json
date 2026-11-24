@@ -30,7 +30,7 @@
   "source": "\\(text) · 左右拖动翻看",
   "uses": [
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:595",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:596",
     "context": "localized"
    }
   ]
@@ -96,7 +96,7 @@
     "context": "localized"
    },
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:503",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:504",
     "context": "swiftui"
    }
   ]
@@ -231,11 +231,11 @@
   "source": "Esc 取消 · 一次一条，不能重拍",
   "uses": [
    {
-    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:431",
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:463",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:470",
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:502",
     "context": "swiftui"
    }
   ]
@@ -306,7 +306,7 @@
   "source": "Nocchi 需要使用摄像头",
   "uses": [
    {
-    "at": "macOS/Nocchi/Capture/CameraService.swift:281",
+    "at": "macOS/Nocchi/Capture/CameraService.swift:345",
     "context": "localized"
    }
   ]
@@ -324,11 +324,11 @@
   "source": "← → 换相框 · ↑ ↓ 四格条 / 四宫格 · Return 开始 · Esc 离开",
   "uses": [
    {
-    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:431",
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:463",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:459",
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:491",
     "context": "swiftui"
    }
   ]
@@ -773,11 +773,11 @@
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/App/NocchiMacApp.swift:100",
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:103",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/App/NocchiMacApp.swift:131",
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:134",
     "context": "swiftui"
    },
    {
@@ -889,11 +889,11 @@
   "source": "全部放回",
   "uses": [
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:554",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:555",
     "context": "localized"
    },
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:585",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:586",
     "context": "localized"
    },
    {
@@ -1105,11 +1105,11 @@
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/App/NocchiMacApp.swift:99",
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:102",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/App/NocchiMacApp.swift:129",
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:132",
     "context": "swiftui"
    }
   ]
@@ -1362,7 +1362,7 @@
   "source": "卡片盒还是空的",
   "uses": [
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:607",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:608",
     "context": "swiftui"
    }
   ]
@@ -1519,7 +1519,7 @@
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Capture/CameraService.swift:284",
+    "at": "macOS/Nocchi/Capture/CameraService.swift:348",
     "context": "localized"
    },
    {
@@ -1736,7 +1736,7 @@
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/App/NocchiMacApp.swift:146",
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:149",
     "context": "swiftui"
    }
   ]
@@ -1952,19 +1952,19 @@
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/App/NocchiMacApp.swift:97",
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:100",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/App/NocchiMacApp.swift:126",
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:129",
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:490",
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:522",
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:504",
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:536",
     "context": "swiftui"
    },
    {
@@ -1977,7 +1977,7 @@
   "source": "大头贴机超时了，已经收起",
   "uses": [
    {
-    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:217",
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:245",
     "context": "localized"
    }
   ]
@@ -1986,7 +1986,7 @@
   "source": "大头贴没拍到，再来一次",
   "uses": [
    {
-    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:286",
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:314",
     "context": "localized"
    },
    {
@@ -2269,11 +2269,11 @@
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/App/NocchiMacApp.swift:95",
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:98",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/App/NocchiMacApp.swift:122",
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:125",
     "context": "swiftui"
    }
   ]
@@ -2626,11 +2626,11 @@
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/App/NocchiMacApp.swift:102",
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:105",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/App/NocchiMacApp.swift:135",
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:138",
     "context": "swiftui"
    }
   ]
@@ -2639,7 +2639,7 @@
   "source": "打开系统设置",
   "uses": [
    {
-    "at": "macOS/Nocchi/Capture/CameraService.swift:283",
+    "at": "macOS/Nocchi/Capture/CameraService.swift:347",
     "context": "localized"
    }
   ]
@@ -2684,7 +2684,7 @@
   "source": "把摊开的卡片全部放回盒子",
   "uses": [
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:585",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:586",
     "context": "localized"
    }
   ]
@@ -2786,7 +2786,7 @@
   "source": "拍下的照片会按题字的首字母放进盒子里。\\n把鼠标移到刘海，按「屏幕快门」或「自拍」拍第一张。",
   "uses": [
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:613",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:614",
     "context": "swiftui"
    }
   ]
@@ -3010,7 +3010,7 @@
   "source": "搜索照片…",
   "uses": [
    {
-    "at": "macOS/Nocchi/App/NocchiMacApp.swift:142",
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:145",
     "context": "swiftui"
    }
   ]
@@ -3073,7 +3073,7 @@
   "source": "摄像头出错了",
   "uses": [
    {
-    "at": "macOS/Nocchi/Capture/CameraService.swift:171",
+    "at": "macOS/Nocchi/Capture/CameraService.swift:175",
     "context": "localized"
    }
   ]
@@ -3082,7 +3082,7 @@
   "source": "摄像头断开了，换回默认摄像头",
   "uses": [
    {
-    "at": "macOS/Nocchi/Capture/CameraService.swift:164",
+    "at": "macOS/Nocchi/Capture/CameraService.swift:168",
     "context": "localized"
    }
   ]
@@ -3153,7 +3153,7 @@
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/App/NocchiMacApp.swift:145",
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:148",
     "context": "swiftui"
    }
   ]
@@ -3840,7 +3840,7 @@
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:548",
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:580",
     "context": "swiftui"
    }
   ]
@@ -4378,7 +4378,7 @@
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/App/NocchiMacApp.swift:134",
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:137",
     "context": "localized"
    },
    {
@@ -4391,7 +4391,7 @@
   "source": "相机",
   "uses": [
    {
-    "at": "macOS/Nocchi/App/NocchiMacApp.swift:121",
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:124",
     "context": "localized"
    },
    {
@@ -4466,7 +4466,7 @@
   "source": "离开大头贴机",
   "uses": [
    {
-    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:391",
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:423",
     "context": "swiftui"
    }
   ]
@@ -4510,7 +4510,7 @@
   "source": "空",
   "uses": [
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:505",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:506",
     "context": "swiftui"
    }
   ]
@@ -4888,11 +4888,11 @@
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/App/NocchiMacApp.swift:96",
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:99",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/App/NocchiMacApp.swift:124",
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:127",
     "context": "swiftui"
    }
   ]
@@ -4928,7 +4928,7 @@
   "source": "自拍和大头贴机要用到刘海里的摄像头。请在「系统设置 → 隐私与安全性 → 摄像头」里打开 Nocchi，然后再试一次。",
   "uses": [
    {
-    "at": "macOS/Nocchi/Capture/CameraService.swift:282",
+    "at": "macOS/Nocchi/Capture/CameraService.swift:346",
     "context": "localized"
    }
   ]
@@ -5066,7 +5066,7 @@
   "source": "让拖开的卡片回到那一叠",
   "uses": [
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:585",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:586",
     "context": "localized"
    }
   ]
@@ -5088,7 +5088,7 @@
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/App/NocchiMacApp.swift:118",
+    "at": "macOS/Nocchi/App/NocchiMacApp.swift:121",
     "context": "swiftui"
    }
   ]
@@ -5124,7 +5124,7 @@
   "source": "请看镜头！",
   "uses": [
    {
-    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:571",
+    "at": "macOS/Nocchi/Booth/PhotoBoothController.swift:603",
     "context": "swiftui"
    }
   ]
