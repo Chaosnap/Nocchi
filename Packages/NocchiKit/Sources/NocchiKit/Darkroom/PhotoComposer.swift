@@ -263,11 +263,16 @@ public enum PhotoComposer {
             primary = "Baskerville"
             cascade = ["Songti SC", "STSong"]
         }
-        let fallbacks = cascade.map { CTFontDescriptorCreateWithAttributes([kCTFontFamilyNameAttribute: $0] as CFDictionary) }
-        let attributes: [CFString: Any] = [
-            kCTFontNameAttribute: primary,
-            kCTFontCascadeListAttribute: fallbacks
+        // 后备字体只用装了的（楷体、翩翩体、仿宋多半是「可下载字体」，没下载时不能引用，见 FontBook）。
+        let fallbacks = FontBook.installedFamilies(cascade).map {
+            CTFontDescriptorCreateWithAttributes([kCTFontFamilyNameAttribute: $0] as CFDictionary)
+        }
+        var attributes: [CFString: Any] = [
+            kCTFontNameAttribute: FontBook.isInstalled(primary) ? primary : "Helvetica"
         ]
+        if !fallbacks.isEmpty {
+            attributes[kCTFontCascadeListAttribute] = fallbacks
+        }
         let descriptor = CTFontDescriptorCreateWithAttributes(attributes as CFDictionary)
         return CTFontCreateWithFontDescriptor(descriptor, size, nil)
     }
@@ -533,7 +538,7 @@ public enum PhotoComposer {
         var line: CTLine
         var bounds: CGRect
         repeat {
-            let font = CTFontCreateWithName(fontName as CFString, fontSize, nil)
+            let font = FontBook.font([fontName], size: fontSize)
             var attributes: [NSAttributedString.Key: Any] = [
                 NSAttributedString.Key(kCTFontAttributeName as String): font,
                 NSAttributedString.Key(kCTForegroundColorAttributeName as String): cgColor(color, alpha: alpha)

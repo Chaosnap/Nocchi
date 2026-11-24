@@ -14,7 +14,7 @@ if [[ -z "$LOG" || ! -f "$LOG" ]]; then
   exit 0
 fi
 
-ERRORS="$(grep -E "error:|error\[|fatal error|Fatal error|failed|FAILED|✖|Assertion|XCTAssert|Spec validation|Decoding failed" "$LOG" | grep -v "warning:" | head -n 60 || true)"
+ERRORS="$(grep -E "HANG:|error:|error\[|fatal error|Fatal error|failed|FAILED|✖|Assertion|XCTAssert|Spec validation|Decoding failed" "$LOG" | grep -v "warning:" | head -n 60 || true)"
 TAIL="$(tail -n 60 "$LOG")"
 
 emit() {

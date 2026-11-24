@@ -259,15 +259,7 @@ enum RetroPrint {
 
     /// 按候选名字找第一个装了的字体（CoreText 找不到时会给 Helvetica，用 PostScript 名判断）。
     static func font(_ names: [String], size: CGFloat) -> CTFont {
-        for name in names {
-            let font = CTFontCreateWithName(name as CFString, size, nil)
-            let actual = CTFontCopyPostScriptName(font) as String
-            let family = CTFontCopyFamilyName(font) as String
-            if actual == name || family == name || actual.hasPrefix(name) {
-                return font
-            }
-        }
-        return CTFontCreateWithName((names.last ?? "Helvetica-Bold") as CFString, size, nil)
+        FontBook.font(names, size: size)
     }
 
     static let condensed = ["Futura-CondensedExtraBold", "AvenirNextCondensed-Heavy", "Helvetica-Bold"]
