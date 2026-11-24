@@ -110,12 +110,21 @@ public struct ColorCube: Equatable, Sendable {
     }
 }
 
+public extension ColorCube {
+    /// 所有格点都是有限数并且落在 0…1（检查烘焙结果用）。
+    var isWellFormed: Bool {
+        values.allSatisfy { $0.isFinite && $0 >= 0 && $0 <= 1 }
+    }
+}
+
 /// 把色调配方烘焙成立方体。
 public enum LUTBaker {
     /// 默认格点数：33³ 在质量与内存（约 575 KB）之间平衡。
     public static let defaultDimension = 33
 
     public static func bake(_ recipe: ToneRecipe, dimension: Int = defaultDimension, intensity: Float = 1) -> ColorCube {
-        ColorCube.make(dimension: dimension) { recipe.apply(to: $0) }.withIntensity(intensity)
+        // 配方只预处理一次（解析颜色、曲线切线、色相带），每个格点复用。
+        let program = ToneProgram(recipe)
+        return ColorCube.make(dimension: dimension) { program.apply($0) }.withIntensity(intensity)
     }
 }
