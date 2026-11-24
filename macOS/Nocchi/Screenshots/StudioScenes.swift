@@ -140,7 +140,8 @@ struct DeskScene: View {
                 card("street", width: 380, tilt: 5, at: CGPoint(x: 430, y: 650))
                 card("beach", width: 340, tilt: -4, at: CGPoint(x: 1340, y: 470))
                 card("blossom", width: 270, tilt: 6, at: CGPoint(x: 1190, y: 770))
-                canister("FilmCanister-portrait-400", size: 170, tilt: -24, at: CGPoint(x: 760, y: 900))
+                card("booth-noir", width: 128, tilt: -13, at: CGPoint(x: 800, y: 560))
+                canister("FilmCanister-portrait-400", size: 170, tilt: -24, at: CGPoint(x: 700, y: 905))
             }
 
             // 前面一层：更大、被画框裁掉一角。
@@ -153,10 +154,10 @@ struct DeskScene: View {
 
             // 出片口漏出来的暖光（盖在相片上，只亮不暗）。
             RadialGradient(
-                colors: [Color(hex: 0xFFB27A, opacity: 0.34), Color(hex: 0xC4593B, opacity: 0.12), .clear],
+                colors: [Color(hex: 0xFFB27A, opacity: 0.42), Color(hex: 0xC4593B, opacity: 0.16), .clear],
                 center: UnitPoint(x: 0.5, y: 0.04),
                 startRadius: 4,
-                endRadius: 420
+                endRadius: 520
             )
             .blendMode(.screen)
             .allowsHitTesting(false)
