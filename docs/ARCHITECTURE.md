@@ -63,7 +63,7 @@ PhotoComposer（白边 + 题字 + 日期 + 手写）──► 成片 ~/Pictures/
 | `Darkroom/` | 拍摄 → 冲印 → 存档 → 出片的编排 |
 | `Photo/` | 桌面照片窗口：出片遮罩、显影计时、拖动与甩动、吸边、桌面层 / 浮动层、白边手写、右键菜单；照片堆 |
 | `Booth/` | 大头贴机：布帘、请看镜头、倒数、白屏闪光、四连拍 |
-| `Album/` | 相册窗口：`AlbumView`（四种看法 + 搜索）、`AlbumHeader`（字标、看法切换、搜索框、冲印按钮、红绿灯对齐）、`CorkBoardView`（胡桃木框软木板、月份标签带、拼贴排布）、`AlbumShared`（照片库、缩略图 / 贴纸缓存、右键菜单与操作、`AlbumRouter`） |
+| `Album/` | 相册窗口：`AlbumView`（四种看法 + 搜索）、`AlbumHeader`（字标、看法切换、搜索框、冲印按钮、红绿灯对齐）、`CorkBoardView`（胡桃木框软木板、月份标签带、拼贴排布）、`FilmLightTable`（光台、35mm 胶片条、放大镜、洗一洗、正负片）、`CalendarWallView`（复古挂历）、`AlbumShared`（照片库、缩略图 / 贴纸缓存、右键菜单与操作、`AlbumRouter`） |
 | `Settings/` | 相机柜、胶卷（导入 / 导出 `.cube`）、通用设置、关于；全局快捷键 |
 
 窗口层级：刘海面板（菜单栏之上 +3）> 出片中的照片（+2）> 大头贴布帘（+1）> 普通浮动照片 > 桌面层照片。

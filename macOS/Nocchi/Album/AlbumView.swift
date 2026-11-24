@@ -60,8 +60,10 @@ struct AlbumView: View {
             CardBoxView(model: cardBox) { record in
                 AlbumContextMenu(record: record)
             }
-        case .film, .calendar:
-            DarkroomPendingView(mode: router.mode)
+        case .film:
+            FilmLightTable(records: results, libraryIsEmpty: store.records.isEmpty)
+        case .calendar:
+            CalendarWallView(records: results, libraryIsEmpty: store.records.isEmpty)
         }
     }
 
@@ -74,18 +76,5 @@ struct AlbumView: View {
             AlbumActions.open(record)
         }
         return model
-    }
-}
-
-/// 还在暗房里冲洗的看法（胶卷光台、复古挂历在下一步接上）。
-private struct DarkroomPendingView: View {
-    let mode: AlbumMode
-
-    var body: some View {
-        VStack(spacing: 14) {
-            ModeIcon(mode: mode, size: 72)
-            TypedSlip(text: "\(mode.title) · 正在暗房里冲洗", size: 14, tilt: -1.5)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }

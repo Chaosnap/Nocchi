@@ -179,7 +179,12 @@ enum AlbumActions {
 
     /// 相册里显示用的图：成片，没有成片时用第一张底片。
     static func imageURL(_ record: PhotoRecord) -> URL? {
-        printURL(record) ?? record.negatives.first.map { Services.library.negativeURL($0) }
+        printURL(record) ?? negativeURL(record)
+    }
+
+    /// 第一张底片（不带相纸白边的照片本身），没有时退回成片。
+    static func negativeURL(_ record: PhotoRecord) -> URL? {
+        record.negatives.first.map { Services.library.negativeURL($0) }
     }
 
     /// 双击照片。
@@ -234,19 +239,21 @@ struct AlbumContextMenu: View {
     }
 }
 
-/// 一张照片的缩略图（成片优先），带缓存。
+/// 一张照片的缩略图（默认成片，`photoOnly` 时用底片），带缓存。
 struct AlbumThumbnail: View {
     let record: PhotoRecord
     var maxPixel: Int = 520
+    var photoOnly = false
     @State private var image: NSImage?
 
-    init(record: PhotoRecord, maxPixel: Int = 520) {
+    init(record: PhotoRecord, maxPixel: Int = 520, photoOnly: Bool = false) {
         self.record = record
         self.maxPixel = maxPixel
+        self.photoOnly = photoOnly
     }
 
     var body: some View {
-        let url = AlbumActions.imageURL(record)
+        let url = photoOnly ? (AlbumActions.negativeURL(record) ?? AlbumActions.imageURL(record)) : AlbumActions.imageURL(record)
         Group {
             if let image {
                 Image(nsImage: image)

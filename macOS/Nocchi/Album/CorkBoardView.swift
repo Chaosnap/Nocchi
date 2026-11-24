@@ -221,7 +221,6 @@ private struct PinnedPrint: View {
         case .boothStrip: return 92
         case .boothGrid: return 150
         case .landscape: return 220
-        default: return 170
         }
     }
 

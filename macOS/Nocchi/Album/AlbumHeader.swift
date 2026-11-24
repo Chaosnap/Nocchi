@@ -133,7 +133,11 @@ private struct ModeSegment: View {
         .onHover { inside in
             withAnimation(.spring(response: 0.28, dampingFraction: 0.8)) { hovering = inside }
         }
-        .help("\(item.title)（⌘\(item.key.character)）")
+        .help(tooltip)
+    }
+
+    private var tooltip: String {
+        "\(item.title)（⌘\(String(item.key.character))）"
     }
 }
 
