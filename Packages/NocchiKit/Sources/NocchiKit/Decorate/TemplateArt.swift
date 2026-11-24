@@ -27,7 +27,7 @@ enum TemplateArt {
             return (RetroPrint.scallopedRect(rect.insetBy(dx: r + 0.4 * s, dy: r + 0.4 * s), radius: r), false)
         case .postage:
             let hole = 1.05 * s
-            return (RetroPrint.perforated(rect.insetBy(dx: hole * 0.2, dy: hole * 0.2), hole: hole, spacing: 3.1 * s), false)
+            return (CGPath(rect: rect.insetBy(dx: hole * 0.2, dy: hole * 0.2), transform: nil), false)
         default:
             let corner = layout.cornerRadius * s
             return (CGPath(roundedRect: rect, cornerWidth: corner, cornerHeight: corner, transform: nil), false)
@@ -173,6 +173,11 @@ enum TemplateArt {
         // 胶片框的齿孔：真的挖空（透出下面的东西）。
         if spec.template.style == .filmframe {
             punchSprockets(ctx, layout: layout, size: size, s: s)
+        }
+        // 邮票的齿孔边：沿边挖出半圆缺口（底层是独立的位图，挖掉的地方就是透明）。
+        if spec.template.style == .postage {
+            let hole = 1.05 * s
+            RetroPrint.punch(ctx, RetroPrint.perforations(rect.insetBy(dx: hole * 0.2, dy: hole * 0.2), hole: hole, spacing: 3.1 * s))
         }
     }
 

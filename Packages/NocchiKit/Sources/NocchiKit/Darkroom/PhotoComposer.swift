@@ -153,7 +153,8 @@ public enum PhotoComposer {
         TemplateArt.window(template, layout: layout, index: index, width: width)
     }
 
-    /// 相纸外轮廓（像素，左上原点）。`evenOdd` 为 true 时用 even-odd 规则（邮票齿孔）。
+    /// 相纸外轮廓（像素，左上原点）。`evenOdd` 为 true 时用 even-odd 规则。
+    /// 邮票的齿孔不在轮廓里：`renderBase` 直接在纸上挖孔。
     public static func paperOutline(layout: PaperLayout, template: PrintTemplate, size: CGSize) -> (path: CGPath, evenOdd: Bool) {
         TemplateArt.outline(template, layout: layout, size: size)
     }

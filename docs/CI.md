@@ -34,6 +34,7 @@
 
 - 编译错误由 `xcbeautify --renderer github-actions` 转成带文件和行号的注解。
 - 任何任务失败时，`scripts/ci/annotate-failure.sh` 会把日志里的错误行和日志尾部写成一条注解。
+- `swift test` 这一步单独限时 12 分钟（平时不到 2 分钟）：测试卡住时会被提前停下，注解里的日志尾部就是最后开始、没跑完的那个测试。
 - 仓库是公开的，注解可以不登录直接通过 REST API 读取：
 
 ```bash

@@ -213,8 +213,9 @@ enum RetroPrint {
         return path
     }
 
-    /// 邮票齿孔：矩形减去沿四边排开的小圆孔（圆心在边上，咬出一个个半圆缺口）。
-    static func perforated(_ rect: CGRect, hole: CGFloat, spacing: CGFloat) -> CGPath {
+    /// 邮票齿孔：沿矩形四边排开的小圆孔（圆心在边上）。用 `.clear` 混合模式把它们从纸上挖掉，
+    /// 就咬出一个个半圆缺口（不用 CGPath 布尔运算：几百个圆的布尔运算又慢又可能卡死）。
+    static func perforations(_ rect: CGRect, hole: CGFloat, spacing: CGFloat) -> CGPath {
         let path = CGMutablePath()
         let step = max(spacing, hole * 2.2)
         func holes(from a: CGPoint, to b: CGPoint) {
@@ -230,7 +231,16 @@ enum RetroPrint {
         holes(from: CGPoint(x: rect.minX, y: rect.maxY), to: CGPoint(x: rect.maxX, y: rect.maxY))
         holes(from: CGPoint(x: rect.minX, y: rect.minY + step), to: CGPoint(x: rect.minX, y: rect.maxY - step))
         holes(from: CGPoint(x: rect.maxX, y: rect.minY + step), to: CGPoint(x: rect.maxX, y: rect.maxY - step))
-        return CGPath(rect: rect, transform: nil).subtracting(path)
+        return path
+    }
+
+    /// 在当前图层里把这些孔挖成透明（调用方要保证只影响自己的透明层）。
+    static func punch(_ ctx: CGContext, _ holes: CGPath) {
+        ctx.saveGState()
+        ctx.setBlendMode(.clear)
+        ctx.addPath(holes)
+        ctx.fillPath()
+        ctx.restoreGState()
     }
 
     /// 撕口：一条锯齿边（胶带两端），沿竖直方向。

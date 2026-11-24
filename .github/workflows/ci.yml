@@ -47,12 +47,14 @@ jobs:
 
       - name: swift test
         working-directory: Packages/NocchiKit
+        # 正常不到 2 分钟；卡住时尽早停下，让下一步把日志尾部（最后开始的那个测试）写成注解。
+        timeout-minutes: 12
         run: |
           set -o pipefail
           swift test 2>&1 | tee "$RUNNER_TEMP/nocchikit-test.log"
 
       - name: Surface failure log
-        if: failure()
+        if: failure() || cancelled()
         run: bash scripts/ci/annotate-failure.sh "$RUNNER_TEMP/nocchikit-test.log" "NocchiKit tests failed"
 
   macos-app:

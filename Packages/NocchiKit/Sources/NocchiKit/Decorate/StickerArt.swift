@@ -623,13 +623,11 @@ public enum StickerArt {
             ctx.restoreGState()
         case "ephemera.stamp":
             let outer = CGRect(x: 6, y: 6, width: 88, height: h - 12)
-            let perforated = RetroPrint.perforated(outer, hole: 2.6, spacing: 7)
             ctx.saveGState()
             ctx.setShadow(offset: CGSize(width: 0.4 * px, height: -0.9 * px), blur: 2 * px, color: CGColor(srgbRed: 0.1, green: 0.07, blue: 0.04, alpha: 0.28))
-            ctx.addPath(perforated)
+            ctx.beginTransparencyLayer(auxiliaryInfo: nil)
             ctx.setFillColor(c("#F8F2E2"))
-            ctx.fillPath(using: .evenOdd)
-            ctx.restoreGState()
+            ctx.fill(outer)
             let picture = CGRect(x: 15, y: 15, width: 70, height: h - 42)
             ctx.saveGState()
             ctx.clip(to: picture)
@@ -650,6 +648,9 @@ public enum StickerArt {
             ctx.stroke(picture)
             RetroPrint.text(ctx, "8分", fonts: RetroPrint.chineseSerif, size: 9, color: c(red), x: 18, baseline: picture.minY + 10, align: -1)
             RetroPrint.text(ctx, "NOCCHI POST", fonts: RetroPrint.typewriter, size: 6.5, color: c(ink, 0.85), x: 50, baseline: h - 17, maxWidth: 70, tracking: 0.8)
+            RetroPrint.punch(ctx, RetroPrint.perforations(outer, hole: 2.6, spacing: 7))
+            ctx.endTransparencyLayer()
+            ctx.restoreGState()
         case "ephemera.pricetag", "ephemera.luggage":
             let luggage = id == "ephemera.luggage"
             let tag = CGMutablePath()
