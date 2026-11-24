@@ -4,8 +4,9 @@ import SwiftUI
 
 /// 日历：墙上挂着的一页复古挂历（印刷红 + 墨黑两色）。
 ///
-/// 顶上一条装订边和两个黄铜铆眼；大号月份数字、中英文月份、年份；有照片的日子贴一张带白边、
-/// 四个黑色照片角的小照片（多于 1 张时角上一个红色小圆章「+2」）；今天用红色印章圈出来。
+/// 顶上一条装订边和两个黄铜铆眼；大号月份数字、中英文月份、年份；有照片的日子用一小段和纸胶带贴一张
+/// 带白边的小相片，同一天有几张就叠成一小摞（最多露出三张，再多角上盖一个红章写着一共几张），鼠标停上去
+/// 那一摞轻轻散开；今天用红色印章圈出来。
 /// 点某一天，页面下方展开这一天的照片；页脚是本月统计。
 struct CalendarWallView: View {
     let records: [PhotoRecord]
@@ -249,11 +250,12 @@ private struct DayCell: View {
                             .offset(x: 3, y: 2)
                     }
                 }
-            if let first = day.records.first {
-                CornerPhoto(record: first, extra: day.records.count - 1)
-                    .padding(.top, 20)
-                    .padding(.horizontal, 8)
-                    .padding(.bottom, 6)
+            if !day.records.isEmpty {
+                // 日期数字在左上角：照片贴在它右边的那一块里。
+                DayPhotos(records: day.records)
+                    .padding(.leading, 30)
+                    .padding(.trailing, 6)
+                    .padding(.vertical, 5)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .opacity(day.isInMonth ? 1 : 0.5)
             }
@@ -279,61 +281,155 @@ private struct TodayStamp: View {
     }
 }
 
-/// 格子里的小照片：白边 + 四个黑色照片角，轻微倾斜；多于 1 张时右上角一个红色小圆章。
-private struct CornerPhoto: View {
-    let record: PhotoRecord
-    let extra: Int
+/// 一天的照片：一张时是一张带白边的小相片，用一小段和纸胶带贴在格子里；几张时叠成一小摞——
+/// 后面的往两边错开、转不同的角度，最多露出三张，超过三张时角上盖一个红章写着一共几张。
+/// 鼠标停上去，那一摞轻轻散开、最上面一张微微抬起。
+private struct DayPhotos: View {
+    let records: [PhotoRecord]
+    @State private var hovering = false
 
     var body: some View {
         GeometryReader { geo in
-            let side = max(10, min(geo.size.width * 0.82, geo.size.height))
-            ZStack(alignment: .topTrailing) {
-                AlbumThumbnail(record: record, maxPixel: 240, photoOnly: true)
-                    .aspectRatio(1, contentMode: .fill)
-                    .frame(width: side - 6, height: side - 6)
-                    .clipped()
-                    .padding(3)
-                    .background(Color.white)
-                    .overlay { PhotoCorners(size: max(5, side * 0.16)) }
-                    .shadow(color: .black.opacity(0.22), radius: 1, x: 0.5, y: 0.8)
-                    .rotationEffect(.degrees((Double((record.seed >> 20) & 0xFF) / 255 - 0.5) * 7))
-                if extra > 0 {
-                    Text("+\(extra)")
-                        .font(RetroFont.typewriter(9, weight: .bold))
-                        .foregroundStyle(Color.white)
-                        .frame(width: 20, height: 20)
-                        .background(Circle().fill(Palette.printRed))
-                        .overlay(Circle().stroke(Color.white.opacity(0.7), lineWidth: 0.8))
-                        .offset(x: 7, y: -7)
+            let side = max(14, min(geo.size.height - 6, geo.size.width * 0.6))
+            let shown = Array(records.prefix(3))
+            ZStack {
+                ForEach(Array(shown.enumerated().reversed()), id: \.element.id) { item in
+                    let index = item.offset
+                    MiniPrint(record: item.element, side: side, taped: index == 0, lifted: hovering && index == 0)
+                        .rotationEffect(.degrees(angle(index: index, record: item.element)))
+                        .offset(offset(index: index, count: shown.count, side: side))
+                }
+                if records.count > 1 {
+                    CountStamp(count: records.count)
+                        .offset(x: side * 0.52 + (hovering ? side * 0.12 : 0), y: -side * 0.42)
                 }
             }
-            .frame(width: side, height: side)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .frame(width: geo.size.width, height: geo.size.height)
+            .contentShape(Rectangle())
+            .onHover { inside in
+                withAnimation(.spring(response: 0.32, dampingFraction: 0.72)) { hovering = inside }
+            }
+        }
+    }
+
+    /// 最上面那张按 seed 歪一点；后面两张一左一右转开。
+    private func angle(index: Int, record: PhotoRecord) -> Double {
+        let jitter = (Double((record.seed >> 20) & 0xFF) / 255 - 0.5)
+        let spread = hovering ? 1.45 : 1
+        switch index {
+        case 0: return jitter * 7
+        case 1: return (-8 + jitter * 3) * spread
+        default: return (7 + jitter * 3) * spread
+        }
+    }
+
+    private func offset(index: Int, count: Int, side: CGFloat) -> CGSize {
+        let spread: CGFloat = hovering ? 1.5 : 1
+        switch index {
+        case 0: return CGSize(width: 0, height: hovering ? -1.5 : 0)
+        case 1: return CGSize(width: -side * 0.16 * spread, height: -side * 0.04)
+        default: return CGSize(width: side * 0.15 * spread, height: -side * 0.08)
         }
     }
 }
 
-/// 老相册的黑色照片角。
-private struct PhotoCorners: View {
-    let size: CGFloat
+/// 一张小相片：方形照片、白边（下边稍宽，像一张小即显相纸）、柔和的影子；贴着的那张顶上一小段和纸胶带。
+private struct MiniPrint: View {
+    let record: PhotoRecord
+    let side: CGFloat
+    let taped: Bool
+    let lifted: Bool
 
     var body: some View {
-        GeometryReader { geo in
-            let w = geo.size.width
-            let h = geo.size.height
-            Path { path in
-                path.addLines([CGPoint(x: 0, y: 0), CGPoint(x: size, y: 0), CGPoint(x: 0, y: size)])
-                path.closeSubpath()
-                path.addLines([CGPoint(x: w, y: 0), CGPoint(x: w - size, y: 0), CGPoint(x: w, y: size)])
-                path.closeSubpath()
-                path.addLines([CGPoint(x: 0, y: h), CGPoint(x: size, y: h), CGPoint(x: 0, y: h - size)])
-                path.closeSubpath()
-                path.addLines([CGPoint(x: w, y: h), CGPoint(x: w - size, y: h), CGPoint(x: w, y: h - size)])
-                path.closeSubpath()
-            }
-            .fill(Color(hex: 0x1C1A18))
+        let border = max(2, side * 0.06)
+        let photo = side - border * 2
+        VStack(spacing: 0) {
+            AlbumThumbnail(record: record, maxPixel: 240, photoOnly: true)
+                .aspectRatio(1, contentMode: .fill)
+                .frame(width: photo, height: photo)
+                .clipped()
+                .padding(.top, border)
+            Color.clear
+                .frame(height: border * 1.9)
         }
-        .allowsHitTesting(false)
+        .frame(width: side)
+        .background(Color(hex: 0xFBF8F1))
+        .overlay(Rectangle().stroke(Color.black.opacity(0.08), lineWidth: 0.5))
+        .overlay(alignment: .top) {
+            if taped {
+                WashiTape(seed: record.seed, width: side * 0.52)
+                    .offset(y: -side * 0.07)
+            }
+        }
+        .compositingGroup()
+        .shadow(color: .black.opacity(0.22), radius: 0.8, x: 0.4, y: 0.7)
+        .shadow(color: .black.opacity(lifted ? 0.2 : 0.12), radius: lifted ? 5 : 2.5, x: 1, y: lifted ? 4 : 2)
+        .scaleEffect(lifted ? 1.05 : 1)
+    }
+}
+
+/// 一小段半透明的和纸胶带：颜色按 seed 在陶土、芥末、青绿、玫瑰里挑，两头是撕开的锯齿。
+private struct WashiTape: View {
+    let seed: UInt64
+    let width: CGFloat
+
+    private static let colors: [UInt32] = [0xD9825E, 0xE2B65A, 0x7FA6A0, 0xD98C99]
+
+    var body: some View {
+        let color = Color(hex: Self.colors[Int((seed >> 12) % UInt64(Self.colors.count))])
+        TornStrip()
+            .fill(color.opacity(0.72))
+            .overlay(
+                TornStrip()
+                    .fill(LinearGradient(colors: [Color.white.opacity(0.28), .clear, Color.black.opacity(0.06)], startPoint: .top, endPoint: .bottom))
+            )
+            .frame(width: width, height: max(6, width * 0.26))
+            .rotationEffect(.degrees(Double((seed >> 28) & 0x0F) - 7.5))
+            .shadow(color: .black.opacity(0.12), radius: 0.6, y: 0.4)
+    }
+}
+
+/// 胶带的外形：长条，两头是小锯齿（手撕的）。
+private struct TornStrip: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        let teeth = 4
+        let depth = min(2.2, rect.width * 0.04)
+        path.move(to: CGPoint(x: rect.minX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
+        for i in 0..<teeth {
+            let y0 = rect.minY + rect.height * CGFloat(i) / CGFloat(teeth)
+            let y1 = rect.minY + rect.height * (CGFloat(i) + 0.5) / CGFloat(teeth)
+            path.addLine(to: CGPoint(x: rect.maxX, y: y0))
+            path.addLine(to: CGPoint(x: rect.maxX - depth, y: y1))
+        }
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+        for i in (0..<teeth).reversed() {
+            let y0 = rect.minY + rect.height * (CGFloat(i) + 1) / CGFloat(teeth)
+            let y1 = rect.minY + rect.height * (CGFloat(i) + 0.5) / CGFloat(teeth)
+            path.addLine(to: CGPoint(x: rect.minX, y: y0))
+            path.addLine(to: CGPoint(x: rect.minX + depth, y: y1))
+        }
+        path.closeSubpath()
+        return path
+    }
+}
+
+/// 一摞照片角上的红章：一共几张。
+private struct CountStamp: View {
+    let count: Int
+
+    var body: some View {
+        Text(verbatim: "×\(count)")
+            .font(RetroFont.typewriter(9, weight: .bold))
+            .foregroundStyle(Color.white)
+            .frame(width: 20, height: 20)
+            .background(Circle().fill(Palette.printRed))
+            .overlay(Circle().stroke(Color.white.opacity(0.7), lineWidth: 0.8))
+            .rotationEffect(.degrees(-10))
+            .shadow(color: .black.opacity(0.2), radius: 0.8, y: 0.6)
+            .allowsHitTesting(false)
     }
 }
 

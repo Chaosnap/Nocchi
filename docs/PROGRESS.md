@@ -1,6 +1,6 @@
 # 进度看板（实时更新）
 
-> 最后更新：2026-11-24（3.0.0：自拍闪退、大头贴机第一次进入卡顿）· 分支 `main`（直接在 main 开发）
+> 最后更新：2026-11-24（3.0.0 已发；3.1.0：软木板白天 / 黑夜灯光、挂历照片叠放）· 分支 `main`（直接在 main 开发）
 > 每次推送都会同步更新本页。构建产物见 [Actions](https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml)。
 
 ## 一眼看懂
@@ -31,9 +31,11 @@
 | --- | --- | --- | --- | --- |
 | 1 | 点「自拍」偶尔闪退（装着大头贴机时） | 🟡 已改，等 CI；发 3.0.0 | `Capture/CameraService.swift`（`attachPreview`、`detachPreview`、`setPreviewMirroring`、`reapplyMirroring`、拍照前查视频连接）、`CameraPreview` / `PreviewView` | 本机 `~/Library/Logs/DiagnosticReports/Nocchi-*.ips` 四份崩溃报告都是：摄像头队列 `startRunning` →「Collection was mutated while being enumerated」，主线程同时在 `CameraPreview.makeNSView` 里 `addVideoPreviewLayer`。现在预览层的挂 / 摘 / 镜像都在摄像头队列上（决策 D40）。所有者猜的「刘海选了没同步到设置的相机柜」查过：三处都读写 `AppModel.bodyID`，是同步的，不是原因 |
 | 2 | 第一次进大头贴机卡（不改画面） | 🟡 已改，等 CI；发 3.0.0 | 新 `Booth/BoothWarmup.swift`（`BoothWarmup`、`BoothArt`、`BoothArtCache`）、`Booth/CurtainScene.swift`（一个可复用的 `SCNView`、`prepare`、`suspend`、同一屏幕不重搭）、`Booth/PhotoBoothController.swift`（`prepareCurtain`、`prewarmPreviews`、离开时样张不丢、`curtainGap`）、`Booth/BoothMachine.swift`（图都走 `BoothArt.image`）、`App/TemplatePreviews.swift`（`prefetch` 可传优先级）、`App/NocchiMacApp.swift`（启动 2.5 秒后 `BoothWarmup.schedule()`） | 启动后在后台：SceneKit 编译布帘着色器 + 上传纹理、解码整机和零件大图、合成默认相框的一圈样张、合成声音；之后一直留着 |
-| 3 | 发 3.0.0 | ⚪ 等 1、2 的 CI 绿 | `macOS/project.yml`（已改 3.0.0）、`CHANGELOG.md`（`## [3.0.0]`）、README 徽章与「Where it stands」、文档站两个更新日志 | CI 绿了就推 `v3.0.0` 标签 |
-| 4 | 软木板灯光：白天 / 黑夜、粒子（光里的灰尘）、灯的位置，搬 Terminal 的灯光引擎 | ⚪ 3.0 之后做 | 参考 `/Users/yuki/Desktop/Terminal/app/nocturne/light-model.ts`（光源：台灯 / 月光窗；平方反比 + 朗伯余弦 + 软边光锥；窗格投影 `windowGobo`；曝光 `1 − e^(−E)`）、`lighting-math.ts`、`lib/nocturne/lighting/glow-layer.ts`（光池 + 泛光 + 110 粒灰尘，每粒按光模型点亮）、`paper-light.ts`（GLSL，乘法叠加）。Typewriter Nocturne 是 MIT（所有者自己的项目），搬过来要在文件头注明来源和许可 | 计划：NocchiKit 新增 `LightModel`（移植 light-model.ts，单元测试）；软木板上在 CPU 按低分辨率（约 240 列）算光照图（乘法层 = 环境光 + 灯光，屏幕层 = 光池 + 泛光），盖在照片上面（照片也被同一盏灯照着），灰尘用 `TimelineView` + `Canvas`（30 帧）；白天 = 窗光（暖白、窗格投影、环境亮），黑夜 = 台灯（钨丝暖光、光池外暗下去）或月光（冷蓝窗格）；「灯光」卡片加：白天 / 黑夜、光源、位置（小板子上拖铜钮）、范围、粒子；照片阴影方向跟着灯的位置。不用 Metal 着色器（CI 上 Xcode 26 的 Metal 工具链要单独下载，避开） |
-| 5 | 挂历里的照片：多张叠成一小摞，单张摆得更好看 | ⚪ 3.0 之后做 | `Album/CalendarWallView.swift`（`DayCell`、`CornerPhoto`） | 计划：一天多张时最多叠 3 张小相片（后面的错开、转不同角度），超过 3 张角上盖一个红色小章「×5」；单张做成带白边的小相片，用一小段和纸胶带贴在日期数字右边，按 seed 歪一点，柔和阴影 |
+| 3 | 发 3.0.0 | 🟢 CI 第 66 次运行绿，已推 `v3.0.0` 标签（`bce9336`），`release.yml` 出 Release | `macOS/project.yml`、`CHANGELOG.md`（`## [3.0.0]`）、README、文档站两个更新日志 | |
+| 4 | 软木板灯光：白天 / 黑夜、粒子（光里的灰尘）、灯的位置，搬 Terminal 的灯光引擎 | 🟡 已做（第 58 次推送），等 CI 和 Screenshots（`album-corkboard.jpg` 白天、新的 `album-corkboard-night.jpg` 夜里台灯、`album-corkboard-lighting.jpg` 打开的卡片；英文在 `en/`）；看过图就发 3.1.0 | 新 `NocchiKit/Lighting/LightModel.swift` + `LightModelTests`；`Album/CorkLighting.swift`（`CorkLighting` 加 `time`、`source`、`lightX/Y`、`reach`、`particles`，2.x 的 `angle` 换算成位置；`CorkLightOverlay`、`CorkLightMaps`、`DustMotes`；两栏的 `LightingPanel`：`TimeSwitch`、`SourceChips`、`LightPad`）；`Album/CorkBoardView.swift`（光照盖在照片上面、`CorkShowcase`）；`Screenshots/ScreenshotStudio.swift`；决策 D41 | 参考 `/Users/yuki/Desktop/Terminal/app/nocturne/light-model.ts`（光源：台灯 / 月光窗；平方反比 + 朗伯余弦 + 软边光锥；窗格投影 `windowGobo`；曝光 `1 − e^(−E)`）、`lighting-math.ts`、`lib/nocturne/lighting/glow-layer.ts`（光池 + 泛光 + 110 粒灰尘，每粒按光模型点亮）、`paper-light.ts`（GLSL，乘法叠加）。Typewriter Nocturne 是 MIT（所有者自己的项目），搬过来要在文件头注明来源和许可 | 计划：NocchiKit 新增 `LightModel`（移植 light-model.ts，单元测试）；软木板上在 CPU 按低分辨率（约 240 列）算光照图（乘法层 = 环境光 + 灯光，屏幕层 = 光池 + 泛光），盖在照片上面（照片也被同一盏灯照着），灰尘用 `TimelineView` + `Canvas`（30 帧）；白天 = 窗光（暖白、窗格投影、环境亮），黑夜 = 台灯（钨丝暖光、光池外暗下去）或月光（冷蓝窗格）；「灯光」卡片加：白天 / 黑夜、光源、位置（小板子上拖铜钮）、范围、粒子；照片阴影方向跟着灯的位置。不用 Metal 着色器（CI 上 Xcode 26 的 Metal 工具链要单独下载，避开） |
+| 5 | 挂历里的照片：多张叠成一小摞，单张摆得更好看 | 🟡 已做（第 58 次推送），等 Screenshots 看 `album-calendar.jpg` | `Album/CalendarWallView.swift`（`DayPhotos`、`MiniPrint`、`WashiTape`、`CountStamp`；删掉了 `CornerPhoto`、`PhotoCorners`） | 计划：一天多张时最多叠 3 张小相片（后面的错开、转不同角度），超过 3 张角上盖一个红色小章「×5」；单张做成带白边的小相片，用一小段和纸胶带贴在日期数字右边，按 seed 歪一点，柔和阴影 |
+
+**版本号**：灯光和挂历原本要作为「2.5」，但所有者又要先把闪退和卡顿发成 3.0，所以这一批发成 **3.1.0**（版本号不能往回走）。`macOS/project.yml`、`CHANGELOG.md`（`## [3.1.0]`）、README、两个更新日志已经写好；CI 绿、截图看过就推 `v3.1.0`。
 
 ## 交接 · 上一批：2.1 反馈（2026-11-24 晚，已随 v2.1.0 发布）
 
@@ -199,6 +201,8 @@
 
 ## 最近更新（新的在上）
 
+- **2026-11-24 · 第 58 次推送（3.1.0 准备）** 软木板灯光（移植 Typewriter Nocturne 的灯光模型，白天窗光 / 黑夜台灯或月光、挪灯、范围、灰尘），挂历照片用和纸胶带贴、同一天叠成一小摞；截图多拍软木板的夜里和打开的「灯光」卡片；版本 3.1.0。
+- **2026-11-24 · 发行版 v3.0.0** CI 第 66 次运行绿后推了 `v3.0.0` 标签。
 - **2026-11-24 · 第 57 次推送（3.0.0）** 自拍闪退：本机四份崩溃报告都是摄像头会话被两条线程同时改（摄像头队列 `startRunning`、主线程挂预览层），预览层的挂 / 摘 / 镜像改到摄像头队列上；拍照前查视频连接。大头贴机：启动后在后台准备（布帘着色器与纹理、整机大图、样张、声音），第一次进入不卡。版本 3.0.0。
 - **2026-11-24 · 第 56 次推送（发版前所有者的反馈）** 卡片盒抽出来的卡片不再「套娃」：就是成片本身加一枚白色塑料标签（交接表第 12 行）；一起进 v2.1.0。第 55 次推送的 CI / Screenshots 被这次推送取代。
 - **2026-11-24 · 第 55 次推送（发版准备）** 所有者同意发 v2.1.0：版本改为 2.1.0，`CHANGELOG` 整理出 `## [2.1.0]`（Release 说明就取这一节），README（版本徽章、「Where it stands」、功能列表里的换相机、卡片盒归档、成片位置）和文档站中英文更新日志加上 2.1.0。发版前把英文表 563 条通读一遍，改了几处用词（「冲印店」统一叫 Photo Lab、Desktop、Prints Folder、Pull out）。第 54 次推送（英文单复数）的 CI 与 Screenshots 见下一条。

@@ -25,6 +25,12 @@ A cork board in a walnut frame. Each month gets an embossed label (2026 · Novem
 
 ![The corkboard](/screenshots/en/album-corkboard.jpg)
 
+**Lighting**: the brass *Lighting* tag in the bottom-left corner opens a card. **Day** lets the sun slant in through a window and lay its panes across the board; **Night** dims the room to a **Desk lamp**, a warm pool of light, or **Moonlight** through the window. Drag the brass knob on the little board to move the light, and set its **Reach**, **Brightness**, **Colour temperature** and how much **Dust** drifts in the beam, as well as the vignette, the shadows, the paper curl and how prints are fastened. The light falls on the prints as well as the cork, and their shadows follow it.
+
+![The corkboard at night, under a desk lamp](/screenshots/en/album-corkboard-night.jpg)
+
+![The lighting card](/screenshots/en/album-corkboard-lighting.jpg)
+
 ### Card box
 
 A beechwood index-card box with 27 dividers. By default each print is filed under the first letter of its caption (A–Z; Chinese captions by their pinyin, prints without a caption under #). Hover a divider to see how many prints it holds; tabs with prints have an orange dot. Click it and the prints slide one by one out of their own slot, each with a white plastic tab, and land in a loose pile on the right (up to nine; drag sideways to leaf through, or drag cards anywhere and stack them). Click a card to bring it to the front, double-click to open it, and **Put All Back** files them again.
@@ -43,7 +49,7 @@ An aluminium light table on a walnut desk. Prints are laid out four at a time as
 
 ### Calendar
 
-A wall calendar printed in red and black, with brass page turners. Days with photos carry a small print in photo corners (a red stamp shows *+2* when there are more), and today is circled in red. Click a day to see its prints; the footer counts the month's prints and rolls and your most-used tag.
+A wall calendar printed in red and black, with brass page turners. Days with photos carry a small print held by a strip of washi tape; several prints on one day make a little fanned stack (up to three show, and a red stamp gives the count), which spreads when you hover. Today is circled in red. Click a day to see its prints; the footer counts the month's prints and rolls and your most-used tag.
 
 ![The wall calendar](/screenshots/en/album-calendar.jpg)
 

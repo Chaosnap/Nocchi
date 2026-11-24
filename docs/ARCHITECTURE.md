@@ -28,6 +28,7 @@ Nocchi/
 | 机身 | `Darkroom/CameraBody.swift` | 相机柜：即显相机、大头贴机（其余在路线图）；装着哪台，刘海拍出来就是什么（大头贴机一次一条四格，见 D36） |
 | 检索 | `Library/PhotoSearch.swift` | 相册搜索：题字、标签、地点、胶卷名、日期写法（含英文月份名）、拼音、首字母 |
 | 卡片盒归档 | `Library/CardIndex.swift` | 照片分进 27 张分隔卡：首字母 / 年 / 月 / 日，每格的标签和完整说法（随界面语言），溢出的进「更早」（D37） |
+| 灯光 | `Lighting/LightModel.swift` | 软木板的灯光模型（移植自 Typewriter Nocturne，MIT）：台灯光锥、窗户里的太阳 / 月光与窗格投影、曝光映射（D41） |
 | 界面语言 | `Support/UILanguage.swift` | 简体中文（默认）/ 英文；App 在设置里切换后重新打开，一个进程只用一种语言 |
 | 音效 | `Audio/SoundSynth.swift`、`SoundPlayer.swift` | 程序合成 + AVAudioEngine 播放 |
 | 几何 | `Geometry/SlotGeometry.swift`、`PileLayout.swift` | 刘海矩形、灵动岛估算、照片堆排布 |

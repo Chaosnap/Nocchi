@@ -2,6 +2,15 @@
 
 The full changelog, in Chinese, is [CHANGELOG.md](https://github.com/Chaosnap/Nocchi/blob/main/CHANGELOG.md). Downloads are on [Releases](https://github.com/Chaosnap/Nocchi/releases).
 
+## 3.1.0 · 2026-11-24
+
+**Day and night.**
+
+- **A corkboard with real light**: on the *Lighting* card, **Day** lets the sun slant in through a window and lay a warm patch of panes across the board; **Night** dims the room to a **Desk lamp**, a warm pool that falls off with distance, or cool **Moonlight** through the window. The light falls on the prints as well as the cork, and their shadows follow it. The lighting engine is ported from Typewriter Nocturne (MIT).
+- **Move the light**: drag the brass knob on the card's little board to put the sun, the lamp or the moon where you want; **Reach** sets how high the lamp hangs or how large the window is.
+- **Dust in the beam**: the **Dust** slider sets how many motes drift and glint in the light.
+- **The wall calendar**: prints are held by a strip of washi tape, and several on one day make a little fanned stack with a red count stamp, which spreads when you hover.
+
 ## 3.0.0 · 2026-11-24
 
 **Steadier and smoother.**

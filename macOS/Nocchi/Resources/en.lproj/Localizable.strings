@@ -78,9 +78,8 @@
 "例如：上海 · 武康路" = "e.g. Paris · Rue Mouffetard";
 "偏冷的日常负片：浓郁的绿、清脆的反差，阴影里一点青绿" = "A cool everyday negative: deep greens, crisp contrast, a touch of teal in the shadows";
 "做好了 %lld 枚贴纸" = "Made %lld stickers";
-"光从%@边来" = "Light from the %@";
+"光从%@边来 · 拖动铜钮挪灯" = "%@ light · drag the brass knob to move it";
 "光台上还没有底片 · 拍几张再来看" = "No negatives on the light table yet · take a few photos first";
-"光的方向" = "Light direction";
 "全部字体" = "All Fonts";
 "全部放回" = "Put All Back";
 "全部放回桌面" = "Put All Back on the Desktop";
@@ -140,6 +139,7 @@
 "去掉白色模切边" = "Remove the White Die-Cut Border";
 "双反相机" = "Twin-Lens";
 "取消" = "Cancel";
+"台灯" = "Desk lamp";
 "右" = "Right";
 "右上" = "Top right";
 "右下" = "Bottom right";
@@ -172,8 +172,10 @@
 "墨黑" = "Ink Black";
 "复古横幅和三角彩旗" = "A vintage banner and bunting";
 "外接 / 虚拟" = "External / Virtual";
+"多" = "Lots";
 "夜晚" = "Night";
 "夜景与电影" = "Night & Cinema";
+"大" = "Large";
 "大头贴" = "Photo Booth";
 "大头贴 · %@" = "Photo booth · %@";
 "大头贴机" = "Photo Booth";
@@ -199,6 +201,7 @@
 "导入字体…" = "Import Fonts…";
 "导出为 .cube…" = "Export as .cube…";
 "导出图片…" = "Export Image…";
+"小" = "Small";
 "小狗" = "Puppy";
 "小猫" = "Kitten";
 "小票" = "Receipt";
@@ -264,7 +267,6 @@
 "拖出去即可使用成片；点一下放回桌面" = "Drag out to use the print; click to put it back on the desktop";
 "拖出去就是成片文件 · 点一下放回桌面" = "Drag out for the print file · click to put it back on the desktop";
 "拖动缩放、旋转" = "Drag to scale and rotate";
-"拖动铜钮转台灯" = "Drag the brass knob to turn the lamp";
 "拷贝" = "Copy";
 "按年" = "By Year";
 "按日" = "By Day";
@@ -338,6 +340,7 @@
 "最常写 #%@" = "Most used #%@";
 "最近冲印 · %lld 张" = "Recent prints · %lld photos";
 "月亮" = "Moon";
+"月光" = "Moonlight";
 "有 %lld 个文件读不出图片" = "%lld files couldn’t be read as images";
 "有 %lld 个文件读不出字体" = "%lld files couldn’t be read as fonts";
 "朋友" = "Friends";
@@ -386,6 +389,8 @@
 "火柴盒" = "Matchbox";
 "灯光" = "Lighting";
 "灯光 · 显示" = "Lighting · Display";
+"灯的位置" = "Where the light is";
+"灰尘" = "Dust";
 "炭黑" = "Charcoal";
 "炭黑相纸、象牙白字，照片更跳" = "Charcoal paper, ivory type";
 "点一下贴到相纸中央；拖动移动，右下角手柄缩放旋转，⌫ 删除。" = "Click to place it in the middle of the paper; drag to move, use the bottom-right handle to scale and rotate, ⌫ to delete.";
@@ -409,6 +414,7 @@
 "电影卷改的夜景卷：钨丝灯下偏冷、青色阴影，灯光周围一圈红色光晕" = "Cinema stock respooled for nights: cool under tungsten, cyan shadows, red halation around lights";
 "电影票" = "Cinema Ticket";
 "界面语言" = "Interface language";
+"白天" = "Day";
 "白边" = "White Outline";
 "相册" = "Album";
 "相机" = "Camera";
@@ -468,6 +474,7 @@
 "自拍画面镜像（像照镜子一样）" = "Mirror selfies (like a mirror)";
 "色温" = "Colour temperature";
 "芥末" = "Mustard";
+"范围" = "Reach";
 "营业中" = "Open";
 "蓝调时刻：深蓝阴影、暖橙灯光，中颗粒" = "Blue hour: deep blue shadows, warm orange lights, medium grain";
 "蛋糕" = "Cake";
@@ -552,6 +559,7 @@
 "高感夜拍：粗颗粒、压暗、阴影微绿，像深夜的便利店" = "High-speed night film: coarse grain, dark tones, slightly green shadows, like a late-night convenience store";
 "黄铜钉" = "Brass Pins";
 "黑卡纸相册页和四个照片角" = "A black album page with four photo corners";
+"黑夜" = "Night";
 "黑白" = "Black & White";
 "黑白 / 彩色" = "Black & white / colour";
 "黑白照相亭" = "B&W Booth";

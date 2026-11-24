@@ -6,13 +6,21 @@ import SwiftUI
 ///
 /// 每个月一条凸字标签带 + 打字机小纸条；照片用松散的拼贴排布（按 seed 倾斜、错落），
 /// 用黄铜图钉、彩色地图针、牛皮纸胶带或木夹固定；三张以上的月份夹一件旧物（票根、邮票、胶片）。
-/// 照片钉上去时轻轻落下回弹，鼠标拂过时绕着图钉摆一摆；左下角的「灯光」铜牌可以调台灯的方向、
-/// 色温、亮度、暗角、阴影、纸张卷曲与固定方式（`CorkLighting`），阴影和光泽都跟着灯走。
+/// 照片钉上去时轻轻落下回弹，鼠标拂过时绕着图钉摆一摆；左下角的「灯光」铜牌可以选白天（窗户里的太阳光）
+/// 或黑夜（台灯、月光），挪灯的位置，调范围、亮度、色温、光里的灰尘、暗角、阴影、纸张卷曲与固定方式
+/// （`CorkLighting`）。光照盖在照片上面（`CorkLightOverlay`）：照片和软木被同一盏灯照着，影子跟着灯走。
 struct CorkBoardView: View {
     let records: [PhotoRecord]
     let libraryIsEmpty: Bool
     @ObservedObject private var lights = CorkLightingStore.shared
+    @ObservedObject private var showcase = CorkShowcase.shared
     @State private var showsLighting = false
+
+    /// 截图工作室用：把「灯光」卡片打开（不用点铜牌）。
+    @MainActor static var showcasePanel: Bool {
+        get { CorkShowcase.shared.panel }
+        set { CorkShowcase.shared.panel = newValue }
+    }
 
     init(records: [PhotoRecord], libraryIsEmpty: Bool) {
         self.records = records
@@ -40,7 +48,8 @@ struct CorkBoardView: View {
                         .padding(.bottom, 96)
                     }
                 }
-                if showsLighting {
+                CorkLightOverlay(lighting: lighting)
+                if showsLighting || showcase.panel {
                     LightingPanel(store: lights) {
                         withAnimation(.spring(response: 0.42, dampingFraction: 0.82)) { showsLighting = false }
                     }
@@ -61,6 +70,13 @@ struct CorkBoardView: View {
         .padding(.top, 16)
         .padding(.bottom, 20)
     }
+}
+
+/// 截图工作室打开「灯光」卡片的开关。
+@MainActor
+final class CorkShowcase: ObservableObject {
+    static let shared = CorkShowcase()
+    @Published var panel = false
 }
 
 // MARK: - 一个月
@@ -649,44 +665,21 @@ private struct MiterSeams: Shape {
     }
 }
 
-/// 柔和的软木（`CorkSoft`，Blender 程序化渲染、无缝平铺、细颗粒低反差）+ 台灯光 + 暗角。
+/// 柔和的软木（`CorkSoft`，Blender 程序化渲染、无缝平铺、细颗粒低反差）。灯光和暗角在上面的 `CorkLightOverlay` 里。
 private struct CorkSurface: View {
     let lighting: CorkLighting
 
     var body: some View {
-        GeometryReader { geo in
-            let toLight = lighting.toLight
-            let lightCenter = UnitPoint(x: 0.5 + toLight.dx * 0.48, y: 0.5 + toLight.dy * 0.48)
-            let reach = max(geo.size.width, geo.size.height)
-            ZStack {
-                Color(hex: 0xC6A27B)
-                if BundledImage.has("CorkSoft") {
-                    Image("CorkSoft")
-                        .resizable(resizingMode: .tile)
-                } else if BundledImage.has("CorkTexture") {
-                    Image("CorkTexture")
-                        .resizable(resizingMode: .tile)
-                        .opacity(0.45)
-                }
-                // 台灯光：灯那一边一团暖光
-                RadialGradient(
-                    colors: [lighting.lightColor.opacity(0.5 * lighting.intensity), lighting.lightColor.opacity(0.12 * lighting.intensity), .clear],
-                    center: lightCenter,
-                    startRadius: 0,
-                    endRadius: reach * 0.95
-                )
-                .blendMode(.screen)
-                // 背光的一边沉下去
-                RadialGradient(
-                    colors: [.clear, Color.black.opacity(0.32 * lighting.vignette)],
-                    center: lightCenter,
-                    startRadius: reach * 0.35,
-                    endRadius: reach * 1.05
-                )
-                // 整体的明暗
-                Color.black.opacity(0.18 * (1 - lighting.intensity))
+        ZStack {
+            Color(hex: 0xC6A27B)
+            if BundledImage.has("CorkSoft") {
+                Image("CorkSoft")
+                    .resizable(resizingMode: .tile)
+            } else if BundledImage.has("CorkTexture") {
+                Image("CorkTexture")
+                    .resizable(resizingMode: .tile)
+                    .opacity(0.45)
             }
-            .frame(width: geo.size.width, height: geo.size.height)
         }
     }
 }

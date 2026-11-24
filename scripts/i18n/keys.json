@@ -92,7 +92,7 @@
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:78",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:94",
     "context": "localized"
    },
    {
@@ -105,7 +105,7 @@
   "source": "\\(day.records.count) 张 · 点一下展开",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:261",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:263",
     "context": "localized"
    }
   ]
@@ -114,7 +114,7 @@
   "source": "\\(parts.month ?? 0) 月 \\(parts.day ?? 0) 日 · \\(day.records.count) 张",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:398",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:494",
     "context": "localized"
    }
   ]
@@ -271,7 +271,7 @@
   "source": "NOCCHI 冲印店 · 挂历",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:213",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:214",
     "context": "swiftui"
    }
   ]
@@ -293,11 +293,11 @@
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:181",
+    "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:192",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:182",
+    "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:193",
     "context": "localized"
    }
   ]
@@ -373,7 +373,7 @@
   "source": "一",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:107",
     "context": "localized"
    }
   ]
@@ -400,11 +400,11 @@
   "source": "一月",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
     "context": "localized"
    },
    {
@@ -426,11 +426,11 @@
   "source": "七月",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
     "context": "localized"
    },
    {
@@ -443,7 +443,7 @@
   "source": "三",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:107",
     "context": "localized"
    }
   ]
@@ -452,11 +452,11 @@
   "source": "三月",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
     "context": "localized"
    },
    {
@@ -469,7 +469,7 @@
   "source": "上",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:66",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:232",
     "context": "localized"
    }
   ]
@@ -495,7 +495,7 @@
   "source": "上个月",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:159",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:160",
     "context": "localized"
    }
   ]
@@ -513,7 +513,7 @@
   "source": "下",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:66",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:232",
     "context": "localized"
    }
   ]
@@ -539,7 +539,7 @@
   "source": "下个月",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:161",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:162",
     "context": "localized"
    }
   ]
@@ -615,11 +615,11 @@
   "source": "九月",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
     "context": "localized"
    },
    {
@@ -632,7 +632,7 @@
   "source": "二",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:107",
     "context": "localized"
    }
   ]
@@ -641,11 +641,11 @@
   "source": "二月",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
     "context": "localized"
    },
    {
@@ -658,7 +658,7 @@
   "source": "五",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:107",
     "context": "localized"
    }
   ]
@@ -667,11 +667,11 @@
   "source": "五月",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
     "context": "localized"
    },
    {
@@ -702,7 +702,7 @@
   "source": "亮",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:213",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:595",
     "context": "localized"
    }
   ]
@@ -711,7 +711,7 @@
   "source": "亮度",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:213",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:595",
     "context": "localized"
    }
   ]
@@ -738,7 +738,7 @@
   "source": "今天",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:160",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:161",
     "context": "localized"
    }
   ]
@@ -849,11 +849,11 @@
    }
   ]
  },
- "光从%@边来": {
-  "source": "光从\\(store.lighting.directionName)边来",
+ "光从%@边来 · 拖动铜钮挪灯": {
+  "source": "光从\\(store.lighting.directionName)边来 · 拖动铜钮挪灯",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:202",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:587",
     "context": "swiftui"
    }
   ]
@@ -864,15 +864,6 @@
    {
     "at": "macOS/Nocchi/Album/FilmLightTable.swift:26",
     "context": "localized"
-   }
-  ]
- },
- "光的方向": {
-  "source": "光的方向",
-  "uses": [
-   {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:300",
-    "context": "swiftui"
    }
   ]
  },
@@ -915,11 +906,11 @@
   "source": "八月",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
     "context": "localized"
    },
    {
@@ -941,7 +932,7 @@
   "source": "六",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:107",
     "context": "localized"
    }
   ]
@@ -950,11 +941,11 @@
   "source": "六月",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
     "context": "localized"
    },
    {
@@ -1136,7 +1127,7 @@
   "source": "冷",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:211",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:597",
     "context": "localized"
    }
   ]
@@ -1257,11 +1248,11 @@
   "source": "十一月",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
     "context": "localized"
    },
    {
@@ -1274,11 +1265,11 @@
   "source": "十二月",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
     "context": "localized"
    },
    {
@@ -1291,11 +1282,11 @@
   "source": "十月",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
     "context": "localized"
    },
    {
@@ -1479,7 +1470,7 @@
   "source": "卷",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:216",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:602",
     "context": "localized"
    }
   ]
@@ -1544,11 +1535,20 @@
    }
   ]
  },
+ "台灯": {
+  "source": "台灯",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:697",
+    "context": "localized"
+   }
+  ]
+ },
  "右": {
   "source": "右",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:66",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:232",
     "context": "localized"
    },
    {
@@ -1561,7 +1561,7 @@
   "source": "右上",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:66",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:232",
     "context": "localized"
    }
   ]
@@ -1570,7 +1570,7 @@
   "source": "右下",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:66",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:232",
     "context": "localized"
    }
   ]
@@ -1636,7 +1636,7 @@
   "source": "四",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:107",
     "context": "localized"
    }
   ]
@@ -1671,11 +1671,11 @@
   "source": "四月",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:105",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:72",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
     "context": "localized"
    },
    {
@@ -1714,7 +1714,7 @@
   "source": "回到这个月",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:160",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:161",
     "context": "localized"
    }
   ]
@@ -1723,7 +1723,7 @@
   "source": "固定方式",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:219",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:627",
     "context": "swiftui"
    }
   ]
@@ -1834,7 +1834,7 @@
   "source": "地图针",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:19",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:24",
     "context": "localized"
    }
   ]
@@ -1884,6 +1884,15 @@
    }
   ]
  },
+ "多": {
+  "source": "多",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:599",
+    "context": "localized"
+   }
+  ]
+ },
  "夜晚": {
   "source": "夜晚",
   "uses": [
@@ -1910,6 +1919,15 @@
   "uses": [
    {
     "at": "Packages/NocchiKit/Sources/NocchiKit/Film/FilmFamily.swift:25",
+    "context": "localized"
+   }
+  ]
+ },
+ "大": {
+  "source": "大",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:596",
     "context": "localized"
    }
   ]
@@ -2196,6 +2214,15 @@
    }
   ]
  },
+ "小": {
+  "source": "小",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:596",
+    "context": "localized"
+   }
+  ]
+ },
  "小狗": {
   "source": "小狗",
   "uses": [
@@ -2282,7 +2309,7 @@
   "source": "左",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:66",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:232",
     "context": "localized"
    },
    {
@@ -2295,7 +2322,7 @@
   "source": "左上",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:66",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:232",
     "context": "localized"
    }
   ]
@@ -2304,7 +2331,7 @@
   "source": "左下",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:66",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:232",
     "context": "localized"
    }
   ]
@@ -2349,7 +2376,7 @@
   "source": "平",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:216",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:602",
     "context": "localized"
    }
   ]
@@ -2487,7 +2514,7 @@
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:243",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:607",
     "context": "swiftui"
    }
   ]
@@ -2724,7 +2751,7 @@
   "source": "把鼠标移到刘海，按「屏幕快门」或「自拍」拍第一张。",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:724",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:717",
     "context": "swiftui"
    }
   ]
@@ -2863,15 +2890,6 @@
    },
    {
     "at": "macOS/Nocchi/Editor/PaperStage.swift:340",
-    "context": "swiftui"
-   }
-  ]
- },
- "拖动铜钮转台灯": {
-  "source": "拖动铜钮转台灯",
-  "uses": [
-   {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:205",
     "context": "swiftui"
    }
   ]
@@ -3136,11 +3154,11 @@
   "source": "收起",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:360",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:456",
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:194",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:574",
     "context": "swiftui"
    }
   ]
@@ -3326,7 +3344,11 @@
   "source": "无",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:214",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:599",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:600",
     "context": "localized"
    },
    {
@@ -3348,7 +3370,7 @@
   "source": "日",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:106",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:107",
     "context": "localized"
    }
   ]
@@ -3523,7 +3545,7 @@
   "source": "暖",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:211",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:597",
     "context": "localized"
    }
   ]
@@ -3532,7 +3554,7 @@
   "source": "暗",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:213",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:595",
     "context": "localized"
    }
   ]
@@ -3550,7 +3572,7 @@
   "source": "暗角",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:214",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:600",
     "context": "localized"
    }
   ]
@@ -3595,7 +3617,7 @@
   "source": "最常写 #\\(tag)",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:224",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:225",
     "context": "localized"
    }
   ]
@@ -3614,6 +3636,15 @@
   "uses": [
    {
     "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/StickerCatalog.swift:26",
+    "context": "localized"
+   }
+  ]
+ },
+ "月光": {
+  "source": "月光",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:698",
     "context": "localized"
    }
   ]
@@ -3657,7 +3688,7 @@
   "source": "木夹",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:21",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:26",
     "context": "localized"
    }
   ]
@@ -3666,7 +3697,7 @@
   "source": "本月 \\(page.photoCount) 张",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:222",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:223",
     "context": "localized"
    }
   ]
@@ -3675,7 +3706,7 @@
   "source": "本月还没有照片",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:221",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:222",
     "context": "localized"
    }
   ]
@@ -3970,7 +4001,7 @@
   "source": "浅",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:215",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:601",
     "context": "localized"
    }
   ]
@@ -3979,7 +4010,7 @@
   "source": "浓",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:214",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:600",
     "context": "localized"
    }
   ]
@@ -4006,7 +4037,7 @@
   "source": "深",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:215",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:601",
     "context": "localized"
    }
   ]
@@ -4024,7 +4055,7 @@
   "source": "混搭",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:17",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:22",
     "context": "localized"
    }
   ]
@@ -4078,7 +4109,7 @@
   "source": "灯光",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:146",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:525",
     "context": "swiftui"
    }
   ]
@@ -4087,8 +4118,26 @@
   "source": "灯光 · 显示",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:184",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:564",
     "context": "swiftui"
+   }
+  ]
+ },
+ "灯的位置": {
+  "source": "灯的位置",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:772",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "灰尘": {
+  "source": "灰尘",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:599",
+    "context": "localized"
    }
   ]
  },
@@ -4304,7 +4353,7 @@
   "source": "用了 \\(page.stockCount) 卷胶卷",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CalendarWallView.swift:222",
+    "at": "macOS/Nocchi/Album/CalendarWallView.swift:223",
     "context": "localized"
    }
   ]
@@ -4345,6 +4394,15 @@
    }
   ]
  },
+ "白天": {
+  "source": "白天",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:40",
+    "context": "localized"
+   }
+  ]
+ },
  "白边": {
   "source": "白边",
   "uses": [
@@ -4374,7 +4432,15 @@
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:169",
+    "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:174",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:177",
+    "context": "localized"
+   },
+   {
+    "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:180",
     "context": "localized"
    },
    {
@@ -4609,7 +4675,7 @@
   "source": "纸张卷曲",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:216",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:602",
     "context": "localized"
    }
   ]
@@ -4818,7 +4884,7 @@
   "source": "胶带",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:20",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:25",
     "context": "localized"
    },
    {
@@ -4946,7 +5012,7 @@
   "source": "色温",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:211",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:597",
     "context": "localized"
    }
   ]
@@ -4956,6 +5022,15 @@
   "uses": [
    {
     "at": "macOS/Nocchi/Editor/DecorateSession.swift:56",
+    "context": "localized"
+   }
+  ]
+ },
+ "范围": {
+  "source": "范围",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:596",
     "context": "localized"
    }
   ]
@@ -5040,7 +5115,7 @@
   "source": "装饰台",
   "uses": [
    {
-    "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:175",
+    "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:186",
     "context": "localized"
    },
    {
@@ -5133,7 +5208,7 @@
   "source": "调节软木板的灯光与显示效果",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:170",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:549",
     "context": "swiftui"
    }
   ]
@@ -5214,7 +5289,7 @@
   "source": "软木板还空着",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:718",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:711",
     "context": "swiftui"
    }
   ]
@@ -5612,7 +5687,7 @@
   "source": "阴影",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:215",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:601",
     "context": "localized"
    }
   ]
@@ -5769,7 +5844,7 @@
   "source": "黄铜钉",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:18",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:23",
     "context": "localized"
    }
   ]
@@ -5779,6 +5854,15 @@
   "uses": [
    {
     "at": "Packages/NocchiKit/Sources/NocchiKit/Decorate/PrintTemplate.swift:126",
+    "context": "localized"
+   }
+  ]
+ },
+ "黑夜": {
+  "source": "黑夜",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:41",
     "context": "localized"
    }
   ]

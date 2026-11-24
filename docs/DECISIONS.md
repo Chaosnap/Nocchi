@@ -4,6 +4,12 @@
 
 ## 2026-11-24
 
+### D41 · 软木板的灯光：移植 Typewriter Nocturne 的灯光模型，在 CPU 上算低分辨率光照图
+- 所有者：「对这个的光照系统添加更多的光照选择，可以选择白天和黑夜以及粒子度还有灯光位置，参考我这个文件夹（/Users/yuki/Desktop/Terminal）下的灯光引擎的实现，直接搬过来用」。
+- 搬的是物理模型（`app/nocturne/light-model.ts` → `NocchiKit/Lighting/LightModel.swift`，有单元测试）：台灯是带柔边光锥的点光源（平方反比 × 朗伯余弦），太阳和月亮是穿过窗户的平行光（窗格投影 `windowGobo`），曝光让参考点正好得到所选亮度、再 1 − e^(−E) 映射；灰尘粒子的漂移和闪烁也照搬 `glow-layer.ts`，每粒按同一个模型点亮。Typewriter Nocturne 是 MIT 许可（© 2026 Typewriter Nocturne contributors），文件头和 README 注明来源。
+- 原版逐像素在 WebGL 着色器里算。这里在 CPU 上按约 200 列的低分辨率算两张图（改了灯才重算，约几毫秒），放大画到板子上：「影」用普通叠加（暗处颜色、透明度 = 1 − 光量，照片和软木一起暗下去），「光」和它的泛光用屏幕叠加。不写 Metal 着色器：CI 上 Xcode 26 的 Metal 工具链要单独下载，也不依赖混合模式能不能穿过滚动视图（普通叠加总是对的）。灰尘用 `TimelineView` + `Canvas`，每秒 30 帧。
+- 白天 = 窗户里的太阳光（环境光亮、窗格斜投，影子拉长一点）；黑夜 = 台灯（钨丝暖光、光池外暗下去）或月光（冷色窗格）。灯的位置取代了 2.x 的「光的方向」拨盘（旧设置换算成位置），照片影子的方向从板子中间指向灯的反方向。
+
 ### D40 · 摄像头会话只在一条队列上改；大头贴机启动后在后台准备
 - 所有者：「为什么点击自拍有时程序会崩溃」「这个点击自拍崩溃仅存在在这个里选择了大头贴机」「booth entry 只有第一次启动时会卡，能不能在进入软件后在后台准备」。
 - 本机的四份崩溃报告（2.0.0、2.1.0）全是同一处：摄像头队列上 `AVCaptureSession.startRunning` 抛出「Collection was mutated while being enumerated」，同一刻主线程在 `CameraPreview.makeNSView` 里给会话挂预览层（`addVideoPreviewLayer`）。所以规定：**会话的任何改动——启动、停止、换输入、挂上 / 摘下预览层、预览层的镜像——都在 `CameraService` 的摄像头队列上做**（`attachPreview` / `detachPreview` / `setPreviewMirroring`）；预览层摘下时由闭包留住，到队列上摘完才释放。拍照前先看视频连接是不是在工作，不在就报「没拍到」，免得 `capturePhoto` 抛 Objective-C 异常。

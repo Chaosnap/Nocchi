@@ -166,6 +166,17 @@ private final class Studio {
         await capture("album-cardbox-month", title: String(localized: "相册"), size: CGSize(width: 1220, height: 820), settle: 4.0)
         cardBox.peekSlot = nil
         cardBox.indexMode = .letter
+        // 软木板的夜里：一盏钨丝台灯挂在左上方，光里飘着灰尘；再拍一张打开了「灯光」卡片的白天。
+        let lights = CorkLightingStore.shared
+        let saved = lights.lighting
+        AlbumRouter.shared.mode = .cork
+        lights.lighting = .night
+        await capture("album-corkboard-night", title: String(localized: "相册"), size: CGSize(width: 1220, height: 820), settle: 2.5)
+        lights.lighting = .standard
+        CorkBoardView.showcasePanel = true
+        await capture("album-corkboard-lighting", title: String(localized: "相册"), size: CGSize(width: 1220, height: 820), settle: 2.5)
+        CorkBoardView.showcasePanel = false
+        lights.lighting = saved
         window(titled: String(localized: "相册"))?.close()
     }
 
