@@ -104,8 +104,13 @@ enum TemplateArt {
         case .boothStars:
             PhotoComposer.drawPaper(ctx, rect: rect, paper: paper)
         case .boothHeart:
-            PhotoComposer.drawPaper(ctx, rect: rect, paper: paper)
-            drawLace(ctx, rect: rect, s: s)
+            // Blender 渲染的卡纸 + 模切纸蕾丝边（FrameLayers）；没有图时退回程序化画法。
+            if let layer = FrameLayers.valentine(.base, layout: layout, size: size) {
+                PhotoComposer.drawImage(ctx, layer, in: rect)
+            } else {
+                PhotoComposer.drawPaper(ctx, rect: rect, paper: paper)
+                drawLace(ctx, rect: rect, s: s)
+            }
         case .boothBirthday:
             PhotoComposer.drawPaper(ctx, rect: rect, paper: paper)
             drawBunting(ctx, spec: spec, rect: rect, s: s)
@@ -210,6 +215,11 @@ enum TemplateArt {
         case .boothNoir, .boothStars, .noir, .cabinet:
             break
         case .boothHeart:
+            // Blender 渲染的纸蕾丝心环、烫金线、缎带蝴蝶结、金色小心与花线（带阴影）；没有图时退回程序化画法。
+            if let layer = FrameLayers.valentine(.overlay, layout: layout, size: size) {
+                PhotoComposer.drawImage(ctx, layer, in: CGRect(origin: .zero, size: size))
+                break
+            }
             for index in layout.windows.indices {
                 ctx.addPath(window(spec.template, layout: layout, index: index, width: size.width))
             }

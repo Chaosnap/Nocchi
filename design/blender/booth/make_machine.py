@@ -39,6 +39,7 @@ SWIFT = os.path.join(S.REPO, "macOS", "Nocchi", "Booth", "BoothMachineLayout.swi
 CANVAS = (72.0, 96.0)
 PX_PER_CM = 20
 SONGTI = "/System/Library/Fonts/Supplemental/Songti.ttc"
+DIDOT = "/System/Library/Fonts/Supplemental/Didot.ttc"
 
 
 def P(x, y):
@@ -232,10 +233,23 @@ def cjk_font(face):
     return f
 
 
-def text(name, body, size, at, z, mat, face=1, extrude=0.03, bevel=0.0, spacing=1.0):
+def didot_bold():
+    """Didot Bold（Didot.ttc 的第 3 个字面）：和相册字标 NOCCHI 同一家族，粗体的发丝线挤出、倒角后不会断。"""
+    if "didot-bold" in _fonts:
+        return _fonts["didot-bold"]
+    out = os.path.join(OUT, "didot-bold.ttf")
+    os.makedirs(OUT, exist_ok=True)
+    if not os.path.exists(out):
+        S._extract_ttc_face(DIDOT, 2, out)
+    f = bpy.data.fonts.load(out, check_existing=True)
+    _fonts["didot-bold"] = f
+    return f
+
+
+def text(name, body, size, at, z, mat, face=1, extrude=0.03, bevel=0.0, spacing=1.0, font=None):
     cu = bpy.data.curves.new(name, type="FONT")
     cu.body = body
-    cu.font = cjk_font(face)
+    cu.font = font or cjk_font(face)
     cu.size = size
     cu.extrude = extrude
     cu.bevel_depth = bevel
@@ -405,6 +419,11 @@ def build_machine(scene):
     base.append(prism("nameplate", rrect(-14.0, -20.0, 14.0, -14.0, 0.6), 2.8, 3.3, brushed("plate-brass", "#C8A25E", rough=0.3), bevel=0.12))
     for sx in (-12.7, 12.7):
         base.append(lathe_at("plate-screw%d" % int(sx), [(0, 3.55), (0.35, 3.5), (0.45, 3.38), (0.45, 3.3), (0, 3.3)], (sx, -17.0), (brs,), 48))
+    # 制造商铭牌：黄铜里嵌一块黑漆底，上面是阳刻（凸起）的鎏金字「Nocchi」——一眼认得出是谁家的机器。
+    base.append(prism("nameplate-field", rrect(-11.8, -19.3, 11.8, -14.7, 0.5), 3.3, 3.34,
+                      enamel("plate-field", "#22160D", coat=0.7, rough=0.32), bevel=0.04))
+    base.append(text("brand", "Nocchi", 4.1, (0.0, -17.15), 3.34, gold_leaf("brand-gold"),
+                     extrude=0.17, bevel=0.035, spacing=1.04, font=didot_bold()))
     base.append(prism("dots-frame", rrect(-12.4, -22.6, 12.4, -20.4, 1.1), 2.8, 3.15, chr_, bevel=0.1))
     base.append(prism("dots-slot", rrect(-12.0, -22.2, 12.0, -20.8, 0.7), 2.8, 3.17, black, bevel=0.05))
 

@@ -5,7 +5,8 @@ import SwiftUI
 /// 大头贴机整机：Blender 一体建模的正面（`design/blender/booth/make_machine.py` → `BoothMachine`，720 × 960 点）——
 /// 拱顶灯泡招牌、胡桃木机身与凹槽立柱、镀铬包边的橱窗、黄铜铭牌、奶油色搪瓷控制台、出片口与投币口。
 ///
-/// 橱窗是透明的：选相框时里面挂着这一款的样张，拍照时是摄像头画面。黄铜箭头、拨杆、开始按钮是同一场景里
+/// 黄铜铭牌上是阳刻的鎏金字「Nocchi」（建模的一部分）。
+/// 橱窗是透明的：选相框时里面挂着这一款的样张（相框名写在角落的小标签上），拍照时是摄像头画面。黄铜箭头、拨杆、开始按钮是同一场景里
 /// 单独渲染的零件图（抬起 / 按下、左 / 右、暗 / 亮），按 `BoothMachineLayout` 叠在整机上；招牌一圈的灯泡在这里做跑马灯。
 struct BoothMachine: View {
     @ObservedObject var booth: PhotoBoothController
@@ -36,10 +37,6 @@ struct BoothMachine: View {
             MarqueeLights()
                 .frame(width: L.size.width, height: L.size.height)
                 .allowsHitTesting(false)
-
-            Nameplate(booth: booth, choosing: choosing)
-                .frame(width: L.nameplate.width, height: L.nameplate.height)
-                .offset(x: L.nameplate.minX, y: L.nameplate.minY)
 
             SlotLights(booth: booth, choosing: choosing)
                 .frame(width: L.dots.width, height: L.dots.height)
@@ -114,6 +111,18 @@ private struct ShowcaseInterior: View {
                     insertion: .offset(x: CGFloat(booth.lastStep) * 90).combined(with: .opacity),
                     removal: .offset(x: CGFloat(-booth.lastStep) * 90).combined(with: .opacity)
                 ))
+            // 角落里一张小标签：相框名和一句说明（像橱窗里展品的说明卡）。
+            VStack {
+                Spacer()
+                HStack {
+                    TemplateLabel(name: booth.selectedTemplate.name, note: booth.selectedTemplate.note)
+                        .id(booth.selectedTemplate.id)
+                        .transition(.opacity)
+                    Spacer()
+                }
+            }
+            .padding(18)
+            .animation(.easeInOut(duration: 0.25), value: booth.selectedTemplate.id)
         }
     }
 
@@ -192,6 +201,11 @@ private struct CameraInterior: View {
                 }
                 PhaseOverlay(phase: booth.phase)
                     .scaleEffect(0.8)
+                VStack {
+                    Spacer()
+                    StatusPill(booth: booth)
+                }
+                .padding(.bottom, 14)
             }
             .frame(width: geo.size.width, height: geo.size.height)
         }
@@ -211,44 +225,62 @@ private struct CameraInterior: View {
     }
 }
 
-// MARK: - 铭牌、页码槽、灯泡
+// MARK: - 标签、页码槽、灯泡
 
-/// 黄铜铭牌：刻着这一款的名字和一句说明；拍照时刻着进度。
-private struct Nameplate: View {
+/// 橱窗角落的展品说明卡：宋体相框名 + 打字机字的一句说明，微微歪着，有一点投影。
+private struct TemplateLabel: View {
+    let name: String
+    let note: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text(name)
+                .font(RetroFont.serif(15, weight: .bold))
+                .foregroundStyle(Palette.ink)
+            Text(note)
+                .font(RetroFont.typewriter(10))
+                .foregroundStyle(Palette.inkSoft)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: 118, alignment: .leading)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
+        .background(
+            RoundedRectangle(cornerRadius: 2, style: .continuous)
+                .fill(LinearGradient(colors: [Color(hex: 0xFBF6EC), Color(hex: 0xEFE5D2)], startPoint: .top, endPoint: .bottom))
+        )
+        .shadow(color: .black.opacity(0.35), radius: 1, x: 0, y: 1)
+        .shadow(color: .black.opacity(0.28), radius: 7, x: 2, y: 5)
+        .rotationEffect(.degrees(-1.5))
+    }
+}
+
+/// 拍照时橱窗下沿的进度：「请看镜头」「第 2 张 · 共 4 张」「冲印中」。
+private struct StatusPill: View {
     @ObservedObject var booth: PhotoBoothController
-    let choosing: Bool
 
-    private var title: String {
-        if choosing { return booth.selectedTemplate.name }
+    private var text: String? {
         switch booth.phase {
         case .lookHere: return "请看镜头"
         case .countdown, .flash, .pause: return "第 \(min(booth.shot + 1, booth.totalShots)) 张 · 共 \(booth.totalShots) 张"
         case .openingCurtain: return "冲印中"
-        default: return booth.selectedTemplate.name
+        default: return nil
         }
-    }
-
-    private var subtitle: String {
-        choosing ? booth.selectedTemplate.note : "一次一条，不能重拍"
     }
 
     var body: some View {
-        VStack(spacing: 2) {
-            Text(title)
-                .font(RetroFont.serif(18, weight: .bold))
-                .tracking(2)
-            Text(subtitle)
-                .font(RetroFont.typewriter(10))
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
+        if let text {
+            Text(text)
+                .font(RetroFont.typewriter(12, weight: .semibold))
+                .foregroundStyle(.white.opacity(0.92))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 5)
+                .background(Capsule().fill(Color.black.opacity(0.45)))
+                .id(text)
+                .transition(.opacity)
+                .animation(.easeInOut(duration: 0.2), value: text)
         }
-        // 刻字：深棕字 + 下沿一道亮边。
-        .foregroundStyle(Color(hex: 0x3B2812))
-        .shadow(color: Color(hex: 0xFFF1C9, opacity: 0.55), radius: 0, x: 0, y: 1)
-        .padding(.horizontal, 10)
-        .id(title)
-        .transition(.opacity)
-        .animation(.easeInOut(duration: 0.25), value: title)
     }
 }
 

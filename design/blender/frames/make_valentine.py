@@ -138,13 +138,24 @@ def ridge(f, inset=0.07, width=0.05):
 
 
 def to_image(name, rgba):
-    """numpy (h, w, 4)，第 0 行在下面 → Blender 图像（浮点，非颜色数据）。"""
+    """numpy (h, w, 4)，第 0 行在下面 → Blender 图像（浮点，非颜色数据）。
+
+    `images.new` 出来的是「生成的图」：进 Cycles 时会按生成参数重画（全黑），改过的像素全丢——蕾丝的透明度就成了 0、
+    看不见。所以先存成 EXR 再读回来。
+    """
     h, w, _ = rgba.shape
     img = bpy.data.images.new(name, w, h, alpha=True, float_buffer=True)
     img.colorspace_settings.name = "Non-Color"
     img.pixels.foreach_set(rgba.astype(np.float32).ravel())
     img.update()
-    return img
+    os.makedirs(OUT, exist_ok=True)
+    path = os.path.join(OUT, "tex-%s.exr" % name)
+    img.filepath_raw = path
+    img.file_format = "OPEN_EXR"
+    img.save()
+    loaded = bpy.data.images.load(path, check_existing=False)
+    loaded.colorspace_settings.name = "Non-Color"
+    return loaded
 
 
 def lace_tile(kind, ppm=100):
@@ -526,9 +537,10 @@ def build(fmt, preview=False):
     cam.rotation_euler = (0, 0, 0)
     scene.camera = cam
 
-    # 左上方的太阳（仰角约 39°）+ 均匀的天光；E·cosθ + s ≈ 0.97，平的卡纸渲出来就是纸色。
+    # 左上方的太阳（仰角约 39°）+ 均匀的天光。朗伯面在 Cycles 里亮度 = 阳光 × cosθ / π + 天光，
+    # 所以阳光要乘 π：0.94π × 0.67 / π + 0.38 ≈ 1.0，平的卡纸渲出来就是纸色（之前少了 π，只有 0.58，发灰）。
     sun_data = bpy.data.lights.new("sun", "SUN")
-    sun_data.energy = 0.94
+    sun_data.energy = 0.94 * math.pi
     sun_data.angle = math.radians(4)
     sun_data.color = S.lin("#FFF6EC")[:3]
     sun = bpy.data.objects.new("sun", sun_data)

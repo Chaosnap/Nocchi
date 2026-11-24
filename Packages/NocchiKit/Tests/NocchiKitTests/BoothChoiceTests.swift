@@ -76,6 +76,25 @@ final class BoothChoiceTests: XCTestCase {
         }
     }
 
+    func testValentineFrameUsesTheBlenderLayers() throws {
+        for layout in [PaperLayout.boothStrip, .boothGrid] {
+            let size = layout.size(forWidth: 400)
+            let base = try XCTUnwrap(FrameLayers.valentine(.base, layout: layout, size: size), "\(layout)")
+            let overlay = try XCTUnwrap(FrameLayers.valentine(.overlay, layout: layout, size: size), "\(layout)")
+            XCTAssertEqual(Double(base.width) / Double(base.height), Double(layout.aspect), accuracy: 0.02)
+            XCTAssertEqual(Double(overlay.width) / Double(overlay.height), Double(layout.aspect), accuracy: 0.02)
+            XCTAssertNotEqual(overlay.alphaInfo, .none, "the overlay must be transparent outside its parts")
+        }
+        XCTAssertNil(FrameLayers.valentine(.base, layout: .instantSquare, size: CGSize(width: 400, height: 486)))
+        // 合成的成片里，卡纸是雾玫瑰色、纸边是奶油色的蕾丝。
+        let stock = FilmCatalog.stock(id: FilmCatalog.boothColorID)
+        let heart = try XCTUnwrap(TemplateCatalog.template(id: "booth-heart"))
+        let image = try XCTUnwrap(TemplatePreview.render(template: heart, format: .boothStrip, stock: stock, widthPixels: 520))
+        let pixels = PixelBuffer(image)
+        let card = pixels.rgb(Int(Double(pixels.width) * 0.5), Int(Double(pixels.height) * 0.235))
+        XCTAssertGreaterThan(card.r, card.b + 15, "rose card between the first two windows: \(card)")
+    }
+
     func testPreviewFallsBackWhenTheTemplateDoesNotFitTheFormat() throws {
         // 邮票只给即显相纸用：放到四格条上时按默认模板合成，不会失败。
         let postage = try XCTUnwrap(TemplateCatalog.template(id: "postage"))
