@@ -127,6 +127,7 @@
 
 ## 最近更新（新的在上）
 
+- **2026-11-24 · 第 36 次推送** 所有者要求「软件一启动就默认显示卡片盒」：`AppModel.openAlbumOnLaunch`（默认开，设置 → 程序可关），启动 0.7 秒后 `AlbumRouter.shared.show(.cardBox)`。
 - **2026-11-24 · 第 35 次推送** 出片动画重做（所有者 2026-11-24 新要求「从灵动岛出片的物理效果和动画更精细」）：`PhotoWindowController.presentEjecting` 逐帧模拟——滚轮每步「先快后慢 + 齿轮间隙回弹」、左右微抖、挂在出片口上的单摆（ω² ∝ 1/伸出长度，每步给冲量，`PhotoViewModel.ejectSway` 绕出片口转）、光泽扫过；`finishEjecting` 夹住余摆 0.14 秒后松开（出片口这时合上），重力 + 空气阻力下落、横向漂移、欠阻尼弹簧转到随手角度（落地后摩擦加大），落地弹一下、阴影收紧（`lifted`）、新音效 `paperLand`；出片口沿有一道渐隐的阴影。
 - **2026-11-24 · 第 34 次推送** 自定义贴纸（交接表第 2 项）：NocchiKit `CustomStickerStore`（照片库 `stickers/`：导入图片 → 最长边 1600、裁透明边、存 PNG，`stickers.json` 清单；重命名、模切边、排序、删掉 = 隐藏，已贴的照样能画）与 `StickerArt.customProvider`（App 启动时注入，`custom.<UUID>` 用图片 + 16 向偏移的白色模切边 + 投影画出来，成片 / 桌面相纸 / 装饰台一致）；装饰台贴纸页「我的」：导入格、拖放、右键管理（`Editor/StickerShelf.swift`），图片拖到照片上直接贴在放下的位置。新增 `CustomStickerTests`。
 - **2026-11-24 · 第 33 次推送** 照片上任意位置的文字框与自定义字体（所有者 2026-11-24 新要求）：NocchiKit 新增 `TextPlacement`（照片记录 `texts`，旧库照常读取）与 `TextArt`（Core Text 多行排版、对齐、字距、粗斜体，样式：无 / 白边 / 纸标签 / 投影），`PhotoComposer` 把文字框画在贴纸上面、笔画下面；`FontBook` 改成线程安全、可刷新，能注册导入的字体；`CustomFontStore` 管理照片库 `fonts/` 里导入的字体，App 启动时注册。装饰台：「T」文字工具、可拖动缩放旋转的文字框（`TextItem`，屏幕与导出同一个画法）、检查器「照片上的文字」编辑器与可搜索的字体选择器（导入 / 删除字体）。新增 `TextArtTests`。

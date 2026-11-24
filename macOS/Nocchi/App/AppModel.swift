@@ -25,6 +25,7 @@ final class AppModel: ObservableObject {
         static let instantFormat = "print.instantFormat"
         static let cameraDevice = "camera.deviceID"
         static let mirrorSelfie = "camera.mirrorSelfie"
+        static let openAlbumOnLaunch = "app.openAlbumOnLaunch"
         static let instantTemplate = "print.defaultInstantTemplate"
         static let boothTemplate = "booth.defaultTemplate"
         static let boothFormat = "booth.format"
@@ -118,6 +119,11 @@ final class AppModel: ObservableObject {
     }
 
     /// 自拍画面镜像（像照镜子）。
+    /// 启动时打开相册（卡片盒）。
+    @Published var openAlbumOnLaunch: Bool {
+        didSet { defaults.set(openAlbumOnLaunch, forKey: Keys.openAlbumOnLaunch) }
+    }
+
     @Published var mirrorSelfie: Bool {
         didSet { defaults.set(mirrorSelfie, forKey: Keys.mirrorSelfie) }
     }
@@ -192,6 +198,7 @@ final class AppModel: ObservableObject {
         instantFormat = FilmFormat.instantChoices.contains(format) ? format : .instantSquare
         cameraDeviceID = d.string(forKey: Keys.cameraDevice)
         mirrorSelfie = d.object(forKey: Keys.mirrorSelfie) as? Bool ?? true
+        openAlbumOnLaunch = d.object(forKey: Keys.openAlbumOnLaunch) as? Bool ?? true
         defaultInstantTemplateID = d.string(forKey: Keys.instantTemplate) ?? TemplateCatalog.classic.id
         defaultBoothTemplateID = d.string(forKey: Keys.boothTemplate) ?? TemplateCatalog.defaultBoothID
         let boothFormat = FilmFormat(rawValue: d.string(forKey: Keys.boothFormat) ?? "") ?? .boothStrip

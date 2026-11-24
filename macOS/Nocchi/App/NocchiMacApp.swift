@@ -52,6 +52,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // 每次启动：刘海像灵动岛一样轻轻「醒」一下；第一次启动再教一下怎么用。
         NotchController.shared.greet(firstLaunch: !model.hasSeenWelcome)
         model.hasSeenWelcome = true
+
+        // 打开就是相册的卡片盒（设置 → 程序里可以关）；等刘海的问候亮完再开窗口。
+        if model.openAlbumOnLaunch {
+            Task { @MainActor in
+                try? await Task.sleep(nanoseconds: 700_000_000)
+                AlbumRouter.shared.show(.cardBox)
+            }
+        }
     }
 
     func applicationWillTerminate(_ notification: Notification) {
