@@ -725,6 +725,7 @@ private struct TextBoxEditor: View {
                         session.editText(placement.id) { $0.fontFamily = family }
                     }
                     .environment(\.colorScheme, .light)
+                    .scrollIndicators(.never)
                 }
                 Toggle("粗", isOn: Binding(get: { placement.bold }, set: { value in session.editText(placement.id) { $0.bold = value } }))
                 Toggle("斜", isOn: Binding(get: { placement.italic }, set: { value in session.editText(placement.id) { $0.italic = value } }))

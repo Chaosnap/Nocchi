@@ -25,7 +25,7 @@ struct FilmCabinetPanel: View {
             header
                 .frame(height: notchHeight)
             ScrollViewReader { proxy in
-                ScrollView(.horizontal, showsIndicators: false) {
+                ScrollView(.horizontal) {
                     HStack(alignment: .top, spacing: 22) {
                         ForEach(groups) { group in
                             section(group)

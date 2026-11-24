@@ -29,7 +29,7 @@ struct CorkBoardView: View {
                     EmptyCorkCard(lighting: lighting)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if !groups.isEmpty {
-                    ScrollView(.vertical, showsIndicators: false) {
+                    ScrollView(.vertical) {
                         LazyVStack(alignment: .leading, spacing: 56) {
                             ForEach(groups) { group in
                                 CorkMonth(group: group, lighting: lighting)

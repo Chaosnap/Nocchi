@@ -101,7 +101,7 @@ final class NotchController: ObservableObject {
     func install() {
         recomputeGeometry()
         let panel = NotchPanel(contentRect: panelFrame())
-        let host = NSHostingView(rootView: NotchRootView(notch: self, model: AppModel.shared, camera: CameraService.shared))
+        let host = NSHostingView(rootView: NotchRootView(notch: self, model: AppModel.shared, camera: CameraService.shared).scrollIndicators(.never))
         host.sizingOptions = []
         host.frame = NSRect(origin: .zero, size: panelSize)
         panel.contentView = host

@@ -312,7 +312,7 @@ final class PhotoBoothController: ObservableObject {
         window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .ignoresCycle]
         window.setFrame(screen.frame, display: false)
         curtain.build(screen: screen.frame.size, gap: 780)
-        let host = NSHostingView(rootView: BoothCurtainView(booth: self, session: CameraService.shared.session, camera: CameraService.shared))
+        let host = NSHostingView(rootView: BoothCurtainView(booth: self, session: CameraService.shared.session, camera: CameraService.shared).scrollIndicators(.never))
         host.sizingOptions = []
         window.contentView = host
         NSApp.activate()

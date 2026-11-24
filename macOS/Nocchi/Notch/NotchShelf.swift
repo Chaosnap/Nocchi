@@ -188,7 +188,7 @@ struct ShelfPanel: View {
                     }
                     .foregroundStyle(.white)
                     Rectangle().fill(Color.white.opacity(0.1)).frame(width: 1, height: 120)
-                    ScrollView(.horizontal, showsIndicators: false) {
+                    ScrollView(.horizontal) {
                         HStack(spacing: 12) {
                             ForEach(shelf.items) { record in
                                 ShelfThumbnail(record: record, width: 70)

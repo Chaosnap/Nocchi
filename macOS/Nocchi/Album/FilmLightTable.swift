@@ -25,7 +25,7 @@ struct FilmLightTable: View {
                     if libraryIsEmpty {
                         TypedSlip(text: "光台上还没有底片 · 拍几张再来看", size: 14, tilt: -1.5)
                     } else {
-                        ScrollView(.horizontal, showsIndicators: false) {
+                        ScrollView(.horizontal) {
                             HStack(alignment: .center, spacing: 34) {
                                 ForEach(items) { item in
                                     switch item {

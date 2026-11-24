@@ -86,7 +86,7 @@ struct TemplateSwatchRow: View {
 
     var body: some View {
         ScrollViewReader { proxy in
-            ScrollView(.horizontal, showsIndicators: false) {
+            ScrollView(.horizontal) {
                 HStack(alignment: .top, spacing: 10) {
                     ForEach(templates) { template in
                         TemplateSwatch(

@@ -68,7 +68,7 @@ final class WindowManager {
         if let minSize {
             window.contentMinSize = minSize
         }
-        window.contentView = NSHostingView(rootView: content())
+        window.contentView = NSHostingView(rootView: content().scrollIndicators(.never))
         window.center()
         window.setFrameAutosaveName(autosave)
         NSApp.activate()

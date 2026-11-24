@@ -70,7 +70,7 @@ final class PhotoLibraryPickerWindow {
         window.isReleasedWhenClosed = false
         window.contentView = NSHostingView(rootView: PhotoLibraryPickerView(onDone: { [weak self] in
             self?.window?.close()
-        }))
+        }).scrollIndicators(.never))
         window.center()
         window.makeKeyAndOrderFront(nil)
         self.window = window

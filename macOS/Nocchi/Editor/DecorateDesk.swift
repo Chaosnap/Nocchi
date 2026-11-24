@@ -76,7 +76,7 @@ final class DecorateDesk {
         window.appearance = NSAppearance(named: .aqua)
         window.backgroundColor = NSColor(Palette.walnutDeep)
         window.contentMinSize = NSSize(width: 980, height: 700)
-        window.contentView = NSHostingView(rootView: DecorateDeskView(session: session))
+        window.contentView = NSHostingView(rootView: DecorateDeskView(session: session).scrollIndicators(.never))
         window.center()
         window.setFrameAutosaveName("NocchiDecorateDesk")
         closeObserver = NotificationCenter.default.addObserver(forName: NSWindow.willCloseNotification, object: window, queue: .main) { [weak self] _ in

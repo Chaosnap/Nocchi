@@ -127,6 +127,7 @@
 
 ## 最近更新（新的在上）
 
+- **2026-11-24 · 第 38 次推送** 所有者：「这种都不要滚动条，这样很影响观感」（胶卷光台在接了鼠标时仍画出横向滚动条）。原因：`showsIndicators: false` 只等于 `.hidden`，macOS 在接了鼠标或「始终显示滚动条」时照样画传统滚动条。现在每个窗口的根视图（`WindowManager`、装饰台、照片图库选择器、刘海面板、大头贴机）和字体弹窗都加了 `.scrollIndicators(.never)`，各处 `ScrollView` 去掉 `showsIndicators:` 参数（它会在局部把 `.never` 覆盖成 `.hidden`）。规则写进 `docs/DESIGN.md` §0 第 6 条。
 - **2026-11-24 · 第 37 次推送** 大头贴机的 Blender 零件（交接表第 3 项的机器与按键部分；布帘在下一步）：`design/blender/booth/make_booth.py` 渲染 `BoothPanel`（@2x 九宫格搪瓷面板）、`BoothMarquee`（灯泡招牌）、`BoothLeverLeft/Right`、`BoothArrow/Pressed`、`BoothStart/Lit/Pressed`；`BoothFrameChooser` 与 `BoothInterior` 改用这些图（`RenderedButtonStyle`、`StartButtonStyle`、`BoothSign`），缺图时退回原来画的版本。所有者要求相册里不要滚动条：软木板 / 光台 / 挂历的 `ScrollView` 都隐藏了滚动条。
 - **2026-11-24 · 第 36 次推送** 所有者要求「软件一启动就默认显示卡片盒」：`AppModel.openAlbumOnLaunch`（默认开，设置 → 程序可关），启动 0.7 秒后 `AlbumRouter.shared.show(.cardBox)`。
 - **2026-11-24 · 第 35 次推送** 出片动画重做（所有者 2026-11-24 新要求「从灵动岛出片的物理效果和动画更精细」）：`PhotoWindowController.presentEjecting` 逐帧模拟——滚轮每步「先快后慢 + 齿轮间隙回弹」、左右微抖、挂在出片口上的单摆（ω² ∝ 1/伸出长度，每步给冲量，`PhotoViewModel.ejectSway` 绕出片口转）、光泽扫过；`finishEjecting` 夹住余摆 0.14 秒后松开（出片口这时合上），重力 + 空气阻力下落、横向漂移、欠阻尼弹簧转到随手角度（落地后摩擦加大），落地弹一下、阴影收紧（`lifted`）、新音效 `paperLand`；出片口沿有一道渐隐的阴影。
