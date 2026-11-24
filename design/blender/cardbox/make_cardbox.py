@@ -133,8 +133,26 @@ def wood(name, axis, tone=1.0):
 
 
 def paper_mat(name, hex_color, rough=0.86):
+    """卡纸：哑光、一点点绒感（Sheen），细纤维的凹凸和很淡的深浅斑驳（纸浆不匀）。"""
     m = S.principled(name, hex_color, rough=rough)
-    S.add_fine_bump(m, scale=180.0, strength=0.02, distance=0.002)
+    nodes, links = m.node_tree.nodes, m.node_tree.links
+    p = S.principled_node(m)
+    try:
+        p.inputs["Sheen Weight"].default_value = 0.18
+        p.inputs["Sheen Roughness"].default_value = 0.6
+    except KeyError:
+        pass
+    mottle = nodes.new("ShaderNodeTexNoise")
+    mottle.inputs["Scale"].default_value = 9.0
+    mottle.inputs["Detail"].default_value = 6.0
+    tint = nodes.new("ShaderNodeMix")
+    tint.data_type = "RGBA"
+    tint.blend_type = "MULTIPLY"
+    tint.inputs["Factor"].default_value = 0.06
+    tint.inputs["A"].default_value = S.lin(hex_color)
+    links.new(mottle.outputs["Color"], tint.inputs["B"])
+    links.new(tint.outputs["Result"], p.inputs["Base Color"])
+    S.add_fine_bump(m, scale=220.0, strength=0.025, distance=0.002)
     return m
 
 
@@ -302,7 +320,34 @@ def build_pen(root):
     return objs
 
 
-CARD_COLORS = ["#F4EFE3", "#FBF8F0", "#CFE3D4", "#D8E6F0", "#F2D7CF", "#F2E3B3", "#E8D2B8", "#DCE7C8", "#F7E6D4", "#E3DDF0"]
+# 索引卡纸的颜色：象牙白、白、薄荷、天蓝、粉、奶黄、牛皮、嫩绿、杏、淡紫（真索引卡那种淡而有色的卡纸）。
+CARD_COLORS = ["#F2E9D6", "#FAF8F2", "#BFE0DC", "#C6DDEF", "#F2C4C4", "#F4DE8E", "#E9A9A3", "#C7E5C9", "#F5D2B5", "#DCD3EE"]
+
+
+def paper_sheet(name, width, height, thickness, mat, radius=0.26, bevel=0.0045):
+    """一张卡纸：圆角（真索引卡四角是圆的）、有厚度，边上一圈极细的倒角接住光（卡片顶边那条亮线）。
+    原点在底边中点，卡面在 XZ 平面，厚度沿 Y。"""
+    bm = bmesh.new()
+    pts = S.rounded_rect_points(-width / 2, 0.0, width, height, radius, seg=5)
+    verts = [bm.verts.new((x, -thickness / 2, z)) for x, z in pts]
+    face = bm.faces.new(verts)
+    ext = bmesh.ops.extrude_face_region(bm, geom=[face])
+    for v in ext["geom"]:
+        if isinstance(v, bmesh.types.BMVert):
+            v.co.y += thickness
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
+    uv = bm.loops.layers.uv.new("UVMap")
+    for f in bm.faces:
+        for loop in f.loops:
+            loop[uv].uv = ((loop.vert.co.x + width / 2) / width, loop.vert.co.z / max(height, 0.01))
+    ob = S.mesh_object(name, bm, smooth=False, mats=(mat,))
+    if bevel > 0:
+        mod = ob.modifiers.new("edge", "BEVEL")
+        mod.width = bevel
+        mod.segments = 1
+        mod.limit_method = "ANGLE"
+        mod.angle_limit = math.radians(50)
+    return ob
 
 
 def build_cards(root):
@@ -313,7 +358,9 @@ def build_cards(root):
     lean = math.radians(-9)
     mats = {c: paper_mat("card-" + c, c) for c in CARD_COLORS}
     divider_mat = paper_mat("divider", "#F6F2E8", rough=0.75)
-    tab_mat = paper_mat("tab", "#FCFAF5", rough=0.7)
+    # 标签是白色的塑料插片：有一点光泽（参考实物：用了很久的卡片盒，标签比卡片更白更亮）。
+    tab_mat = S.principled("tab", "#FDFCF8", rough=0.3, Coat_Weight=0.35, Coat_Roughness=0.18,
+                           Emission_Color="#FFFDF7", Emission_Strength=0.14)
     sheets = []
     y = hl - WALL - 0.6
     y_front_limit = -hl + WALL + 2.6
@@ -341,29 +388,89 @@ def build_cards(root):
     objs = {"cards": [], "dividers": [], "tabs": {}}
     # 标签是空白的：上面印的字（A–Z，或者按年 / 月 / 日归档时的「2026」「11月」「11/24」）由 App 按透视叠上去，
     # 所以标签做得比只印一个字母时宽一点，放得下五个字符（高度不变：再高，后一张的标签下沿就会被前一张挡住）。
-    tab_w = 2.8
+    # 标签宽 2.0（App 里 `SlotGeometry` 的位置比例跟着它算）：比参考里只印一个字母的标签宽一点，放得下「11/24」。
+    tab_w = 2.0
     tab_h = 1.25
     positions = 5
+    # 用了很久的卡片盒：卡片高高低低、有的歪一点、左右错开一点（单独的随机数，不打乱分隔卡的位置）。
+    # 分隔卡前面 2.5 cm 以内的卡不能比它的标签下沿高（不然 App 印在标签上的字会印到这张卡上）。
+    messy = random.Random(2411)
+    dividers = [(y, card_h + jitter) for kind, y, _, jitter, _ in sheets if kind == "divider"]
     for kind, y, tilt, jitter, info in sheets:
         h = card_h + jitter
         thickness = 0.025
         if kind == "card":
-            ob = cuboid("card", -inner_w / 2, inner_w / 2, -thickness / 2, thickness / 2, 0, h, mats[info], bevel=0.0, parent=None)
+            roll = messy.random()
+            extra = messy.uniform(-0.2, 0.15) if roll < 0.6 else (messy.uniform(0.15, 0.6) if roll < 0.9 else messy.uniform(0.6, 1.2))
+            # 透视：越往前的卡，可以比后面那张分隔卡的标签下沿高一点也挡不住它（俯视约 35°，tan ≈ 0.7）。
+            caps = [dh - 0.06 + (dy - y) * 0.6 for dy, dh in dividers if 0 < dy - y < 2.5]
+            h = min([h + extra] + caps)
+            ob = paper_sheet("card", inner_w - 0.35, h, messy.uniform(0.02, 0.04), mats[info])
             objs["cards"].append(ob)
         else:
-            ob = cuboid("divider", -inner_w / 2, inner_w / 2, -thickness / 2, thickness / 2, 0, h, divider_mat, bevel=0.0)
+            ob = paper_sheet("divider", inner_w, h, 0.032, divider_mat, radius=0.2)
             index = LETTERS.index(info)
             slot = index % positions
             tx = -inner_w / 2 + 0.5 + slot * (inner_w - 1.0 - tab_w) / (positions - 1)
-            tab = cuboid("tab", tx, tx + tab_w, -0.016, 0.016, h - 0.05, h + tab_h, tab_mat, bevel=0.0)
+            # 标签：同一块卡纸的圆角凸出（上两角圆），比分隔卡厚一点、边上一道亮线；位置和大小不变（App 按它印字）。
+            tab = paper_sheet("tab", tab_w, tab_h + 0.05, 0.036, tab_mat, radius=0.3, bevel=0.006)
+            tab.location = (tx + tab_w / 2, 0, h - 0.05)
             tab.parent = ob
             objs["dividers"].append(ob)
             # 标签正面（-Y 一侧）露在分隔卡上沿以上的部分：左上、右上、右下、左下（分隔卡自己的坐标）
             face = [(tx, -0.017, h + tab_h), (tx + tab_w, -0.017, h + tab_h), (tx + tab_w, -0.017, h), (tx, -0.017, h)]
             objs["tabs"][info] = (tab, face)
-        ob.location = (0, y, FLOOR - 0.02)
-        ob.rotation_euler = (tilt, 0, 0)
+        ob.location = (messy.uniform(-0.15, 0.15) if kind == "card" else 0, y, FLOOR - 0.02)
+        ob.rotation_euler = (tilt + (math.radians(messy.uniform(-1.4, 1.4)) if kind == "card" else 0), 0, 0)
         ob.parent = root
+    # 卡片塞得更密：在每两张之间再插一两张（单独的随机数，前面那些卡和分隔卡的位置一点不变——
+    # 标签热区、格口线都还对得上）。插进来的卡都比标准高度矮一点，不挡分隔卡的标签。
+    fill = random.Random(1124)
+    ordered = sorted(sheets, key=lambda sheet: -sheet[1])
+    for (kind_a, y_a, tilt_a, _, info_a), (kind_b, y_b, tilt_b, _, info_b) in zip(ordered, ordered[1:]):
+        gap = y_a - y_b
+        count = 2 if gap > 0.21 else 1
+        for k in range(count):
+            y = y_a - gap * (k + 1) / (count + 1) + fill.uniform(-0.015, 0.015)
+            tilt = (tilt_a + tilt_b) / 2 + math.radians(fill.uniform(-1.0, 1.0))
+            color = info_a if kind_a == "card" and fill.random() < 0.55 else fill.choice(CARD_COLORS)
+            h = card_h + fill.uniform(-0.34, -0.04)
+            caps = [dh - 0.06 + (dy - y) * 0.6 for dy, dh in dividers if 0 < dy - y < 2.5]
+            h = min([h] + caps)
+            ob = paper_sheet("card", inner_w - 0.35 - fill.uniform(0.0, 0.12), h, 0.022, mats[color])
+            ob.location = (fill.uniform(-0.15, 0.15), y, FLOOR - 0.02)
+            ob.rotation_euler = (tilt, 0, math.radians(fill.uniform(-0.5, 0.5)))
+            ob.parent = root
+            objs["cards"].append(ob)
+
+    # 一枚回形针：夹在后面一张卡的上沿（钢丝弯过卡片顶边，前后各一段）。
+    clipped = [sheet for sheet in sheets if sheet[0] == "card" and sheet[1] > hl - WALL - 6.0]
+    if clipped:
+        _, cy, ctilt, cjitter, _ = clipped[len(clipped) // 2]
+        top = card_h + cjitter - 0.1
+        x0 = -inner_w / 2 + 2.2
+        wire = [
+            (x0, -0.045, top - 0.55), (x0, -0.045, top + 0.02), (x0 + 0.02, 0.0, top + 0.1), (x0 + 0.04, 0.045, top + 0.02),
+            (x0 + 0.04, 0.045, top - 0.78), (x0 + 0.1, 0.045, top - 0.88), (x0 + 0.2, 0.045, top - 0.88), (x0 + 0.26, 0.045, top - 0.78),
+            (x0 + 0.26, 0.045, top + 0.02), (x0 + 0.24, 0.0, top + 0.1), (x0 + 0.22, -0.045, top + 0.02), (x0 + 0.22, -0.045, top - 0.42),
+            (x0 + 0.17, -0.045, top - 0.5), (x0 + 0.1, -0.045, top - 0.5), (x0 + 0.06, -0.045, top - 0.42), (x0 + 0.06, -0.045, top - 0.1),
+        ]
+        cu = bpy.data.curves.new("paperclip", "CURVE")
+        cu.dimensions = "3D"
+        cu.bevel_depth = 0.013
+        cu.bevel_resolution = 3
+        sp = cu.splines.new("POLY")
+        sp.points.add(len(wire) - 1)
+        for point, co in zip(sp.points, wire):
+            point.co = (co[0], co[1], co[2], 1.0)
+        clip = bpy.data.objects.new("paperclip", cu)
+        clip.data.materials.append(S.principled("clip-steel", "#D9DADC", rough=0.22, metal=1.0))
+        S.link(clip)
+        clip.location = (0, cy, FLOOR - 0.02)
+        clip.rotation_euler = (ctilt, 0, 0)
+        clip.parent = root
+        objs["cards"].append(clip)
+
     # 最前面一张横线白卡：更高、斜得更厉害、右上角折了一角
     ruled = ruled_mat()
     fw, fh = inner_w - 0.2, 12.2
@@ -449,8 +556,10 @@ def main():
         p = world_to_camera_view(scene, cam, center)
         # 标签正面在画面里的四个角（左上、右上、右下、左下）：App 按它把标签上的字斜切到标签面上
         face = []
+        # 标签面的四个角写在分隔卡自己的坐标里（标签本身有局部位移），所以用分隔卡的矩阵换算。
+        divider_mw = tab.parent.matrix_world if tab.parent is not None else mw
         for corner in face_local:
-            q = world_to_camera_view(scene, cam, mw @ Vector(corner))
+            q = world_to_camera_view(scene, cam, divider_mw @ Vector(corner))
             face.append([round(q.x, 5), round(1 - q.y, 5)])
         direction = (center - cam.location).normalized()
         hit, loc, normal, index, obj, matrix = scene.ray_cast(deps, cam.location, direction)

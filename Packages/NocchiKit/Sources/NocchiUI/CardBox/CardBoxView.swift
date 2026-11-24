@@ -395,8 +395,8 @@ struct SlotGeometry {
         let dir = CardBoxHotspots.dividerDirection
         let length = CardBoxHotspots.dividerLength * stage.pixelScale
         // 标签沿分隔卡上沿错开排在 5 个位置：标签中心在分隔卡宽度的这些位置（make_cardbox.py：
-        // 内宽 13.35、标签宽 2.8、两头各留 0.5）。从标签下沿的中点退回分隔卡上沿的中点。
-        let fractions: [CGFloat] = [0.142, 0.321, 0.5, 0.679, 0.858]
+        // 内宽 13.35、标签宽 2.0、两头各留 0.5）。从标签下沿的中点退回分隔卡上沿的中点。
+        let fractions: [CGFloat] = [0.1124, 0.3062, 0.5, 0.6938, 0.8876]
         let fraction = fractions[max(slot, 0) % fractions.count]
         let top = TabFace(slot: slot, stage: stage).bottomCenter
         center = CGPoint(x: top.x + dir.dx * (0.5 - fraction) * length, y: top.y + dir.dy * (0.5 - fraction) * length)
