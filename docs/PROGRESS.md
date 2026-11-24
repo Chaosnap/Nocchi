@@ -39,20 +39,20 @@
 
 | # | 哪里 | 要什么 | 相关文件 | 建议做法 |
 | --- | --- | --- | --- | --- |
-| 1 | 装饰台 · 「格式文字」页 | 文字要看得清：系统深色模式下 `TextField`、`DatePicker`、分段 `Picker` 的字是白的，落在浅色纸面上几乎看不见（所有者截图）；分享页选中的胶囊、主按钮是白字（这个对） | `Editor/Inspector.swift`、`Editor/DecorateDesk.swift` | 装饰台窗口固定浅色外观（`window.appearance = NSAppearance(named: .aqua)`）或检查器 `.environment(\.colorScheme, .light)`；逐个控件检查对比度 |
+| 1 🟢 | 装饰台 · 「格式文字」页 | 文字要看得清：系统深色模式下 `TextField`、`DatePicker`、分段 `Picker` 的字是白的，落在浅色纸面上几乎看不见（所有者截图）；分享页选中的胶囊、主按钮是白字（这个对） | `Editor/Inspector.swift`、`Editor/DecorateDesk.swift` | 装饰台窗口固定浅色外观（`window.appearance = NSAppearance(named: .aqua)`）或检查器 `.environment(\.colorScheme, .light)`；逐个控件检查对比度 |
 | 2 | 装饰台 · 贴纸 | **自定义贴纸**：导入自己的图片（PNG / JPG / HEIC，可拖放）做成贴纸，并能管理（重命名、删除、排序，单独一类「我的贴纸」） | `NocchiKit/Decorate/StickerCatalog.swift`、`StickerArt.swift`、`Editor/Inspector.swift` | NocchiKit 加 `CustomStickerStore`（照片库目录下 `stickers/`，复制原图 + 缩略图，JSON 清单，单元测试）；`kindID` 用 `custom.<uuid>`；`StickerArt` 画自定义贴纸时读位图、可选白色模切边 + 投影；`PhotoComposer` 通过注入的位图提供者拿到图（NocchiKit 不直接依赖 App 目录）；缺图时有退路 |
 | 3 | 大头贴机 | 布帘、整台机器、黄铜箭头、拨杆开关、发光的「开始」按钮都用 **Blender 建模**，要非常精细精美；整台大头贴机也要更精美 | `Booth/BoothFrameChooser.swift`、`Booth/CurtainScene.swift`、`design/blender/` | 照卡片盒的做法（决策 D22）：`design/blender/booth/*.py` 出分层 PNG（机身底图；拨杆左 / 右两态；按钮按下 / 抬起；开始按钮亮 / 暗；布帘几帧或分层），热区坐标导出 JSON；SwiftUI 只叠图和做动画 |
 | 4 | 相框 · 情人节 | `booth-heart` 不够精美，要更精致 | `NocchiKit/Decorate/TemplateArt`（模板绘制）、`PhotoComposer.swift` | 给模板加「位图图层」：Blender 渲染烫金 / 压纹 / 丝带边框（四格条、四宫格各一套），合成时叠在相纸上；屏幕与导出同源 |
 | 5 | 相框（全部） | 相框也可以用 Blender 建模，更精细 | 同上 | 同 4，先做大头贴主题和照相馆卡纸、胶片框 |
-| 6 | 相册 · 卡片盒 | 阴影出现「直角」：`CardBoxBase` 渲染图的地面阴影在图片边界被截断，右边露出一块矩形的浅色底（所有者截图） | `design/blender/cardbox/`、`NocchiUI/CardBox/CardBoxView.swift` | 重渲染：透明背景 + 阴影捕捉器，阴影自然衰减到透明并留足画布；SwiftUI 再加一层连贯的柔和环境阴影 |
+| 6 🟢 | 相册 · 卡片盒 | 阴影出现「直角」：`CardBoxBase` 渲染图的地面阴影在图片边界被截断，右边露出一块矩形的浅色底（所有者截图） | `design/blender/cardbox/`、`NocchiUI/CardBox/CardBoxView.swift` | 重渲染：透明背景 + 阴影捕捉器，阴影自然衰减到透明并留足画布；SwiftUI 再加一层连贯的柔和环境阴影 |
 | 7 | 相册 · 卡片盒 | **抽卡要符合物理**：点哪个字母标签，照片就从那张分隔卡的位置斜着抽出来（沿卡片方向向上、带一点后仰，离开盒口后再转正），再飞到右边铺开 | `NocchiUI/CardBox/CardFlights.swift`、`CardBoxHotspots.swift` | 起点取被点标签的热点位置；第一段沿分隔卡的倾斜方向位移 + 3D 旋转（`rotation3DEffect`），第二段弧线飞到摊开位置 |
 | 8 | 相册 · 卡片盒 | 右边摊开的区域支持**拖拽摆放、自定义堆叠**，位置要记住 | `NocchiUI/CardBoxModel.swift`、`CardBox/CardBoxView.swift` | 摊开的卡片可拖动，靠近时吸成一摞；布局存进 `CardBoxModel`（UserDefaults 或照片库里的 JSON） |
-| 9 | 相册 · 胶卷光台 | 放大镜的阴影割裂：`Loupe` 图带一块方形投影 / 底，和光台不连贯（所有者截图） | `Album/FilmLightTable.swift`、`design/blender/`（Loupe） | Loupe 重渲染成透明背景、只要镜身；阴影在 SwiftUI 画圆形柔和阴影，跟着鼠标 |
+| 9 🟢 | 相册 · 胶卷光台 | 放大镜的阴影割裂：`Loupe` 图带一块方形投影 / 底，和光台不连贯（所有者截图） | `Album/FilmLightTable.swift`、`design/blender/`（Loupe） | Loupe 重渲染成透明背景、只要镜身；阴影在 SwiftUI 画圆形柔和阴影，跟着鼠标 |
 | 10 | 相册 · 软木板 | 软木板背景太扎眼，要柔和、不突兀 | `Album/CorkBoardView.swift`、`Shared/Art.xcassets/CorkTexture` | 降低软木纹理的反差 / 饱和、颗粒更细，加一层暖色柔光和内阴影；或用 Blender 渲染一块柔和的软木板 |
 | 11 | 相册 · 软木板 | 照片挂上去要有**拟物的高级动效** | `Album/CorkBoardView.swift` | 钉上去时轻微下坠回弹；悬停时绕图钉微微摆动（弹簧）；纸张卷曲的光影随角度变化 |
 | 12 | 相册 · 软木板 | **可调光照**：板子左下角钉一枚贴纸 / 小标签，点开二级菜单调光照（台灯方向、色温、强度、暗角）和显示效果（纸张卷曲、阴影深浅、图钉样式），设置要记住 | `Album/CorkBoardView.swift`、`Album/AlbumShared.swift` | 光照用一层可调的径向渐变 + 阴影方向参数传给照片卡片；菜单做成复古的小卡片（打字机字），存 UserDefaults |
-| 13 | 相册 · 软木板 | 图钉的阴影也割裂（方块状） | `Album/CorkBoardView.swift`、`PinBrass` 等图 | 图钉 PNG 透明、只要钉子本身；阴影在 SwiftUI 画成柔和椭圆，方向跟 12 的光照一致 |
-| 14 | 刘海 · 胶卷柜 | 鼠标滚轮**上下滚动时左右切换**胶卷（现在横向 `ScrollView` 只认左右滑） | `Notch/FilmCabinetPanel.swift` | 用一个 `NSViewRepresentable` 监听 `scrollWheel`，把 `deltaY` 转成横向偏移；或者自己管偏移 + `ScrollViewReader` |
+| 13 🟢 | 相册 · 软木板 | 图钉的阴影也割裂（方块状） | `Album/CorkBoardView.swift`、`PinBrass` 等图 | 图钉 PNG 透明、只要钉子本身；阴影在 SwiftUI 画成柔和椭圆，方向跟 12 的光照一致 |
+| 14 🟢 | 刘海 · 胶卷柜 | 鼠标滚轮**上下滚动时左右切换**胶卷（现在横向 `ScrollView` 只认左右滑） | `Notch/FilmCabinetPanel.swift` | 用一个 `NSViewRepresentable` 监听 `scrollWheel`，把 `deltaY` 转成横向偏移；或者自己管偏移 + `ScrollViewReader` |
 
 每做完一项：更新本页和 `CHANGELOG.md`，推送，等 CI 绿、Screenshots 重拍后看图验收（截图里没有的界面——比如自定义贴纸管理——可以在 `macOS/Nocchi/Screenshots/` 里加一个场景）。
 
@@ -127,6 +127,7 @@
 
 ## 最近更新（新的在上）
 
+- **2026-11-24 · 第 30 次推送** 装饰台固定浅色外观（深色模式下检查器的字不再是白的），「文字」页图标换成引号；胶卷柜支持鼠标滚轮左右翻（`WheelToHorizontalScroll`）。阴影统一柔和：卡片盒在 2000 × 1500 的画布上重渲染、盒子靠左上，阴影捕捉器的像素在边缘 13% 内平滑淡到透明（`studio.fade_shadow_edges`，四边 alpha = 0）；热点由新脚本 `design/blender/cardbox/gen_swift_hotspots.py` 生成；图钉、木夹、放大镜改成不带地面阴影，阴影在界面里按轮廓画。
 - **2026-11-24 · 第 29 次推送** 修好「照片偏暗、偏艳」：光晕的加法混合把 alpha 加成 2，之后的柔光颗粒按公式把中间调算成黑色；每个加法效果之后把照片压回不透明（`FilmProcessor.flattened`），删掉 `XCTExpectFailure`，新增逐个效果的不透明 / 亮度回归测试。所有者新的反馈（2026-11-24）把这一轮定为 **v2.0**：除了交接表里的 14 项，还要在装饰台的照片上任意位置加文字框并可自定义字体，布帘要有布料质感、褶皱和逼真的拉合动画，完成后发 `v2.0.0`；不准用子代理（subagent）。
 - **2026-11-24 · 第 28 次推送（交接）** 第 27 次推送的诊断证明色调查表是对的（旧滤镜 170,158,143 ≈ 配方 171,159,143），照片偏暗出在效果阶段（平坦色块开全部效果后中间是 0）——问题未修，`testFullPipelineKeepsTheBrightnessOfTheRecipe` 先用 `XCTExpectFailure` 标住，CI 保持绿。截图第二轮（刘海截图已裁到岛的范围）已提交。仓库所有者的 14 条 v1.1 反馈整理成上面的「交接 · 下一位从这里开始」。
 - **2026-11-24 · 第 27 次推送** 截图第一轮（Screenshots 第 1 次运行）全部 11 张都拍到了：相册四种看法、装饰台、设置、刘海悬停面板与胶卷柜是窗口服务器截的真实窗口（CI 屏幕只有 1024 × 768、1 倍），桌面 / 相纸一览 / 大头贴是 2 倍合成图。看图发现**真问题**：所有彩色胶卷冲出来都比配方暗一个 gamma、阴影压死、颜色过艳（离线预览 `scripts/film/preview_looks.py` 是对的）——Core Image 套色调立方体时没有可靠地在 sRGB 里查表。修复：`FilmProcessor.applyCube` 明确地「工作空间 → sRGB → `CIColorCube` → 工作空间」；新增 `FilmPipelineFidelityTests`（管线逐色对照 CPU 查表、中性配方不改图、整条管线不改变亮度，另有一条注解记录旧滤镜在 CI 上的输出）。刘海截图裁到岛的范围、去掉菜单栏时间；文档站中文页的搜索框翻译成中文、中文标题不再用斜体。文档站已上线：<https://chaosnap.github.io/Nocchi/>。

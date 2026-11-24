@@ -32,7 +32,8 @@ ARGS = S.script_args()
 PREVIEW = "--preview" in ARGS
 SAMPLES = int(ARGS[ARGS.index("--samples") + 1]) if "--samples" in ARGS else (64 if PREVIEW else 320)
 OUT = os.path.join(HERE, "out")
-W_PX, H_PX = (800, 600) if PREVIEW else (1600, 1200)
+# 画布比盒子大一圈：光从左上来、阴影落向右下，右边和下面要留够地方让阴影自然淡到透明（不能被画布边截成直角）。
+W_PX, H_PX = (1000, 750) if PREVIEW else (2000, 1500)
 
 # 尺寸（厘米）
 BOX_W = 15.6      # 外宽（左右）
@@ -424,12 +425,13 @@ def main():
     floor = S.shadow_catcher(scene, size=600.0)
 
     every = [o for o in scene.objects if o.type in ("MESH", "FONT") and not o.is_shadow_catcher and o.name != "cutter"]
-    S.fit_camera(scene, cam, every, pad=0.07, anchor=(0.46, 0.5))
+    S.fit_camera(scene, cam, every, pad=0.14, anchor=(0.42, 0.44))
     bpy.context.view_layer.update()
 
     os.makedirs(OUT, exist_ok=True)
     base_png = os.path.join(OUT, "card-box-base.png")
     S.render_to(scene, base_png)
+    S.fade_shadow_edges(base_png, margin=0.13)
 
     # 前板层：只留下前板（含拉手孔）和左侧板（面向镜头的长侧板）以及它们的指接榫
     keep = set()
@@ -476,7 +478,7 @@ def main():
     box_objs = [o for key in parts for o in parts[key]]
     x0, x1, y0, y1 = S.projected_bbox(scene, cam, box_objs)
     data = {
-        "canvas": [1600, 1200],
+        "canvas": [W_PX, H_PX],
         "tabs": tabs,
         "mouth": mouth,
         "boxBounds": [round(x0, 5), round(1 - y1, 5), round(x1 - x0, 5), round(y1 - y0, 5)],

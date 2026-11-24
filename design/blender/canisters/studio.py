@@ -793,6 +793,32 @@ class Flat:
 
 # --------------------------------------------------------------------------- asset catalog
 
+def fade_shadow_edges(path, margin=0.12):
+    """Fade the shadow-catcher pixels to fully transparent near the canvas edges.
+
+    Shadow pixels are black and partly transparent; object pixels are coloured or opaque and stay untouched.
+    Guarantees the floor shadow never ends in a hard edge at the image border (smoothstep over `margin`)."""
+    import numpy as np
+    img = bpy.data.images.load(path, check_existing=False)
+    w, h = img.size
+    px = np.array(img.pixels[:], dtype=np.float32).reshape(h, w, 4)
+    rgb_max = px[..., :3].max(axis=2)
+    alpha = px[..., 3]
+    shadow = (rgb_max < 0.035) & (alpha < 0.97)
+    ys, xs = np.mgrid[0:h, 0:w].astype(np.float32)
+    dx = np.minimum(xs, w - 1 - xs) / max(1.0, w * margin)
+    dy = np.minimum(ys, h - 1 - ys) / max(1.0, h * margin)
+    t = np.clip(np.minimum(dx, dy), 0.0, 1.0)
+    fade = t * t * (3.0 - 2.0 * t)
+    px[..., 3] = np.where(shadow, alpha * fade, alpha)
+    img.pixels[:] = px.ravel()
+    img.filepath_raw = path
+    img.file_format = "PNG"
+    img.save()
+    edge = np.concatenate([px[0, :, 3], px[-1, :, 3], px[:, 0, 3], px[:, -1, 3]])
+    log("faded shadow edges of %s (edge alpha max %.3f)" % (os.path.basename(path), float(edge.max())))
+
+
 def write_imageset(name, png_src, filename=None):
     """Copy a rendered PNG into Shared/Art.xcassets/<name>.imageset with a Contents.json."""
     import shutil

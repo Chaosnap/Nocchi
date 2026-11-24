@@ -28,7 +28,7 @@ def setup(w, h, samples=160):
     return scene
 
 
-def finish(scene, cam, target, name, pad=0.1, floor=True, rig_scale=0.5):
+def finish(scene, cam, target, name, pad=0.1, floor=False, rig_scale=0.5):
     S.light_rig(scene, cam, target, scale=rig_scale, power_scale=1.0, world_strength=0.4)
     if floor:
         S.shadow_catcher(scene, size=100.0)

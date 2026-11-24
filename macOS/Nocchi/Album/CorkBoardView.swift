@@ -294,10 +294,13 @@ private struct PropImage: View {
     var body: some View {
         Group {
             if BundledImage.has(name) {
+                // 渲染图不带地面阴影（避免方块状的截断阴影），这里按图形轮廓画柔和的接触阴影 + 投影。
                 Image(name)
                     .resizable()
                     .interpolation(.high)
                     .aspectRatio(contentMode: .fit)
+                    .shadow(color: .black.opacity(0.32), radius: 1.2, x: 0.8, y: 1.4)
+                    .shadow(color: .black.opacity(0.2), radius: 4.5, x: 3, y: 5)
             } else {
                 Capsule()
                     .fill(RadialGradient(colors: [fallback.opacity(0.75), fallback], center: UnitPoint(x: 0.35, y: 0.3), startRadius: 1, endRadius: size.width * 0.6))

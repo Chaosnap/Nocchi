@@ -12,11 +12,11 @@
 
 | 素材 | 脚本 | 资源名 | 用途 |
 | --- | --- | --- | --- |
-| **卡片盒** | `cardbox/make_cardbox.py` | `CardBoxBase`（盒子 + 卡片 + 分隔卡）、`CardBoxFront`（前挡板，叠在抽出的卡片上面） | 相册「卡片盒」视图：浅山毛榉木盒、指接榫、把手孔里插着笔、A–Z 与 # 分隔卡、带横线的索引卡；1600×1200，3/4 俯视 |
+| **卡片盒** | `cardbox/make_cardbox.py`（渲染后运行 `cardbox/gen_swift_hotspots.py` 更新 `CardBoxHotspots.swift`） | `CardBoxBase`（盒子 + 卡片 + 分隔卡）、`CardBoxFront`（前挡板，叠在抽出的卡片上面） | 相册「卡片盒」视图：浅山毛榉木盒、指接榫、把手孔里插着笔、A–Z 与 # 分隔卡、带横线的索引卡；2000×1500，3/4 俯视，盒子靠左上、右下留出阴影的空间，阴影在画布边缘之前淡到全透明（`studio.fade_shadow_edges`） |
 | 卡片盒热点 | `cardbox/hotspots.json` | （随代码使用） | 27 张分隔卡标签的中心与四角、盒口四边形、盒子外框（归一化，原点左上）：悬停提示、点字母抽卡、卡片从盒口飞出的位置 |
 | **胶卷罐 / 相纸盒** | `canisters/make_canisters.py`（工具库 `canisters/studio.py`） | `FilmCanister-<胶卷 id>`（26 卷 + `custom`） | 刘海胶卷柜、菜单栏菜单、设置里的胶卷卡片：35mm 罐（标签按胶卷配色与感光度生成）、即显相纸盒、照相亭相纸盒；384×384 |
 | 相册视图图标 | `icons/make_icons.py` | `ModeIconCork`、`ModeIconCardBox`、`ModeIconFilm`、`ModeIconCalendar` | 相册顶栏的四种看法：软木板、卡片盒、胶卷、挂历；160×160 |
-| 图钉 | `props/make_props.py` | `PinBrass`（黄铜平头钉）、`PinTerracotta` / `PinMustard` / `PinTeal`（彩色地图钉） | 软木板上钉照片；128×128 |
+| 图钉 | `props/make_props.py`（小道具一律不带地面阴影，阴影由界面按轮廓画） | `PinBrass`（黄铜平头钉）、`PinTerracotta` / `PinMustard` / `PinTeal`（彩色地图钉） | 软木板上钉照片；128×128 |
 | 木夹 | 同上 | `Clothespin` | 胶片光台、软木板上夹照片；96×192 |
 | 放大镜 | 同上 | `Loupe` | 胶片光台上的放大镜外圈（中间透明，放大的画面放在下面）；512×512 |
 
