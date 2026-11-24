@@ -185,9 +185,13 @@ struct PhotoIndexCard: View {
             RoundedRectangle(cornerRadius: 3, style: .continuous)
                 .fill(CardInk.paper)
         )
+        .overlay(
+            RoundedRectangle(cornerRadius: 3, style: .continuous)
+                .strokeBorder(CardInk.ink.opacity(0.13), lineWidth: 0.6)
+        )
         .overlay(alignment: .topLeading) {
             LetterTab(letter: record.indexLetter)
-                .offset(x: 16, y: -18)
+                .offset(x: 18, y: -IndexTab.height + 1)
         }
         .compositingGroup()
         .shadow(color: .black.opacity(0.26), radius: 1.2, x: 0.6, y: 1)
@@ -224,19 +228,58 @@ private struct RuledLines: View {
     }
 }
 
-/// 卡片左上方伸出来的字母标签。
+/// 索引卡标签的尺寸。
+enum IndexTab {
+    static let width: CGFloat = 36
+    static let height: CGFloat = 21
+}
+
+/// 模切的索引卡标签：上窄下宽、上角圆，和卡片同一张纸；发丝描边、顶上一道纸边的亮线，
+/// 字母用 Didot 粗体（像老档案柜索引卡上印的字）。
 private struct LetterTab: View {
     let letter: String
 
     var body: some View {
-        Text(letter)
-            .font(.custom("American Typewriter", size: 13).weight(.semibold))
-            .foregroundStyle(CardInk.ink)
-            .frame(width: 34, height: 19)
-            .background(
-                UnevenRoundedRectangle(topLeadingRadius: 4, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: 4, style: .continuous)
-                    .fill(CardInk.paper)
-            )
+        ZStack {
+            IndexTabShape()
+                .fill(LinearGradient(colors: [Color(cardHex: 0xFBF9F4), CardInk.paper], startPoint: .top, endPoint: .bottom))
+            IndexTabShape()
+                .stroke(CardInk.ink.opacity(0.16), lineWidth: 0.6)
+            IndexTabShape()
+                .inset(by: 1.2)
+                .stroke(Color.white.opacity(0.85), lineWidth: 0.6)
+                .mask { LinearGradient(colors: [.white, .clear], startPoint: .top, endPoint: .center) }
+            Text(letter)
+                .font(.custom("Didot", size: 14).weight(.bold))
+                .foregroundStyle(CardInk.ink)
+                .offset(y: 1)
+        }
+        .frame(width: IndexTab.width, height: IndexTab.height)
+    }
+}
+
+/// 上窄下宽、上角圆的标签外形（下边敞开，和卡片连在一起）。
+struct IndexTabShape: InsettableShape {
+    var inset: CGFloat = 0
+
+    func path(in rect: CGRect) -> Path {
+        let r = rect.insetBy(dx: inset, dy: inset)
+        let taper = r.width * 0.09
+        let radius = min(4.5, r.height * 0.3)
+        var path = Path()
+        path.move(to: CGPoint(x: r.minX, y: r.maxY + inset))
+        path.addLine(to: CGPoint(x: r.minX + taper, y: r.minY + radius))
+        path.addQuadCurve(to: CGPoint(x: r.minX + taper + radius, y: r.minY), control: CGPoint(x: r.minX + taper, y: r.minY))
+        path.addLine(to: CGPoint(x: r.maxX - taper - radius, y: r.minY))
+        path.addQuadCurve(to: CGPoint(x: r.maxX - taper, y: r.minY + radius), control: CGPoint(x: r.maxX - taper, y: r.minY))
+        path.addLine(to: CGPoint(x: r.maxX, y: r.maxY + inset))
+        return path
+    }
+
+    func inset(by amount: CGFloat) -> IndexTabShape {
+        var shape = self
+        shape.inset += amount
+        return shape
     }
 }
 
@@ -269,41 +312,79 @@ struct TabHotspot: View {
     }
 }
 
-/// 悬停在标签上时的小气泡：「W · 3 张」/「W · 空」。
+/// 悬停在分隔卡标签上时的小吊牌：Didot 大写字母 + 打字机小字「3 张」/「空」，下面一个小尖角指着标签。
 struct TabChip: View {
     let letter: String
     let count: Int
 
     var body: some View {
-        Text(count > 0 ? "\(letter) · \(count) 张" : "\(letter) · 空")
-            .font(.custom("American Typewriter", size: 11.5))
-            .foregroundStyle(count > 0 ? CardInk.ink : CardInk.inkSoft)
-            .padding(.horizontal, 9)
-            .padding(.vertical, 4)
-            .background(RoundedRectangle(cornerRadius: 4, style: .continuous).fill(CardInk.paper))
-            .overlay(RoundedRectangle(cornerRadius: 4, style: .continuous).stroke(CardInk.hairline, lineWidth: 0.6))
-            .shadow(color: .black.opacity(0.18), radius: 5, y: 3)
-            .fixedSize()
+        VStack(spacing: 0) {
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                Text(letter)
+                    .font(.custom("Didot", size: 17).weight(.bold))
+                    .foregroundStyle(CardInk.ink)
+                Rectangle()
+                    .fill(CardInk.rule.opacity(0.5))
+                    .frame(width: 0.8, height: 11)
+                Text(count > 0 ? "\(count) 张" : "空")
+                    .font(.custom("American Typewriter", size: 11.5))
+                    .foregroundStyle(count > 0 ? CardInk.ink : CardInk.inkSoft)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(
+                RoundedRectangle(cornerRadius: 3.5, style: .continuous)
+                    .fill(LinearGradient(colors: [Color(cardHex: 0xFBF9F4), CardInk.paper], startPoint: .top, endPoint: .bottom))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 3.5, style: .continuous)
+                    .strokeBorder(CardInk.ink.opacity(0.16), lineWidth: 0.6)
+            )
+            ChipPointer()
+                .fill(CardInk.paper)
+                .overlay(ChipPointer().stroke(CardInk.ink.opacity(0.16), lineWidth: 0.6))
+                .frame(width: 10, height: 5)
+                .offset(y: -0.8)
+        }
+        .compositingGroup()
+        .shadow(color: .black.opacity(0.2), radius: 0.8, y: 0.8)
+        .shadow(color: .black.opacity(0.16), radius: 6, y: 4)
+        .fixedSize()
+    }
+}
+
+/// 吊牌下面的小尖角。
+private struct ChipPointer: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.move(to: CGPoint(x: rect.minX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.midX, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
+        return path
     }
 }
 
 // MARK: - 摊开区
 
-/// 「全部放回」：象牙白的复古按键。
+/// 「全部放回」「重新叠好」：象牙白的复古按键。
 struct PutBackButton: View {
+    let title: String
+    let symbol: String
     let action: () -> Void
     @State private var hovering = false
 
-    init(action: @escaping () -> Void) {
+    init(title: String = "全部放回", symbol: String = "arrow.uturn.backward", action: @escaping () -> Void) {
+        self.title = title
+        self.symbol = symbol
         self.action = action
     }
 
     var body: some View {
         Button(action: action) {
             HStack(spacing: 6) {
-                Image(systemName: "arrow.uturn.backward")
+                Image(systemName: symbol)
                     .font(.system(size: 11, weight: .bold))
-                Text("全部放回")
+                Text(title)
                     .font(.system(size: 12, weight: .semibold, design: .rounded))
             }
             .foregroundStyle(CardInk.ink)
@@ -323,7 +404,7 @@ struct PutBackButton: View {
         .onHover { inside in
             withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) { hovering = inside }
         }
-        .help("把摊开的卡片全部放回盒子")
+        .help(title == "全部放回" ? "把摊开的卡片全部放回盒子" : "让拖开的卡片回到那一叠")
     }
 }
 

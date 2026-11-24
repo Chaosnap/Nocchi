@@ -49,8 +49,8 @@ PhotoComposer（白边 + 题字 + 日期 + 手写）──► 成片 ~/Pictures/
 | 文件 | 作用 |
 | --- | --- |
 | `CardBoxModel.swift` | 状态：哪些照片在盒子里、哪些摊在右边、谁在最上面；按字母抽卡、搜索（`applySearch`）、最近冲印、翻页、全部放回；每个字母的张数；读图（成片或用底片临时合成，`editedAt` 变了重新读） |
-| `CardBox/CardBoxView.swift` | 舞台：背景 → `CardBoxBase` 渲染图 → 正在升起的卡片 → `CardBoxFront`（挡住卡片下半截）→ 标签热区 → 扇形摊开的卡片；`CardBoxStage`（渲染图与摊开区的几何）、`FanLayout`（最多 9 张的扇形） |
-| `CardBox/CardFlights.swift` | 飞行编排：抽卡 = 盒里 → 升起（在前挡板后面）→ 飞到右边；放回 = 飞回盒口上方 → 沉下去。模型只管顺序，这里管阶段 |
+| `CardBox/CardBoxView.swift` | 舞台：背景 → `CardBoxBase` 渲染图 → 正在抽出的卡片 → `CardBoxFront` → 标签热区 → 右边那一叠；`CardBoxStage`（渲染图与摊开区的几何）、`SlotGeometry`（每个字母那一格的格口线与斜切）、`CardSkew`（斜切 ↔ 转正）、`SlotMask`、`PileLayout`（松散的一叠、拖动摆放与吸附成摞） |
+| `CardBox/CardFlights.swift` | 飞行编排：抽卡 = 立在自己那一格（斜切、被格口线遮住）→ 沿分隔卡抽出 → 在盒口上方转正 → 落到右边那一叠；放回反过来。模型只管顺序，这里管阶段 |
 | `CardBox/CardBoxHotspots.swift` | 渲染图上 27 个分隔卡标签、盒口、盒子外框的归一化坐标（由 `design/blender/cardbox/hotspots.json` 生成） |
 | `CardBox/CardBoxParts.swift` | 照片索引卡（纸色、宋体标题、打字机副标题、字母小标签、横线）、标签热区与气泡、「全部放回」、空盒提示、渲染图缺失时的退路 |
 | `Print/PrintSurface.swift` | 屏幕上的相纸：`PhotoComposer` 的底层 / 上层 + 显影中的照片 + 光泽 + 正在写的笔画 |

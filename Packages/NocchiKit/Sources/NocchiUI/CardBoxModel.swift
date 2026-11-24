@@ -6,6 +6,19 @@ import SwiftUI
 /// 读一张卡片要显示的图（通常是带白边的成片）。
 public typealias CardImageLoader = @Sendable (PhotoRecord) async -> CGImage?
 
+/// 摊开区里一张卡片被拖到的位置（相对摊开区，0…1）与角度。
+public struct CardSpot: Codable, Hashable, Sendable {
+    public var x: Double
+    public var y: Double
+    public var rotation: Double
+
+    public init(x: Double, y: Double, rotation: Double) {
+        self.x = x
+        self.y = y
+        self.rotation = rotation
+    }
+}
+
 /// 卡片盒的状态：哪些照片还在盒子里、哪些被抽出来摊在右边、谁在最上面。
 @MainActor
 public final class CardBoxModel: ObservableObject {
@@ -21,6 +34,8 @@ public final class CardBoxModel: ObservableObject {
     @Published public private(set) var spreadCaption: String?
     /// 每个首字母下有几张。
     @Published public private(set) var letterCounts: [String: Int] = [:]
+    /// 拖动摆放过的卡片位置（记住，下次抽出来还在那里）。
+    @Published public private(set) var spots: [UUID: CardSpot] = CardBoxModel.loadSpots()
 
     /// 双击或点开一张卡片。
     public var onOpen: ((PhotoRecord) -> Void)?
@@ -51,6 +66,10 @@ public final class CardBoxModel: ObservableObject {
         self.records = records
         byID = Dictionary(records.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         pulled.removeAll { byID[$0] == nil }
+        if !records.isEmpty, spots.keys.contains(where: { byID[$0] == nil }) {
+            spots = spots.filter { byID[$0.key] != nil }
+            saveSpots()
+        }
         images = images.filter { byID[$0.key] != nil }
         var counts: [String: Int] = [:]
         for record in records {
@@ -220,6 +239,48 @@ public final class CardBoxModel: ObservableObject {
             if settled != self.pulled {
                 self.pulled = settled
             }
+        }
+    }
+
+    // MARK: - Spots
+
+    /// 记住（或忘掉）一张卡片被拖到的位置。
+    public func setSpot(_ spot: CardSpot?, for id: UUID) {
+        spots[id] = spot
+        saveSpots()
+    }
+
+    /// 重新叠好：忘掉所有拖动过的位置，卡片回到默认的一叠。
+    public func clearSpots() {
+        guard !spots.isEmpty else { return }
+        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+            spots = [:]
+        }
+        saveSpots()
+        sound()
+    }
+
+    private nonisolated static let spotsKey = "nocchi.cardbox.spots"
+
+    private nonisolated static func loadSpots() -> [UUID: CardSpot] {
+        guard let data = UserDefaults.standard.data(forKey: spotsKey),
+              let raw = try? JSONDecoder().decode([String: CardSpot].self, from: data) else { return [:] }
+        var result: [UUID: CardSpot] = [:]
+        for (key, value) in raw {
+            if let id = UUID(uuidString: key) {
+                result[id] = value
+            }
+        }
+        return result
+    }
+
+    private func saveSpots() {
+        var raw: [String: CardSpot] = [:]
+        for (id, spot) in spots {
+            raw[id.uuidString] = spot
+        }
+        if let data = try? JSONEncoder().encode(raw) {
+            UserDefaults.standard.set(data, forKey: Self.spotsKey)
         }
     }
 
