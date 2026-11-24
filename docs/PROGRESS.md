@@ -15,7 +15,7 @@
 | 照片卡片盒（2.5D） | 🟢 CI 全绿 | Blender 照参考图建模、Cycles 渲染（`CardBoxBase` / `CardBoxFront` + 热点），卡片从盒口升起、扇形摊开 |
 | v0.2「复古冲印店」 | 🟢 全部完成，随 v1.0.0 发布 | 规范见 [DESIGN.md](DESIGN.md)；逐步进度见下面的「v0.2 改版进度」 |
 | 产品文档站与截图 | 🟢 已上线 | <https://chaosnap.github.io/Nocchi/>（VitePress，英文 + `/zh/` 中文）；截图由 `screenshots.yml` 在 Actions 上从 App 渲染，提交到 `website/public/screenshots/` |
-| v2.0 打磨（所有者反馈） | 🟡 进行中 | 14 项 + 文字框与自定义字体 + 布帘动态，见下面「交接」；「照片偏暗」已修 |
+| v2.0 打磨（所有者反馈） | 🟡 进行中 | 14 项（13 项已做）+ 文字框与自定义字体 + 自定义贴纸 + 不要滚动条；**正在做：剧院暗红布帘、机身整体建模、情人节相框**，见下面「交接」第 3 节 |
 | 仓库与社区文件 | 🟢 已补齐 | GNU AGPL-3.0（与 Yohaku 一致）；英文的 README、行为准则（Contributor Covenant 3.0）、贡献指南、安全政策、隐私说明、Issue / PR 模板 |
 
 图例：🟢 完成 · 🟡 进行中 / 待验证 · 🔵 编写中 · ⚪ 未开始 · 🔴 阻塞
@@ -55,6 +55,22 @@
 | 14 🟢 | 刘海 · 胶卷柜 | 鼠标滚轮**上下滚动时左右切换**胶卷（现在横向 `ScrollView` 只认左右滑） | `Notch/FilmCabinetPanel.swift` | 用一个 `NSViewRepresentable` 监听 `scrollWheel`，把 `deltaY` 转成横向偏移；或者自己管偏移 + `ScrollViewReader` |
 
 每做完一项：更新本页和 `CHANGELOG.md`，推送，等 CI 绿、Screenshots 重拍后看图验收（截图里没有的界面——比如自定义贴纸管理——可以在 `macOS/Nocchi/Screenshots/` 里加一个场景）。
+
+### 3. 进行中：所有者 2026-11-24 对大头贴机的新反馈（下一位从这里接）
+
+所有者看了第 39 次推送后 Screenshots 拍的 `booth.jpg`：「还是太丑了」。原话要点：
+- **机身前面统一建模**：「能不能把机子的前面现实的那个统一建模」「中间大头贴机子实在是太廉价了，我要求复古，拟物，建模精美有质感」。
+- **帷幕和帷幕顶上的盖**：「要像剧院那种优雅复古的暗红色，并且可以稍微摆动的动态效果」。
+- **招牌要在帷幕盖前面**（招牌被帘头和流苏挡住了）。
+- 用量快不够时：**先更新文档、提交并 push**，方便随时换另一个 AI 接手。
+
+| # | 要做的 | 状态 | 文件 | 说明 |
+| --- | --- | --- | --- | --- |
+| A | 布帘与帘头改成剧院暗红丝绒，帘头做成带弧形褶的垂幔（festoon）+ 金色流苏 / 穗子，轻轻摆动 | 🔵 编写中 | `macOS/Nocchi/Booth/CurtainScene.swift` | **第 39 次推送的 3D 布帘渲染出来是曝光过度的黄色**：给几何加的顶点颜色（`SCNGeometrySource` `.color`，做褶谷遮蔽用）把丝绒纹理顶掉了（SceneKit 用顶点色当漫反射）。修法：去掉 `.color` 源，褶谷遮蔽改到表面着色器里（`_surface.position.z + 5` 就是世界 z：正交相机在 z = 5），丝绒纹理按亮度重新上成剧院暗红（#4D0810…#8F1721），灯光与环境图调低，金色件不再过曝。帘头改成弧形褶垂幔，垂幔交接处挂金色穗子（`SCNAction` 慢慢摆）。 |
+| B | 机身整体建模（招牌、橱窗、铭牌、箭头、拨杆、开始按钮、投币口、出片口…一体），复古拟物、有质感 | ⚪ 未开始 | 新：`design/blender/booth/make_machine.py`；改：`Booth/BoothFrameChooser.swift`、`PhotoBoothController.swift`（`BoothInterior`、`BoothSign`、`CameraWindow`） | 方案：Blender 一张机身正面图（胡桃木 + 黄铜装饰艺术风：拱顶招牌、暗红搪瓷牌上立体金字「大头贴机」、一圈暖光灯泡、镀铬包边的大橱窗、黄铜铭牌、奶油色搪瓷控制台、出片口与投币口），按钮 / 拨杆 / 开始按钮在同一场景里单独渲染各状态（用渲染边框裁出小图），热区坐标导出 JSON → 生成 Swift。取景时摄像头画面也显示在这个橱窗里（不再换成另一个窗口）。 |
+| C | 招牌在帘头前面 | ⚪ 未开始 | `PhotoBoothController.swift` 的 `BoothCurtainView`、`Screenshots/StudioScenes.swift` 的 `BoothScene` | 把 `CurtainSceneView` 放到 `BoothInterior` **下面**（机身整个在布帘前面，机身两边盖住帘子的里缘） |
+| D | 情人节相框（交接表第 4 项） | 🔵 编写中 | `design/blender/frames/make_valentine.py`（已写好，还没跑过） | 两层位图：`valentine-<strip|grid>-base.jpg`（照片下面：雾玫瑰卡纸 + 模切纸蕾丝边 + 四角蕾丝圆花）和 `-overlay.png`（照片上面：每个心形窗口的纸蕾丝心环 + 烫金内缘线、心口的缎带蝴蝶结、角上的烫金小心、题字上方的烫金花线；阴影用阴影捕捉器带出来），写到 `Packages/NocchiKit/Sources/NocchiKit/Resources/Frames/`。还要做：先 `-- strip --preview` 看预览、调好；再在 `TemplateArt.drawBase / drawForeground` 的 `.boothHeart` 分支里画这两层（`Bundle.module`，按目标宽度用 `ImageIOKit.load(maxPixel:)` 缩小并缓存，没有图时退回现在的程序化画法）。 |
+| E | 发 v2.0.0 | ⚪ | `macOS/project.yml`、`CHANGELOG.md` | 以上做完、CI 全绿后：版本改 2.0.0，`[未发布]` 整理成 `## [2.0.0]`，推 `v2.0.0` 标签 |
 
 ## v0.2「复古冲印店」改版进度（交接用）
 
