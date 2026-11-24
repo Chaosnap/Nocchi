@@ -9,13 +9,14 @@
 | --- | --- | --- |
 | 仓库与 CI | 🟢 已搭好 | 直接在 `main` 开发；NocchiKit 测试与 macOS 构建在 GitHub Actions 上跑；推送 `v*` 标签自动发行版本 |
 | NocchiKit（共享暗房内核） | 🟢 CI 全绿 | 调色引擎 v2（曲线、HSL、肤色保护、高光软肩）+ 26 卷胶卷；相册检索 / 胶片条 / 挂历分组 |
-| macOS App（刘海出片口） | 🟡 v2.1.0 发版中（v2.0.0 已发布） | 第 55 次推送 CI 绿了就推 `v2.1.0` 标签，`release.yml` 出 [Release](https://github.com/Chaosnap/Nocchi/releases/latest)：`Nocchi-macOS-2.1.0.zip` + `SHA256SUMS.txt`（AGPL-3.0） |
+| macOS App（刘海出片口） | 🟢 v4.0.0 已发布 | [Releases](https://github.com/Chaosnap/Nocchi/releases/latest)：`Nocchi-macOS-4.0.0.zip` + `SHA256SUMS.txt`（AGPL-3.0）。同一天发了 3.0.0（自拍闪退、大头贴机第一次进入卡）、3.1.0（软木板白天 / 黑夜灯光、挂历叠放、零警告）、4.0.0（装饰台拖动跟手、去掉窗格） |
 | iOS App（灵动岛出片口） | 🔵 编写中 | 分层建模相机、灵动岛出片、Live Activity |
 | 美术素材 | 🟢 第三版 | 复古机身、大头贴机、纹理（象牙白 + 炭黑 + 陶土橙）；**App 图标第三稿**：复古旁轴式即显相机 + 做旧毛边相纸（不出画框），胡桃木圆角瓷砖，CI 渲染各尺寸；80 年代方盒款机身已入库备用 |
 | 照片卡片盒（2.5D） | 🟢 CI 全绿 | Blender 照参考图建模、Cycles 渲染（`CardBoxBase` / `CardBoxFront` + 热点），卡片从盒口升起、扇形摊开 |
 | v0.2「复古冲印店」 | 🟢 全部完成，随 v1.0.0 发布 | 规范见 [DESIGN.md](DESIGN.md)；逐步进度见下面的「v0.2 改版进度」 |
 | 产品文档站与截图 | 🟢 已上线 | <https://chaosnap.github.io/Nocchi/>（VitePress，英文 + `/zh/` 中文）；截图由 `screenshots.yml` 在 Actions 上从 App 渲染，提交到 `website/public/screenshots/` |
-| 2.1 反馈（所有者 9 项 + 补充） | 🟢 全部做完，随 v2.1.0 发布 | 见下面「交接 · 当前批次」：卡片空白、相机有不同效果、换相机按钮、图标阴影、卡片盒按年月日归档、中英文切换、关于页、自定义存储位置、「准备抽出来」动画、更精细的卡片和标签都已做并用截图验收；**相册「主程序被强制隐藏」是推断后修的，等所有者确认**；等所有者决定发不发 v2.1.0 |
+| 3.0 / 3.1 / 4.0 | 🟢 都已发布 | 见下面「交接 · 当前批次」 |
+| 2.1 反馈（所有者 9 项 + 补充） | 🟢 全部做完，随 v2.1.0 发布 | 见下面「交接 · 上一批」：卡片空白、相机有不同效果、换相机按钮、图标阴影、卡片盒按年月日归档、中英文切换、关于页、自定义存储位置、「准备抽出来」动画、更精细的卡片和标签都已做并用截图验收；**相册「主程序被强制隐藏」是推断后修的，等所有者确认**；等所有者决定发不发 v2.1.0 |
 | v2.0 打磨（所有者反馈） | 🟢 随 v2.0.0 发布 | 14 项（13 项已做）+ 文字框与自定义字体 + 自定义贴纸 + 不要滚动条；**正在做：剧院暗红布帘、机身整体建模、情人节相框**，见下面「交接」第 3 节 |
 | 仓库与社区文件 | 🟢 已补齐 | GNU AGPL-3.0（与 Yohaku 一致）；英文的 README、行为准则（Contributor Covenant 3.0）、贡献指南、安全政策、隐私说明、Issue / PR 模板 |
 
@@ -37,7 +38,7 @@
 
 | 6 | 所有者贴了 CI 日志：「你之前的运行测试有这个问题」（`WindowClip` 存 `CGPath` 的 Sendable 警告） | 🟢 CI 第 68 次运行零警告（Node 20 的提示也没了），随 v3.1.0 发布 | `NocchiUI/Print/PrintSurface.swift`（`WindowClip` 存 `Path`）、`Notch/NotchController.swift`、`Notch/FilmCabinetPanel.swift`、`Booth/PhotoBoothController.swift`（按键 / 滚轮监听：`assumeIsolated` 只返回 Bool）、`Photo/PhotoWindowController.swift`（`menu(for:)` 直接返回）、`.github/workflows/*.yml`（checkout / upload-artifact / setup-node v7，configure-pages v6，upload-pages-artifact / deploy-pages v5） | CI 第 66、67 次运行的注解里就这几条（另有 Node 20 过时）；`swift test` 那一步的日志要登录才能下载，看不到全部，如果所有者还看到别的警告再补 |
 
-| 7 | 装饰台：贴纸移动、旋转不顺；文字框缩放、旋转不顺，「修复下，作为 4.0 release」 | 🟡 已改（第 60 次推送），等 CI；绿了发 `v4.0.0` | `Editor/PaperStage.swift`（`StickerItem`、`TextItem` 用 `LiveTransform` + `HandleDrag`，松手 `commit()`；`TextImageCache` 按内容为键、缓存排版尺寸）、版本 4.0.0、`CHANGELOG.md`、README、两个更新日志、决策 D42 | 截图拍不到拖动的手感，要所有者试；按住 ⇧ 旋转每 15° 一格是新加的。所有者又说「这个窗户田字格删掉」：软木板的阳光 / 月光光斑不再画窗棂（`LightPlacement.windowBars` 默认关，`LightModel` 里的窗棂留作选项），一起进 4.0.0 |
+| 7 | 装饰台：贴纸移动、旋转不顺；文字框缩放、旋转不顺，「修复下，作为 4.0 release」 | 🟢 CI 第 69 次运行绿（零警告），已发 v4.0.0（Release 第 8 次运行）；手感要所有者试 | `Editor/PaperStage.swift`（`StickerItem`、`TextItem` 用 `LiveTransform` + `HandleDrag`，松手 `commit()`；`TextImageCache` 按内容为键、缓存排版尺寸）、版本 4.0.0、`CHANGELOG.md`、README、两个更新日志、决策 D42 | 截图拍不到拖动的手感，要所有者试；按住 ⇧ 旋转每 15° 一格是新加的。所有者又说「这个窗户田字格删掉」：软木板的阳光 / 月光光斑不再画窗棂（`LightPlacement.windowBars` 默认关，`LightModel` 里的窗棂留作选项），一起进 4.0.0 |
 
 **版本号**：灯光和挂历原本要作为「2.5」，但所有者又要先把闪退和卡顿发成 3.0，所以这一批发成 **3.1.0**（版本号不能往回走）。`macOS/project.yml`、`CHANGELOG.md`（`## [3.1.0]`）、README、两个更新日志已经写好；CI 绿、截图看过就推 `v3.1.0`。
 
@@ -205,6 +206,7 @@
 
 ## 最近更新（新的在上）
 
+- **2026-11-24 · 发行版 v4.0.0** CI 第 69 次运行绿（零警告）后推 `v4.0.0` 标签（`6f89069`），Release 第 8 次运行出 `Nocchi-macOS-4.0.0.zip` + `SHA256SUMS.txt`；v3.1.0 也已由 Release 第 7 次运行发布。
 - **2026-11-24 · 第 60 次推送（4.0.0）** 装饰台拖贴纸 / 文字框、缩放、旋转跟手（拖动中只动这一个视图，松手才写回记录；文字渲染缓存只认内容；旋转过 180° 不跳，⇧ 吸附 15°）。版本 4.0.0。
 - **2026-11-24 · 发行版 v3.1.0** CI 第 68 次运行（零警告）、Screenshots 第 34 次（灯光卡片的预览有光、挂历一天三张叠成一摞）看过后推了 `v3.1.0` 标签（`04a95cb`）。
 - **2026-11-24 · 第 59 次推送** 所有者贴了 CI 日志里的警告：修掉全部 Swift 6 并发警告（`WindowClip`、四处 `NSEvent` / `NSMenu`），Actions 升级到 Node 24 的版本。
@@ -273,9 +275,8 @@
 
 ## 下一步
 
-1. 等所有者确认交接表第 3 项（从刘海进相册时「主程序被强制隐藏」）：推断是窗口留在别的桌面空间，已让窗口跟着当前空间走；如果所有者说的是别的现象，问清楚再改。
-2. 发 v2.1.0（所有者：「Release 2.1.0」）：第 55 次推送已把版本改成 2.1.0、`CHANGELOG` 整理出 `## [2.1.0]`，第 56 次推送补上交接表第 12 项（卡片就是成片）；CI 全绿后推 `v2.1.0` 标签，看 Release 工作流出的 `Nocchi-macOS-2.1.0.zip` 和 `SHA256SUMS.txt`，再把本页的 macOS 行改成「已发布」。
-3. 之后：完成 iOS App 与灵动岛 Live Activity（`iOS/` 下的草稿还没提交，iOS 用 80 年代方盒款机身外观），接入 CI（未签名 ipa）；iOS 也接上 `UILanguage` 和英文表。
+1. 等所有者试用后确认：装饰台拖贴纸 / 文字框是否顺了（4.0.0）；自拍是否不再闪退、第一次进大头贴机是否不卡（3.0.0）；2.1 交接表第 3 项（从刘海进相册时「主程序被强制隐藏」，推断是窗口留在别的桌面空间，已让窗口跟着当前空间走）。
+2. 之后：完成 iOS App 与灵动岛 Live Activity（`iOS/` 下的草稿还没提交，iOS 用 80 年代方盒款机身外观），接入 CI（未签名 ipa）；iOS 也接上 `UILanguage` 和英文表。
 
 ## 已知问题 / 待你确认
 
