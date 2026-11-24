@@ -1,6 +1,6 @@
 # 进度看板（实时更新）
 
-> 最后更新：2026-11-24（3.0.0、3.1.0 已发；4.0.0：装饰台拖动跟手）· 分支 `main`（直接在 main 开发）
+> 最后更新：2026-11-24（3.0.0、3.1.0、4.0.0 已发；4.5.0：右上角一束可以转的光、软木板不卡）· 分支 `main`（直接在 main 开发）
 > 每次推送都会同步更新本页。构建产物见 [Actions](https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml)。
 
 ## 一眼看懂
@@ -39,6 +39,8 @@
 | 6 | 所有者贴了 CI 日志：「你之前的运行测试有这个问题」（`WindowClip` 存 `CGPath` 的 Sendable 警告） | 🟢 CI 第 68 次运行零警告（Node 20 的提示也没了），随 v3.1.0 发布 | `NocchiUI/Print/PrintSurface.swift`（`WindowClip` 存 `Path`）、`Notch/NotchController.swift`、`Notch/FilmCabinetPanel.swift`、`Booth/PhotoBoothController.swift`（按键 / 滚轮监听：`assumeIsolated` 只返回 Bool）、`Photo/PhotoWindowController.swift`（`menu(for:)` 直接返回）、`.github/workflows/*.yml`（checkout / upload-artifact / setup-node v7，configure-pages v6，upload-pages-artifact / deploy-pages v5） | CI 第 66、67 次运行的注解里就这几条（另有 Node 20 过时）；`swift test` 那一步的日志要登录才能下载，看不到全部，如果所有者还看到别的警告再补 |
 
 | 7 | 装饰台：贴纸移动、旋转不顺；文字框缩放、旋转不顺，「修复下，作为 4.0 release」 | 🟢 CI 第 69 次运行绿（零警告），已发 v4.0.0（Release 第 8 次运行）；手感要所有者试 | `Editor/PaperStage.swift`（`StickerItem`、`TextItem` 用 `LiveTransform` + `HandleDrag`，松手 `commit()`；`TextImageCache` 按内容为键、缓存排版尺寸）、版本 4.0.0、`CHANGELOG.md`、README、两个更新日志、决策 D42 | 截图拍不到拖动的手感，要所有者试；按住 ⇧ 旋转每 15° 一格是新加的。所有者又说「这个窗户田字格删掉」：软木板的阳光 / 月光光斑不再画窗棂（`LightPlacement.windowBars` 默认关，`LightModel` 里的窗棂留作选项），一起进 4.0.0 |
+
+| 8 | 软木板灯光：「不要那种棱形……从右边上角射下来可以旋转的打光」；「带了灯光太卡了，优化下性能，灯光的渲染可以 cheap 些，其他显示质量一律不准改，只能碰灯光」；「修复这个后直接 push build release 4.5」 | 🟡 已改（第 62 次推送），等 CI 和 Screenshots（`album-corkboard-night.jpg` 应是右上角斜下来的一束暖光、`album-corkboard-lighting.jpg` 的小板子右上角是灯、一枚铜钮落在光束上）；绿了发 `v4.5.0` | `NocchiKit/Lighting/LightModel.swift`（`LightPlacement.aim`、斜打的台灯，测试 `testCornerBeamFromTheTopRight`、`testTurningTheBeam`）、`Album/CorkLighting.swift`（`aim` 取代灯的位置、`forPrints`、`CorkLightOverlay` 只用普通叠加、`DustLayer` / `DustView` 用 `CAEmitterLayer`、`LightPad` 拖动转灯）、`Album/CorkBoardView.swift`（照片拿 `forPrints`）、版本 4.5.0、决策 D43 | 性能要所有者实际感受；灰尘的遮罩方向在截图里核对 |
 
 **版本号**：灯光和挂历原本要作为「2.5」，但所有者又要先把闪退和卡顿发成 3.0，所以这一批发成 **3.1.0**（版本号不能往回走）。`macOS/project.yml`、`CHANGELOG.md`（`## [3.1.0]`）、README、两个更新日志已经写好；CI 绿、截图看过就推 `v3.1.0`。
 
@@ -206,6 +208,7 @@
 
 ## 最近更新（新的在上）
 
+- **2026-11-24 · 第 62 次推送（4.5.0）** 软木板的灯光改成右上角斜照下来、可以转的一束光；渲染变便宜（低分辨率光照图、普通叠加、`CAEmitterLayer` 灰尘、照片不随灯光参数重算）。版本 4.5.0。
 - **2026-11-24 · 发行版 v4.0.0** CI 第 69 次运行绿（零警告）后推 `v4.0.0` 标签（`6f89069`），Release 第 8 次运行出 `Nocchi-macOS-4.0.0.zip` + `SHA256SUMS.txt`；v3.1.0 也已由 Release 第 7 次运行发布。
 - **2026-11-24 · 第 60 次推送（4.0.0）** 装饰台拖贴纸 / 文字框、缩放、旋转跟手（拖动中只动这一个视图，松手才写回记录；文字渲染缓存只认内容；旋转过 180° 不跳，⇧ 吸附 15°）。版本 4.0.0。
 - **2026-11-24 · 发行版 v3.1.0** CI 第 68 次运行（零警告）、Screenshots 第 34 次（灯光卡片的预览有光、挂历一天三张叠成一摞）看过后推了 `v3.1.0` 标签（`04a95cb`）。

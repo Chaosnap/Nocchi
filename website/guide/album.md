@@ -25,7 +25,7 @@ A cork board in a walnut frame. Each month gets an embossed label (2026 · Novem
 
 ![The corkboard](/screenshots/en/album-corkboard.jpg)
 
-**Lighting**: the brass *Lighting* tag in the bottom-left corner opens a card. **Day** lets the sun slant in through a window and lay a soft patch of light across the board; **Night** dims the room to a **Desk lamp**, a warm pool of light, or **Moonlight** through the window. Drag the brass knob on the little board to move the light, and set its **Reach**, **Brightness**, **Colour temperature** and how much **Dust** drifts in the beam, as well as the vignette, the shadows, the paper curl and how prints are fastened. The light falls on the prints as well as the cork, and their shadows follow it.
+**Lighting**: the brass *Lighting* tag in the bottom-left corner opens a card. A beam of light slants down across the board from the top-right corner: in the **Day** it is warm sunlight in a bright room; at **Night** the room goes dark around a **Desk lamp** or **Moonlight**. Drag on the little board to turn the beam, and set its **Reach**, **Brightness**, **Colour temperature** and how much **Dust** drifts in the beam, as well as the vignette, the shadows, the paper curl and how prints are fastened. The light falls on the prints as well as the cork, and their shadows follow it.
 
 ![The corkboard at night, under a desk lamp](/screenshots/en/album-corkboard-night.jpg)
 

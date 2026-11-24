@@ -93,8 +93,11 @@ public struct LightPlacement: Equatable, Sendable {
     public var intensity: Double
     /// 太阳 / 月光的光斑里画不画窗棂（原版画；软木板上不画）。
     public var windowBars: Bool
+    /// 台灯斜着打光的方向（度，屏幕坐标：0 = 右，90 = 下，180 = 左）：给了就是一盏低低的灯从 (x, y) 斜着往这个方向照，
+    /// 光斑顺着光拉长、离灯越远越暗（软木板：从右上角照下来，转这个角度就是转灯）。不给就是原来那种照向板子中间的台灯。
+    public var aim: Double?
 
-    public init(source: LightSource, x: Double, y: Double, reach: Double, softness: Double, intensity: Double, windowBars: Bool = false) {
+    public init(source: LightSource, x: Double, y: Double, reach: Double, softness: Double, intensity: Double, windowBars: Bool = false, aim: Double? = nil) {
         self.source = source
         self.x = x
         self.y = y
@@ -102,6 +105,7 @@ public struct LightPlacement: Equatable, Sendable {
         self.softness = softness
         self.intensity = intensity
         self.windowBars = windowBars
+        self.aim = aim
     }
 }
 
@@ -193,12 +197,24 @@ public enum LightModel {
 
         switch placement.source {
         case .deskLamp:
-            // 台灯挂在这一点的前上方，越高光斑越大；光轴朝板子中间偏一点。
-            let lamp = SIMD3(px * width, py * height, (0.32 + 0.68 * reach) * height)
-            let aim = SIMD3(lamp.x + (width * 0.5 - lamp.x) * 0.3, lamp.y + (height * 0.5 - lamp.y) * 0.3, 0)
-            rig.position = lamp
-            rig.direction = simd_normalize(aim - lamp)
-            reference = irradiance(rig, x: aim.x, y: aim.y)
+            if let degrees = placement.aim {
+                // 角落里一盏低低的灯，斜着往板子上打光：光束顺着方向拉长，离灯越远越暗。
+                // 参考点在光束中段（从灯往前 45% 处），那里正好是所选的亮度；靠近灯的一头更亮。
+                let lamp = SIMD3(px * width, py * height, (0.16 + 0.3 * reach) * height)
+                let radians = degrees * .pi / 180
+                let throwLength = (0.42 + 0.4 * reach) * (width * width + height * height).squareRoot()
+                let target = SIMD3(lamp.x + cos(radians) * throwLength, lamp.y + sin(radians) * throwLength, 0)
+                rig.position = lamp
+                rig.direction = simd_normalize(target - lamp)
+                reference = irradiance(rig, x: lamp.x + cos(radians) * throwLength * 0.45, y: lamp.y + sin(radians) * throwLength * 0.45)
+            } else {
+                // 台灯挂在这一点的前上方，越高光斑越大；光轴朝板子中间偏一点。
+                let lamp = SIMD3(px * width, py * height, (0.32 + 0.68 * reach) * height)
+                let aim = SIMD3(lamp.x + (width * 0.5 - lamp.x) * 0.3, lamp.y + (height * 0.5 - lamp.y) * 0.3, 0)
+                rig.position = lamp
+                rig.direction = simd_normalize(aim - lamp)
+                reference = irradiance(rig, x: aim.x, y: aim.y)
+            }
         case .sunlight, .moonlight:
             // 平行光从这一边斜着照过来（太阳低一点，影子和窗格拉得更长）；窗格落在这一边和板子中间之间。
             let azimuth = atan2(0.5 - py, 0.5 - px)

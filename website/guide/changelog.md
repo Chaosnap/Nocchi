@@ -2,6 +2,13 @@
 
 The full changelog, in Chinese, is [CHANGELOG.md](https://github.com/Chaosnap/Nocchi/blob/main/CHANGELOG.md). Downloads are on [Releases](https://github.com/Chaosnap/Nocchi/releases).
 
+## 4.5.0 · 2026-11-24
+
+**A beam of light.**
+
+- **Light from the top-right corner**: instead of a patch of window light, the corkboard is lit by a beam that slants down from the top-right corner, brightest a little way from the lamp and fading with distance. Drag on the little board on the *Lighting* card to turn it. Day is warm sunlight, night is a desk lamp or moonlight, and the prints' shadows fall away from the lamp.
+- **A smooth corkboard with the light on**: the light is computed once at low resolution and laid on with plain transparency (no full-board blur or screen blending), the dust is a Core Animation particle emitter that runs on the graphics server, and turning the light no longer recomputes every print on the board. Nothing else about the board changed.
+
 ## 4.0.0 · 2026-11-24
 
 **Stickers and text that follow your hand.**

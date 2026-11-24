@@ -65,6 +65,35 @@ final class LightModelTests: XCTestCase {
         XCTAssertGreaterThan(LightModel.windowGobo(rig, x: x, y: y), 0.9)
     }
 
+    func testCornerBeamFromTheTopRight() {
+        // 软木板：一盏灯在右上角，往左下（135°）斜着照：光束在离灯三成左右的地方最亮（再近就出了光锥），
+        // 中段正好是所选亮度，远端暗下去。
+        let w = Double(board.width)
+        let h = Double(board.height)
+        let rig = LightModel.rig(LightPlacement(source: .deskLamp, x: 1, y: 0, reach: 0.55, softness: 0.55, intensity: 0.6, aim: 135), size: board)
+        let length = (0.42 + 0.4 * 0.55) * (w * w + h * h).squareRoot()
+        func along(_ t: Double) -> Double {
+            LightModel.lightAmount(rig, x: w + cos(.pi * 0.75) * length * t, y: sin(.pi * 0.75) * length * t)
+        }
+        XCTAssertEqual(along(0.45), 1 - exp(-(0.4 + 1.6 * 0.6)), accuracy: 1e-6)
+        XCTAssertGreaterThan(along(0.3), along(0.45))
+        XCTAssertGreaterThan(along(0.45), along(0.95))
+        // 左下角（光束外面）几乎是暗的。
+        XCTAssertLessThan(LightModel.lightAmount(rig, x: w * 0.02, y: h * 0.98), along(0.45) * 0.4)
+    }
+
+    func testTurningTheBeam() {
+        // 转灯：朝下（100°）照到右边，朝左（170°）照到上边。
+        let w = Double(board.width)
+        let h = Double(board.height)
+        let down = LightModel.rig(LightPlacement(source: .deskLamp, x: 1, y: 0, reach: 0.55, softness: 0.55, intensity: 0.6, aim: 100), size: board)
+        let left = LightModel.rig(LightPlacement(source: .deskLamp, x: 1, y: 0, reach: 0.55, softness: 0.55, intensity: 0.6, aim: 170), size: board)
+        let rightEdge = (x: w * 0.93, y: h * 0.62)
+        let topEdge = (x: w * 0.45, y: h * 0.1)
+        XCTAssertGreaterThan(LightModel.lightAmount(down, x: rightEdge.x, y: rightEdge.y), LightModel.lightAmount(left, x: rightEdge.x, y: rightEdge.y))
+        XCTAssertGreaterThan(LightModel.lightAmount(left, x: topEdge.x, y: topEdge.y), LightModel.lightAmount(down, x: topEdge.x, y: topEdge.y))
+    }
+
     func testNoBarsByDefault() {
         // 软木板上的光斑不画窗棂（田字格）：窗户正中间也是满的。
         let rig = LightModel.rig(LightPlacement(source: .moonlight, x: 0.5, y: 0.05, reach: 0.6, softness: 0, intensity: 0.6), size: board)

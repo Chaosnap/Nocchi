@@ -667,5 +667,7 @@
  "默认题字": "Default caption",
  "齿孔边、面值和一枚邮戳": "Perforated edges, a face value and a postmark",
  "＋ 加一段字": "+ Add Text",
- "拖动缩放、旋转（按住 ⇧ 每 15° 一格）": "Drag to resize and rotate (hold ⇧ for 15° steps)"
+ "拖动缩放、旋转（按住 ⇧ 每 15° 一格）": "Drag to resize and rotate (hold ⇧ for 15° steps)",
+ "光从右上角照下来 · 在板上拖动转灯": "The light shines from the top right · drag on the board to turn it",
+ "拖动转灯": "Drag to turn the light"
 }

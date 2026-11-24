@@ -92,7 +92,7 @@
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:94",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:96",
     "context": "localized"
    },
    {
@@ -404,7 +404,7 @@
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:90",
     "context": "localized"
    },
    {
@@ -430,7 +430,7 @@
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:90",
     "context": "localized"
    },
    {
@@ -456,20 +456,11 @@
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:90",
     "context": "localized"
    },
    {
     "at": "macOS/Nocchi/Album/FilmLightTable.swift:79",
-    "context": "localized"
-   }
-  ]
- },
- "上": {
-  "source": "上",
-  "uses": [
-   {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:232",
     "context": "localized"
    }
   ]
@@ -506,15 +497,6 @@
    {
     "at": "macOS/Nocchi/Screenshots/StudioSpecs.swift:29",
     "context": "string"
-   }
-  ]
- },
- "下": {
-  "source": "下",
-  "uses": [
-   {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:232",
-    "context": "localized"
    }
   ]
  },
@@ -619,7 +601,7 @@
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:90",
     "context": "localized"
    },
    {
@@ -645,7 +627,7 @@
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:90",
     "context": "localized"
    },
    {
@@ -671,7 +653,7 @@
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:90",
     "context": "localized"
    },
    {
@@ -702,7 +684,7 @@
   "source": "亮",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:601",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:624",
     "context": "localized"
    }
   ]
@@ -711,7 +693,7 @@
   "source": "亮度",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:601",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:624",
     "context": "localized"
    }
   ]
@@ -849,11 +831,11 @@
    }
   ]
  },
- "光从%@边来 · 拖动铜钮挪灯": {
-  "source": "光从\\(store.lighting.directionName)边来 · 拖动铜钮挪灯",
+ "光从右上角照下来 · 在板上拖动转灯": {
+  "source": "光从右上角照下来 · 在板上拖动转灯",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:593",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:616",
     "context": "swiftui"
    }
   ]
@@ -910,7 +892,7 @@
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:90",
     "context": "localized"
    },
    {
@@ -945,7 +927,7 @@
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:90",
     "context": "localized"
    },
    {
@@ -1127,7 +1109,7 @@
   "source": "冷",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:603",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:626",
     "context": "localized"
    }
   ]
@@ -1252,7 +1234,7 @@
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:90",
     "context": "localized"
    },
    {
@@ -1269,7 +1251,7 @@
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:90",
     "context": "localized"
    },
    {
@@ -1286,7 +1268,7 @@
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:90",
     "context": "localized"
    },
    {
@@ -1470,7 +1452,7 @@
   "source": "卷",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:608",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:631",
     "context": "localized"
    }
   ]
@@ -1539,7 +1521,7 @@
   "source": "台灯",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:703",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:726",
     "context": "localized"
    }
   ]
@@ -1548,30 +1530,8 @@
   "source": "右",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:232",
-    "context": "localized"
-   },
-   {
     "at": "macOS/Nocchi/Editor/Inspector.swift:774",
     "context": "swiftui"
-   }
-  ]
- },
- "右上": {
-  "source": "右上",
-  "uses": [
-   {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:232",
-    "context": "localized"
-   }
-  ]
- },
- "右下": {
-  "source": "右下",
-  "uses": [
-   {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:232",
-    "context": "localized"
    }
   ]
  },
@@ -1675,7 +1635,7 @@
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:88",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:90",
     "context": "localized"
    },
    {
@@ -1723,7 +1683,7 @@
   "source": "固定方式",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:633",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:656",
     "context": "swiftui"
    }
   ]
@@ -1834,7 +1794,7 @@
   "source": "地图针",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:24",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:25",
     "context": "localized"
    }
   ]
@@ -1888,7 +1848,7 @@
   "source": "多",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:605",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:628",
     "context": "localized"
    }
   ]
@@ -1927,7 +1887,7 @@
   "source": "大",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:602",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:625",
     "context": "localized"
    }
   ]
@@ -2218,7 +2178,7 @@
   "source": "小",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:602",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:625",
     "context": "localized"
    }
   ]
@@ -2309,30 +2269,8 @@
   "source": "左",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:232",
-    "context": "localized"
-   },
-   {
     "at": "macOS/Nocchi/Editor/Inspector.swift:772",
     "context": "swiftui"
-   }
-  ]
- },
- "左上": {
-  "source": "左上",
-  "uses": [
-   {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:232",
-    "context": "localized"
-   }
-  ]
- },
- "左下": {
-  "source": "左下",
-  "uses": [
-   {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:232",
-    "context": "localized"
    }
   ]
  },
@@ -2376,7 +2314,7 @@
   "source": "平",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:608",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:631",
     "context": "localized"
    }
   ]
@@ -2514,7 +2452,7 @@
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:613",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:636",
     "context": "swiftui"
    }
   ]
@@ -2751,7 +2689,7 @@
   "source": "把鼠标移到刘海，按「屏幕快门」或「自拍」拍第一张。",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:717",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:719",
     "context": "swiftui"
    }
   ]
@@ -2890,6 +2828,15 @@
    },
    {
     "at": "macOS/Nocchi/Editor/PaperStage.swift:418",
+    "context": "swiftui"
+   }
+  ]
+ },
+ "拖动转灯": {
+  "source": "拖动转灯",
+  "uses": [
+   {
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:818",
     "context": "swiftui"
    }
   ]
@@ -3158,7 +3105,7 @@
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:580",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:603",
     "context": "swiftui"
    }
   ]
@@ -3344,11 +3291,11 @@
   "source": "无",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:605",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:628",
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:606",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:629",
     "context": "localized"
    },
    {
@@ -3545,7 +3492,7 @@
   "source": "暖",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:603",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:626",
     "context": "localized"
    }
   ]
@@ -3554,7 +3501,7 @@
   "source": "暗",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:601",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:624",
     "context": "localized"
    }
   ]
@@ -3572,7 +3519,7 @@
   "source": "暗角",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:606",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:629",
     "context": "localized"
    }
   ]
@@ -3644,7 +3591,7 @@
   "source": "月光",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:704",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:727",
     "context": "localized"
    }
   ]
@@ -3688,7 +3635,7 @@
   "source": "木夹",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:26",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:27",
     "context": "localized"
    }
   ]
@@ -4001,7 +3948,7 @@
   "source": "浅",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:607",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:630",
     "context": "localized"
    }
   ]
@@ -4010,7 +3957,7 @@
   "source": "浓",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:606",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:629",
     "context": "localized"
    }
   ]
@@ -4037,7 +3984,7 @@
   "source": "深",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:607",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:630",
     "context": "localized"
    }
   ]
@@ -4055,7 +4002,7 @@
   "source": "混搭",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:22",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:23",
     "context": "localized"
    }
   ]
@@ -4109,7 +4056,7 @@
   "source": "灯光",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:531",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:554",
     "context": "swiftui"
    }
   ]
@@ -4118,16 +4065,7 @@
   "source": "灯光 · 显示",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:570",
-    "context": "swiftui"
-   }
-  ]
- },
- "灯的位置": {
-  "source": "灯的位置",
-  "uses": [
-   {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:778",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:593",
     "context": "swiftui"
    }
   ]
@@ -4136,7 +4074,7 @@
   "source": "灰尘",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:605",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:628",
     "context": "localized"
    }
   ]
@@ -4398,7 +4336,7 @@
   "source": "白天",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:40",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:41",
     "context": "localized"
    }
   ]
@@ -4675,7 +4613,7 @@
   "source": "纸张卷曲",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:608",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:631",
     "context": "localized"
    }
   ]
@@ -4884,7 +4822,7 @@
   "source": "胶带",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:25",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:26",
     "context": "localized"
    },
    {
@@ -5012,7 +4950,7 @@
   "source": "色温",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:603",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:626",
     "context": "localized"
    }
   ]
@@ -5030,7 +4968,7 @@
   "source": "范围",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:602",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:625",
     "context": "localized"
    }
   ]
@@ -5208,7 +5146,7 @@
   "source": "调节软木板的灯光与显示效果",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:555",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:578",
     "context": "swiftui"
    }
   ]
@@ -5289,7 +5227,7 @@
   "source": "软木板还空着",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkBoardView.swift:711",
+    "at": "macOS/Nocchi/Album/CorkBoardView.swift:713",
     "context": "swiftui"
    }
   ]
@@ -5687,7 +5625,7 @@
   "source": "阴影",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:607",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:630",
     "context": "localized"
    }
   ]
@@ -5844,7 +5782,7 @@
   "source": "黄铜钉",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:23",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:24",
     "context": "localized"
    }
   ]
@@ -5862,7 +5800,7 @@
   "source": "黑夜",
   "uses": [
    {
-    "at": "macOS/Nocchi/Album/CorkLighting.swift:41",
+    "at": "macOS/Nocchi/Album/CorkLighting.swift:42",
     "context": "localized"
    }
   ]

@@ -30,17 +30,19 @@ struct CorkBoardView: View {
     var body: some View {
         let groups = PhotoLibrary.groupedByMonth(records)
         let lighting = lights.lighting
+        // 照片、图钉、标签只拿影子要用的那部分：转灯、调亮度 / 色温 / 灰尘时它们不变，不用整块板子重算。
+        let prints = lighting.forPrints
         WalnutFrame {
             ZStack(alignment: .bottomLeading) {
-                CorkSurface(lighting: lighting)
+                CorkSurface(lighting: prints)
                 if libraryIsEmpty {
-                    EmptyCorkCard(lighting: lighting)
+                    EmptyCorkCard(lighting: prints)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if !groups.isEmpty {
                     ScrollView(.vertical) {
                         LazyVStack(alignment: .leading, spacing: 56) {
                             ForEach(groups) { group in
-                                CorkMonth(group: group, lighting: lighting)
+                                CorkMonth(group: group, lighting: prints)
                             }
                         }
                         .padding(.horizontal, 44)
@@ -58,7 +60,7 @@ struct CorkBoardView: View {
                     .transition(.scale(scale: 0.9, anchor: .bottomLeading).combined(with: .opacity))
                     .zIndex(2)
                 }
-                LightBadge(active: showsLighting, lighting: lighting) {
+                LightBadge(active: showsLighting, lighting: prints) {
                     withAnimation(.spring(response: 0.42, dampingFraction: 0.82)) { showsLighting.toggle() }
                 }
                 .padding(.leading, 20)
