@@ -135,7 +135,14 @@ public struct CardBoxView: View {
         let dragging = drag?.id == id
         let lifted = (hoveredCard == id || dragging) && phase == .spread
         let offset = dragging ? (drag?.translation ?? .zero) : .zero
-        return PhotoIndexCard(record: record, tabLabel: model.index.label(for: record), image: model.image(for: record), size: pile.stage.cardSize, lifted: lifted)
+        return PhotoIndexCard(
+            record: record,
+            tabLabel: model.index.label(for: record),
+            image: model.image(for: record),
+            size: pile.stage.cardSize,
+            lifted: lifted,
+            flatness: placement.flatness
+        )
             .modifier(CardSkew(flatness: placement.flatness, shear: slot.shear))
             .scaleEffect(lifted ? 1.03 : 1)
             .rotationEffect(.degrees(placement.rotation))
@@ -164,7 +171,7 @@ public struct CardBoxView: View {
                 }
                 Button("放回盒子") { model.putBack(id) }
             }
-            .help(record.indexTitle)
+            .help(Self.cardHelp(record))
             .allowsHitTesting(phase == .spread)
             .position(x: placement.center.x + offset.width, y: placement.center.y + offset.height)
             .mask { SlotMask(slot: slot, masked: phase.masked) }
@@ -288,6 +295,16 @@ public struct CardBoxView: View {
                 withAnimation(.easeOut(duration: 0.2)) { liftAmount = 1 }
             }
         }
+    }
+
+    /// 卡片的悬停说明：题字 · 日期 · 地点 · 胶卷（成片上印着题字和日期，地点和胶卷名在这里看）。
+    static func cardHelp(_ record: PhotoRecord) -> String {
+        var parts = [record.indexTitle, record.dateText]
+        if let location = record.location?.trimmingCharacters(in: .whitespacesAndNewlines), !location.isEmpty {
+            parts.append(location)
+        }
+        parts.append(record.stockName)
+        return parts.joined(separator: " · ")
     }
 
     private func tabHelp(_ tab: CardTab) -> String {

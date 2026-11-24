@@ -9,13 +9,11 @@ import UIKit
 /// 卡片盒用到的颜色（和 App 里的 `Palette` 同一套值）。
 enum CardInk {
     static let paper = Color(cardHex: 0xF4F0E6)
-    static let photoWell = Color(cardHex: 0xE9E3D6)
     static let ink = Color(cardHex: 0x2E2924)
     static let inkSoft = Color(cardHex: 0x7A6F64)
     static let hairline = Color(cardHex: 0xD8CFBF)
     static let accent = Color(cardHex: 0xC4593B)
     static let rule = Color(cardHex: 0xB23A2A)
-    static let ruleBlue = Color(cardHex: 0x6F8FB8)
     static let ivory = Color(cardHex: 0xECE6DA)
     static let ivoryLight = Color(cardHex: 0xF2EEE6)
 }
@@ -124,7 +122,13 @@ struct CardBoxBackdrop: View {
 
 // MARK: - 照片卡片
 
-/// 一张照片索引卡：纸色卡片、照片在上、宋体标题与打字机副标题，左上方伸出字母小标签。
+/// 一张照片卡：就是那张成片本身（白边、题字、日期、贴纸都在上面），在卡片框里等比放到最大，
+/// 上沿后面插着一枚白色塑料索引标签（和盒子里分隔卡的标签同一种），印着所在那一格的标签。
+/// 以前是一张纸色索引卡里再放一张缩小的成片、下面又写一遍题字和日期——所有者：「中间这个照片是不是该
+/// 直接放大到单个第二张图区域，再加上标签，感觉现在这个有点套娃」。
+///
+/// 卡片框（`size`）对所有照片都一样大（飞行、摊开的位置都按它算）；成片按自己的版式（方形、迷你、宽幅、
+/// 冲印小照、四格条、四宫格）放进去：立在格子里、正被抽出来时贴着框的下沿（从格口里冒出来），摊开后在框里居中。
 struct PhotoIndexCard: View {
     let record: PhotoRecord
     /// 卡片自己的小标签上印什么（和所在的分隔卡一样：「W」「2026」「11月」「11/24」）。
@@ -132,101 +136,84 @@ struct PhotoIndexCard: View {
     let image: CGImage?
     let size: CGSize
     let lifted: Bool
+    /// 0 = 立在格子里（成片贴着框的下沿），1 = 摊开（在框里居中）；跟着 `CardPlacement.flatness` 一起动。
+    var flatness: CGFloat = 1
 
-    private let inset: CGFloat = 11
+    /// 标签离成片左边多远、往成片后面插进去多少。
+    private static let tabInset: CGFloat = 16
+    private static let tabTuck: CGFloat = 3
 
     var body: some View {
-        let photoWidth = size.width - inset * 2
-        let photoHeight = max(40, min(photoWidth, size.height - 80))
-        VStack(alignment: .leading, spacing: 0) {
-            ZStack {
-                Rectangle()
-                    .fill(CardInk.photoWell)
-                if let image {
-                    Image(decorative: image, scale: 1)
-                        .resizable()
-                        .interpolation(.high)
-                        .aspectRatio(contentMode: .fit)
-                        .shadow(color: .black.opacity(0.2), radius: 1.2, x: 0.4, y: 0.8)
-                        .padding(7)
-                } else {
-                    ProgressView()
-                        .controlSize(.small)
-                        .opacity(0.5)
-                }
+        let rect = Self.printRect(in: size, aspect: aspect, flatness: flatness)
+        let tab = CGRect(
+            x: rect.minX + Self.tabInset,
+            y: rect.minY - IndexTab.height + Self.tabTuck,
+            width: IndexTab.width(for: tabLabel),
+            height: IndexTab.height
+        )
+        face
+            .frame(width: rect.width, height: rect.height)
+            .background(alignment: .topLeading) {
+                PrintTab(label: tabLabel)
+                    .offset(x: Self.tabInset, y: -IndexTab.height + Self.tabTuck)
             }
-            .frame(width: photoWidth, height: photoHeight)
-            .clipShape(RoundedRectangle(cornerRadius: 1.5, style: .continuous))
-            .padding(.top, inset)
-
-            Rectangle()
-                .fill(CardInk.rule.opacity(0.55))
-                .frame(height: 0.8)
-                .padding(.top, 10)
-
-            Text(record.indexTitle)
-                .font(.custom("Songti SC", size: 14).weight(.semibold))
-                .foregroundStyle(CardInk.ink)
-                .lineLimit(1)
-                .padding(.top, 8)
-
-            Text(subtitle)
-                .font(.custom("American Typewriter", size: 10.5))
-                .foregroundStyle(CardInk.inkSoft)
-                .lineLimit(1)
-                .padding(.top, 4)
-
-            Spacer(minLength: 0)
-        }
-        .padding(.horizontal, inset)
-        .frame(width: size.width, height: size.height, alignment: .top)
-        .background(alignment: .top) {
-            RuledLines(top: inset + photoHeight + 36, spacing: 17)
-        }
-        .background(
-            RoundedRectangle(cornerRadius: 3, style: .continuous)
-                .fill(CardInk.paper)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 3, style: .continuous)
-                .strokeBorder(CardInk.ink.opacity(0.13), lineWidth: 0.6)
-        )
-        .overlay(alignment: .topLeading) {
-            LetterTab(letter: tabLabel)
-                .offset(x: 18, y: -IndexTab.height + 1)
-        }
-        .compositingGroup()
-        .shadow(color: .black.opacity(0.26), radius: 1.2, x: 0.6, y: 1)
-        .shadow(color: .black.opacity(lifted ? 0.3 : 0.2), radius: lifted ? 18 : 12, x: 4, y: lifted ? 14 : 9)
+            .compositingGroup()
+            .shadow(color: .black.opacity(0.26), radius: 1.2, x: 0.6, y: 1)
+            .shadow(color: .black.opacity(lifted ? 0.3 : 0.2), radius: lifted ? 18 : 12, x: 4, y: lifted ? 14 : 9)
+            .offset(x: rect.minX, y: rect.minY)
+            .frame(width: size.width, height: size.height, alignment: .topLeading)
+            // 悬停、点击、拖动只认成片和标签，不认卡片框里空着的地方。
+            .contentShape(CardHitShape(rect: rect.union(tab)))
     }
 
-    private var subtitle: String {
-        var parts = [record.dateText]
-        if let location = record.location?.trimmingCharacters(in: .whitespacesAndNewlines), !location.isEmpty {
-            parts.append(location)
+    /// 成片本身；还没读到图时是一张同样版式的空白相纸，中间转圈。
+    @ViewBuilder
+    private var face: some View {
+        if let image {
+            Image(decorative: image, scale: 1)
+                .resizable()
+                .interpolation(.high)
+                .antialiased(true)
+        } else {
+            ZStack {
+                Rectangle()
+                    .fill(CardInk.paper)
+                ProgressView()
+                    .controlSize(.small)
+                    .opacity(0.5)
+            }
         }
-        parts.append(record.stockName)
-        return parts.joined(separator: " · ")
+    }
+
+    /// 成片的宽高比：读到图就用图的，没读到按相纸版式。
+    private var aspect: CGFloat {
+        if let image, image.width > 0, image.height > 0 {
+            return CGFloat(image.width) / CGFloat(image.height)
+        }
+        return record.layout.aspect
+    }
+
+    /// 成片在卡片框里的位置：等比放到最大、左右居中；竖向从贴着下沿（`flatness` 0）过渡到居中（1）。
+    static func printRect(in size: CGSize, aspect: CGFloat, flatness: CGFloat) -> CGRect {
+        let a = max(aspect, 0.05)
+        var width = size.width
+        var height = width / a
+        if height > size.height {
+            height = size.height
+            width = height * a
+        }
+        let slack = size.height - height
+        let t = min(max(flatness, 0), 1)
+        return CGRect(x: (size.width - width) / 2, y: slack * (1 - t / 2), width: width, height: height)
     }
 }
 
-/// 索引卡下半截的淡蓝横线。
-private struct RuledLines: View {
-    let top: CGFloat
-    let spacing: CGFloat
+/// 卡片框里真正有东西的那一块（视图自己的坐标）。
+private struct CardHitShape: Shape {
+    let rect: CGRect
 
-    var body: some View {
-        Canvas { context, size in
-            var y = top
-            var path = Path()
-            while y < size.height - 6 {
-                path.move(to: CGPoint(x: 0, y: y))
-                path.addLine(to: CGPoint(x: size.width, y: y))
-                y += spacing
-            }
-            context.stroke(path, with: .color(CardInk.ruleBlue.opacity(0.2)), lineWidth: 0.6)
-        }
-        .allowsHitTesting(false)
+    func path(in _: CGRect) -> Path {
+        Path(rect)
     }
 }
 
@@ -241,30 +228,32 @@ enum IndexTab {
     }
 }
 
-/// 模切的索引卡标签：上窄下宽、上角圆，和卡片同一张纸；发丝描边、顶上一道纸边的亮线，
-/// 字母用 Didot 粗体（像老档案柜索引卡上印的字）。
-private struct LetterTab: View {
-    let letter: String
+/// 插在成片上沿后面的索引标签：和盒子里分隔卡的标签同一种白色塑料插片（上窄下宽、上角圆、有一点光泽），
+/// 字也和分隔卡上印的一样：首字母用 Futura 粗体，日期用 Futura 窄体。
+private struct PrintTab: View {
+    let label: String
 
     var body: some View {
+        let font: Font = label.count > 2 ? .custom("Futura-CondensedExtraBold", size: 12.5) : .custom("Futura-Bold", size: 13)
         ZStack {
             IndexTabShape()
-                .fill(LinearGradient(colors: [Color(cardHex: 0xFBF9F4), CardInk.paper], startPoint: .top, endPoint: .bottom))
-            IndexTabShape()
-                .stroke(CardInk.ink.opacity(0.16), lineWidth: 0.6)
+                .fill(LinearGradient(colors: [Color(cardHex: 0xFDFDFB), Color(cardHex: 0xE9E7E1)], startPoint: .top, endPoint: .bottom))
+            // 塑料的光泽：靠上一道柔和的亮边。
             IndexTabShape()
                 .inset(by: 1.2)
-                .stroke(Color.white.opacity(0.85), lineWidth: 0.6)
+                .stroke(Color.white, lineWidth: 0.8)
                 .mask { LinearGradient(colors: [.white, .clear], startPoint: .top, endPoint: .center) }
-            Text(verbatim: letter)
-                .font(.custom("Didot", size: letter.count > 2 ? 12.5 : 14).weight(.bold))
+            IndexTabShape()
+                .stroke(CardInk.ink.opacity(0.2), lineWidth: 0.6)
+            Text(verbatim: label)
+                .font(font)
                 .foregroundStyle(CardInk.ink)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
                 .padding(.horizontal, 5)
-                .offset(y: 1)
+                .offset(y: 0.5)
         }
-        .frame(width: IndexTab.width(for: letter), height: IndexTab.height)
+        .frame(width: IndexTab.width(for: label), height: IndexTab.height)
     }
 }
 

@@ -11,6 +11,7 @@ The full changelog, in Chinese, is [CHANGELOG.md](https://github.com/Chaosnap/No
 - **The card box files by date**: the brass gear next to **＋** files it by caption initial or by year, month or day, and the divider tabs follow.
 - **About to be drawn**: hover a divider and it rises out of its slot.
 - **Finer cards and tabs**: rounded index-card stock in real pastels, packed denser and messier, a paper clip, and white plastic tabs.
+- **The card is the print**: a card drawn from the box is now the print itself, as large as the card, with a white plastic tab behind its top edge, instead of a small print inside an index card that repeated its caption and date.
 - **Choose where prints live**: *Settings → General → Storage* moves your prints to another folder or disk without overwriting anything.
 - **Fixes**: cards drawn from the box sometimes stayed blank; windows opened from the notch now appear in the space you are using (and over full-screen apps) instead of pulling you to another one; the album's view icons no longer have clipped shadows; the album's search field is readable in dark mode.
 

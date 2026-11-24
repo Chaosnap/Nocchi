@@ -39,6 +39,7 @@
 | 8 | 关于页删掉「机身、图标与纹理为原创设计（由 Codex 生成）……」 | 🟢 已改 | `Settings/SettingsView.swift`（`AboutTab`） | |
 | 9 | 存储位置可以自定义 | 🟢 CI 绿（含 5 条单元测试） | `NocchiKit/Darkroom/PhotoLibrary.swift`（`printsRoot` 可变 + 锁、`relocatePrints(to:)`、`printFileCount()`，测试 `PrintsRelocationTests`）、`App/Services.swift`（`PrintsLocation`）、`Settings/StorageSettings.swift`（`StorageSection`）、`macOS/project.yml`（外接盘 / 网络盘的权限说明） | 按「设计 9」做：先改用新位置（之后的成片直接写过去）再按相对路径一个个搬，同名不覆盖（列出来），搬到一半出错就搬回来、改回原位置；搬空的月份文件夹删掉。选的文件夹叫 Nocchi 或是空的就直接用，否则在里面建「Nocchi」。启动时自定义位置所在的文件夹不存在（外接盘没插）就这次用默认位置、设置里提示，不在 /Volumes 下凭空建文件夹。决策 D38 |
 | 11 | 所有者：参考站的卡片盒「建模更精细」——「不是说箱子不行，而是里面的书页和标签建模还不够精细」；可以把参考图下下来照着自己做一个 | 🟢 CI 绿，Screenshots 第 27 次验收（`album-cardbox.jpg`） | `design/blender/cardbox/make_cardbox.py`（`paper_sheet` 圆角卡纸、`paper_mat` 卡纸材质、`CARD_COLORS`、卡片更密更乱、回形针、白色塑料标签 2.0 cm）、`Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift`（`SlotGeometry` 的标签位置比例跟着改）、`CardBoxHotspots.swift`（重新生成）、`CardBoxLift.swift`（`DividerPaper` 重新取色） | 参考图存在 `Ref_Image/shashage-archive/`（第三方作品，**不入库、不进 App**，只当参考）。木盒不动（所有者说箱子没问题）。卡片：圆角 + 厚度 + 细倒角、淡彩卡纸、在原来每两张之间再插一两张（单独的随机数，分隔卡和标签位置不变）、高低错落（分隔卡前面的卡按透视限高，不挡标签上印的字）、回形针。标签：2.0 × 1.25 cm 白色塑料插片（原来 2.8 cm 纸标签）。 |
+| 12 | 所有者（发版前）：抽出来的卡片「中间这个照片是不是该直接放大到单个第二张图区域，再加上标签，感觉现在这个有点套娃」 | 🟡 已改，等 CI 和 Screenshots（看 `album-cardbox.jpg`：右边那一叠是成片本身、顶上插着白色塑料标签） | `NocchiUI/CardBox/CardBoxParts.swift`（`PhotoIndexCard`、`PrintTab`、`CardHitShape`）、`CardBoxView.swift`（传 `flatness`、`cardHelp`） | 卡片就是成片本身（`printFile`，白边、题字、贴纸都在上面），在卡片框（所有照片一样大，飞行和摊开的位置都按它算）里等比放到最大：立在格子里、被抽出来时贴着框的下沿（从格口里冒出来，不是悬在半空），摊开后居中（跟着 `flatness` 过渡）。标签换成和分隔卡同款的白色塑料插片（Futura），插在成片上沿后面 3 点；悬停、点击、拖动只认成片和标签（`contentShape`）。以前索引卡下半截的「日期 · 地点 · 胶卷」挪进悬停说明。 |
 | 10 | 抽屉（卡片盒）取出来的效果参考 <https://shashage.de/what-we-borrow?entry=home> 的「准备取出来」动画 | 🟢 CI 绿，Screenshots 第 25、27 次验收（`album-cardbox-month.jpg`：第一格的分隔卡抬起一截） | `NocchiUI/CardBox/CardBoxLift.swift`（`DividerLift`、`FrontTabs`、`DividerPaper`）、`CardBoxView.swift`（`lift(_:)`、`peekSlot`）、`CardBoxParts.swift`（`TabHotspot.rise`、`TabLabels.occludedByFront`）、`design/blender/cardbox/sample_tab_paper.py` | 参考站的做法（`archive-interaction.js`）：悬停时那张分隔卡沿盒子竖直方向抬起约 4% 画高（0.19 秒），只画原来藏住的那截纸面 + 原图裁出的标签，前面的标签和盒子前半部分重新盖上；点击才把卡放到桌上。这里一样：沿标签面竖边抬 1.25 个标签高，纸面颜色取自渲染图（每张标签一个色），格口线以下用 `SlotMask` 挡住，前面的标签 `FrontTabs` 盖上；换一张时先放回再抬（代数计数防止动画回调打架）；热区补到抬满的位置。点击后沿用原来的抽卡动画（斜着抽出、转正、落到右边） |
 
 **设计 6 · 卡片盒归档方式（已按此实现，留作说明）**
@@ -184,6 +185,7 @@
 
 ## 最近更新（新的在上）
 
+- **2026-11-24 · 第 56 次推送（发版前所有者的反馈）** 卡片盒抽出来的卡片不再「套娃」：就是成片本身加一枚白色塑料标签（交接表第 12 行）；一起进 v2.1.0。第 55 次推送的 CI / Screenshots 被这次推送取代。
 - **2026-11-24 · 第 55 次推送（发版准备）** 所有者同意发 v2.1.0：版本改为 2.1.0，`CHANGELOG` 整理出 `## [2.1.0]`（Release 说明就取这一节），README（版本徽章、「Where it stands」、功能列表里的换相机、卡片盒归档、成片位置）和文档站中英文更新日志加上 2.1.0。发版前把英文表 563 条通读一遍，改了几处用词（「冲印店」统一叫 Photo Lab、Desktop、Prints Folder、Pull out）。第 54 次推送（英文单复数）的 CI 与 Screenshots 见下一条。
 - **2026-11-24 · 第 54 次推送** 英文单复数：`scripts/i18n/strings.py` 支持复数写法、生成 `en.lproj/Localizable.stringsdict`（15 个带数量的键：张、文件、字体、贴纸、卷），决策 D39 补了写法。
 - **2026-11-24 · 第 53 次推送** 英文截图逐张验收后的修整（交接表第 7 行）：截断的英文、Webcam、COLOUR 刻字；文档站英文页和 README 用英文截图和英文界面上的叫法，设置页补「语言」「存储」，大头贴机页按剧院暗红布帘重写。CI 第 61 次、Screenshots 第 27 次（卡片和标签更精细、英文界面第一次截图）全绿。
@@ -246,7 +248,7 @@
 ## 下一步
 
 1. 等所有者确认交接表第 3 项（从刘海进相册时「主程序被强制隐藏」）：推断是窗口留在别的桌面空间，已让窗口跟着当前空间走；如果所有者说的是别的现象，问清楚再改。
-2. 发 v2.1.0（所有者：「Release 2.1.0」）：第 55 次推送已把版本改成 2.1.0、`CHANGELOG` 整理出 `## [2.1.0]`；CI 全绿后推 `v2.1.0` 标签，看 Release 工作流出的 `Nocchi-macOS-2.1.0.zip` 和 `SHA256SUMS.txt`，再把本页的 macOS 行改成「已发布」。
+2. 发 v2.1.0（所有者：「Release 2.1.0」）：第 55 次推送已把版本改成 2.1.0、`CHANGELOG` 整理出 `## [2.1.0]`，第 56 次推送补上交接表第 12 项（卡片就是成片）；CI 全绿后推 `v2.1.0` 标签，看 Release 工作流出的 `Nocchi-macOS-2.1.0.zip` 和 `SHA256SUMS.txt`，再把本页的 macOS 行改成「已发布」。
 3. 之后：完成 iOS App 与灵动岛 Live Activity（`iOS/` 下的草稿还没提交，iOS 用 80 年代方盒款机身外观），接入 CI（未签名 ipa）；iOS 也接上 `UILanguage` 和英文表。
 
 ## 已知问题 / 待你确认

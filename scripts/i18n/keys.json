@@ -30,7 +30,7 @@
   "source": "\\(text) · 左右拖动翻看",
   "uses": [
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:607",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:595",
     "context": "localized"
    }
   ]
@@ -48,7 +48,7 @@
   "source": "\\(name)还是空的",
   "uses": [
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift:297",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift:314",
     "context": "localized"
    }
   ]
@@ -96,7 +96,7 @@
     "context": "localized"
    },
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:515",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:503",
     "context": "swiftui"
    }
   ]
@@ -889,15 +889,15 @@
   "source": "全部放回",
   "uses": [
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:566",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:554",
     "context": "localized"
    },
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:597",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:585",
     "context": "localized"
    },
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift:310",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift:327",
     "context": "localized"
    }
   ]
@@ -1362,7 +1362,7 @@
   "source": "卡片盒还是空的",
   "uses": [
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:619",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:607",
     "context": "swiftui"
    }
   ]
@@ -2684,7 +2684,7 @@
   "source": "把摊开的卡片全部放回盒子",
   "uses": [
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:597",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:585",
     "context": "localized"
    }
   ]
@@ -2759,7 +2759,7 @@
   "source": "抽出 \\(name)",
   "uses": [
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift:296",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift:313",
     "context": "localized"
    }
   ]
@@ -2786,7 +2786,7 @@
   "source": "拍下的照片会按题字的首字母放进盒子里。\\n把鼠标移到刘海，按「屏幕快门」或「自拍」拍第一张。",
   "uses": [
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:625",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:613",
     "context": "swiftui"
    }
   ]
@@ -3180,7 +3180,7 @@
   "source": "放回盒子",
   "uses": [
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift:165",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift:172",
     "context": "swiftui"
    }
   ]
@@ -3189,7 +3189,7 @@
   "source": "放回那一叠",
   "uses": [
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift:163",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift:170",
     "context": "swiftui"
    }
   ]
@@ -4510,7 +4510,7 @@
   "source": "空",
   "uses": [
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:517",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:505",
     "context": "swiftui"
    }
   ]
@@ -5066,7 +5066,7 @@
   "source": "让拖开的卡片回到那一叠",
   "uses": [
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:597",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxParts.swift:585",
     "context": "localized"
    }
   ]
@@ -5488,7 +5488,7 @@
   "source": "重新叠好",
   "uses": [
    {
-    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift:307",
+    "at": "Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift:324",
     "context": "localized"
    }
   ]

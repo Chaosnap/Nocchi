@@ -55,7 +55,7 @@ PhotoComposer（白边 + 题字 + 日期 + 手写）──► 成片 ~/Pictures/
 | `CardBox/CardBoxView.swift` | 舞台：背景 → `CardBoxBase` 渲染图 → 正在抽出的卡片 → `CardBoxFront` → 标签热区 → 右边那一叠；`CardBoxStage`（渲染图与摊开区的几何）、`SlotGeometry`（每个字母那一格的格口线与斜切）、`CardSkew`（斜切 ↔ 转正）、`SlotMask`、`PileLayout`（松散的一叠、拖动摆放与吸附成摞） |
 | `CardBox/CardFlights.swift` | 飞行编排：抽卡 = 立在自己那一格（斜切、被格口线遮住）→ 沿分隔卡抽出 → 在盒口上方转正 → 落到右边那一叠；放回反过来。模型只管顺序，这里管阶段 |
 | `CardBox/CardBoxHotspots.swift` | 渲染图上 27 张分隔卡标签（中心、标签正面的四个角）、盒口、盒子外框的归一化坐标（由 `design/blender/cardbox/hotspots.json` 生成） |
-| `CardBox/CardBoxParts.swift` | 照片索引卡（纸色、宋体标题、打字机副标题、所在格的小标签、横线）、`TabFace`（标签面在视图里的位置与斜切变换）、`TabLabels`（一个 `Canvas` 把标签上的字按透视印上去，裁掉被前一张挡住的部分）、标签热区（和标签面一样的斜四边形）与吊牌、「全部放回」、空盒提示、渲染图缺失时的退路 |
+| `CardBox/CardBoxParts.swift` | 照片卡 `PhotoIndexCard`（就是成片本身，按版式等比放进卡片框：立在格子里时贴着下沿、摊开后居中；上沿后面插一枚白色塑料标签 `PrintTab`，印所在格的标签）、`TabFace`（标签面在视图里的位置与斜切变换）、`TabLabels`（一个 `Canvas` 把标签上的字按透视印上去，裁掉被前一张挡住的部分）、标签热区（和标签面一样的斜四边形）与吊牌、「全部放回」、空盒提示、渲染图缺失时的退路 |
 | `Print/PrintSurface.swift` | 屏幕上的相纸：`PhotoComposer` 的底层 / 上层 + 显影中的照片 + 光泽 + 正在写的笔画 |
 
 ## macOS App

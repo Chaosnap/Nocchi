@@ -27,7 +27,7 @@ A cork board in a walnut frame. Each month gets an embossed label (2026 · Novem
 
 ### Card box
 
-A beechwood index-card box with 27 dividers. By default each print is filed under the first letter of its caption (A–Z; Chinese captions by their pinyin, prints without a caption under #). Hover a divider to see how many prints it holds; tabs with prints have an orange dot. Click it and the cards slide one by one out of their own slot and land in a loose pile on the right (up to nine; drag sideways to leaf through, or drag cards anywhere and stack them). Click a card to bring it to the front, double-click to open it, and **Put All Back** files them again.
+A beechwood index-card box with 27 dividers. By default each print is filed under the first letter of its caption (A–Z; Chinese captions by their pinyin, prints without a caption under #). Hover a divider to see how many prints it holds; tabs with prints have an orange dot. Click it and the prints slide one by one out of their own slot, each with a white plastic tab, and land in a loose pile on the right (up to nine; drag sideways to leaf through, or drag cards anywhere and stack them). Click a card to bring it to the front, double-click to open it, and **Put All Back** files them again.
 
 ![The card box](/screenshots/en/album-cardbox.jpg)
 
