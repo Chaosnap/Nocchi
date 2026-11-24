@@ -58,13 +58,16 @@ struct StudioPrintCard: View {
     let item: StudioPrint
     let width: CGFloat
     var tilt: Double = 0
+    /// 显影进度（1 = 显影完成）。
+    var developed: Double = 1
 
     var body: some View {
         let size = item.record.layout.size(forWidth: width)
+        let visual = developed >= 1 ? DevelopmentVisual.developed : DevelopmentVisual.at(developed)
         PrintSurface(
             record: item.record,
             images: item.images,
-            visuals: item.images.map { _ in DevelopmentVisual.developed },
+            visuals: item.images.map { _ in visual },
             paper: item.paper,
             width: width
         )
@@ -81,10 +84,11 @@ struct StudioEjectingPrint: View {
     let item: StudioPrint
     let width: CGFloat
     let progress: CGFloat
+    var developed: Double = 1
 
     var body: some View {
         let size = item.record.layout.size(forWidth: width)
-        StudioPrintCard(item: item, width: width)
+        StudioPrintCard(item: item, width: width, developed: developed)
             .offset(y: -size.height * (1 - progress))
             .frame(width: size.width + 60, height: size.height * progress + 40, alignment: .top)
             .clipped()
@@ -109,29 +113,64 @@ struct StudioNotchSlot: View {
     }
 }
 
-/// 桌面：一张相片正从刘海里吐出来；右上角是照片堆；装饰过的拿铁被拖到右下；左边是一条大头贴和一张宽幅。
+/// README / 文档站的头图（1800 × 1000）：暗房里的一张桌面。刘海张开成出片口，一张还没显影完的相片正被吐出来，
+/// 出片口漏出一团暖色的安全灯光；四周三层相片铺满画面——后面一层虚化、中间一层、前面一层更大、被画框裁掉一角，
+/// 桌上还躺着两只胶卷罐。中间留给出片口，视线从刘海一路往下。
 struct DeskScene: View {
     let prints: [String: StudioPrint]
+    static let size = CGSize(width: 1800, height: 1000)
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            StudioWallpaper()
-            card("booth-strip", width: 106, tilt: -5, at: CGPoint(x: 150, y: 330))
-            card("street", width: 290, tilt: 3, at: CGPoint(x: 330, y: 700))
-            card("lake", width: 250, tilt: 7, at: CGPoint(x: 1250, y: 205))
-            card("blossom", width: 205, tilt: -6, at: CGPoint(x: 1212, y: 240))
-            card("cat", width: 158, tilt: 3, at: CGPoint(x: 1290, y: 262))
-            card("latte", width: 246, tilt: -4, at: CGPoint(x: 1070, y: 610))
-            StudioMenuBar(width: 1440)
+            DarkroomGround(size: Self.size)
+
+            // 后面一层：小一点、虚化、暗一点。
+            Group {
+                card("lake", width: 300, tilt: -9, at: CGPoint(x: 360, y: 250))
+                card("tulips", width: 230, tilt: 8, at: CGPoint(x: 1440, y: 250))
+                card("bike", width: 170, tilt: 6, at: CGPoint(x: 600, y: 330))
+                card("sparklers", width: 230, tilt: -6, at: CGPoint(x: 1660, y: 560))
+            }
+            .blur(radius: 2.2)
+            .brightness(-0.06)
+
+            // 中间一层。
+            Group {
+                card("booth-strip", width: 150, tilt: -7, at: CGPoint(x: 140, y: 560))
+                card("street", width: 380, tilt: 5, at: CGPoint(x: 430, y: 650))
+                card("beach", width: 340, tilt: -4, at: CGPoint(x: 1340, y: 470))
+                card("blossom", width: 270, tilt: 6, at: CGPoint(x: 1190, y: 770))
+                canister("FilmCanister-portrait-400", size: 170, tilt: -24, at: CGPoint(x: 760, y: 900))
+            }
+
+            // 前面一层：更大、被画框裁掉一角。
+            Group {
+                card("booth-heart", width: 290, tilt: 9, at: CGPoint(x: 1640, y: 860))
+                card("cat", width: 240, tilt: 8, at: CGPoint(x: 230, y: 930))
+                card("latte", width: 370, tilt: -6, at: CGPoint(x: 990, y: 900))
+                canister("FilmCanister-cream-600", size: 190, tilt: 12, at: CGPoint(x: 1660, y: 150))
+            }
+
+            // 出片口漏出来的暖光（盖在相片上，只亮不暗）。
+            RadialGradient(
+                colors: [Color(hex: 0xFFB27A, opacity: 0.34), Color(hex: 0xC4593B, opacity: 0.12), .clear],
+                center: UnitPoint(x: 0.5, y: 0.04),
+                startRadius: 4,
+                endRadius: 420
+            )
+            .blendMode(.screen)
+            .allowsHitTesting(false)
+
+            StudioMenuBar(width: Self.size.width)
             if let dog = prints["dog"] {
                 VStack(spacing: -6) {
-                    StudioNotchSlot(slotWidth: 226)
-                    StudioEjectingPrint(item: dog, width: 226, progress: 0.72)
+                    StudioNotchSlot(slotWidth: 330)
+                    StudioEjectingPrint(item: dog, width: 330, progress: 0.8, developed: 0.62)
                 }
-                .frame(width: 1440, alignment: .top)
+                .frame(width: Self.size.width, alignment: .top)
             }
         }
-        .frame(width: 1440, height: 900, alignment: .topLeading)
+        .frame(width: Self.size.width, height: Self.size.height, alignment: .topLeading)
         .clipped()
     }
 
@@ -141,6 +180,45 @@ struct DeskScene: View {
             StudioPrintCard(item: item, width: width, tilt: tilt)
                 .position(point)
         }
+    }
+
+    @ViewBuilder
+    private func canister(_ name: String, size: CGFloat, tilt: Double, at point: CGPoint) -> some View {
+        if BundledImage.has(name) {
+            Image(name)
+                .resizable()
+                .interpolation(.high)
+                .frame(width: size, height: size)
+                .rotationEffect(.degrees(tilt))
+                .shadow(color: .black.opacity(0.45), radius: 2, x: 0, y: 2)
+                .shadow(color: .black.opacity(0.35), radius: 16, x: 6, y: 12)
+                .position(point)
+        }
+    }
+}
+
+/// 暗房的桌面：深暖棕黑、从刘海往下的一片陶土色安全灯光、两侧的石油绿与芥末色余光、细颗粒和暗角。
+private struct DarkroomGround: View {
+    let size: CGSize
+
+    var body: some View {
+        ZStack {
+            LinearGradient(colors: [Color(hex: 0x140E0B), Color(hex: 0x1F1511), Color(hex: 0x2A1B13)], startPoint: .top, endPoint: .bottom)
+            RadialGradient(colors: [Color(hex: 0xC4593B, opacity: 0.42), .clear], center: UnitPoint(x: 0.5, y: 0.0), startRadius: 10, endRadius: 820)
+            RadialGradient(colors: [Color(hex: 0x2F5F5C, opacity: 0.38), .clear], center: UnitPoint(x: 0.06, y: 0.92), startRadius: 10, endRadius: 700)
+            RadialGradient(colors: [Color(hex: 0xD9A441, opacity: 0.16), .clear], center: UnitPoint(x: 0.96, y: 0.55), startRadius: 10, endRadius: 640)
+            Canvas { context, canvasSize in
+                var rng = SeededRandom(seed: 0xDA4C_400E)
+                for _ in 0..<9000 {
+                    let x = rng.unit() * Double(canvasSize.width)
+                    let y = rng.unit() * Double(canvasSize.height)
+                    let light = rng.unit() > 0.5
+                    context.fill(Path(CGRect(x: x, y: y, width: 1.2, height: 1.2)), with: .color(light ? .white.opacity(0.035) : .black.opacity(0.05)))
+                }
+            }
+            RadialGradient(colors: [.clear, .black.opacity(0.55)], center: .center, startRadius: size.width * 0.32, endRadius: size.width * 0.72)
+        }
+        .frame(width: size.width, height: size.height)
     }
 }
 

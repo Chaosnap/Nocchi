@@ -121,7 +121,7 @@ private final class Studio {
     // MARK: - 合成场景（2 倍像素）
 
     private func renderComposites() async {
-        render("desk", size: CGSize(width: 1440, height: 900), DeskScene(prints: prints))
+        render("desk", size: DeskScene.size, DeskScene(prints: prints))
         render("prints", size: CGSize(width: 1600, height: 1000), PrintGalleryScene(prints: prints))
 
         let booth = PhotoBoothController.shared
