@@ -3,7 +3,7 @@
 ## [未发布]
 
 ### 新增
-- **许可**：非商业用途随便用，版权归 Chaosnap，商用需书面许可——代码按 PolyForm Noncommercial 1.0.0（`LICENSE`），美术素材按 CC BY-NC 4.0（`LICENSE-ASSETS.md`）。
+- **许可**：Chaosnap 创作的内容（代码、文档、美术）采用 CC BY-NC 4.0（署名—非商业性使用）——非商业用途随便用，商用需书面许可；第三方内容按各自的许可。
 - **社区文件**：行为准则（改编自 Contributor Covenant 2.1）、贡献指南、安全政策（GitHub 私密漏洞报告）、隐私说明（完全本机运行、不联网）、Issue / PR 模板、`.editorconfig`、每月检查 GitHub Actions 版本的 Dependabot。
 - **v0.2 设计规范**：`docs/DESIGN.md`——「复古冲印店」改版的视觉语言、相纸规格、模板、贴纸、装饰台、相册四种看法与跨模块接口。
 

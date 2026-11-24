@@ -1,81 +1,42 @@
-Required Notice: Copyright 2026 Chaosnap (https://github.com/Chaosnap/Nocchi)
+Nocchi · 刘海冲印店
+Copyright (c) 2026 Chaosnap — https://github.com/Chaosnap/Nocchi
 
-Nocchi 的源代码按下面的 PolyForm Noncommercial License 1.0.0 授权：任何非商业用途都可以使用、修改、分享；商业用途需要版权人的书面许可。美术素材（App 图标、机身、纹理、3D 渲染等）按 CC BY-NC 4.0 授权，见 LICENSE-ASSETS.md。
+本仓库中由 Chaosnap 创作的原创内容（源代码、文档、App 图标、机身、纹理、
+3D 模型与渲染、设计源文件等）采用「知识共享 署名—非商业性使用 4.0 协议国际版
+（CC BY-NC 4.0）」授权：
 
-The source code of Nocchi is licensed under the PolyForm Noncommercial License 1.0.0 below. Commercial use requires written permission from the copyright holder. The artwork is licensed under CC BY-NC 4.0, see LICENSE-ASSETS.md.
+  协议摘要：https://creativecommons.org/licenses/by-nc/4.0/deed.zh-hans
+  法律文本：https://creativecommons.org/licenses/by-nc/4.0/legalcode.zh-hans
 
----
+  - 非商业用途：可以自由复制、分享、修改、二次创作。
+  - 署名：注明出处（例如「Nocchi · © 2026 Chaosnap · CC BY-NC 4.0」并附上本仓库
+    链接），并说明是否做了修改。
+  - 商业用途：需要先取得 Chaosnap 的书面许可（请在本仓库开 Issue 联系）。
 
-# PolyForm Noncommercial License 1.0.0
+本许可只覆盖 Chaosnap 享有版权的部分。第三方内容按其各自的许可，例如
+CODE_OF_CONDUCT.md 改编自 Contributor Covenant 2.1（CC BY 4.0）。
+「Nocchi」「刘海冲印店」是本产品的名字，本许可不授权用它们为其他产品命名。
 
-<https://polyformproject.org/licenses/noncommercial/1.0.0>
+------------------------------------------------------------------------------
 
-## Acceptance
+Nocchi
+Copyright (c) 2026 Chaosnap — https://github.com/Chaosnap/Nocchi
 
-In order to get any license under these terms, you must agree to them as both strict obligations and conditions to all your licenses.
+The original content of this repository created by Chaosnap (source code,
+documentation, app icon, camera bodies, textures, 3D models and renders, and
+design sources) is licensed under the Creative Commons
+Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0).
 
-## Copyright License
+  Deed:       https://creativecommons.org/licenses/by-nc/4.0/
+  Legal code: https://creativecommons.org/licenses/by-nc/4.0/legalcode
 
-The licensor grants you a copyright license for the software to do everything you might do with the software that would otherwise infringe the licensor's copyright in it for any permitted purpose.  However, you may only distribute the software according to [Distribution License](#distribution-license) and make changes or new works based on the software according to [Changes and New Works License](#changes-and-new-works-license).
+You may copy, share, remix and adapt it for non-commercial purposes, provided
+you give appropriate credit (e.g. "Nocchi · © 2026 Chaosnap · CC BY-NC 4.0"
+with a link to this repository) and indicate if changes were made. Commercial
+use requires prior written permission from Chaosnap (open an issue in this
+repository).
 
-## Distribution License
-
-The licensor grants you an additional copyright license to distribute copies of the software.  Your license to distribute covers distributing the software with changes and new works permitted by [Changes and New Works License](#changes-and-new-works-license).
-
-## Notices
-
-You must ensure that anyone who gets a copy of any part of the software from you also gets a copy of these terms or the URL for them above, as well as copies of any plain-text lines beginning with `Required Notice:` that the licensor provided with the software.  For example:
-
-> Required Notice: Copyright Yoyodyne, Inc. (http://example.com)
-
-## Changes and New Works License
-
-The licensor grants you an additional copyright license to make changes and new works based on the software for any permitted purpose.
-
-## Patent License
-
-The licensor grants you a patent license for the software that covers patent claims the licensor can license, or becomes able to license, that you would infringe by using the software.
-
-## Noncommercial Purposes
-
-Any noncommercial purpose is a permitted purpose.
-
-## Personal Uses
-
-Personal use for research, experiment, and testing for the benefit of public knowledge, personal study, private entertainment, hobby projects, amateur pursuits, or religious observance, without any anticipated commercial application, is use for a permitted purpose.
-
-## Noncommercial Organizations
-
-Use by any charitable organization, educational institution, public research organization, public safety or health organization, environmental protection organization, or government institution is use for a permitted purpose regardless of the source of funding or obligations resulting from the funding.
-
-## Fair Use
-
-You may have "fair use" rights for the software under the law. These terms do not limit them.
-
-## No Other Rights
-
-These terms do not allow you to sublicense or transfer any of your licenses to anyone else, or prevent the licensor from granting licenses to anyone else.  These terms do not imply any other licenses.
-
-## Patent Defense
-
-If you make any written claim that the software infringes or contributes to infringement of any patent, your patent license for the software granted under these terms ends immediately. If your company makes such a claim, your patent license ends immediately for work on behalf of your company.
-
-## Violations
-
-The first time you are notified in writing that you have violated any of these terms, or done anything with the software not covered by your licenses, your licenses can nonetheless continue if you come into full compliance with these terms, and take practical steps to correct past violations, within 32 days of receiving notice.  Otherwise, all your licenses end immediately.
-
-## No Liability
-
-***As far as the law allows, the software comes as is, without any warranty or condition, and the licensor will not be liable to you for any damages arising out of these terms or the use or nature of the software, under any kind of legal claim.***
-
-## Definitions
-
-The **licensor** is the individual or entity offering these terms, and the **software** is the software the licensor makes available under these terms.
-
-**You** refers to the individual or entity agreeing to these terms.
-
-**Your company** is any legal entity, sole proprietorship, or other kind of organization that you work for, plus all organizations that have control over, are under the control of, or are under common control with that organization.  **Control** means ownership of substantially all the assets of an entity, or the power to direct its management and policies by vote, contract, or otherwise.  Control can be direct or indirect.
-
-**Your licenses** are all the licenses granted to you for the software under these terms.
-
-**Use** means anything you do with the software requiring one of your licenses.
+This license covers only the material Chaosnap holds the copyright to.
+Third-party material keeps its own license; for example, CODE_OF_CONDUCT.md is
+adapted from the Contributor Covenant 2.1 (CC BY 4.0). The names "Nocchi" and
+"刘海冲印店" are not licensed for naming other products.

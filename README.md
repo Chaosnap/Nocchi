@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml"><img src="https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-%E9%9D%9E%E5%95%86%E7%94%A8-C4593B" alt="License: noncommercial"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC%204.0-C4593B" alt="License: CC BY-NC 4.0"></a>
   <a href="https://github.com/Chaosnap/Nocchi/releases"><img src="https://img.shields.io/github/v/release/Chaosnap/Nocchi?color=4A3021" alt="Release"></a>
 </p>
 
@@ -65,9 +65,9 @@
 
 ## 许可
 
-© 2026 Chaosnap。**非商业用途随便用**——使用、修改、分享都可以，保留版权声明 / 注明出处即可；**商业用途需要书面许可**（请开 Issue 联系）。
+© 2026 Chaosnap。本仓库里 Chaosnap 创作的内容（代码、文档、图标、机身、纹理、3D 渲染等）采用 [CC BY-NC 4.0](LICENSE)（署名—非商业性使用 4.0 协议国际版）：
 
-- **代码**：[PolyForm Noncommercial License 1.0.0](LICENSE)。
-- **美术素材**（App 图标、机身、纹理、3D 渲染等，位于 `Shared/Art.xcassets/`、`design/`）：[CC BY-NC 4.0](LICENSE-ASSETS.md)。
-- 这是「源码公开、非商用」的许可，不属于 OSI 定义的开源许可证。
+- **非商业用途随便用**：复制、分享、修改、二次创作都可以，注明出处即可；
+- **商业用途需要书面许可**（请开 Issue 联系）；
+- 第三方内容按各自的许可（例如行为准则改编自 Contributor Covenant，CC BY 4.0）；
 - 胶卷、机身和相纸模板的名字都是原创的，与任何相机或胶片厂商无关。
