@@ -3,7 +3,7 @@
 ```text
 Nocchi/
 ├── Packages/NocchiKit      共享内核（Swift Package，两个 App 共用，CI 跑单元测试）
-│   └── Sources/NocchiUI    共享的 3D 照片卡片盒（SceneKit + SwiftUI）
+│   └── Sources/NocchiUI    共享的 2.5D 照片卡片盒、屏幕上的相纸（SwiftUI）
 ├── macOS/                  刘海出片口 App（XcodeGen：macOS/project.yml）
 ├── iOS/                    灵动岛出片口 App + Live Activity 扩展（XcodeGen：iOS/project.yml）
 ├── Shared/Art.xcassets     两个 App 共用的原创美术（机身、纹理）
@@ -42,16 +42,16 @@ FilmProcessor（胶卷配方 + seed）──► 底片 negatives/*.jpg
 PhotoComposer（白边 + 题字 + 日期 + 手写）──► 成片 ~/Pictures/Nocchi/<年-月>/*.jpg
 ```
 
-## NocchiUI · 照片卡片盒
+## NocchiUI · 照片卡片盒（2.5D）
 
 | 文件 | 作用 |
 | --- | --- |
-| `CardBoxModel.swift` | 状态：哪些相片在抽屉里、哪些叠在桌上、谁在最上面；抽出 / 放回 / 翻页；读图（成片或用底片临时合成） |
-| `CardBox/CardBoxScene.swift` | SceneKit 场景：木质抽屉（面板、燕尾榫、拉手、黄铜标签框）、相片卡（光面涂层）、A–Z 分隔卡；抽出 / 放回 / 叠放动画；点击命中 |
-| `CardBox/ProceduralTextures.swift` | 程序化贴图：木纹、点阵桌面、环境光、字母标签 |
-| `CardBox/CardBoxView.swift` | SwiftUI 外壳：3D 视图 + 首字母检索条 + 「全部放回」 |
-
-每张相片是 holder（位置、偏航）+ card（俯仰：立着 / 平放）两层节点，升起、翻平、落下可以分开编排。
+| `CardBoxModel.swift` | 状态：哪些照片在盒子里、哪些摊在右边、谁在最上面；按字母抽卡、搜索（`applySearch`）、最近冲印、翻页、全部放回；每个字母的张数；读图（成片或用底片临时合成，`editedAt` 变了重新读） |
+| `CardBox/CardBoxView.swift` | 舞台：背景 → `CardBoxBase` 渲染图 → 正在升起的卡片 → `CardBoxFront`（挡住卡片下半截）→ 标签热区 → 扇形摊开的卡片；`CardBoxStage`（渲染图与摊开区的几何）、`FanLayout`（最多 9 张的扇形） |
+| `CardBox/CardFlights.swift` | 飞行编排：抽卡 = 盒里 → 升起（在前挡板后面）→ 飞到右边；放回 = 飞回盒口上方 → 沉下去。模型只管顺序，这里管阶段 |
+| `CardBox/CardBoxHotspots.swift` | 渲染图上 27 个分隔卡标签、盒口、盒子外框的归一化坐标（由 `design/blender/cardbox/hotspots.json` 生成） |
+| `CardBox/CardBoxParts.swift` | 照片索引卡（纸色、宋体标题、打字机副标题、字母小标签、横线）、标签热区与气泡、「全部放回」、空盒提示、渲染图缺失时的退路 |
+| `Print/PrintSurface.swift` | 屏幕上的相纸：`PhotoComposer` 的底层 / 上层 + 显影中的照片 + 光泽 + 正在写的笔画 |
 
 ## macOS App
 
@@ -63,7 +63,7 @@ PhotoComposer（白边 + 题字 + 日期 + 手写）──► 成片 ~/Pictures/
 | `Darkroom/` | 拍摄 → 冲印 → 存档 → 出片的编排 |
 | `Photo/` | 桌面照片窗口：出片遮罩、显影计时、拖动与甩动、吸边、桌面层 / 浮动层、白边手写、右键菜单；照片堆 |
 | `Booth/` | 大头贴机：布帘、请看镜头、倒数、白屏闪光、四连拍 |
-| `Album/` | 软木板相册（按月份） |
+| `Album/` | 相册窗口：`AlbumView`（四种看法 + 搜索）、`AlbumHeader`（字标、看法切换、搜索框、冲印按钮、红绿灯对齐）、`CorkBoardView`（胡桃木框软木板、月份标签带、拼贴排布）、`AlbumShared`（照片库、缩略图 / 贴纸缓存、右键菜单与操作、`AlbumRouter`） |
 | `Settings/` | 相机柜、胶卷（导入 / 导出 `.cube`）、通用设置、关于；全局快捷键 |
 
 窗口层级：刘海面板（菜单栏之上 +3）> 出片中的照片（+2）> 大头贴布帘（+1）> 普通浮动照片 > 桌面层照片。

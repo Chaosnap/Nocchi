@@ -112,6 +112,14 @@ struct NocchiCommands: Commands {
         CommandMenu("相册") {
             Button("打开相册") { WindowManager.shared.showAlbum() }
                 .keyboardShortcut("0", modifiers: .command)
+            Divider()
+            ForEach(AlbumMode.allCases) { mode in
+                Button(mode.title) { AlbumRouter.shared.show(mode) }
+                    .keyboardShortcut(mode.key, modifiers: .command)
+            }
+            Button("搜索照片…") { AlbumRouter.shared.focusSearch() }
+                .keyboardShortcut("f", modifiers: .command)
+            Divider()
             Button("收起桌面上的照片") { DesktopBoard.shared.collectAll() }
             Button("在 Finder 中打开照片文件夹") {
                 NSWorkspace.shared.open(Services.library.printsRoot)

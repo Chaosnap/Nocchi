@@ -18,32 +18,64 @@ final class WindowManager {
         }
     }
 
+    /// 相册：透明标题栏 + 全尺寸内容，顶栏铺到最上面，红绿灯挪到顶栏中线上。
     func showAlbum() {
-        albumWindow = present(albumWindow, title: "相册", size: NSSize(width: 900, height: 680), autosave: "NocchiAlbum") {
+        albumWindow = present(
+            albumWindow,
+            title: "相册",
+            size: NSSize(width: 1220, height: 820),
+            minSize: NSSize(width: 980, height: 700),
+            autosave: "NocchiAlbumV2",
+            chromeless: true
+        ) {
             AlbumView()
         }
     }
 
-    private func present<Content: View>(_ existing: NSWindow?, title: String, size: NSSize, autosave: String, content: () -> Content) -> NSWindow {
+    private func present<Content: View>(
+        _ existing: NSWindow?,
+        title: String,
+        size: NSSize,
+        minSize: NSSize? = nil,
+        autosave: String,
+        chromeless: Bool = false,
+        content: () -> Content
+    ) -> NSWindow {
         NotchController.shared.collapse()
         if let existing {
             NSApp.activate()
             existing.makeKeyAndOrderFront(nil)
             return existing
         }
+        var style: NSWindow.StyleMask = [.titled, .closable, .miniaturizable, .resizable]
+        if chromeless {
+            style.insert(.fullSizeContentView)
+        }
         let window = NSWindow(
             contentRect: NSRect(origin: .zero, size: size),
-            styleMask: [.titled, .closable, .miniaturizable, .resizable],
+            styleMask: style,
             backing: .buffered,
             defer: false
         )
         window.title = title
         window.isReleasedWhenClosed = false
+        if chromeless {
+            window.titlebarAppearsTransparent = true
+            window.titleVisibility = .hidden
+            window.titlebarSeparatorStyle = .none
+            window.backgroundColor = NSColor(Palette.paper)
+        }
+        if let minSize {
+            window.contentMinSize = minSize
+        }
         window.contentView = NSHostingView(rootView: content())
         window.center()
         window.setFrameAutosaveName(autosave)
         NSApp.activate()
         window.makeKeyAndOrderFront(nil)
+        if chromeless {
+            TrafficLights.attach(to: window, height: AlbumHeader.height, leading: 20)
+        }
         return window
     }
 }

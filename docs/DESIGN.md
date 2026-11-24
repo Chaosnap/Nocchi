@@ -177,7 +177,7 @@
 
 窗口：透明标题栏 + 全尺寸内容 + 隐藏标题文字；默认 1220×820，最小 980×700；背景 `paper`。
 
-### 11.1 顶栏（高 64，左侧给红绿灯让出 84pt）
+### 11.1 顶栏（高 56，左侧给红绿灯让出 84pt；红绿灯挪到顶栏的垂直中线上，见 `TrafficLights`）
 
 - 左：字标「NOCCHI」（Didot，字距 3）+「相册」（宋体）。
 - 中：**模式切换**：象牙白内凹托盘，4 段，每段 = Blender 渲染的小图标（30×30）+ 文字（软木板 / 卡片盒 / 胶卷 / 日历）。选中段是一块凸起的白色小卡（阴影 + 顶部高光），用 `matchedGeometryEffect` 滑动；⌘1–⌘4 切换。图标：`ModeIconCork` / `ModeIconCardBox` / `ModeIconFilm` / `ModeIconCalendar`，缺图时退回 SF Symbol。
