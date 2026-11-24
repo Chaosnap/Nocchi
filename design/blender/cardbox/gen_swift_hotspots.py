@@ -8,8 +8,12 @@ import os
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 d = json.load(open(os.path.join(HERE, "hotspots.json")))
+def point(p):
+    return f"CGPoint(x: {p[0]:.5f}, y: {p[1]:.5f})"
+
+
 tabs = "\n".join(
-    f'        Tab(letter: "{t["letter"]}", center: CGPoint(x: {t["center"][0]:.5f}, y: {t["center"][1]:.5f})),'
+    f'        Tab(slot: {t["slot"]}, center: {point(t["center"])}, face: [{", ".join(point(q) for q in t["face"])}]),'
     for t in d["tabs"]
 )
 mouth = ",\n        ".join(f"CGPoint(x: {x:.5f}, y: {y:.5f})" for x, y in d["mouth"])
@@ -23,16 +27,19 @@ src = f'''import CoreGraphics
 /// 不要手改：重新渲染卡片盒后运行 `python3 design/blender/cardbox/gen_swift_hotspots.py`。
 enum CardBoxHotspots {{
     struct Tab: Hashable {{
-        let letter: String
+        /// 第几张分隔卡：0 = 最前面，26 = 最后面（按首字母归档时就是 A…Z、#）。
+        let slot: Int
         /// 分隔卡标签的中心。
         let center: CGPoint
+        /// 标签正面露在分隔卡上沿以上的四个角：左上、右上、右下、左下（标签上的字按它斜切上去）。
+        let face: [CGPoint]
     }}
 
     /// 画布尺寸（像素）与宽高比。
     static let canvas = CGSize(width: {w}, height: {h})
     static let canvasAspect: CGFloat = {w} / {h}
 
-    /// 27 张分隔卡的标签（A–Z 与 #），从前往后。
+    /// 27 张分隔卡的标签，从前往后（标签留白，字由 App 印上去）。
     static let tabs: [Tab] = [
 {tabs}
     ]
@@ -64,8 +71,9 @@ enum CardBoxHotspots {{
         return CGPoint(x: a.x + (b.x - a.x) * 0.6, y: a.y + (b.y - a.y) * 0.6)
     }}
 
-    static func tab(for letter: String) -> Tab? {{
-        tabs.first {{ $0.letter == letter }}
+    /// 第 slot 张分隔卡的标签（超出范围时取最近的一张）。
+    static func tab(slot: Int) -> Tab {{
+        tabs[min(max(slot, 0), tabs.count - 1)]
     }}
 }}
 '''

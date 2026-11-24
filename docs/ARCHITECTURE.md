@@ -25,7 +25,10 @@ Nocchi/
 | 相纸 | `Darkroom/PaperLayout.swift`、`PhotoComposer.swift` | 方形即显 / 四格大头贴 / 横幅版式；合成带白边的成片（题字、日期、手写） |
 | 模板预览 | `Decorate/TemplatePreview.swift` | 暖灰占位格合成的模板样张（大头贴选相框、设置）；大头贴相框顺序与黑白 / 彩色选卷规则 |
 | 照片库 | `Darkroom/PhotoLibrary.swift`、`PhotoRecord.swift` | 本地记录、底片、成片、LUT，按月分组 |
-| 机身 | `Darkroom/CameraBody.swift` | 相机柜：即显相机、大头贴机（其余在路线图） |
+| 机身 | `Darkroom/CameraBody.swift` | 相机柜：即显相机、大头贴机（其余在路线图）；装着哪台，刘海拍出来就是什么（大头贴机一次一条四格，见 D36） |
+| 检索 | `Library/PhotoSearch.swift` | 相册搜索：题字、标签、地点、胶卷名、日期写法（含英文月份名）、拼音、首字母 |
+| 卡片盒归档 | `Library/CardIndex.swift` | 照片分进 27 张分隔卡：首字母 / 年 / 月 / 日，每格的标签和完整说法（随界面语言），溢出的进「更早」（D37） |
+| 界面语言 | `Support/UILanguage.swift` | 简体中文（默认）/ 英文；App 在设置里切换后重新打开，一个进程只用一种语言 |
 | 音效 | `Audio/SoundSynth.swift`、`SoundPlayer.swift` | 程序合成 + AVAudioEngine 播放 |
 | 几何 | `Geometry/SlotGeometry.swift`、`PileLayout.swift` | 刘海矩形、灵动岛估算、照片堆排布 |
 
@@ -48,11 +51,11 @@ PhotoComposer（白边 + 题字 + 日期 + 手写）──► 成片 ~/Pictures/
 
 | 文件 | 作用 |
 | --- | --- |
-| `CardBoxModel.swift` | 状态：哪些照片在盒子里、哪些摊在右边、谁在最上面；按字母抽卡、搜索（`applySearch`）、最近冲印、翻页、全部放回；每个字母的张数；读图（成片或用底片临时合成，`editedAt` 变了重新读） |
+| `CardBoxModel.swift` | 状态：哪些照片在盒子里、哪些摊在右边、谁在最上面；归档方式 `indexMode`（首字母 / 年 / 月 / 日，记在 UserDefaults）与分好的格子 `index`（`CardIndex`）；按格抽卡（`pull(key:)`）、搜索（`applySearch`）、最近冲印、翻页、全部放回；读图（成片或用底片临时合成；按版本读——`editedAt`、`printFile`、底片数变了就重读，摊着的卡片当场重读，读不到退避重试） |
 | `CardBox/CardBoxView.swift` | 舞台：背景 → `CardBoxBase` 渲染图 → 正在抽出的卡片 → `CardBoxFront` → 标签热区 → 右边那一叠；`CardBoxStage`（渲染图与摊开区的几何）、`SlotGeometry`（每个字母那一格的格口线与斜切）、`CardSkew`（斜切 ↔ 转正）、`SlotMask`、`PileLayout`（松散的一叠、拖动摆放与吸附成摞） |
 | `CardBox/CardFlights.swift` | 飞行编排：抽卡 = 立在自己那一格（斜切、被格口线遮住）→ 沿分隔卡抽出 → 在盒口上方转正 → 落到右边那一叠；放回反过来。模型只管顺序，这里管阶段 |
-| `CardBox/CardBoxHotspots.swift` | 渲染图上 27 个分隔卡标签、盒口、盒子外框的归一化坐标（由 `design/blender/cardbox/hotspots.json` 生成） |
-| `CardBox/CardBoxParts.swift` | 照片索引卡（纸色、宋体标题、打字机副标题、字母小标签、横线）、标签热区与气泡、「全部放回」、空盒提示、渲染图缺失时的退路 |
+| `CardBox/CardBoxHotspots.swift` | 渲染图上 27 张分隔卡标签（中心、标签正面的四个角）、盒口、盒子外框的归一化坐标（由 `design/blender/cardbox/hotspots.json` 生成） |
+| `CardBox/CardBoxParts.swift` | 照片索引卡（纸色、宋体标题、打字机副标题、所在格的小标签、横线）、`TabFace`（标签面在视图里的位置与斜切变换）、`TabLabels`（一个 `Canvas` 把标签上的字按透视印上去，裁掉被前一张挡住的部分）、标签热区（和标签面一样的斜四边形）与吊牌、「全部放回」、空盒提示、渲染图缺失时的退路 |
 | `Print/PrintSurface.swift` | 屏幕上的相纸：`PhotoComposer` 的底层 / 上层 + 显影中的照片 + 光泽 + 正在写的笔画 |
 
 ## macOS App

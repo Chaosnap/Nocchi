@@ -12,13 +12,13 @@ struct AlbumView: View {
     @ObservedObject private var router = AlbumRouter.shared
     @State private var query = ""
     @FocusState private var searchFocused: Bool
-    @StateObject private var cardBox: CardBoxModel = AlbumView.makeCardBox()
+    @ObservedObject private var cardBox: CardBoxModel = AlbumRouter.shared.cardBox
 
     var body: some View {
         let results = PhotoSearch.filter(store.records, query: query)
         let searching = !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         VStack(spacing: 0) {
-            AlbumHeader(mode: $router.mode, query: $query, searchFocused: $searchFocused)
+            AlbumHeader(mode: $router.mode, query: $query, searchFocused: $searchFocused, indexMode: $cardBox.indexMode)
             ZStack {
                 content(results)
                     .id(router.mode)
@@ -65,16 +65,5 @@ struct AlbumView: View {
         case .calendar:
             CalendarWallView(records: results, libraryIsEmpty: store.records.isEmpty)
         }
-    }
-
-    private static func makeCardBox() -> CardBoxModel {
-        let library = Services.library
-        let model = CardBoxModel(loader: CardBoxModel.defaultLoader(library: library) { stockID in
-            FilmCatalog.stock(id: stockID).paper
-        })
-        model.onOpen = { record in
-            AlbumActions.open(record)
-        }
-        return model
     }
 }

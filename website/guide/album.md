@@ -27,9 +27,13 @@ A cork board in a walnut frame. Each month gets an embossed label (2026 · 十�
 
 ### 卡片盒 · Card box
 
-A beechwood index-card box with A–Z dividers. Each print is filed under the first letter of its caption (Chinese captions by their pinyin). Hover a divider to see how many prints it holds; letters with prints have an orange dot. Click it and the cards rise one by one out of the box and fan out on the right (up to nine; drag sideways to leaf through). Click a card to bring it to the front, double-click to open it, and **全部放回** (put them all back) files them again.
+A beechwood index-card box with 27 dividers. By default each print is filed under the first letter of its caption (A–Z; Chinese captions by their pinyin, prints without a caption under #). Hover a divider to see how many prints it holds; tabs with prints have an orange dot. Click it and the cards slide one by one out of their own slot and land in a loose pile on the right (up to nine; drag sideways to leaf through, or drag cards anywhere and stack them). Click a card to bring it to the front, double-click to open it, and **全部放回** (put them all back) files them again.
 
 ![The card box](/screenshots/album-cardbox.jpg)
+
+**Filing by date**: the gear next to **＋** at the top right files the box by the **year, month or day** a picture was taken instead. The divider tabs change to *2026*, *Nov* or *11/24*, newest at the front; with more than 27 groups, the oldest share the last divider, *Older*. The cards' own little tabs change too.
+
+![The card box filed by month](/screenshots/album-cardbox-month.jpg)
 
 ### 胶卷 · Film
 
@@ -45,4 +49,4 @@ A wall calendar printed in red and black, with brass page turners. Days with pho
 
 ### Search
 
-<kbd>⌘F</kbd> searches every view: captions, tags (with or without #), places, film names in Chinese or English, dates (2026, 11月, 2026/11/23), the pinyin of Chinese captions, or a single first letter. Every word must match. The card box draws the matching cards out of the box; the calendar turns to the month of the latest match.
+<kbd>⌘F</kbd> searches every view: captions, tags (with or without #), places, film names in Chinese or English, dates (2026, 11月, 2026/11/23), the pinyin of Chinese captions, or a single first letter. In the English interface, English month names work too (nov, November). Every word must match. The card box draws the matching cards out of the box; the calendar turns to the month of the latest match.

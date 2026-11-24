@@ -156,6 +156,13 @@ private final class Studio {
             AlbumRouter.shared.mode = mode
             await capture(name, title: "相册", size: CGSize(width: 1220, height: 820), settle: mode == .cardBox ? 4.0 : 2.5)
         }
+        // 卡片盒按月归档：分隔卡上印「11月」「10月」……
+        let cardBox = AlbumRouter.shared.cardBox
+        AlbumRouter.shared.mode = .cardBox
+        cardBox.indexMode = .month
+        cardBox.showRecent()
+        await capture("album-cardbox-month", title: "相册", size: CGSize(width: 1220, height: 820), settle: 4.0)
+        cardBox.indexMode = .letter
         window(titled: "相册")?.close()
     }
 

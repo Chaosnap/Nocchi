@@ -7,6 +7,9 @@ import SwiftUI
 /// `CardBoxFront`（前挡板与右侧板）→ 标签热区 → 落在右边的卡片。
 /// 点分隔卡标签：这一组照片从自己那一格里一张张斜着抽出来、转正、落到右边。单击置顶，双击打开，
 /// 拖动摆放（放到另一张上面会叠成一摞，位置会记住），在空白处左右拖动翻看。
+///
+/// 照片按 `CardBoxModel.indexMode` 归档（首字母 / 年 / 月 / 日）：渲染图里的分隔卡标签是空白的，
+/// 标签上的字由 `TabLabels` 按标签面的四个角斜切着印上去，换归档方式时跟着变。
 public struct CardBoxView: View {
     @ObservedObject var model: CardBoxModel
     private let menu: ((PhotoRecord) -> AnyView)?
@@ -37,6 +40,14 @@ public struct CardBoxView: View {
                     .zIndex(-1)
                 BoxArt(name: "CardBoxBase", stage: stage, fallback: true)
                     .zIndex(0)
+                TabLabels(
+                    tabs: model.index.tabs,
+                    mode: model.index.mode,
+                    stage: stage,
+                    hoveredKey: hoveredTab,
+                    activeKey: model.activeKey
+                )
+                .zIndex(0.1)
                 pagingSurface(stage)
                     .zIndex(0.2)
                 ForEach(flights.order, id: \.self) { id in
@@ -49,10 +60,10 @@ public struct CardBoxView: View {
                     .zIndex(1)
                 tabLayer(stage)
                     .zIndex(2)
-                if let letter = hoveredTab, let tab = CardBoxHotspots.tab(for: letter) {
-                    let point = stage.point(tab.center)
-                    TabChip(letter: letter, count: model.count(for: letter))
-                        .position(x: point.x, y: point.y - stage.tabSize.height * 1.55)
+                if let key = hoveredTab, let tab = model.index.tab(forKey: key) {
+                    let face = TabFace(slot: tab.slot, stage: stage)
+                    TabChip(title: tab.title, count: tab.count)
+                        .position(face.chipAnchor)
                         .allowsHitTesting(false)
                         .transition(.opacity.combined(with: .scale(scale: 0.9, anchor: .bottom)))
                         .zIndex(3)
@@ -80,12 +91,12 @@ public struct CardBoxView: View {
     private func card(_ record: PhotoRecord, pile: PileLayout) -> some View {
         let id = record.id
         let phase = flights.phase(of: id)
-        let slot = SlotGeometry(letter: record.indexLetter, stage: pile.stage)
+        let slot = SlotGeometry(slot: model.index.slot(for: record), stage: pile.stage)
         let placement = pile.placement(for: id, phase: phase, slot: slot, seed: record.seed)
         let dragging = drag?.id == id
         let lifted = (hoveredCard == id || dragging) && phase == .spread
         let offset = dragging ? (drag?.translation ?? .zero) : .zero
-        return PhotoIndexCard(record: record, image: model.image(for: record), size: pile.stage.cardSize, lifted: lifted)
+        return PhotoIndexCard(record: record, tabLabel: model.index.label(for: record), image: model.image(for: record), size: pile.stage.cardSize, lifted: lifted)
             .modifier(CardSkew(flatness: placement.flatness, shear: slot.shear))
             .scaleEffect(lifted ? 1.03 : 1)
             .rotationEffect(.degrees(placement.rotation))
@@ -179,29 +190,33 @@ public struct CardBoxView: View {
 
     // MARK: - 分隔卡标签
 
+    /// 标签热区：从后往前排，前面的标签压在后面的上面（重叠的地方点到的是看得见的那张）。
     private func tabLayer(_ stage: CardBoxStage) -> some View {
         ZStack(alignment: .topLeading) {
-            ForEach(CardBoxHotspots.tabs, id: \.letter) { tab in
-                TabHotspot(
-                    count: model.count(for: tab.letter),
-                    active: model.activeLetter == tab.letter,
-                    hovered: hoveredTab == tab.letter,
-                    size: stage.tabSize
-                )
-                .onHover { inside in
-                    withAnimation(.easeOut(duration: 0.14)) {
-                        if inside {
-                            hoveredTab = tab.letter
-                        } else if hoveredTab == tab.letter {
-                            hoveredTab = nil
+            ForEach(Array(model.index.tabs.reversed())) { tab in
+                let face = TabFace(slot: tab.slot, stage: stage)
+                TabHotspot(face: face)
+                    .onHover { inside in
+                        withAnimation(.easeOut(duration: 0.14)) {
+                            if inside {
+                                hoveredTab = tab.key
+                            } else if hoveredTab == tab.key {
+                                hoveredTab = nil
+                            }
                         }
                     }
-                }
-                .onTapGesture { model.pull(letter: tab.letter) }
-                .help(model.count(for: tab.letter) > 0 ? "抽出 \(tab.letter) 组" : "\(tab.letter) 组还是空的")
-                .position(stage.point(tab.center))
+                    .onTapGesture { model.pull(key: tab.key) }
+                    .help(tabHelp(tab))
+                    .position(x: face.hitBox.midX, y: face.hitBox.midY)
             }
         }
+    }
+
+    private func tabHelp(_ tab: CardTab) -> String {
+        let name = model.groupName(tab)
+        return tab.count > 0
+            ? String(localized: "抽出 \(name)", bundle: .main)
+            : String(localized: "\(name)还是空的", bundle: .main)
     }
 
     // MARK: - 摊开区的按钮与说明
@@ -298,16 +313,14 @@ struct SlotGeometry {
     /// 立在格子里时卡片的竖向高度（视图点）。
     let heightInBox: CGFloat
 
-    init(letter: String, stage: CardBoxStage) {
-        let tab = CardBoxHotspots.tab(for: letter) ?? CardBoxHotspots.tab(for: IndexLetter.other)
-        let tabPoint = stage.point(tab?.center ?? CGPoint(x: 0.4, y: 0.5))
+    init(slot: Int, stage: CardBoxStage) {
         let dir = CardBoxHotspots.dividerDirection
         let length = CardBoxHotspots.dividerLength * stage.pixelScale
-        // 标签沿分隔卡上沿错开排在 5 个位置（A、F、K… 在最前面那一头）。
-        let index = IndexLetter.all.firstIndex(of: letter) ?? (IndexLetter.all.count - 1)
-        let fractions: [CGFloat] = [0.2, 0.35, 0.5, 0.65, 0.8]
-        let fraction = fractions[index % fractions.count]
-        let top = CGPoint(x: tabPoint.x, y: tabPoint.y + stage.tabSize.height * 0.55)
+        // 标签沿分隔卡上沿错开排在 5 个位置：标签中心在分隔卡宽度的这些位置（make_cardbox.py：
+        // 内宽 13.35、标签宽 2.8、两头各留 0.5）。从标签下沿的中点退回分隔卡上沿的中点。
+        let fractions: [CGFloat] = [0.142, 0.321, 0.5, 0.679, 0.858]
+        let fraction = fractions[max(slot, 0) % fractions.count]
+        let top = TabFace(slot: slot, stage: stage).bottomCenter
         center = CGPoint(x: top.x + dir.dx * (0.5 - fraction) * length, y: top.y + dir.dy * (0.5 - fraction) * length)
         direction = dir
         let cardWidth = stage.cardSize.width

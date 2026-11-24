@@ -1,7 +1,7 @@
 """Nocchi · 卡片盒（2.5D 分层渲染）。
 
 照参考图（浅色山毛榉索引卡盒、指接榫、前板椭圆拉手孔里一支黄色圆珠笔、塞满彩色索引卡和 A–Z 分隔卡、
-最前面一张翘起折角的横线白卡）程序化建模，Cycles 渲染两层：
+最前面一张翘起折角的横线白卡）程序化建模；分隔卡标签留白，上面的字（首字母或年 / 月 / 日）由 App 按 hotspots.json 里标签面的四个角叠上去，Cycles 渲染两层：
 
 - CardBoxBase：整盒 + 卡片 + 分隔卡 + 笔 + 地面柔和阴影（透明背景）
 - CardBoxFront：只有前板和面向镜头的长侧板（同机位），App 里让照片从盒里升起时被它挡住
@@ -314,7 +314,6 @@ def build_cards(root):
     mats = {c: paper_mat("card-" + c, c) for c in CARD_COLORS}
     divider_mat = paper_mat("divider", "#F6F2E8", rough=0.75)
     tab_mat = paper_mat("tab", "#FCFAF5", rough=0.7)
-    letter_mat = S.principled("letter", "#141414", rough=0.6)
     sheets = []
     y = hl - WALL - 0.6
     y_front_limit = -hl + WALL + 2.6
@@ -340,7 +339,9 @@ def build_cards(root):
         total += 1
         y -= rng.uniform(0.17, 0.24)
     objs = {"cards": [], "dividers": [], "tabs": {}}
-    tab_w = 2.3
+    # 标签是空白的：上面印的字（A–Z，或者按年 / 月 / 日归档时的「2026」「11月」「11/24」）由 App 按透视叠上去，
+    # 所以标签做得比只印一个字母时宽一点，放得下五个字符（高度不变：再高，后一张的标签下沿就会被前一张挡住）。
+    tab_w = 2.8
     tab_h = 1.25
     positions = 5
     for kind, y, tilt, jitter, info in sheets:
@@ -356,21 +357,10 @@ def build_cards(root):
             tx = -inner_w / 2 + 0.5 + slot * (inner_w - 1.0 - tab_w) / (positions - 1)
             tab = cuboid("tab", tx, tx + tab_w, -0.016, 0.016, h - 0.05, h + tab_h, tab_mat, bevel=0.0)
             tab.parent = ob
-            # 字母：贴在标签正面（-Y 一侧）
-            cu = bpy.data.curves.new("letter-" + info, type="FONT")
-            cu.body = info
-            cu.font = S.font("futura-bold")
-            cu.size = 0.95
-            cu.align_x = "CENTER"
-            cu.align_y = "CENTER"
-            cu.materials.append(letter_mat)
-            txt = bpy.data.objects.new("letter-" + info, cu)
-            S.link(txt)
-            txt.rotation_euler = (math.radians(90), 0, 0)
-            txt.location = (tx + tab_w / 2, -0.03, h + tab_h * 0.48)
-            txt.parent = ob
             objs["dividers"].append(ob)
-            objs["tabs"][info] = (tab, txt, (tx + tab_w / 2, -0.03, h + tab_h * 0.48))
+            # 标签正面（-Y 一侧）露在分隔卡上沿以上的部分：左上、右上、右下、左下（分隔卡自己的坐标）
+            face = [(tx, -0.017, h + tab_h), (tx + tab_w, -0.017, h + tab_h), (tx + tab_w, -0.017, h), (tx, -0.017, h)]
+            objs["tabs"][info] = (tab, face)
         ob.location = (0, y, FLOOR - 0.02)
         ob.rotation_euler = (tilt, 0, 0)
         ob.parent = root
@@ -452,21 +442,21 @@ def main():
     # 热区：分隔卡标签中心（归一化，左上原点）与是否被挡住
     deps = bpy.context.evaluated_depsgraph_get()
     tabs = []
-    for letter, (tab, txt, local_center) in cards["tabs"].items():
+    for letter, (tab, face_local) in cards["tabs"].items():
         mw = tab.matrix_world
         bb = [mw @ Vector(c) for c in tab.bound_box]
         center = sum(bb, Vector()) / 8
         p = world_to_camera_view(scene, cam, center)
-        quad = []
-        front_face = sorted(bb, key=lambda v: v.y)[:4]
-        for v in front_face:
-            q = world_to_camera_view(scene, cam, v)
-            quad.append([round(q.x, 5), round(1 - q.y, 5)])
+        # 标签正面在画面里的四个角（左上、右上、右下、左下）：App 按它把标签上的字斜切到标签面上
+        face = []
+        for corner in face_local:
+            q = world_to_camera_view(scene, cam, mw @ Vector(corner))
+            face.append([round(q.x, 5), round(1 - q.y, 5)])
         direction = (center - cam.location).normalized()
         hit, loc, normal, index, obj, matrix = scene.ray_cast(deps, cam.location, direction)
-        occluded = bool(hit and obj is not None and obj.name not in (tab.name, txt.name) and (loc - cam.location).length < (center - cam.location).length - 0.05)
-        tabs.append({"letter": letter, "center": [round(p.x, 5), round(1 - p.y, 5)], "quad": quad, "occluded": occluded})
-    tabs.sort(key=lambda t: LETTERS.index(t["letter"]))
+        occluded = bool(hit and obj is not None and obj.name != tab.name and (loc - cam.location).length < (center - cam.location).length - 0.05)
+        tabs.append({"letter": letter, "slot": LETTERS.index(letter), "center": [round(p.x, 5), round(1 - p.y, 5)], "face": face, "occluded": occluded})
+    tabs.sort(key=lambda t: t["slot"])
 
     hw, hl = BOX_W / 2, BOX_L / 2
     mouth3d = [Vector((-hw + WALL, -hl + WALL, BOX_H)), Vector((hw - WALL, -hl + WALL, BOX_H)),

@@ -1,5 +1,6 @@
 import AppKit
 import NocchiKit
+import NocchiUI
 import SwiftUI
 
 // MARK: - 数据
@@ -172,8 +173,18 @@ final class AlbumRouter: ObservableObject {
 
     @Published private(set) var searchRequest = 0
 
+    /// 卡片盒的状态（抽出来的卡片、归档方式）：相册窗口和截图工作室共用一份。
+    let cardBox: CardBoxModel
+
     private init() {
         mode = AlbumMode(rawValue: UserDefaults.standard.string(forKey: Self.modeKey) ?? "") ?? .cardBox
+        let model = CardBoxModel(loader: CardBoxModel.defaultLoader(library: Services.library) { stockID in
+            FilmCatalog.stock(id: stockID).paper
+        })
+        model.onOpen = { record in
+            AlbumActions.open(record)
+        }
+        cardBox = model
     }
 
     func show(_ newMode: AlbumMode) {
@@ -383,5 +394,28 @@ final class ActionMenuItem: NSMenuItem {
 
     @objc private func run() {
         handler()
+    }
+}
+
+// MARK: - 卡片盒归档
+
+extension CardIndexMode {
+    /// 齿轮菜单里的说法。
+    var menuTitle: String {
+        switch self {
+        case .letter: String(localized: "按题字首字母（A–Z）")
+        case .year: String(localized: "按年")
+        case .month: String(localized: "按月")
+        case .day: String(localized: "按日")
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .letter: "textformat.abc"
+        case .year: "calendar"
+        case .month: "calendar.day.timeline.left"
+        case .day: "calendar.badge.clock"
+        }
     }
 }

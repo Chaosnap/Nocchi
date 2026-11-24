@@ -11,7 +11,8 @@ import Foundation
 /// - 胶卷名：记录里的中文名（`stockName`），以及内置胶卷的英文名（`englishName`，只查 `FilmCatalog.builtIn` 里有的胶卷）。
 /// - 日期（`displayDate`，公历、当前时区）：「2026」「2026/11/23」「2026-11-23」「2026年11月」「11月」「11月23日」「11/23」，
 ///   以及「2026/11」「2026.11.23」「2026/11/3」「11/3」这类写法。词是某种写法的开头也算（边打字边筛：
-///   「2026/11」→ 这个月的照片），但「1月」不会命中「11月」。
+///   「2026/11」→ 这个月的照片），但「1月」不会命中「11月」。英文月份名（至少 3 个字母，可以只打开头）：
+///   「nov」「November」→ 11 月的照片（英文界面用）。
 /// - 首字母：**单个**英文字母只按卡片盒的首字母（`indexLetter`）找：「w」→「我可以见你吗？」。
 ///
 /// 比较时不分大小写，忽略变音符号和全角 / 半角。两个以上字母的纯拉丁词还会比对题字、标签、地点的
@@ -48,6 +49,8 @@ public enum PhotoSearch {
         let pinyinText: Bool
         /// 标签词是两个以上的拉丁字母：也比对标签的拼音。
         let pinyinTag: Bool
+        /// 英文月份名（「nov」→ 11）。
+        let month: Int?
 
         static func parse(_ query: String) -> [Token] {
             query.split(whereSeparator: { $0.isWhitespace }).compactMap { Token(String($0)) }
@@ -67,6 +70,7 @@ public enum PhotoSearch {
             mayBeDate = folded.first.map { $0.isASCII && $0.isNumber } ?? false
             pinyinText = PhotoSearch.isLatinWord(folded)
             pinyinTag = PhotoSearch.isLatinWord(tag)
+            month = PhotoSearch.englishMonth(folded)
         }
     }
 
@@ -80,6 +84,7 @@ public enum PhotoSearch {
                 return false
             }
             if matchesFields(record, token) { continue }
+            if let month = token.month, calendar.component(.month, from: record.displayDate) == month { continue }
             if token.mayBeDate {
                 let strings = dates ?? dateStrings(for: record.displayDate, calendar: calendar)
                 dates = strings
@@ -130,6 +135,17 @@ public enum PhotoSearch {
     /// 小写、去变音符号、全角转半角。
     private static func fold(_ text: String) -> String {
         text.folding(options: foldOptions, locale: nil).lowercased()
+    }
+
+    private static let englishMonthNames = [
+        "january", "february", "march", "april", "may", "june",
+        "july", "august", "september", "october", "november", "december",
+    ]
+
+    /// 英文月份名：至少 3 个字母、是某个月份名的开头（「sept」「nov」「november」）。
+    static func englishMonth(_ word: String) -> Int? {
+        guard word.count >= 3, word.allSatisfy({ $0.isASCII && $0.isLetter }) else { return nil }
+        return englishMonthNames.firstIndex { $0.hasPrefix(word) }.map { $0 + 1 }
     }
 
     private static func isLatinWord(_ text: String) -> Bool {

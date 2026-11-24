@@ -28,12 +28,27 @@ public final class CardBoxModel: ObservableObject {
     @Published public private(set) var records: [PhotoRecord] = []
     /// 抽出来的卡片，最后一个在最上面。
     @Published public private(set) var pulled: [UUID] = []
-    @Published public private(set) var activeLetter: String?
+    /// 刚抽出来的那一格（`CardTab.key`）。
+    @Published public private(set) var activeKey: String?
     @Published public private(set) var images: [UUID: CGImage] = [:]
-    /// 摊开的这一叠是什么（「W 组 · 3 张」「最近冲印 · 9 张」「搜索『咖啡』· 2 张」）。
+    /// 摊开的这一叠是什么（「W 组 · 3 张」「2026 年 11 月 · 5 张」「最近冲印 · 9 张」「搜索『咖啡』· 2 张」）。
     @Published public private(set) var spreadCaption: String?
-    /// 每个首字母下有几张。
-    @Published public private(set) var letterCounts: [String: Int] = [:]
+    /// 归档方式：按首字母，或者按年 / 月 / 日（设置记在 UserDefaults 里）。
+    @Published public var indexMode: CardIndexMode = CardBoxModel.loadIndexMode() {
+        didSet {
+            guard indexMode != oldValue else { return }
+            UserDefaults.standard.set(indexMode.rawValue, forKey: Self.indexModeKey)
+            rebuildIndex()
+            // 刚抽出来的那一组换了归档方式就不成立了：桌上的卡片留着，说明去掉。
+            if activeKey != nil {
+                activeKey = nil
+                spreadCaption = nil
+            }
+            sound()
+        }
+    }
+    /// 照片现在怎么分在 27 张分隔卡里（每一格的标签、张数，每张照片在哪一格）。
+    @Published public private(set) var index: CardIndexLayout = .empty
     /// 拖动摆放过的卡片位置（记住，下次抽出来还在那里）。
     @Published public private(set) var spots: [UUID: CardSpot] = CardBoxModel.loadSpots()
 
@@ -90,11 +105,7 @@ public final class CardBoxModel: ObservableObject {
                 imageVersions[id] = nil
             }
         }
-        var counts: [String: Int] = [:]
-        for record in records {
-            counts[record.indexLetter, default: 0] += 1
-        }
-        letterCounts = counts
+        rebuildIndex()
         if !didAutoSpread, !records.isEmpty, pulled.isEmpty, query.isEmpty {
             didAutoSpread = true
             showRecent()
@@ -105,19 +116,40 @@ public final class CardBoxModel: ObservableObject {
         byID[id]
     }
 
-    /// 盒子里的顺序：A 在最前面，同一字母内新的在前。
+    /// 盒子里的顺序：前面的分隔卡在前（A，或者最新的日子），同一格里新的在前。
     public var boxOrder: [PhotoRecord] {
-        IndexLetter.group(records.filter { !pulled.contains($0.id) }).flatMap { $0.records }
+        let index = self.index
+        let out = Set(pulled)
+        return records.filter { !out.contains($0.id) }.sorted { a, b in
+            let slotA = index.slot(for: a)
+            let slotB = index.slot(for: b)
+            if slotA != slotB { return slotA < slotB }
+            return a.createdAt > b.createdAt
+        }
     }
 
     public var pulledRecords: [PhotoRecord] {
         pulled.compactMap { byID[$0] }
     }
 
-    public var lettersWithCards: Set<String> { Set(letterCounts.keys) }
+    /// 某一格有几张。
+    public func count(forKey key: String) -> Int {
+        index.count(forKey: key)
+    }
 
-    public func count(for letter: String) -> Int {
-        letterCounts[letter] ?? 0
+    /// 这一格怎么称呼：首字母是「W 组」，日期就是「2026 年 11 月」。
+    public func groupName(_ tab: CardTab) -> String {
+        index.mode == .letter ? String(localized: "\(tab.title) 组", bundle: .main) : tab.title
+    }
+
+    private func rebuildIndex() {
+        index = CardIndex.layout(for: records, mode: indexMode)
+    }
+
+    private nonisolated static let indexModeKey = "nocchi.cardbox.indexMode"
+
+    private nonisolated static func loadIndexMode() -> CardIndexMode {
+        CardIndexMode(rawValue: UserDefaults.standard.string(forKey: indexModeKey) ?? "") ?? .letter
     }
 
     public func image(for record: PhotoRecord) -> CGImage? {
@@ -173,16 +205,16 @@ public final class CardBoxModel: ObservableObject {
 
     // MARK: - Actions
 
-    /// 抽出某个字母下的全部卡片（一张一张从盒口升起，叠在已经摊开的卡片上面）。
-    public func pull(letter: String) {
-        let inBox = boxOrder.filter { $0.indexLetter == letter }.map(\.id)
-        let total = count(for: letter)
-        guard total > 0 else { return }
-        activeLetter = letter
-        spreadCaption = "\(letter) 组 · \(total) 张"
+    /// 抽出某一格的全部卡片（一张一张从盒口升起，叠在已经摊开的卡片上面）。
+    public func pull(key: String) {
+        guard let tab = index.tab(forKey: key), tab.count > 0 else { return }
+        let index = self.index
+        let inBox = boxOrder.filter { index.key(for: $0) == key }.map(\.id)
+        activeKey = key
+        spreadCaption = String(localized: "\(groupName(tab)) · \(tab.count) 张", bundle: .main)
         if inBox.isEmpty {
             // 已经在桌上：把这一组翻到最上面。
-            let onTable = pulledRecords.filter { $0.indexLetter == letter }.map(\.id)
+            let onTable = pulledRecords.filter { index.key(for: $0) == key }.map(\.id)
             withAnimation(.spring(response: 0.48, dampingFraction: 0.8)) {
                 pulled.removeAll { onTable.contains($0) }
                 pulled.append(contentsOf: onTable)
@@ -232,14 +264,14 @@ public final class CardBoxModel: ObservableObject {
         pulled.removeAll { $0 == id }
         feedback()
         if pulled.isEmpty {
-            activeLetter = nil
+            activeKey = nil
             spreadCaption = nil
         }
     }
 
     /// 全部放回（从上往下一张一张飞回盒子）。
     public func putBackAll() {
-        activeLetter = nil
+        activeKey = nil
         spreadCaption = nil
         arrange([])
     }
@@ -247,8 +279,8 @@ public final class CardBoxModel: ObservableObject {
     /// 摊开最近冲印的几张（打开卡片盒时的默认样子）。
     public func showRecent(limit: Int = CardBoxModel.spreadLimit) {
         let recent = records.sorted { $0.createdAt > $1.createdAt }.prefix(limit)
-        activeLetter = nil
-        spreadCaption = recent.isEmpty ? nil : "最近冲印 · \(recent.count) 张"
+        activeKey = nil
+        spreadCaption = recent.isEmpty ? nil : String(localized: "最近冲印 · \(recent.count) 张", bundle: .main)
         arrange(recent.reversed().map(\.id))
     }
 
@@ -262,8 +294,8 @@ public final class CardBoxModel: ObservableObject {
             return
         }
         let results = PhotoSearch.filter(records, query: trimmed).sorted { $0.createdAt > $1.createdAt }
-        activeLetter = nil
-        spreadCaption = results.isEmpty ? nil : "搜索「\(trimmed)」· \(results.count) 张"
+        activeKey = nil
+        spreadCaption = results.isEmpty ? nil : String(localized: "搜索「\(trimmed)」· \(results.count) 张", bundle: .main)
         arrange(results.prefix(CardBoxModel.spreadLimit * 3).reversed().map(\.id))
     }
 

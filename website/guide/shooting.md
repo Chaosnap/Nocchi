@@ -4,6 +4,15 @@ Move the pointer onto the notch and it opens into the camera panel. Every way of
 
 ![The camera panel that opens when you hover over the notch](/screenshots/notch-panel.jpg)
 
+## Switch cameras
+
+Right of the film tile in the panel is the camera tile: click it to switch between the instant camera and the photo booth (the menu bar's camera picker and *Settings → 相机柜* (camera cabinet) switch it too). Whichever camera is loaded is the one the notch shoots with:
+
+- **Instant camera**: one print at a time, on the instant paper you chose.
+- **Photo booth**: every shot is a four-frame strip. The selfie viewfinder takes four pictures in a row (a countdown and a white flash for each); the screen shutter has you frame four regions; printed photos and images dropped on the notch are laid out four to a strip (a short strip repeats its pictures). The layout, frame and black and white come from the booth settings in *Settings → 相纸* (paper), and the panel's paper tile switches between strip and grid.
+
+The booth button is always the full [photo booth](./booth): the curtain, the coin and four flashes.
+
 ## Screen shutter
 
 Press <kbd>⌃⌥⌘S</kbd>, or click **屏幕快门** (screen shutter) in the panel, and drag over any part of the screen. What you selected is printed on the loaded film and the chosen paper.

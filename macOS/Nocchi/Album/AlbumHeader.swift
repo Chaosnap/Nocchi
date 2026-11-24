@@ -2,7 +2,7 @@ import AppKit
 import NocchiKit
 import SwiftUI
 
-/// 相册顶栏：左边字标、中间四种看法的切换托盘、右边搜索框与「＋」。
+/// 相册顶栏：左边字标、中间四种看法的切换托盘、右边搜索框、「＋」和卡片盒归档的齿轮。
 ///
 /// 窗口是透明标题栏 + 全尺寸内容，顶栏铺在标题栏下面；红绿灯由 `TrafficLights` 挪到顶栏的垂直中线上。
 struct AlbumHeader: View {
@@ -13,6 +13,8 @@ struct AlbumHeader: View {
     @Binding var mode: AlbumMode
     @Binding var query: String
     var searchFocused: FocusState<Bool>.Binding
+    /// 卡片盒的归档方式（首字母 / 年 / 月 / 日）。
+    @Binding var indexMode: CardIndexMode
 
     var body: some View {
         ZStack {
@@ -24,7 +26,16 @@ struct AlbumHeader: View {
                 AlbumSearchField(text: $query, focused: searchFocused)
                 ImportButton()
                     .padding(.leading, 10)
-                    .padding(.trailing, 16)
+                IndexModeButton(indexMode: $indexMode) {
+                    // 在别的看法里换了归档方式：切到卡片盒，马上看到分隔卡换了标签。
+                    if mode != .cardBox {
+                        withAnimation(.spring(response: 0.42, dampingFraction: 0.82)) {
+                            mode = .cardBox
+                        }
+                    }
+                }
+                .padding(.leading, 8)
+                .padding(.trailing, 16)
             }
             ModeSwitcher(mode: $mode)
         }
@@ -187,7 +198,7 @@ private struct AlbumSearchField: View {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(Palette.inkSoft)
-            TextField("", text: $text, prompt: Text("搜索题字、标签、地点、胶卷…").foregroundColor(Palette.inkSoft.opacity(0.75)))
+            TextField("", text: $text, prompt: Text("搜索题字、标签、地点、胶卷、日期…").foregroundColor(Palette.inkSoft.opacity(0.75)))
                 .textFieldStyle(.plain)
                 .font(.system(size: 13))
                 .foregroundStyle(Palette.ink)
@@ -219,7 +230,29 @@ private struct AlbumSearchField: View {
     }
 }
 
-// MARK: - 冲印照片
+// MARK: - 冲印照片、归档方式
+
+/// 黄铜小圆钮的样子（「＋」和齿轮共用）。
+private struct BrassKnob: View {
+    let symbol: String
+    let hovering: Bool
+
+    var body: some View {
+        Image(systemName: symbol)
+            .font(.system(size: 13, weight: .bold))
+            .foregroundStyle(Palette.walnutDeep)
+            .frame(width: 30, height: 30)
+            .background(
+                Circle()
+                    .fill(LinearGradient(colors: [Palette.brassLight, Palette.brass], startPoint: .top, endPoint: .bottom))
+            )
+            .overlay(Circle().stroke(Color.white.opacity(0.55), lineWidth: 0.8).padding(0.8))
+            .overlay(Circle().stroke(Palette.walnut.opacity(0.35), lineWidth: 0.5))
+            .shadow(color: .black.opacity(0.28), radius: 0.8, y: 0.8)
+            .shadow(color: .black.opacity(hovering ? 0.2 : 0.12), radius: hovering ? 6 : 4, y: hovering ? 4 : 2)
+            .scaleEffect(hovering ? 1.05 : 1)
+    }
+}
 
 /// 黄铜小圆钮「＋」：从文件或「照片」图库冲印。
 private struct ImportButton: View {
@@ -228,29 +261,48 @@ private struct ImportButton: View {
     var body: some View {
         Button {
             let menu = NSMenu()
-            menu.addItem(ActionMenuItem(title: "从文件冲印…") { PhotoImport.chooseFiles() })
-            menu.addItem(ActionMenuItem(title: "从「照片」图库冲印…") { PhotoImport.choosePhotosLibrary() })
+            menu.addItem(ActionMenuItem(title: String(localized: "从文件冲印…")) { PhotoImport.chooseFiles() })
+            menu.addItem(ActionMenuItem(title: String(localized: "从「照片」图库冲印…")) { PhotoImport.choosePhotosLibrary() })
             menu.popUp(positioning: nil, at: NSEvent.mouseLocation, in: nil)
         } label: {
-            Image(systemName: "plus")
-                .font(.system(size: 13, weight: .bold))
-                .foregroundStyle(Palette.walnutDeep)
-                .frame(width: 30, height: 30)
-                .background(
-                    Circle()
-                        .fill(LinearGradient(colors: [Palette.brassLight, Palette.brass], startPoint: .top, endPoint: .bottom))
-                )
-                .overlay(Circle().stroke(Color.white.opacity(0.55), lineWidth: 0.8).padding(0.8))
-                .overlay(Circle().stroke(Palette.walnut.opacity(0.35), lineWidth: 0.5))
-                .shadow(color: .black.opacity(0.28), radius: 0.8, y: 0.8)
-                .shadow(color: .black.opacity(hovering ? 0.2 : 0.12), radius: hovering ? 6 : 4, y: hovering ? 4 : 2)
-                .scaleEffect(hovering ? 1.05 : 1)
+            BrassKnob(symbol: "plus", hovering: hovering)
         }
         .buttonStyle(.plain)
         .onHover { inside in
             withAnimation(.spring(response: 0.28, dampingFraction: 0.8)) { hovering = inside }
         }
         .help("冲印照片（⌘O）")
+    }
+}
+
+/// 黄铜小圆钮「齿轮」：卡片盒按题字首字母，还是按拍摄的年 / 月 / 日归档（分隔卡上的标签跟着换）。
+private struct IndexModeButton: View {
+    @Binding var indexMode: CardIndexMode
+    let onChoose: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button {
+            let menu = NSMenu()
+            menu.addItem(NSMenuItem.sectionHeader(title: String(localized: "卡片盒归档")))
+            for choice in CardIndexMode.allCases {
+                let item = ActionMenuItem(title: choice.menuTitle) {
+                    indexMode = choice
+                    onChoose()
+                }
+                item.image = NSImage(systemSymbolName: choice.symbol, accessibilityDescription: nil)
+                item.state = choice == indexMode ? .on : .off
+                menu.addItem(item)
+            }
+            menu.popUp(positioning: nil, at: NSEvent.mouseLocation, in: nil)
+        } label: {
+            BrassKnob(symbol: "gearshape.fill", hovering: hovering)
+        }
+        .buttonStyle(.plain)
+        .onHover { inside in
+            withAnimation(.spring(response: 0.28, dampingFraction: 0.8)) { hovering = inside }
+        }
+        .help("卡片盒归档：按首字母或按年 / 月 / 日")
     }
 }
 

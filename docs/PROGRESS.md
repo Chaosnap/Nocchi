@@ -34,12 +34,12 @@
 | 3 | 从刘海进相册时「主程序被强制隐藏」 | 🟡 推断后修，**等所有者确认** | `Settings/WindowManager.swift`（`followActiveSpace`、`bringForward`）、`Editor/DecorateDesk.swift`、`Import/PhotoImport.swift` | 代码里没有任何隐藏窗口的调用。推断：2.0 起启动时就打开相册，窗口留在当时的桌面空间；之后在别的空间或全屏 App 里从刘海点「相册」，macOS 会切到那个空间，看起来就像正在用的 App 被藏起来了。修：相册、设置、装饰台、照片选择器窗口加 `.moveToActiveSpace` + `.fullScreenAuxiliary`（出现在当前空间、能浮在全屏 App 上），最小化的先还原，`orderFrontRegardless` 保证在最前。若所有者说的是别的现象，问清楚再改 |
 | 4 | 「换相机」放到「换胶卷」右边 | 🟡 已改，等 CI | `Notch/NotchRootView.swift`（`CameraTileButton`、`CameraBodyArt`）、`Notch/NotchController.swift`（悬停面板宽 +84） | 机身小图 + 「换相机」+ 机身名，点一下换下一台；装着大头贴机时胶卷罐显示大头贴机用的胶卷，「相纸」小卡切换四格条 / 四宫格 |
 | 5 | 相册顶部四个小图标的阴影被截断 | 🟡 已重渲染，等 CI | `design/blender/icons/make_icons.py`（`PAD = 0.22`、`ANCHOR`、`fade_shadow_edges`）、`Album/AlbumHeader.swift`（`ModeIcon.overscan = 1.5`） | 原因：渲染时机位贴着物体（留边 8%），阴影跑出画布被截成直角。现在四周留足地方、阴影在画布边之前淡到透明；App 里放大 1.5 倍画、布局仍占原来的格子 |
-| 6 | 卡片盒：「＋」右边加齿轮，按首字母 / 年 / 月 / 日归档，分隔卡标签跟着变，能按日期检索 | ⚪ 下一步 | 见下面「设计 6」 | |
+| 6 | 卡片盒：「＋」右边加齿轮，按首字母 / 年 / 月 / 日归档，分隔卡标签跟着变，能按日期检索 | 🟡 已改，等 CI 和 Screenshots（看 `album-cardbox.jpg`、新的 `album-cardbox-month.jpg`：标签上的字是不是正好印在标签面上、没有透到前一张标签上） | `NocchiKit/Library/CardIndex.swift`（+ 测试 `CardIndexTests`）、`NocchiKit/Support/UILanguage.swift`、`NocchiUI/CardBoxModel.swift`（`indexMode`、`index`、`pull(key:)`）、`NocchiUI/CardBox/CardBoxParts.swift`（`TabFace`、`TabLabels`、`TabHotspot`、`TabChip`、卡片小标签）、`CardBoxView.swift`、`CardBoxHotspots.swift`（重新生成）、`design/blender/cardbox/make_cardbox.py`（空白标签、导出标签面四角）、`Album/AlbumHeader.swift`（齿轮 `IndexModeButton`）、`Album/AlbumShared.swift`（卡片盒模型挪到 `AlbumRouter`）、`PhotoSearch`（英文月份）、`Screenshots/ScreenshotStudio.swift`（多拍一张按月归档） | 按「设计 6」做了，决策 D37。标签宽 2.8（原 2.3）、高 1.25 不变（试过 1.45：后一张标签的下沿被前一张挡住） |
 | 7 | App 支持中英文切换，默认中文 | ⚪ | 见下面「设计 7」 | |
 | 8 | 关于页删掉「机身、图标与纹理为原创设计（由 Codex 生成）……」 | 🟡 已改 | `Settings/SettingsView.swift`（`AboutTab`） | |
 | 9 | 存储位置可以自定义 | ⚪ | 见下面「设计 9」 | |
 
-**设计 6 · 卡片盒归档方式**
+**设计 6 · 卡片盒归档方式（已按此实现，留作说明）**
 - NocchiKit 新增 `CardIndex`：`Mode`（首字母 / 年 / 月 / 日），把照片分进最多 27 格（盒子里有 27 张分隔卡）：首字母 = A–Z、#；年 = 有照片的年份，新的在前；月 = 有照片的年月，新的在前；日 = 有照片的日子，新的在前；放不下的进最后一格「更早」。每格有短标签（标签上印的：`2026`、`11月`、`11/24`）和完整标签（吊牌上的：`2026 年 11 月`）。单元测试。
 - `CardBoxModel`：`indexMode`（UserDefaults 记住），`tabs`（每格的键、标签、张数），按格抽卡（现在是 `pull(letter:)`）。
 - Blender：`design/blender/cardbox/make_cardbox.py` 重渲染 `CardBoxBase`，分隔卡标签不再烤进字母（空白标签），`hotspots.json` 加正确的标签正面四边形（现在的 `quad` 是错的：取的是底边前后四个点），重新生成 `CardBoxHotspots.swift`。
@@ -182,6 +182,7 @@
 
 ## 最近更新（新的在上）
 
+- **2026-11-24 · 第 48 次推送（2.1 反馈第二批）** 卡片盒归档方式：「＋」右边的黄铜齿轮选按首字母 / 年 / 月 / 日；卡片盒重新渲染成空白标签，标签上的字由 App 按透视印上去；搜索认英文月份名；文档站「拍照」加「换相机」、「相册」加按日期归档。
 - **2026-11-24 · 第 47 次推送（2.1 反馈第一批）** 卡片盒卡片空白（按版本重读图、读不到重试）；装着大头贴机时自拍 / 屏幕快门 / 冲印照片都拍成一条四格；刘海面板「换胶卷」右边加「换相机」；相册等窗口出现在当前桌面空间（推断的「主程序被强制隐藏」）；相册顶部小图标重渲染、阴影不再被截断；关于页删掉一句话。详见「交接 · 当前批次」。
 - **2026-11-24 · 第 46 次推送** 所有者：README 和网页「不要用廉价的 emoji」。新增一套原创 SVG 图标（`design/icons/make_icons.py`）：文档站首页 9 张功能卡片换成搪瓷小砖图标；README 的导航、各节标题、下载表格换成浅陶土色线条图标。README 里两个显示成裂图的徽章换掉（CI 用 GitHub 自己的工作流徽章，版本用静态徽章，**发新版时记得改 `release-v…`**）。顺手修了首页「装饰台」卡片的说明被截断（YAML 里 ` #` 是注释开头，带 #标签 的文字要加引号）。
 - **2026-11-24 · 发行版 v2.0.0** Release 工作流第 4 次运行全绿：`Nocchi-macOS-2.0.0.zip` + `SHA256SUMS.txt`。
