@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "stocks": [
     {
       "id": "cream-600",
@@ -7,17 +7,61 @@
       "englishName": "Cream 600",
       "iso": 600,
       "exposures": 10,
-      "summary": "即显相纸的经典味道：奶油高光、微绿阴影、柔和对比",
+      "summary": "方形即显的经典味道：奶油高光、微青绿阴影、柔和反差",
       "swatch": ["#F2D9A8", "#9FB49C", "#5A4B3C"],
       "tags": ["instant", "warm", "default"],
-      "tone": {
-        "exposure": 0.1, "temperature": 0.25, "tint": -0.05, "contrast": 1.05,
-        "blackLift": 0.06, "whiteCap": 0.96, "saturation": 0.9, "crossTalk": 0.04,
-        "shadowTint": "#5A7A6A", "shadowTintAmount": 0.35,
-        "highlightTint": "#F2D9A8", "highlightTintAmount": 0.35
-      },
-      "effects": { "grain": 0.18, "grainSize": 1.2, "halation": 0.1, "bloom": 0.15, "vignette": 0.25, "edgeSoftness": 0.45 },
-      "paper": { "color": "#F6F2E8", "ink": "#2B2A28" }
+      "tone": {"exposure": 0.12, "temperature": 0.22, "tint": -0.06, "contrast": 1.0, "saturation": 0.86, "crossTalk": 0.05, "curves": {"master": [[0, 0.06], [0.25, 0.25], [0.5, 0.52], [0.75, 0.78], [1, 0.95]], "b": [[0, 0.06], [0.5, 0.5], [1, 0.93]]}, "hsl": {"red": {"hue": 4, "saturation": 0.9}, "orange": {"saturation": 0.92, "luminance": 0.03}, "yellow": {"hue": -4, "saturation": 0.85}, "green": {"hue": 12, "saturation": 0.72, "luminance": -0.02}, "cyan": {"saturation": 0.8}, "blue": {"hue": -12, "saturation": 0.78}}, "shadowTint": "#4E7A6E", "shadowTintAmount": 0.4, "highlightTint": "#F2D9A8", "highlightTintAmount": 0.35, "fade": 0.05, "highlightRolloff": 0.55, "skinProtect": 0.4},
+      "effects": {"grain": 0.18, "grainSize": 1.2, "halation": 0.1, "bloom": 0.16, "vignette": 0.26, "edgeSoftness": 0.45},
+      "paper": {"color": "#F6F2E8", "ink": "#2B2A28"}
+    },
+    {
+      "id": "crisp-800",
+      "name": "晶亮 800",
+      "englishName": "Crisp 800",
+      "iso": 800,
+      "exposures": 10,
+      "summary": "明亮通透的即显：干净的白、饱满而不艳俗、反差利落、阴影微青",
+      "swatch": ["#FFFFFF", "#7FC4E0", "#E26D8C"],
+      "tags": ["instant", "mini", "bright"],
+      "tone": {"exposure": 0.2, "temperature": -0.05, "tint": 0.02, "contrast": 1.08, "saturation": 1.04, "curves": {"master": [[0, 0.02], [0.25, 0.22], [0.5, 0.52], [0.75, 0.8], [1, 1]], "b": [[0, 0.05], [0.5, 0.51], [1, 0.99]], "g": [[0, 0.02], [0.5, 0.5], [1, 1]]}, "hsl": {"red": {"saturation": 1.05}, "orange": {"saturation": 0.98, "luminance": 0.04}, "green": {"hue": 6, "saturation": 1.04}, "cyan": {"saturation": 1.08}, "blue": {"hue": -6, "saturation": 1.1, "luminance": -0.02}, "magenta": {"saturation": 1.05}}, "shadowTint": "#3E7C8C", "shadowTintAmount": 0.2, "highlightRolloff": 0.18, "skinProtect": 0.45},
+      "effects": {"grain": 0.14, "grainSize": 1.1, "halation": 0.06, "bloom": 0.08, "vignette": 0.18, "edgeSoftness": 0.3},
+      "paper": {"color": "#FAFAF7", "ink": "#2B2A28"}
+    },
+    {
+      "id": "portrait-400",
+      "name": "人像 400",
+      "englishName": "Portrait 400",
+      "iso": 400,
+      "exposures": 36,
+      "summary": "人像负片：暖中性、低反差，肤色奶油般柔和，绿色收敛，高光过渡细腻",
+      "swatch": ["#F3D7BE", "#C9A48A", "#5E6B5A"],
+      "tags": ["color", "warm", "portrait", "print"],
+      "tone": {"exposure": 0.15, "temperature": 0.12, "tint": 0.03, "contrast": 0.94, "saturation": 0.92, "crossTalk": 0.03, "curves": {"master": [[0, 0.035], [0.25, 0.24], [0.5, 0.51], [0.75, 0.77], [1, 0.97]], "r": [[0, 0.0], [0.5, 0.51], [1, 1]], "b": [[0, 0.04], [0.5, 0.49], [1, 0.95]]}, "hsl": {"red": {"saturation": 0.92}, "orange": {"hue": -2, "saturation": 0.9, "luminance": 0.04}, "yellow": {"hue": -6, "saturation": 0.84}, "green": {"hue": -14, "saturation": 0.7, "luminance": 0.02}, "cyan": {"saturation": 0.8}, "blue": {"hue": -5, "saturation": 0.84}, "magenta": {"saturation": 0.9}}, "shadowTint": "#4C6670", "shadowTintAmount": 0.18, "highlightTint": "#F7DEC4", "highlightTintAmount": 0.2, "fade": 0.03, "highlightRolloff": 0.6, "skinProtect": 0.6},
+      "effects": {"grain": 0.14, "grainSize": 1.05, "halation": 0.08, "bloom": 0.1, "vignette": 0.12, "edgeSoftness": 0.1}
+    },
+    {
+      "id": "gold-200",
+      "name": "金黄 200",
+      "englishName": "Golden 200",
+      "iso": 200,
+      "exposures": 36,
+      "summary": "金黄色的日常负片：暖洋洋、黄与红饱满、黑位微抬，一股旧夏天的味道",
+      "swatch": ["#FFD36E", "#E5893F", "#6B4A2E"],
+      "tags": ["color", "warm", "print"],
+      "tone": {"exposure": 0.1, "temperature": 0.32, "tint": 0.04, "contrast": 1.06, "saturation": 1.1, "crossTalk": 0.03, "curves": {"master": [[0, 0.04], [0.25, 0.23], [0.5, 0.51], [0.75, 0.79], [1, 0.98]], "b": [[0, 0.05], [0.5, 0.47], [1, 0.9]], "r": [[0, 0.01], [0.5, 0.52], [1, 1]]}, "hsl": {"red": {"saturation": 1.1}, "orange": {"saturation": 1.06, "luminance": 0.02}, "yellow": {"hue": -3, "saturation": 1.2, "luminance": 0.02}, "green": {"hue": -15, "saturation": 0.86}, "cyan": {"saturation": 0.85}, "blue": {"hue": 4, "saturation": 0.88}}, "highlightTint": "#FFD48A", "highlightTintAmount": 0.25, "fade": 0.04, "highlightRolloff": 0.35, "skinProtect": 0.35},
+      "effects": {"grain": 0.15, "grainSize": 1.05, "halation": 0.12, "bloom": 0.08, "vignette": 0.16, "lightLeak": 0.04}
+    },
+    {
+      "id": "vivid-100",
+      "name": "艳色 100",
+      "englishName": "Vivid 100",
+      "iso": 100,
+      "exposures": 36,
+      "summary": "风光负片：高饱和、深邃的蓝天、浓郁的红，颗粒极细、画面利落",
+      "swatch": ["#E8463A", "#2D6FB5", "#F2C14E"],
+      "tags": ["color", "vivid", "print"],
+      "tone": {"exposure": 0.0, "temperature": -0.02, "contrast": 1.14, "saturation": 1.18, "curves": {"master": [[0, 0.015], [0.25, 0.21], [0.5, 0.51], [0.75, 0.8], [1, 0.99]]}, "hsl": {"red": {"hue": 2, "saturation": 1.22}, "orange": {"saturation": 1.02}, "yellow": {"saturation": 1.1}, "green": {"hue": 4, "saturation": 1.1, "luminance": -0.02}, "cyan": {"saturation": 1.15}, "blue": {"saturation": 1.25, "luminance": -0.05}, "magenta": {"saturation": 1.1}}, "highlightRolloff": 0.3, "skinProtect": 0.45},
+      "effects": {"grain": 0.06, "grainSize": 0.9, "halation": 0.05, "bloom": 0.04, "vignette": 0.12}
     },
     {
       "id": "warm-sun-400",
@@ -25,105 +69,49 @@
       "englishName": "Warm Sun 400",
       "iso": 400,
       "exposures": 24,
-      "summary": "暖黄、肤色柔和、低对比；细颗粒、轻微褪色",
+      "summary": "阳光下的万能负片：暖黄、肤色健康、反差适中，带一点点漏光",
       "swatch": ["#FFD28A", "#E8A86A", "#7A6040"],
       "tags": ["warm"],
-      "tone": {
-        "exposure": 0.15, "temperature": 0.5, "tint": 0.05, "contrast": 0.9,
-        "blackLift": 0.08, "whiteCap": 0.97, "saturation": 0.95, "crossTalk": 0.03,
-        "shadowTint": "#7A6040", "shadowTintAmount": 0.25,
-        "highlightTint": "#FFD28A", "highlightTintAmount": 0.45
-      },
-      "effects": { "grain": 0.15, "grainSize": 1.0, "halation": 0.12, "bloom": 0.1, "vignette": 0.15, "lightLeak": 0.05, "edgeSoftness": 0.25 },
-      "paper": { "color": "#F8F3E6" }
+      "tone": {"exposure": 0.22, "temperature": 0.42, "tint": 0.05, "contrast": 0.95, "saturation": 0.98, "crossTalk": 0.03, "curves": {"master": [[0, 0.05], [0.25, 0.25], [0.5, 0.52], [0.75, 0.78], [1, 0.97]], "b": [[0, 0.04], [0.5, 0.48], [1, 0.92]]}, "hsl": {"orange": {"luminance": 0.03}, "yellow": {"hue": -2, "saturation": 1.12}, "green": {"hue": -10, "saturation": 0.85}, "blue": {"saturation": 0.92}}, "shadowTint": "#7A6040", "shadowTintAmount": 0.2, "highlightTint": "#FFD28A", "highlightTintAmount": 0.35, "fade": 0.07, "highlightRolloff": 0.45, "skinProtect": 0.4},
+      "effects": {"grain": 0.16, "grainSize": 1.0, "halation": 0.14, "bloom": 0.14, "vignette": 0.15, "lightLeak": 0.1, "edgeSoftness": 0.2},
+      "paper": {"color": "#F8F3E6"}
     },
     {
-      "id": "night-flight-800",
-      "name": "夜航 800",
-      "englishName": "Night Flight 800",
-      "iso": 800,
-      "exposures": 24,
-      "summary": "冷蓝阴影、保留霓虹高光；中颗粒、暗角",
-      "swatch": ["#2E4A7A", "#FFB070", "#141A2A"],
-      "tags": ["cool", "night"],
-      "tone": {
-        "exposure": 0.1, "temperature": -0.45, "tint": 0.1, "contrast": 1.15,
-        "blackLift": 0.03, "saturation": 1.05,
-        "shadowTint": "#2E4A7A", "shadowTintAmount": 0.55,
-        "highlightTint": "#FFB070", "highlightTintAmount": 0.25
-      },
-      "effects": { "grain": 0.35, "grainSize": 1.4, "halation": 0.35, "bloom": 0.15, "vignette": 0.4 },
-      "paper": { "color": "#1E1E22", "ink": "#F2F2F2" }
-    },
-    {
-      "id": "sakura-rain-200",
-      "name": "樱雨 200",
-      "englishName": "Sakura Rain 200",
-      "iso": 200,
-      "exposures": 12,
-      "summary": "粉紫、低饱和、柔和高光；柔焦、细颗粒",
-      "swatch": ["#FFD0DC", "#C9A6C8", "#7A5A8A"],
-      "tags": ["pastel", "soft"],
-      "tone": {
-        "exposure": 0.2, "temperature": 0.05, "tint": 0.35, "contrast": 0.85,
-        "blackLift": 0.1, "whiteCap": 0.96, "saturation": 0.75,
-        "shadowTint": "#7A5A8A", "shadowTintAmount": 0.35,
-        "highlightTint": "#FFD0DC", "highlightTintAmount": 0.45
-      },
-      "effects": { "grain": 0.12, "halation": 0.1, "bloom": 0.45, "vignette": 0.12, "edgeSoftness": 0.35 },
-      "paper": { "color": "#FBF1F2", "ink": "#5A3A4A" }
-    },
-    {
-      "id": "old-news-100",
-      "name": "旧报纸 100",
-      "englishName": "Old News 100",
-      "iso": 100,
-      "exposures": 36,
-      "summary": "黑白、高反差；明显颗粒",
-      "swatch": ["#F4F1EA", "#8A8A8A", "#121212"],
-      "tags": ["bw", "contrast"],
-      "tone": {
-        "monochrome": true, "monoMix": [0.35, 0.5, 0.15],
-        "contrast": 1.55, "blackLift": 0.02, "whiteCap": 0.98
-      },
-      "effects": { "grain": 0.55, "grainSize": 1.6, "vignette": 0.3 },
-      "paper": { "color": "#F4F1EA", "ink": "#151515" }
-    },
-    {
-      "id": "moss-400",
-      "name": "青苔 400",
-      "englishName": "Moss 400",
+      "id": "mint-400",
+      "name": "薄荷 400",
+      "englishName": "Mint 400",
       "iso": 400,
-      "exposures": 24,
-      "summary": "褪绿、低对比；轻微漏光",
-      "swatch": ["#E8EDC8", "#7FA07A", "#3F6B4A"],
-      "tags": ["faded", "green"],
-      "tone": {
-        "temperature": -0.05, "tint": -0.3, "contrast": 0.88,
-        "blackLift": 0.1, "whiteCap": 0.95, "saturation": 0.8,
-        "shadowTint": "#3F6B4A", "shadowTintAmount": 0.45,
-        "highlightTint": "#E8EDC8", "highlightTintAmount": 0.3
-      },
-      "effects": { "grain": 0.2, "bloom": 0.1, "vignette": 0.2, "lightLeak": 0.25, "edgeSoftness": 0.25 },
-      "paper": { "color": "#F3F3EA" }
+      "exposures": 36,
+      "summary": "通透淡彩：薄荷绿、青蓝天空、粉嫩肤色，像微微过曝的胶片",
+      "swatch": ["#DDEFE4", "#9CCBC0", "#4E7F86"],
+      "tags": ["color", "pastel", "airy"],
+      "tone": {"exposure": 0.3, "temperature": -0.1, "tint": -0.04, "contrast": 0.86, "saturation": 0.86, "curves": {"master": [[0, 0.06], [0.25, 0.28], [0.5, 0.55], [0.75, 0.8], [1, 0.97]], "g": [[0, 0.03], [0.5, 0.51], [1, 1]], "b": [[0, 0.06], [0.5, 0.51], [1, 0.98]]}, "hsl": {"red": {"hue": -6, "saturation": 0.82}, "orange": {"saturation": 0.86, "luminance": 0.05}, "yellow": {"hue": 6, "saturation": 0.82}, "green": {"hue": 16, "saturation": 0.76, "luminance": 0.05}, "cyan": {"saturation": 0.92, "luminance": 0.03}, "blue": {"hue": -10, "saturation": 0.82}, "magenta": {"saturation": 0.86}}, "shadowTint": "#5E9C96", "shadowTintAmount": 0.25, "fade": 0.06, "highlightRolloff": 0.6, "skinProtect": 0.5},
+      "effects": {"grain": 0.14, "grainSize": 1.05, "halation": 0.06, "bloom": 0.2, "vignette": 0.06, "edgeSoftness": 0.15},
+      "paper": {"color": "#F7F8F5"}
     },
     {
-      "id": "neon-800",
-      "name": "霓虹 800",
-      "englishName": "Neon 800",
-      "iso": 800,
-      "exposures": 24,
-      "summary": "高饱和、暖红高光；光晕、夜景颗粒",
-      "swatch": ["#FF6A4A", "#C04AA0", "#3A2A6A"],
-      "tags": ["night", "vivid"],
-      "tone": {
-        "exposure": 0.05, "temperature": 0.15, "tint": 0.15, "contrast": 1.2,
-        "saturation": 1.35, "crossTalk": 0.02,
-        "shadowTint": "#3A2A6A", "shadowTintAmount": 0.35,
-        "highlightTint": "#FF6A4A", "highlightTintAmount": 0.35
-      },
-      "effects": { "grain": 0.32, "grainSize": 1.3, "halation": 0.6, "bloom": 0.25, "vignette": 0.3 },
-      "paper": { "color": "#141418", "ink": "#FFE8F0" }
+      "id": "evergreen-400",
+      "name": "常青 400",
+      "englishName": "Evergreen 400",
+      "iso": 400,
+      "exposures": 36,
+      "summary": "偏冷的日常负片：浓郁的绿、清脆的反差，阴影里一点青绿",
+      "swatch": ["#BFD9A0", "#4E8C6A", "#2A3F4F"],
+      "tags": ["color", "green", "print"],
+      "tone": {"exposure": 0.05, "temperature": -0.08, "tint": -0.05, "contrast": 1.08, "saturation": 1.0, "curves": {"master": [[0, 0.02], [0.25, 0.22], [0.5, 0.51], [0.75, 0.79], [1, 0.99]], "g": [[0, 0.03], [0.5, 0.51], [1, 1]], "r": [[0, 0.0], [0.5, 0.49], [1, 0.98]]}, "hsl": {"red": {"hue": -3, "saturation": 1.05}, "orange": {"saturation": 0.96, "luminance": 0.02}, "yellow": {"hue": 4, "saturation": 0.95}, "green": {"hue": 6, "saturation": 1.16, "luminance": -0.03}, "cyan": {"saturation": 1.08}, "blue": {"hue": -4, "saturation": 1.04}}, "shadowTint": "#2F5F5C", "shadowTintAmount": 0.25, "highlightRolloff": 0.3, "skinProtect": 0.4},
+      "effects": {"grain": 0.18, "grainSize": 1.1, "halation": 0.06, "bloom": 0.05, "vignette": 0.14}
+    },
+    {
+      "id": "everyday-200",
+      "name": "日常 200",
+      "englishName": "Everyday 200",
+      "iso": 200,
+      "exposures": 36,
+      "summary": "平和的日常负片：中性略偏青绿、柔和不抢戏，什么都能拍",
+      "swatch": ["#F1E7D2", "#9DB7A8", "#3F5866"],
+      "tags": ["color", "print"],
+      "tone": {"exposure": 0.05, "temperature": -0.06, "tint": -0.06, "contrast": 1.02, "saturation": 0.96, "curves": {"master": [[0, 0.03], [0.25, 0.24], [0.5, 0.51], [0.75, 0.78], [1, 0.98]], "b": [[0, 0.04], [0.5, 0.5], [1, 0.98]]}, "hsl": {"orange": {"saturation": 0.95, "luminance": 0.02}, "green": {"hue": 6, "saturation": 0.96}, "blue": {"hue": -3, "saturation": 0.9}}, "fade": 0.03, "highlightRolloff": 0.35, "skinProtect": 0.3},
+      "effects": {"grain": 0.12, "grainSize": 1.0, "halation": 0.04, "bloom": 0.05, "vignette": 0.12}
     },
     {
       "id": "sea-salt-160",
@@ -131,17 +119,38 @@
       "englishName": "Sea Salt 160",
       "iso": 160,
       "exposures": 36,
-      "summary": "日系淡彩：通透、微青、抬起的阴影",
+      "summary": "日系淡彩：通透、微青、抬起的阴影，人像干净",
       "swatch": ["#F4F8F4", "#A8CCD0", "#5F8FA0"],
       "tags": ["pastel", "cool", "airy"],
-      "tone": {
-        "exposure": 0.35, "temperature": -0.2, "tint": -0.05, "contrast": 0.85,
-        "blackLift": 0.12, "whiteCap": 0.98, "saturation": 0.7,
-        "shadowTint": "#5F8FA0", "shadowTintAmount": 0.35,
-        "highlightTint": "#F4F8F4", "highlightTintAmount": 0.2
-      },
-      "effects": { "grain": 0.08, "bloom": 0.2, "vignette": 0.05 },
-      "paper": { "color": "#F7F8F5" }
+      "tone": {"exposure": 0.32, "temperature": -0.16, "tint": -0.04, "contrast": 0.86, "saturation": 0.76, "curves": {"master": [[0, 0.08], [0.25, 0.3], [0.5, 0.56], [0.75, 0.8], [1, 0.98]], "b": [[0, 0.06], [0.5, 0.51], [1, 1]]}, "hsl": {"orange": {"saturation": 0.85, "luminance": 0.05}, "yellow": {"hue": 4, "saturation": 0.8}, "green": {"hue": 8, "saturation": 0.78, "luminance": 0.04}, "blue": {"hue": -6, "saturation": 0.82}}, "shadowTint": "#5F8FA0", "shadowTintAmount": 0.3, "fade": 0.06, "highlightRolloff": 0.55, "skinProtect": 0.5},
+      "effects": {"grain": 0.08, "grainSize": 0.95, "bloom": 0.2, "vignette": 0.05},
+      "paper": {"color": "#F7F8F5"}
+    },
+    {
+      "id": "sakura-rain-200",
+      "name": "樱雨 200",
+      "englishName": "Sakura Rain 200",
+      "iso": 200,
+      "exposures": 12,
+      "summary": "粉紫淡彩：低饱和、柔光，像下过雨的春天",
+      "swatch": ["#FFD0DC", "#C9A6C8", "#7A5A8A"],
+      "tags": ["pastel", "soft"],
+      "tone": {"exposure": 0.22, "temperature": 0.04, "tint": 0.24, "contrast": 0.86, "saturation": 0.78, "curves": {"master": [[0, 0.07], [0.25, 0.28], [0.5, 0.54], [0.75, 0.79], [1, 0.96]], "r": [[0, 0.02], [0.5, 0.52], [1, 1]]}, "hsl": {"red": {"hue": -6, "saturation": 0.86}, "orange": {"hue": -4, "saturation": 0.85, "luminance": 0.04}, "green": {"hue": 10, "saturation": 0.7}, "blue": {"hue": 8, "saturation": 0.85}, "magenta": {"saturation": 1.08}}, "shadowTint": "#7A5A8A", "shadowTintAmount": 0.32, "highlightTint": "#FFD6E0", "highlightTintAmount": 0.35, "fade": 0.06, "highlightRolloff": 0.5, "skinProtect": 0.4},
+      "effects": {"grain": 0.12, "grainSize": 1.0, "halation": 0.1, "bloom": 0.42, "vignette": 0.12, "edgeSoftness": 0.35},
+      "paper": {"color": "#FBF1F2", "ink": "#5A3A4A"}
+    },
+    {
+      "id": "moss-400",
+      "name": "青苔 400",
+      "englishName": "Moss 400",
+      "iso": 400,
+      "exposures": 24,
+      "summary": "褪色的青绿：低反差、橄榄色的绿，一点漏光",
+      "swatch": ["#E8EDC8", "#7FA07A", "#3F6B4A"],
+      "tags": ["faded", "green"],
+      "tone": {"exposure": 0.05, "temperature": -0.03, "tint": -0.24, "contrast": 0.88, "saturation": 0.8, "curves": {"master": [[0, 0.08], [0.25, 0.27], [0.5, 0.52], [0.75, 0.77], [1, 0.95]], "g": [[0, 0.03], [0.5, 0.51], [1, 0.99]]}, "hsl": {"red": {"saturation": 0.85}, "yellow": {"hue": -6, "saturation": 0.85}, "green": {"hue": -14, "saturation": 0.74, "luminance": -0.03}, "blue": {"hue": -10, "saturation": 0.7}}, "shadowTint": "#3F6B4A", "shadowTintAmount": 0.42, "highlightTint": "#E8EDC8", "highlightTintAmount": 0.28, "fade": 0.08, "highlightRolloff": 0.45},
+      "effects": {"grain": 0.2, "grainSize": 1.1, "bloom": 0.1, "vignette": 0.22, "lightLeak": 0.22, "edgeSoftness": 0.25},
+      "paper": {"color": "#F3F3EA"}
     },
     {
       "id": "old-album-100",
@@ -149,17 +158,142 @@
       "englishName": "Old Album 100",
       "iso": 100,
       "exposures": 12,
-      "summary": "褪色、泛黄、微微偏品红，像压在相册里很多年",
+      "summary": "70 年代褪色的冲印：暖红偏色、黑位发灰、颜色像晒过太阳",
       "swatch": ["#F0D8A0", "#C49A8A", "#7A5050"],
       "tags": ["faded", "vintage"],
-      "tone": {
-        "exposure": 0.05, "temperature": 0.35, "tint": 0.2, "contrast": 0.8,
-        "blackLift": 0.16, "whiteCap": 0.9, "saturation": 0.6, "crossTalk": 0.08,
-        "shadowTint": "#7A5050", "shadowTintAmount": 0.35,
-        "highlightTint": "#F0D8A0", "highlightTintAmount": 0.5
-      },
-      "effects": { "grain": 0.25, "bloom": 0.1, "vignette": 0.35, "lightLeak": 0.1, "edgeSoftness": 0.35 },
-      "paper": { "color": "#EFE6D2", "ink": "#4A3A2A" }
+      "tone": {"exposure": 0.05, "temperature": 0.32, "tint": 0.18, "contrast": 0.86, "saturation": 0.7, "crossTalk": 0.08, "curves": {"master": [[0, 0.1], [0.25, 0.3], [0.5, 0.53], [0.75, 0.75], [1, 0.9]], "b": [[0, 0.08], [0.5, 0.46], [1, 0.84]]}, "hsl": {"red": {"saturation": 0.9}, "green": {"hue": -20, "saturation": 0.58}, "cyan": {"saturation": 0.6}, "blue": {"hue": 14, "saturation": 0.55}}, "shadowTint": "#7A5050", "shadowTintAmount": 0.35, "highlightTint": "#F0D8A0", "highlightTintAmount": 0.45, "fade": 0.06},
+      "effects": {"grain": 0.24, "grainSize": 1.1, "bloom": 0.1, "vignette": 0.36, "lightLeak": 0.1, "edgeSoftness": 0.35},
+      "paper": {"color": "#EFE6D2", "ink": "#4A3A2A"}
+    },
+    {
+      "id": "sunset-200",
+      "name": "晚霞 200",
+      "englishName": "Sunset 200",
+      "iso": 200,
+      "exposures": 24,
+      "summary": "橙粉色的高光、青绿色的阴影，傍晚出门就带它",
+      "swatch": ["#FF9A6A", "#E070A0", "#2F6A70"],
+      "tags": ["warm", "vivid"],
+      "tone": {"exposure": 0.05, "temperature": 0.26, "tint": 0.12, "contrast": 1.08, "saturation": 1.12, "curves": {"master": [[0, 0.03], [0.25, 0.23], [0.5, 0.51], [0.75, 0.79], [1, 0.98]]}, "hsl": {"red": {"hue": -4, "saturation": 1.14}, "orange": {"saturation": 1.12, "luminance": 0.02}, "yellow": {"hue": -6, "saturation": 1.05}, "green": {"hue": 10, "saturation": 0.85}, "blue": {"hue": -10, "saturation": 1.1}, "magenta": {"saturation": 1.1}}, "shadowTint": "#2F6A70", "shadowTintAmount": 0.45, "highlightTint": "#FF9A6A", "highlightTintAmount": 0.42, "highlightRolloff": 0.35, "skinProtect": 0.35},
+      "effects": {"grain": 0.18, "grainSize": 1.05, "halation": 0.25, "bloom": 0.08, "vignette": 0.25, "lightLeak": 0.12},
+      "paper": {"color": "#FAF2EA"}
+    },
+    {
+      "id": "lemon-soda-100",
+      "name": "柠檬汽水 100",
+      "englishName": "Lemon Soda 100",
+      "iso": 100,
+      "exposures": 24,
+      "summary": "明亮高调：黄绿清爽、饱和但干净，适合晴天",
+      "swatch": ["#FFF2A0", "#B8E07A", "#4A8A6A"],
+      "tags": ["bright", "vivid"],
+      "tone": {"exposure": 0.25, "temperature": 0.08, "tint": -0.12, "contrast": 1.05, "saturation": 1.18, "curves": {"master": [[0, 0.03], [0.25, 0.25], [0.5, 0.54], [0.75, 0.81], [1, 1]]}, "hsl": {"orange": {"luminance": 0.04}, "yellow": {"hue": 3, "saturation": 1.25, "luminance": 0.03}, "green": {"hue": 5, "saturation": 1.15, "luminance": 0.04}, "cyan": {"saturation": 1.05}, "blue": {"hue": -4}}, "shadowTint": "#4A8A6A", "shadowTintAmount": 0.18, "highlightTint": "#FFF2A0", "highlightTintAmount": 0.3, "highlightRolloff": 0.3, "skinProtect": 0.5},
+      "effects": {"grain": 0.07, "grainSize": 0.9, "bloom": 0.1, "vignette": 0.08},
+      "paper": {"color": "#FFFDF4"}
+    },
+    {
+      "id": "tungsten-800",
+      "name": "钨丝 800",
+      "englishName": "Tungsten 800",
+      "iso": 800,
+      "exposures": 36,
+      "summary": "电影卷改的夜景卷：钨丝灯下偏冷、青色阴影，灯光周围一圈红色光晕",
+      "swatch": ["#2B5B7A", "#E0553A", "#10202C"],
+      "tags": ["cine", "night"],
+      "tone": {"exposure": 0.05, "temperature": -0.5, "tint": 0.06, "contrast": 1.08, "saturation": 1.05, "curves": {"master": [[0, 0.03], [0.25, 0.22], [0.5, 0.5], [0.75, 0.79], [1, 0.98]], "b": [[0, 0.05], [0.5, 0.52], [1, 0.98]]}, "hsl": {"red": {"saturation": 1.15}, "orange": {"saturation": 0.95, "luminance": 0.03}, "yellow": {"hue": -6, "saturation": 0.92}, "green": {"hue": 12, "saturation": 0.85}, "cyan": {"saturation": 1.1}, "blue": {"hue": -8, "saturation": 1.1}}, "shadowTint": "#2F6F7A", "shadowTintAmount": 0.45, "highlightTint": "#FFB27A", "highlightTintAmount": 0.18, "highlightRolloff": 0.45, "skinProtect": 0.5},
+      "effects": {"grain": 0.24, "grainSize": 1.3, "halation": 0.7, "bloom": 0.2, "vignette": 0.25},
+      "paper": {"color": "#1E1E22", "ink": "#F2F2F2"}
+    },
+    {
+      "id": "night-flight-800",
+      "name": "夜航 800",
+      "englishName": "Night Flight 800",
+      "iso": 800,
+      "exposures": 24,
+      "summary": "蓝调时刻：深蓝阴影、暖橙灯光，中颗粒",
+      "swatch": ["#2E4A7A", "#FFB070", "#141A2A"],
+      "tags": ["cool", "night"],
+      "tone": {"exposure": -0.02, "temperature": -0.38, "tint": 0.06, "contrast": 1.14, "saturation": 1.06, "curves": {"master": [[0, 0.02], [0.25, 0.2], [0.5, 0.49], [0.75, 0.79], [1, 0.98]], "b": [[0, 0.07], [0.5, 0.53], [1, 0.97]]}, "hsl": {"orange": {"saturation": 1.15, "luminance": 0.03}, "yellow": {"hue": -4, "saturation": 1.05}, "blue": {"saturation": 1.12, "luminance": -0.03}, "cyan": {"saturation": 0.95}}, "shadowTint": "#1F3B6E", "shadowTintAmount": 0.55, "highlightTint": "#FFB070", "highlightTintAmount": 0.25, "highlightRolloff": 0.4},
+      "effects": {"grain": 0.32, "grainSize": 1.35, "halation": 0.35, "bloom": 0.15, "vignette": 0.4},
+      "paper": {"color": "#1E1E22", "ink": "#F2F2F2"}
+    },
+    {
+      "id": "neon-800",
+      "name": "霓虹 800",
+      "englishName": "Neon 800",
+      "iso": 800,
+      "exposures": 24,
+      "summary": "霓虹夜：品红与红色饱满、紫色阴影，灯光有光晕",
+      "swatch": ["#FF6A4A", "#C04AA0", "#3A2A6A"],
+      "tags": ["night", "vivid"],
+      "tone": {"exposure": 0.05, "temperature": 0.1, "tint": 0.18, "contrast": 1.18, "saturation": 1.26, "crossTalk": 0.02, "curves": {"master": [[0, 0.02], [0.25, 0.2], [0.5, 0.5], [0.75, 0.8], [1, 0.99]]}, "hsl": {"red": {"saturation": 1.2}, "orange": {"luminance": 0.02}, "blue": {"hue": 10, "saturation": 1.2}, "purple": {"saturation": 1.2}, "magenta": {"saturation": 1.25}}, "shadowTint": "#3A2A6A", "shadowTintAmount": 0.4, "highlightTint": "#FF6A4A", "highlightTintAmount": 0.3, "highlightRolloff": 0.35, "skinProtect": 0.3},
+      "effects": {"grain": 0.3, "grainSize": 1.3, "halation": 0.6, "bloom": 0.25, "vignette": 0.3},
+      "paper": {"color": "#141418", "ink": "#FFE8F0"}
+    },
+    {
+      "id": "midnight-1600",
+      "name": "午夜 1600",
+      "englishName": "Midnight 1600",
+      "iso": 1600,
+      "exposures": 24,
+      "summary": "高感夜拍：粗颗粒、压暗、阴影微绿，像深夜的便利店",
+      "swatch": ["#E8F0D0", "#4A6A5A", "#0E1410"],
+      "tags": ["night", "grainy"],
+      "tone": {"exposure": -0.12, "temperature": -0.08, "tint": -0.18, "contrast": 1.2, "saturation": 0.86, "curves": {"master": [[0, 0.04], [0.25, 0.2], [0.5, 0.48], [0.75, 0.76], [1, 0.93]], "g": [[0, 0.03], [0.5, 0.51], [1, 1]]}, "hsl": {"orange": {"saturation": 0.9, "luminance": 0.02}, "green": {"hue": -6, "saturation": 0.9}, "blue": {"hue": -6, "saturation": 0.8}}, "shadowTint": "#2A4A3A", "shadowTintAmount": 0.5, "highlightTint": "#E8F0D0", "highlightTintAmount": 0.2, "fade": 0.03, "highlightRolloff": 0.4},
+      "effects": {"grain": 0.68, "grainSize": 2.0, "halation": 0.28, "bloom": 0.1, "vignette": 0.48},
+      "paper": {"color": "#1A1A1A", "ink": "#EDEDED"}
+    },
+    {
+      "id": "grit-400",
+      "name": "粗粒 400",
+      "englishName": "Grit 400",
+      "iso": 400,
+      "exposures": 36,
+      "summary": "经典高反差黑白：深黑、亮白、颗粒粗犷，街头和人像都有劲",
+      "swatch": ["#F2F2F2", "#7A7A7A", "#0E0E0E"],
+      "tags": ["bw", "contrast"],
+      "tone": {"monochrome": true, "monoMix": [0.33, 0.55, 0.12], "exposure": 0.05, "contrast": 1.28, "curves": {"master": [[0, 0.0], [0.18, 0.11], [0.5, 0.52], [0.82, 0.9], [1, 1]]}, "blackLift": 0.015, "whiteCap": 0.985},
+      "effects": {"grain": 0.5, "grainSize": 1.5, "halation": 0.05, "vignette": 0.26, "edgeSoftness": 0.1},
+      "paper": {"color": "#F4F1EA", "ink": "#151515"}
+    },
+    {
+      "id": "fine-100",
+      "name": "细腻 100",
+      "englishName": "Fine 100",
+      "iso": 100,
+      "exposures": 36,
+      "summary": "细腻黑白：灰阶丰富、颗粒极细，中间调像丝绒",
+      "swatch": ["#F5F3EE", "#A3A09A", "#232220"],
+      "tags": ["bw", "soft"],
+      "tone": {"monochrome": true, "monoMix": [0.24, 0.6, 0.16], "contrast": 1.06, "curves": {"master": [[0, 0.025], [0.25, 0.22], [0.5, 0.5], [0.75, 0.79], [1, 0.98]]}, "highlightRolloff": 0.45},
+      "effects": {"grain": 0.08, "grainSize": 0.9, "vignette": 0.14},
+      "paper": {"color": "#F5F3EE", "ink": "#232220"}
+    },
+    {
+      "id": "silver-400",
+      "name": "银盐 400",
+      "englishName": "Silver 400",
+      "iso": 400,
+      "exposures": 36,
+      "summary": "柔和黑白：低反差、略带暖调的银盐纸",
+      "swatch": ["#EFE7DA", "#A89C8A", "#2A2622"],
+      "tags": ["bw", "soft"],
+      "tone": {"monochrome": true, "monoMix": [0.3, 0.59, 0.11], "contrast": 0.96, "curves": {"master": [[0, 0.05], [0.25, 0.25], [0.5, 0.51], [0.75, 0.77], [1, 0.96]]}, "monoTone": "#C8A880", "monoToneAmount": 0.32, "fade": 0.03, "highlightRolloff": 0.4},
+      "effects": {"grain": 0.34, "grainSize": 1.25, "bloom": 0.1, "vignette": 0.24, "edgeSoftness": 0.2},
+      "paper": {"color": "#F3EEE4", "ink": "#2A2622"}
+    },
+    {
+      "id": "old-news-100",
+      "name": "旧报纸 100",
+      "englishName": "Old News 100",
+      "iso": 100,
+      "exposures": 36,
+      "summary": "旧报纸一样的黑白：极高反差、发黄的纸、粗颗粒",
+      "swatch": ["#F4F1EA", "#8A8A8A", "#121212"],
+      "tags": ["bw", "contrast"],
+      "tone": {"monochrome": true, "monoMix": [0.35, 0.5, 0.15], "contrast": 1.5, "curves": {"master": [[0, 0.0], [0.22, 0.1], [0.5, 0.52], [0.78, 0.93], [1, 1]]}, "monoTone": "#E6DCC4", "monoToneAmount": 0.14, "blackLift": 0.03, "whiteCap": 0.96},
+      "effects": {"grain": 0.55, "grainSize": 1.6, "vignette": 0.32},
+      "paper": {"color": "#F4F1EA", "ink": "#151515"}
     },
     {
       "id": "sepia-80",
@@ -170,83 +304,9 @@
       "summary": "棕褐色调的老照片：低反差、柔边、暗角、明显颗粒",
       "swatch": ["#E8D5B0", "#A07850", "#3A2818"],
       "tags": ["bw", "vintage", "sepia"],
-      "tone": {
-        "monochrome": true, "monoMix": [0.4, 0.45, 0.15],
-        "contrast": 0.9, "blackLift": 0.08, "whiteCap": 0.92,
-        "monoTone": "#B08850", "monoToneAmount": 0.75
-      },
-      "effects": { "grain": 0.4, "grainSize": 1.4, "bloom": 0.15, "vignette": 0.45, "edgeSoftness": 0.5 },
-      "paper": { "color": "#F1EADB", "ink": "#3A2A1A" }
-    },
-    {
-      "id": "sunset-200",
-      "name": "晚霞 200",
-      "englishName": "Sunset 200",
-      "iso": 200,
-      "exposures": 24,
-      "summary": "橙粉高光、青绿阴影",
-      "swatch": ["#FF9A6A", "#E070A0", "#2F6A70"],
-      "tags": ["warm", "vivid"],
-      "tone": {
-        "temperature": 0.3, "tint": 0.1, "contrast": 1.1, "saturation": 1.15,
-        "shadowTint": "#2F6A70", "shadowTintAmount": 0.45,
-        "highlightTint": "#FF9A6A", "highlightTintAmount": 0.45
-      },
-      "effects": { "grain": 0.18, "halation": 0.25, "vignette": 0.25, "lightLeak": 0.12 },
-      "paper": { "color": "#FAF2EA" }
-    },
-    {
-      "id": "silver-400",
-      "name": "银盐 400",
-      "englishName": "Silver 400",
-      "iso": 400,
-      "exposures": 36,
-      "summary": "柔和黑白、低反差、暖调",
-      "swatch": ["#EFE7DA", "#A89C8A", "#2A2622"],
-      "tags": ["bw", "soft"],
-      "tone": {
-        "monochrome": true, "monoMix": [0.3, 0.59, 0.11],
-        "contrast": 0.95, "blackLift": 0.06, "whiteCap": 0.95,
-        "monoTone": "#C8A880", "monoToneAmount": 0.35
-      },
-      "effects": { "grain": 0.35, "bloom": 0.1, "vignette": 0.25, "edgeSoftness": 0.2 },
-      "paper": { "color": "#F3EEE4", "ink": "#2A2622" }
-    },
-    {
-      "id": "lemon-soda-100",
-      "name": "柠檬汽水 100",
-      "englishName": "Lemon Soda 100",
-      "iso": 100,
-      "exposures": 24,
-      "summary": "明亮高调、黄绿、清爽饱和",
-      "swatch": ["#FFF2A0", "#B8E07A", "#4A8A6A"],
-      "tags": ["bright", "vivid"],
-      "tone": {
-        "exposure": 0.3, "temperature": 0.15, "tint": -0.15, "contrast": 1.05,
-        "blackLift": 0.04, "saturation": 1.25,
-        "shadowTint": "#4A8A6A", "shadowTintAmount": 0.2,
-        "highlightTint": "#FFF2A0", "highlightTintAmount": 0.35
-      },
-      "effects": { "grain": 0.08, "bloom": 0.1, "vignette": 0.08 },
-      "paper": { "color": "#FFFDF4" }
-    },
-    {
-      "id": "midnight-1600",
-      "name": "午夜 1600",
-      "englishName": "Midnight 1600",
-      "iso": 1600,
-      "exposures": 24,
-      "summary": "粗颗粒、压暗、微绿的深夜",
-      "swatch": ["#E8F0D0", "#4A6A5A", "#0E1410"],
-      "tags": ["night", "grainy"],
-      "tone": {
-        "exposure": -0.2, "temperature": -0.1, "tint": -0.2, "contrast": 1.3,
-        "whiteCap": 0.92, "saturation": 0.85,
-        "shadowTint": "#2A4A3A", "shadowTintAmount": 0.5,
-        "highlightTint": "#E8F0D0", "highlightTintAmount": 0.2
-      },
-      "effects": { "grain": 0.7, "grainSize": 2.0, "halation": 0.3, "vignette": 0.5 },
-      "paper": { "color": "#1A1A1A", "ink": "#EDEDED" }
+      "tone": {"monochrome": true, "monoMix": [0.4, 0.45, 0.15], "contrast": 0.9, "curves": {"master": [[0, 0.06], [0.25, 0.27], [0.5, 0.52], [0.75, 0.76], [1, 0.92]]}, "monoTone": "#B08850", "monoToneAmount": 0.78, "fade": 0.04, "blackLift": 0.02, "whiteCap": 0.96},
+      "effects": {"grain": 0.4, "grainSize": 1.4, "bloom": 0.15, "vignette": 0.45, "edgeSoftness": 0.5},
+      "paper": {"color": "#F1EADB", "ink": "#3A2A1A"}
     },
     {
       "id": "booth-flash-400",
@@ -254,16 +314,25 @@
       "englishName": "Booth Flash 400",
       "iso": 400,
       "exposures": 16,
-      "summary": "大头贴机的白光闪灯：明亮肤色、轻微过曝",
+      "summary": "照相亭的白光闪灯：明亮的肤色、清脆的反差、高光微微过曝",
       "swatch": ["#FFF6F0", "#F4B8B0", "#5A4A50"],
       "tags": ["booth", "bright"],
-      "tone": {
-        "exposure": 0.35, "temperature": -0.05, "contrast": 1.2, "saturation": 1.1,
-        "blackLift": 0.02,
-        "highlightTint": "#FFF6F0", "highlightTintAmount": 0.3
-      },
-      "effects": { "grain": 0.15, "bloom": 0.3, "vignette": 0.2, "edgeSoftness": 0.15 },
-      "paper": { "color": "#FFFFFF" }
+      "tone": {"exposure": 0.3, "temperature": -0.04, "tint": 0.06, "contrast": 1.18, "saturation": 1.02, "curves": {"master": [[0, 0.02], [0.25, 0.23], [0.5, 0.54], [0.75, 0.82], [1, 1]]}, "hsl": {"red": {"saturation": 1.04}, "orange": {"saturation": 0.96, "luminance": 0.05}, "magenta": {"saturation": 1.05}}, "highlightTint": "#FFF6F0", "highlightTintAmount": 0.25, "highlightRolloff": 0.25, "skinProtect": 0.4},
+      "effects": {"grain": 0.15, "grainSize": 1.1, "bloom": 0.3, "vignette": 0.2, "edgeSoftness": 0.15},
+      "paper": {"color": "#FFFFFF"}
+    },
+    {
+      "id": "booth-silver-400",
+      "name": "照相亭黑白 400",
+      "englishName": "Booth Silver 400",
+      "iso": 400,
+      "exposures": 16,
+      "summary": "老式照相亭的黑白：闪光直打、高反差，印在略暖的银盐纸上",
+      "swatch": ["#F4F1EA", "#9A948A", "#1C1A18"],
+      "tags": ["booth", "bw"],
+      "tone": {"monochrome": true, "monoMix": [0.38, 0.5, 0.12], "exposure": 0.25, "contrast": 1.3, "curves": {"master": [[0, 0.0], [0.2, 0.12], [0.5, 0.53], [0.8, 0.9], [1, 1]]}, "monoTone": "#C9B496", "monoToneAmount": 0.3, "blackLift": 0.02, "whiteCap": 0.965},
+      "effects": {"grain": 0.26, "grainSize": 1.2, "bloom": 0.2, "vignette": 0.22, "edgeSoftness": 0.12},
+      "paper": {"color": "#F4F1EA", "ink": "#1C1A18"}
     }
   ]
 }
