@@ -163,14 +163,10 @@ public final class CardBoxModel: ObservableObject {
                 let negatives = record.negatives.compactMap { ImageIOKit.load(library.negativeURL($0), maxPixel: 600) }
                 guard !negatives.isEmpty else { return nil }
                 let spec = PrintSpec(
-                    layout: record.layout,
-                    paper: paper(record.stockID),
+                    record: record,
+                    stockPaper: paper(record.stockID),
                     images: negatives,
-                    frameOffsets: record.frameOffsets,
-                    strokes: record.strokes,
-                    caption: record.caption,
-                    dateText: record.showsDate ? record.dateText : nil,
-                    widthPixels: record.format == .boothStrip ? 320 : 560
+                    widthPixels: record.format.isBooth ? 320 : 560
                 )
                 return PhotoComposer.render(spec)
             }.value

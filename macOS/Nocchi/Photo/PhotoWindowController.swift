@@ -413,16 +413,7 @@ final class PhotoWindowController: NSObject {
             }
             guard !Task.isCancelled else { return }
             let relative: String? = await Task.detached(priority: .utility) {
-                let spec = PrintSpec(
-                    layout: record.layout,
-                    paper: paper,
-                    images: images,
-                    frameOffsets: record.frameOffsets,
-                    strokes: record.strokes,
-                    caption: record.caption,
-                    dateText: record.showsDate ? record.dateText : nil,
-                    widthPixels: record.format.printPixelWidth
-                )
+                let spec = PrintSpec(record: record, stockPaper: paper, images: images, widthPixels: record.format.printPixelWidth)
                 guard let image = PhotoComposer.render(spec) else { return nil }
                 return try? Services.library.writePrint(image, for: record)
             }.value

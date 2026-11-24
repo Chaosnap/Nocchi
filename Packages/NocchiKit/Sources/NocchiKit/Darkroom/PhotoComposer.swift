@@ -13,6 +13,20 @@ public struct PrintSpec {
     public var caption: String?
     public var dateText: String?
     public var widthPixels: Int
+    /// 相纸模板。
+    public var template: PrintTemplate
+    /// 题字字体。
+    public var captionFont: CaptionFont
+    /// 「#阳光 #咖啡」（nil = 不印）。
+    public var tagLine: String?
+    /// 「上海」（nil = 不印）。
+    public var locationLine: String?
+    /// 自动标签贴纸（kind ID），印在题字区右端。
+    public var tagStickerIDs: [String]
+    /// 用户贴的贴纸（按顺序从下往上）。
+    public var stickers: [StickerPlacement]
+    /// 模板图样的随机种子（编号、星星位置……）。
+    public var seed: UInt64
 
     public init(
         layout: PaperLayout,
@@ -22,7 +36,14 @@ public struct PrintSpec {
         strokes: [InkStroke] = [],
         caption: String? = nil,
         dateText: String? = nil,
-        widthPixels: Int
+        widthPixels: Int,
+        template: PrintTemplate = TemplateCatalog.classic,
+        captionFont: CaptionFont = .handwriting,
+        tagLine: String? = nil,
+        locationLine: String? = nil,
+        tagStickerIDs: [String] = [],
+        stickers: [StickerPlacement] = [],
+        seed: UInt64 = 0
     ) {
         self.layout = layout
         self.paper = paper
@@ -32,12 +53,58 @@ public struct PrintSpec {
         self.caption = caption
         self.dateText = dateText
         self.widthPixels = widthPixels
+        self.template = template
+        self.captionFont = captionFont
+        self.tagLine = tagLine
+        self.locationLine = locationLine
+        self.tagStickerIDs = tagStickerIDs
+        self.stickers = stickers
+        self.seed = seed
+    }
+
+    /// 从照片记录生成：套用模板相纸、题字字体、标签 / 地点、自动标签贴纸、贴纸、笔画。
+    /// - stockPaper：胶卷自带的相纸（模板没有自带相纸时用它）。
+    public init(record: PhotoRecord, stockPaper: PaperStyle, images: [CGImage], widthPixels: Int) {
+        let template = TemplateCatalog.resolve(id: record.templateID, format: record.format)
+        var stickerIDs: [String] = []
+        if record.showsTagStickers {
+            for tag in record.tags {
+                guard let id = StickerCatalog.kindID(forTag: tag), !stickerIDs.contains(id) else { continue }
+                stickerIDs.append(id)
+                if stickerIDs.count == 2 { break }
+            }
+        }
+        self.init(
+            layout: record.layout,
+            paper: template.resolvedPaper(stockPaper: stockPaper),
+            images: images,
+            frameOffsets: record.frameOffsets,
+            strokes: record.strokes,
+            caption: record.caption,
+            dateText: record.showsDate ? record.dateText : nil,
+            widthPixels: widthPixels,
+            template: template,
+            captionFont: record.captionFont,
+            tagLine: record.tagLine,
+            locationLine: record.locationLine,
+            tagStickerIDs: stickerIDs,
+            stickers: record.stickers,
+            seed: record.seed
+        )
+    }
+
+    /// 成片的像素尺寸。
+    public var pixelSize: CGSize {
+        let width = CGFloat(max(64, widthPixels))
+        return CGSize(width: width, height: (width / layout.aspect).rounded())
     }
 }
 
-/// 用 Core Graphics 把底片、白边、手写和题字合成一张「带白边的成片」。
+/// 用 Core Graphics 把底片、相纸模板、题字、贴纸和涂鸦合成一张「带白边的成片」。
 ///
-/// 界面上的 SwiftUI 相纸使用同一套 `PaperLayout` 几何和同样的字体，导出结果与屏幕上一致。
+/// 分成两层：`renderBase`（照片下面：纸、模板底纹）和 `renderOverlay`（照片上面：窗口阴影、
+/// 模板图样、题字、贴纸、涂鸦）。屏幕上的 `PrintSurface` 用这两层夹住显影中的照片，
+/// 所以屏幕上看到的就是导出的样子。
 public enum PhotoComposer {
     /// 题字字体：自然的钢笔手写体（macOS / iOS 都自带；中文字形由系统自动回落）。
     public static let captionFontName = "BradleyHandITCTT-Bold"
@@ -54,103 +121,325 @@ public enum PhotoComposer {
         captionFontSize(paperWidth: paperWidth, layout: layout) * 0.62
     }
 
+    // MARK: - 合成
+
+    /// 完整成片 = renderBase + 照片 + renderOverlay。
     public static func render(_ spec: PrintSpec) -> CGImage? {
-        let layout = spec.layout
-        let width = CGFloat(max(64, spec.widthPixels))
-        let height = (width / layout.aspect).rounded()
+        guard let ctx = makeContext(spec) else { return nil }
+        let size = spec.pixelSize
+        drawBase(ctx, spec, size)
+        drawPhotos(ctx, spec, size)
+        drawOverlay(ctx, spec, size, includeStickers: true, includeStrokes: true)
+        return ctx.makeImage()
+    }
+
+    /// 照片下面的一切：相纸、模板底纹（相纸外透明）。
+    public static func renderBase(_ spec: PrintSpec) -> CGImage? {
+        guard let ctx = makeContext(spec) else { return nil }
+        drawBase(ctx, spec, spec.pixelSize)
+        return ctx.makeImage()
+    }
+
+    /// 照片上面的一切：窗口内凹阴影与发丝边、模板前景图样、题字 / 日期 / 地点 / 标签、
+    /// 标签贴纸、贴纸、笔画（其余透明）。
+    public static func renderOverlay(_ spec: PrintSpec, includeStickers: Bool = true, includeStrokes: Bool = true) -> CGImage? {
+        guard let ctx = makeContext(spec) else { return nil }
+        drawOverlay(ctx, spec, spec.pixelSize, includeStickers: includeStickers, includeStrokes: includeStrokes)
+        return ctx.makeImage()
+    }
+
+    /// 第 index 个图像窗口的形状（像素，左上原点，相纸宽 width）。
+    public static func windowPath(layout: PaperLayout, template: PrintTemplate, index: Int, width: CGFloat) -> CGPath {
+        TemplateArt.window(template, layout: layout, index: index, width: width)
+    }
+
+    /// 相纸外轮廓（像素，左上原点）。`evenOdd` 为 true 时用 even-odd 规则（邮票齿孔）。
+    public static func paperOutline(layout: PaperLayout, template: PrintTemplate, size: CGSize) -> (path: CGPath, evenOdd: Bool) {
+        TemplateArt.outline(template, layout: layout, size: size)
+    }
+
+    /// 左上原点、透明底的位图上下文。
+    static func makeContext(_ spec: PrintSpec) -> CGContext? {
+        let size = spec.pixelSize
         guard let space = CGColorSpace(name: CGColorSpace.sRGB),
               let ctx = CGContext(
                 data: nil,
-                width: Int(width),
-                height: Int(height),
+                width: Int(size.width),
+                height: Int(size.height),
                 bitsPerComponent: 8,
                 bytesPerRow: 0,
                 space: space,
                 bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
               ) else { return nil }
-
         ctx.interpolationQuality = .high
         ctx.setShouldAntialias(true)
         // 翻转成左上角原点，和 SwiftUI 一致。
-        ctx.translateBy(x: 0, y: height)
+        ctx.translateBy(x: 0, y: size.height)
         ctx.scaleBy(x: 1, y: -1)
+        return ctx
+    }
 
-        let s = width / layout.paperSize.width
-        let paperRect = CGRect(x: 0, y: 0, width: width, height: height)
-        let paperColor = spec.paper.paperRGB
-
-        // 相纸：暖白渐变 + 极细颗粒 + 边缘做旧（与屏幕上的 PrintSurface 一致）
-        let corner = layout.cornerRadius * s
-        let paperPath = CGPath(roundedRect: paperRect, cornerWidth: corner, cornerHeight: corner, transform: nil)
+    static func drawBase(_ ctx: CGContext, _ spec: PrintSpec, _ size: CGSize) {
+        let outline = TemplateArt.outline(spec.template, layout: spec.layout, size: size)
         ctx.saveGState()
-        ctx.addPath(paperPath)
-        ctx.clip()
-        drawPaper(ctx, rect: paperRect, paper: spec.paper)
-        if layout.windows.count == 1, layout.captionArea.height > layout.paperSize.height * 0.12 {
-            drawPodRidge(ctx, y: PrintGeometry.podRidgeY(layout: layout, width: width), width: width, dark: spec.paper.isDark)
-        }
+        ctx.addPath(outline.path)
+        ctx.clip(using: outline.evenOdd ? .evenOdd : .winding)
+        TemplateArt.drawBase(ctx, spec: spec, size: size)
         ctx.restoreGState()
+    }
 
-        // 图像窗口
+    static func drawPhotos(_ ctx: CGContext, _ spec: PrintSpec, _ size: CGSize) {
+        let layout = spec.layout
+        for (index, window) in layout.windows.enumerated() where index < spec.images.count {
+            let rect = layout.scaled(window, toWidth: size.width)
+            let image = spec.images[index]
+            let offset = index < spec.frameOffsets.count ? spec.frameOffsets[index] : .zero
+            ctx.saveGState()
+            ctx.addPath(windowPath(layout: layout, template: spec.template, index: index, width: size.width))
+            ctx.clip()
+            var target = aspectFill(CGSize(width: image.width, height: image.height), into: rect)
+            target = target.offsetBy(dx: CGFloat(offset.dx) * rect.width, dy: CGFloat(offset.dy) * rect.height)
+            drawImage(ctx, image, in: target)
+            ctx.restoreGState()
+        }
+    }
+
+    static func drawOverlay(_ ctx: CGContext, _ spec: PrintSpec, _ size: CGSize, includeStickers: Bool, includeStrokes: Bool) {
+        let layout = spec.layout
+        let width = size.width
+        let lightHairline = spec.template.isDarkPaper
+        // 窗口：内凹阴影 + 发丝边
         for (index, window) in layout.windows.enumerated() {
             let rect = layout.scaled(window, toWidth: width)
-            ctx.saveGState()
-            ctx.clip(to: rect)
-            ctx.setFillColor(CGColor(srgbRed: 0.12, green: 0.12, blue: 0.12, alpha: 1))
-            ctx.fill(rect)
-            if index < spec.images.count {
-                let image = spec.images[index]
-                let offset = index < spec.frameOffsets.count ? spec.frameOffsets[index] : .zero
-                var target = aspectFill(CGSize(width: image.width, height: image.height), into: rect)
-                target = target.offsetBy(dx: CGFloat(offset.dx) * rect.width, dy: CGFloat(offset.dy) * rect.height)
-                drawImage(ctx, image, in: target)
+            switch spec.template.windowShape {
+            case .rect:
+                ctx.saveGState()
+                ctx.clip(to: rect)
+                drawRecess(ctx, rect: rect)
+                ctx.restoreGState()
+                ctx.setStrokeColor(lightHairline ? CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 0.16) : CGColor(srgbRed: 0, green: 0, blue: 0, alpha: spec.paper.isDark ? 0.45 : 0.22))
+                ctx.setLineWidth(max(1, rect.width * 0.0035))
+                ctx.stroke(rect.insetBy(dx: max(0.5, rect.width * 0.00175), dy: max(0.5, rect.width * 0.00175)))
+            case .heart:
+                let path = windowPath(layout: layout, template: spec.template, index: index, width: width)
+                ctx.saveGState()
+                ctx.addPath(path)
+                ctx.clip()
+                ctx.addPath(path)
+                ctx.setLineWidth(PrintGeometry.recessDepth(windowWidth: rect.width) * 2)
+                ctx.setStrokeColor(CGColor(srgbRed: 0, green: 0, blue: 0, alpha: 0.18))
+                ctx.strokePath()
+                ctx.restoreGState()
             }
-            drawRecess(ctx, rect: rect)
-            ctx.restoreGState()
-            // 窗口发丝边
-            ctx.setStrokeColor(CGColor(srgbRed: 0, green: 0, blue: 0, alpha: spec.paper.isDark ? 0.45 : 0.22))
-            ctx.setLineWidth(max(1, rect.width * 0.0035))
-            ctx.stroke(rect.insetBy(dx: max(0.5, rect.width * 0.00175), dy: max(0.5, rect.width * 0.00175)))
         }
 
-        // 题字与日期
-        let caption = layout.scaled(layout.captionArea, toWidth: width)
+        TemplateArt.drawForeground(ctx, spec: spec, size: size)
+        drawCaptionBlock(ctx, spec, size)
+        if includeStickers {
+            for sticker in spec.stickers {
+                StickerArt.draw(sticker, in: ctx, paperWidth: width)
+            }
+        }
+        if includeStrokes {
+            drawStrokes(spec.strokes, in: ctx, paperWidth: width, defaultInk: spec.paper.inkRGB)
+        }
+    }
+
+    // MARK: - 题字区
+
+    /// 题字字体（带中文回落）。
+    public static func captionCTFont(_ style: CaptionFont, size: CGFloat) -> CTFont {
+        let primary: String
+        let cascade: [String]
+        switch style {
+        case .handwriting:
+            primary = captionFontName
+            cascade = ["Kaiti SC", "STKaiti", "HanziPen SC", "Songti SC"]
+        case .typewriter:
+            primary = "AmericanTypewriter"
+            cascade = ["STFangsong", "Songti SC"]
+        case .serif:
+            primary = "Baskerville"
+            cascade = ["Songti SC", "STSong"]
+        }
+        let fallbacks = cascade.map { CTFontDescriptorCreateWithAttributes([kCTFontFamilyNameAttribute: $0] as CFDictionary) }
+        let attributes: [CFString: Any] = [
+            kCTFontNameAttribute: primary,
+            kCTFontCascadeListAttribute: fallbacks
+        ]
+        let descriptor = CTFontDescriptorCreateWithAttributes(attributes as CFDictionary)
+        return CTFontCreateWithFontDescriptor(descriptor, size, nil)
+    }
+
+    static func drawCaptionBlock(_ ctx: CGContext, _ spec: PrintSpec, _ size: CGSize) {
+        let layout = spec.layout
+        let width = size.width
+        let area = TemplateArt.captionArea(spec, width: width)
+        guard area.width > 4, area.height > 4 else { return }
         let ink = spec.paper.inkRGB
-        if let text = spec.caption, !text.isEmpty {
-            let size = captionFontSize(paperWidth: width, layout: layout)
-            let baselineY = spec.dateText == nil ? caption.midY + size * 0.35 : caption.minY + caption.height * 0.5
-            drawText(ctx, text, fontName: captionFontName, size: size, color: ink, centerX: caption.midX, baselineY: baselineY, maxWidth: caption.width, alpha: 0.88)
-        }
-        if let date = spec.dateText {
-            let size = dateFontSize(paperWidth: width, layout: layout)
-            let baselineY = (spec.caption?.isEmpty == false) ? caption.minY + caption.height * 0.86 : caption.midY + size * 0.35
-            drawText(ctx, date, fontName: dateFontName, size: size, color: ink, centerX: caption.midX, baselineY: baselineY, maxWidth: caption.width, alpha: 0.6, tracking: size * 0.08)
+        let s = width / layout.paperSize.width
+        let written = spec.caption?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let caption = (written?.isEmpty == false ? written : nil) ?? TemplateArt.defaultCaption(spec.template)
+        let date = spec.template.style == .datebook ? nil : spec.dateText
+        var details: [String] = []
+        if let location = spec.locationLine { details.append("「\(location)」") }
+        if let tags = spec.tagLine { details.append(tags) }
+
+        // 自动标签贴纸：题字区右端一到两枚小贴纸。
+        var reserve: CGFloat = 0
+        let stickerKinds = spec.tagStickerIDs.compactMap { StickerCatalog.kind(id: $0) }
+        if !stickerKinds.isEmpty, area.height > 8 * s {
+            let side = min(area.height * 0.92, area.width * 0.22)
+            for (i, kind) in stickerKinds.enumerated() {
+                let w = side * CGFloat(min(kind.aspect, 1.4))
+                let h = w / CGFloat(max(kind.aspect, 0.05))
+                let x = area.maxX - w / 2 - CGFloat(i) * side * 0.72
+                let y = area.midY + (i == 0 ? 0 : -side * 0.08)
+                ctx.saveGState()
+                ctx.translateBy(x: x, y: y)
+                ctx.rotate(by: (i == 0 ? -7 : 6) * .pi / 180)
+                StickerArt.draw(kind, in: ctx, rect: CGRect(x: -w / 2, y: -h / 2, width: w, height: h), tint: nil, text: nil, seed: spec.seed &+ UInt64(i))
+                ctx.restoreGState()
+            }
+            reserve = side * (0.72 * CGFloat(stickerKinds.count - 1) + 1) + area.width * 0.02
         }
 
-        // 手写
-        ctx.setLineCap(.round)
-        ctx.setLineJoin(.round)
-        for stroke in spec.strokes {
-            let color = RGB(hex: stroke.color) ?? ink
+        let captionSize = captionFontSize(paperWidth: width, layout: layout)
+        let dateSize = dateFontSize(paperWidth: width, layout: layout)
+        let roomy = area.height > 12 * s
+        if details.isEmpty || !roomy {
+            // 经典：居中的题字 + 日期。
+            let centerX = area.minX + (area.width - reserve) / 2
+            let maxWidth = area.width - reserve
+            if let caption {
+                let baseline = date == nil ? area.midY + captionSize * 0.35 : area.minY + area.height * 0.5
+                drawText(ctx, caption, font: captionCTFont(spec.captionFont, size: captionSize), color: ink, x: centerX, baseline: baseline, maxWidth: maxWidth, alpha: 0.88)
+            }
+            if let date {
+                let baseline = caption != nil ? area.minY + area.height * 0.86 : area.midY + dateSize * 0.35
+                drawText(ctx, date, fontName: dateFontName, size: dateSize, color: ink, centerX: centerX, baselineY: baseline, maxWidth: maxWidth, alpha: 0.6, tracking: dateSize * 0.08)
+            }
+            if !details.isEmpty, caption == nil, date == nil {
+                drawText(ctx, details.joined(separator: "  "), font: captionCTFont(.typewriter, size: dateSize), color: ink, x: centerX, baseline: area.midY + dateSize * 0.35, maxWidth: maxWidth, alpha: 0.7)
+            }
+            return
+        }
+
+        // 手帐式：题字靠左，下面一行地点与标签，日期在最下面。
+        let left = area.minX + area.width * 0.03
+        let maxWidth = area.width * 0.94 - reserve
+        let small = dateSize * 0.92
+        if let caption {
+            drawText(ctx, caption, font: captionCTFont(spec.captionFont, size: captionSize * 0.86), color: ink, x: left, baseline: area.minY + area.height * 0.4, maxWidth: maxWidth, alpha: 0.88, align: -1)
+        }
+        drawText(ctx, details.joined(separator: "  "), font: captionCTFont(.typewriter, size: small), color: ink, x: left, baseline: area.minY + area.height * (caption == nil ? 0.45 : 0.68), maxWidth: maxWidth, alpha: 0.72, align: -1)
+        if let date {
+            drawText(ctx, date, font: captionCTFont(.typewriter, size: small * 0.9), color: ink, x: left, baseline: area.minY + area.height * 0.93, maxWidth: maxWidth, alpha: 0.5, align: -1, tracking: small * 0.06)
+        }
+    }
+
+    /// 画一行字（y 向下的上下文）：align 0 居中、-1 左对齐、1 右对齐；太长时缩小字号。
+    static func drawText(_ ctx: CGContext, _ text: String, font: CTFont, color: RGB, x: CGFloat, baseline: CGFloat, maxWidth: CGFloat, alpha: CGFloat = 1, align: Int = 0, tracking: CGFloat = 0) {
+        guard !text.isEmpty else { return }
+        var current = font
+        var line: CTLine
+        var bounds: CGRect
+        repeat {
+            var attributes: [NSAttributedString.Key: Any] = [
+                NSAttributedString.Key(kCTFontAttributeName as String): current,
+                NSAttributedString.Key(kCTForegroundColorAttributeName as String): cgColor(color, alpha: alpha)
+            ]
+            if tracking != 0 {
+                attributes[NSAttributedString.Key(kCTKernAttributeName as String)] = tracking * CTFontGetSize(current) / max(CTFontGetSize(font), 0.001)
+            }
+            line = CTLineCreateWithAttributedString(NSAttributedString(string: text, attributes: attributes))
+            bounds = CTLineGetBoundsWithOptions(line, [])
+            if bounds.width <= maxWidth || CTFontGetSize(current) < 4 { break }
+            current = CTFontCreateCopyWithAttributes(current, CTFontGetSize(current) * 0.92, nil, nil)
+        } while true
+        let left: CGFloat
+        switch align {
+        case ..<0: left = x
+        case 1...: left = x - bounds.width
+        default: left = x - bounds.width / 2
+        }
+        ctx.saveGState()
+        ctx.translateBy(x: left - bounds.minX, y: baseline)
+        ctx.scaleBy(x: 1, y: -1)
+        ctx.textPosition = .zero
+        CTLineDraw(line, ctx)
+        ctx.restoreGState()
+    }
+
+    // MARK: - 笔画
+
+    /// 按 `InkTool` 画笔画（成片与装饰台共用）。坐标以相纸宽度为单位，paperWidth 是像素宽度。
+    public static func drawStrokes(_ strokes: [InkStroke], in ctx: CGContext, paperWidth: CGFloat, defaultInk: RGB) {
+        for (index, stroke) in strokes.enumerated() {
+            let color = RGB(hex: stroke.color) ?? defaultInk
+            let points = stroke.points.map { CGPoint(x: CGFloat($0.x) * paperWidth, y: CGFloat($0.y) * paperWidth) }
+            let widths = stroke.points.map { CGFloat($0.w * stroke.tool.widthScale) * paperWidth }
+            guard !points.isEmpty else { continue }
+            ctx.saveGState()
+            ctx.setAlpha(CGFloat(stroke.tool.opacity))
+            ctx.beginTransparencyLayer(auxiliaryInfo: nil)
             ctx.setStrokeColor(cgColor(color))
             ctx.setFillColor(cgColor(color))
-            let points = stroke.points
-            if points.count == 1, let p = points.first {
-                let r = CGFloat(p.w) * width / 2
-                ctx.fillEllipse(in: CGRect(x: CGFloat(p.x) * width - r, y: CGFloat(p.y) * width - r, width: r * 2, height: r * 2))
-                continue
+            switch stroke.tool {
+            case .pen, .paint:
+                ctx.setLineCap(.round)
+                ctx.setLineJoin(.round)
+                strokeSegments(ctx, points, widths, scale: 1)
+                if stroke.tool == .paint {
+                    // 漆笔的一点光泽
+                    ctx.setStrokeColor(CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 0.32))
+                    ctx.translateBy(x: -(widths.first ?? 1) * 0.12, y: -(widths.first ?? 1) * 0.12)
+                    strokeSegments(ctx, points, widths, scale: 0.28)
+                }
+            case .marker:
+                ctx.setLineCap(.square)
+                ctx.setLineJoin(.bevel)
+                strokeSegments(ctx, points, widths, scale: 1)
+            case .grease:
+                ctx.setLineCap(.round)
+                ctx.setLineJoin(.round)
+                var rng = SeededRandom(seed: UInt64(index + 1) &* 0x9E37_79B9)
+                for _ in 0..<3 {
+                    let jitter = (widths.first ?? 1) * 0.22
+                    ctx.saveGState()
+                    ctx.translateBy(x: CGFloat(rng.signed()) * jitter, y: CGFloat(rng.signed()) * jitter)
+                    ctx.setAlpha(0.6)
+                    strokeSegments(ctx, points, widths, scale: 0.55)
+                    ctx.restoreGState()
+                }
+                // 蜡笔的干涩：沿笔画擦掉一些小点
+                ctx.setBlendMode(.destinationOut)
+                for (i, p) in points.enumerated() where i % 2 == 0 {
+                    let w = widths[i]
+                    for _ in 0..<2 {
+                        let r = w * CGFloat(rng.range(0.06, 0.14))
+                        let q = CGPoint(x: p.x + CGFloat(rng.signed()) * w * 0.4, y: p.y + CGFloat(rng.signed()) * w * 0.4)
+                        ctx.fillEllipse(in: CGRect(x: q.x - r, y: q.y - r, width: r * 2, height: r * 2))
+                    }
+                }
             }
-            guard points.count > 1 else { continue }
-            for i in 1..<points.count {
-                let a = points[i - 1], b = points[i]
-                ctx.setLineWidth(CGFloat((a.w + b.w) / 2) * width)
-                ctx.move(to: CGPoint(x: CGFloat(a.x) * width, y: CGFloat(a.y) * width))
-                ctx.addLine(to: CGPoint(x: CGFloat(b.x) * width, y: CGFloat(b.y) * width))
-                ctx.strokePath()
-            }
+            ctx.endTransparencyLayer()
+            ctx.restoreGState()
         }
+    }
 
-        return ctx.makeImage()
+    private static func strokeSegments(_ ctx: CGContext, _ points: [CGPoint], _ widths: [CGFloat], scale: CGFloat) {
+        if points.count == 1, let p = points.first {
+            let r = widths[0] * scale / 2
+            ctx.fillEllipse(in: CGRect(x: p.x - r, y: p.y - r, width: r * 2, height: r * 2))
+            return
+        }
+        for i in 1..<points.count {
+            ctx.setLineWidth(max(0.5, (widths[i - 1] + widths[i]) / 2 * scale))
+            ctx.move(to: points[i - 1])
+            ctx.addLine(to: points[i])
+            ctx.strokePath()
+        }
     }
 
     // MARK: - Paper details
