@@ -15,7 +15,7 @@
 | 照片卡片盒（2.5D） | 🟢 CI 全绿 | Blender 照参考图建模、Cycles 渲染（`CardBoxBase` / `CardBoxFront` + 热点），卡片从盒口升起、扇形摊开 |
 | v0.2「复古冲印店」 | 🟢 全部完成，随 v1.0.0 发布 | 规范见 [DESIGN.md](DESIGN.md)；逐步进度见下面的「v0.2 改版进度」 |
 | 产品文档站与截图 | 🟢 已上线 | <https://chaosnap.github.io/Nocchi/>（VitePress，英文 + `/zh/` 中文）；截图由 `screenshots.yml` 在 Actions 上从 App 渲染，提交到 `website/public/screenshots/` |
-| v1.1 打磨（所有者反馈） | ⚪ 待接手 | 14 项，见下面「交接 · 下一位从这里开始」；先修「照片偏暗」 |
+| v2.0 打磨（所有者反馈） | 🟡 进行中 | 14 项 + 文字框与自定义字体 + 布帘动态，见下面「交接」；「照片偏暗」已修 |
 | 仓库与社区文件 | 🟢 已补齐 | GNU AGPL-3.0（与 Yohaku 一致）；英文的 README、行为准则（Contributor Covenant 3.0）、贡献指南、安全政策、隐私说明、Issue / PR 模板 |
 
 图例：🟢 完成 · 🟡 进行中 / 待验证 · 🔵 编写中 · ⚪ 未开始 · 🔴 阻塞
@@ -26,7 +26,9 @@
 
 现状：v1.0.0 已发布；文档站 <https://chaosnap.github.io/Nocchi/> 已上线（`website/`，`pages.yml`）；截图由 `screenshots.yml` 从 App 渲染并提交到 `website/public/screenshots/`——**改完界面就靠它验收**：推送后等 Screenshots 工作流提交新图，`git pull` 下来看图（见 [CI.md](CI.md#截图screenshots)）。
 
-### 1. 🔴 先修：冲印出来的照片偏暗、偏艳
+### 1. 🟢 已修（第 29 次推送）：冲印出来的照片偏暗、偏艳
+
+**原因**：`applyHalation` 的光晕层 alpha = 1，`CIAdditionCompositing` 把 alpha 也加起来，照片从这一步出来 alpha = 2；之后的混合模式（颗粒的 `CISoftLightBlendMode` 等）按 Porter-Duff 公式多出一项 (1 − Da) = −1，在中性灰颗粒上约等于「原色 − 0.5」——中间调变黑、三通道同减一个数显得过艳；照相亭闪光（+0.5 EV，更亮）和没有光晕的黑白卷看起来没那么糟。**修复**：`FilmProcessor.flattened`（盖在不透明黑底上，rgb 不变、alpha 回到 1）用在光晕、柔焦之后和管线末尾；`XCTExpectFailure` 已删，新增 `FilmEffectsOpacityTests`（每个效果单独打开都保持不透明、不变暗）。以下是当时的排查记录。
 
 - **现象**：截图里所有彩色胶卷的照片都偏暗、阴影压死、颜色过艳；离线预览 `scripts/film/preview_looks.py`（配方数学的 numpy 移植，用 Blender 自带的 Python 跑）是对的——明亮、奶油感。照相亭闪光 400（自带 +0.5 EV）和黑白看起来没那么糟。v1.0.0 冲出来的照片也受影响。
 - **已排除：色调查表。** `FilmPipelineFidelityTests.testReportWhatTheOldColorCubeFilterDoes` 写出的 CI 注解：奶油 600 在 (153,140,128) 上，旧写法 `CIColorCubeWithColorSpace` = 170,158,143，现在的管线 = 170,158,143，配方 = 171,159,143。查表是对的（第 27 次推送把 `applyCube` 改成「显式转 sRGB → `CIColorCube` → 转回」，结果一样，留着无妨）。`testLUTStageMatchesTheRecipeOnFlatPatches`、`testNeutralStockLeavesTheImageAlone` 都通过。
@@ -125,6 +127,7 @@
 
 ## 最近更新（新的在上）
 
+- **2026-11-24 · 第 29 次推送** 修好「照片偏暗、偏艳」：光晕的加法混合把 alpha 加成 2，之后的柔光颗粒按公式把中间调算成黑色；每个加法效果之后把照片压回不透明（`FilmProcessor.flattened`），删掉 `XCTExpectFailure`，新增逐个效果的不透明 / 亮度回归测试。所有者新的反馈（2026-11-24）把这一轮定为 **v2.0**：除了交接表里的 14 项，还要在装饰台的照片上任意位置加文字框并可自定义字体，布帘要有布料质感、褶皱和逼真的拉合动画，完成后发 `v2.0.0`；不准用子代理（subagent）。
 - **2026-11-24 · 第 28 次推送（交接）** 第 27 次推送的诊断证明色调查表是对的（旧滤镜 170,158,143 ≈ 配方 171,159,143），照片偏暗出在效果阶段（平坦色块开全部效果后中间是 0）——问题未修，`testFullPipelineKeepsTheBrightnessOfTheRecipe` 先用 `XCTExpectFailure` 标住，CI 保持绿。截图第二轮（刘海截图已裁到岛的范围）已提交。仓库所有者的 14 条 v1.1 反馈整理成上面的「交接 · 下一位从这里开始」。
 - **2026-11-24 · 第 27 次推送** 截图第一轮（Screenshots 第 1 次运行）全部 11 张都拍到了：相册四种看法、装饰台、设置、刘海悬停面板与胶卷柜是窗口服务器截的真实窗口（CI 屏幕只有 1024 × 768、1 倍），桌面 / 相纸一览 / 大头贴是 2 倍合成图。看图发现**真问题**：所有彩色胶卷冲出来都比配方暗一个 gamma、阴影压死、颜色过艳（离线预览 `scripts/film/preview_looks.py` 是对的）——Core Image 套色调立方体时没有可靠地在 sRGB 里查表。修复：`FilmProcessor.applyCube` 明确地「工作空间 → sRGB → `CIColorCube` → 工作空间」；新增 `FilmPipelineFidelityTests`（管线逐色对照 CPU 查表、中性配方不改图、整条管线不改变亮度，另有一条注解记录旧滤镜在 CI 上的输出）。刘海截图裁到岛的范围、去掉菜单栏时间；文档站中文页的搜索框翻译成中文、中文标题不再用斜体。文档站已上线：<https://chaosnap.github.io/Nocchi/>。
 - **2026-11-24 · 第 26 次推送** 产品文档站与 CI 截图：`website/`（VitePress，英文默认、可切换中文，13 页指南 × 2 种语言，复古冲印店配色）+ `pages.yml` 发布到 GitHub Pages；App 新增隐藏的截图模式（`macOS/Nocchi/Screenshots/`），`screenshots.yml` 在 Actions 上用 11 张 Codex 生成的原创样片冲印 13 张照片，截下真实的相册四种看法、装饰台、设置、刘海悬停面板与胶卷柜，合成桌面、相纸一览和大头贴「选相框」，提交到 `website/public/screenshots/`；英文 README 加上截图与中英文文档入口。

@@ -75,10 +75,8 @@ final class FilmPipelineFidelityTests: XCTestCase {
     }
 
     func testFullPipelineKeepsTheBrightnessOfTheRecipe() throws {
-        // 已知问题（2026-11-24，未修）：打开颗粒 / 暗角 / 光晕等效果后，160 × 160 的平坦色块中间量出来是 0（全黑），
-        // 截图里的照片也整体偏暗；色调查表这一步是对的（见上一条测试的注解）。交接说明见 docs/PROGRESS.md「照片偏暗」。
-        // 修好之后删掉这一行，这条测试应该直接通过。
-        XCTExpectFailure("效果阶段会把照片压暗（见 docs/PROGRESS.md「照片偏暗」），待修", strict: true)
+        // 回归测试（2026-11-24 修好）：光晕的加法混合曾把 alpha 加到 2，之后颗粒的柔光混合把中间调算成黑色，
+        // 160 × 160 的平坦色块中间量出来是 0。`FilmProcessor.flattened` 把每个加法效果之后的照片压回不透明。
         let color = RGB(0.55, 0.5, 0.45)
         for id in ["cream-600", "portrait-400", "sunset-200", "mint-400", "neon-800"] {
             let stock = FilmCatalog.stock(id: id)
@@ -99,5 +97,54 @@ final class FilmPipelineFidelityTests: XCTestCase {
             let expected = 0.2126 * Double(e.x) + 0.7152 * Double(e.y) + 0.0722 * Double(e.z)
             XCTAssertEqual(measured, expected, accuracy: 0.1, "\(id): measured \(measured), recipe \(expected)")
         }
+    }
+}
+
+/// 每个效果单独打开时：照片保持完全不透明，中间的亮度不比只查表时暗（暗角只压四角）。
+final class FilmEffectsOpacityTests: XCTestCase {
+    private let processor = TestContext.processor
+
+    func testEveryEffectAloneKeepsThePhotoOpaqueAndBright() throws {
+        let effects: [(String, FilmEffects)] = [
+            ("halation", FilmEffects(halation: 1)),
+            ("bloom", FilmEffects(bloom: 1)),
+            ("edgeSoftness", FilmEffects(edgeSoftness: 1)),
+            ("lightLeak", FilmEffects(lightLeak: 1)),
+            ("vignette", FilmEffects(vignette: 1)),
+            ("grain", FilmEffects(grain: 1, grainSize: 1.6)),
+            ("all", FilmEffects(grain: 0.6, grainSize: 1.4, halation: 0.6, bloom: 0.4, vignette: 0.5, lightLeak: 0.3, edgeSoftness: 0.5))
+        ]
+        let input = TestImages.solid(0.55, 0.5, 0.45, width: 160, height: 160)
+        var base = FilmCatalog.stock(id: "cream-600")
+        base.effects = .clean
+        let reference = PixelBuffer(try XCTUnwrap(processor.process(input, stock: base, options: ProcessOptions(maxLongEdge: 160, seed: 5))))
+        let referenceLuma = Self.centerLuma(reference)
+        for (name, fx) in effects {
+            var stock = base
+            stock.effects = fx
+            let output = PixelBuffer(try XCTUnwrap(processor.process(input, stock: stock, options: ProcessOptions(maxLongEdge: 160, seed: 5))))
+            var minAlpha = 255
+            var index = 3
+            while index < output.bytes.count {
+                minAlpha = min(minAlpha, Int(output.bytes[index]))
+                index += 4
+            }
+            XCTAssertEqual(minAlpha, 255, "\(name): the photo must stay opaque")
+            let luma = Self.centerLuma(output)
+            XCTAssertGreaterThan(luma, referenceLuma - 0.06, "\(name): center luma \(luma) vs LUT only \(referenceLuma)")
+        }
+    }
+
+    private static func centerLuma(_ buffer: PixelBuffer) -> Double {
+        var sum = 0.0
+        var count = 0
+        for y in 60..<100 {
+            for x in 60..<100 {
+                let p = buffer.rgb(x, y)
+                sum += 0.2126 * Double(p.r) + 0.7152 * Double(p.g) + 0.0722 * Double(p.b)
+                count += 1
+            }
+        }
+        return sum / Double(count) / 255
     }
 }

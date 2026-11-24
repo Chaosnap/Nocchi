@@ -122,13 +122,25 @@ public final class FilmProcessor: @unchecked Sendable {
         }
         image = applyCube(image, cube: cube(for: stock))
         let fx = stock.effects
-        image = applyHalation(image, amount: fx.halation, extent: extent)
-        image = applyBloom(image, amount: fx.bloom, extent: extent)
+        image = flattened(applyHalation(image, amount: fx.halation, extent: extent), extent: extent)
+        image = flattened(applyBloom(image, amount: fx.bloom, extent: extent), extent: extent)
         image = applyEdgeSoftness(image, amount: fx.edgeSoftness, extent: extent)
         image = applyLightLeak(image, amount: fx.lightLeak, extent: extent, seed: options.seed)
         image = applyVignette(image, amount: fx.vignette, extent: extent)
         image = applyGrain(image, amount: fx.grain, size: fx.grainSize, extent: extent, seed: options.seed)
-        return image.cropped(to: extent)
+        return flattened(image, extent: extent)
+    }
+
+    /// 把照片压回「不透明」：盖在不透明的黑底上（source-over：rgb = S + 0 ×（1 − Sa），alpha = 1）。
+    ///
+    /// 照片永远是不透明的，但加法类效果（光晕的 `CIAdditionCompositing`、`CIBloom`）会把 alpha 也加起来，
+    /// 得到 alpha = 2。之后的混合模式按 Porter-Duff 公式会多出一项 (1 − Da) = −1：颗粒的柔光混合
+    /// 在中性灰上算出来约等于「原色 − 0.5」——中间调被压成黑、三个通道一起减同一个数让颜色显得过艳，
+    /// 这就是 v1.0.0 冲出来的照片整体偏暗、阴影压死的原因。这里不用 `CIColorMatrix` 改 alpha：
+    /// 它在去预乘的颜色上运算，会把 alpha = 2 的像素亮度减半。
+    private func flattened(_ image: CIImage, extent: CGRect) -> CIImage {
+        image.composited(over: CIImage(color: CIColor(red: 0, green: 0, blue: 0)).cropped(to: extent))
+            .cropped(to: extent)
     }
 
     // MARK: - Rendering
