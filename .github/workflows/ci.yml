@@ -106,7 +106,7 @@ jobs:
           ditto -c -k --sequesterRsrc --keepParent "$APP" "dist/Nocchi-macOS-${GITHUB_SHA::7}.zip"
           ls -la dist
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: Nocchi-macOS
           path: dist/*.zip
