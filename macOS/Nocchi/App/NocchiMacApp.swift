@@ -24,6 +24,11 @@ struct NocchiMacApp: App {
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // GitHub Actions 上的截图工作室：不开刘海、不注册快捷键，拍完截图就退出。
+        if let output = ScreenshotStudio.requestedOutput {
+            ScreenshotStudio.run(to: output)
+            return
+        }
         let model = AppModel.shared
         model.applyRuntimeSettings()
         SoundPlayer.shared.preload()

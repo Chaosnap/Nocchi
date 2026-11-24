@@ -1,0 +1,117 @@
+# Nocchi · 截图
+#
+# 在 GitHub Actions 上构建 macOS App，用隐藏的截图模式（`Nocchi --render-screenshots <目录>`）
+# 拿仓库里的原创样片（design/screenshots/samples）冲印一批照片，截下真实的相册、装饰台、设置、刘海面板，
+# 合成桌面、相纸一览、大头贴「选相框」，然后把 JPEG 提交到 website/public/screenshots/
+# （README 和产品文档站都用这些图）。图没变时不提交。
+#
+# 用 GITHUB_TOKEN 推送的提交不会再触发别的工作流；文档站（pages.yml）在这个工作流跑完后自己接着更新。
+
+name: Screenshots
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "macOS/**"
+      - "Packages/**"
+      - "Shared/**"
+      - "design/screenshots/**"
+      - ".github/workflows/screenshots.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: screenshots
+  cancel-in-progress: true
+
+env:
+  HOMEBREW_NO_AUTO_UPDATE: "1"
+  HOMEBREW_NO_INSTALL_CLEANUP: "1"
+  HOMEBREW_NO_ENV_HINTS: "1"
+
+jobs:
+  shoot:
+    name: Render screenshots
+    runs-on: macos-15
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Install XcodeGen, xcbeautify & librsvg
+        run: brew install xcodegen xcbeautify librsvg
+
+      - name: Render app icons from SVG
+        run: bash scripts/ci/render-icons.sh
+
+      - name: Generate Xcode project
+        run: |
+          set -o pipefail
+          xcodegen generate --spec macOS/project.yml 2>&1 | tee "$RUNNER_TEMP/mac-xcodegen.log"
+
+      - name: Build (Release, ad-hoc signed)
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project macOS/Nocchi.xcodeproj \
+            -scheme Nocchi \
+            -configuration Release \
+            -destination 'generic/platform=macOS' \
+            -derivedDataPath "$RUNNER_TEMP/dd-mac" \
+            CODE_SIGN_IDENTITY=- \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM= \
+            build 2>&1 | tee "$RUNNER_TEMP/mac-build.log" | xcbeautify --renderer github-actions
+
+      - name: Render screenshots
+        run: bash scripts/ci/render-screenshots.sh "$RUNNER_TEMP/dd-mac/Build/Products/Release/Nocchi.app" "$RUNNER_TEMP/shots"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Nocchi-screenshots
+          path: |
+            ${{ runner.temp }}/shots
+            ${{ runner.temp }}/studio.log
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Commit the screenshots
+        run: |
+          set -euo pipefail
+          mkdir -p website/public/screenshots
+          cp "$RUNNER_TEMP"/shots/*.jpg website/public/screenshots/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add website/public/screenshots
+          if git diff --cached --quiet; then
+            echo "::notice title=Screenshots::No visual changes; nothing to commit."
+            exit 0
+          fi
+          git commit -m "chore(screenshots): render from the app on GitHub Actions (run ${GITHUB_RUN_NUMBER})"
+          for attempt in 1 2 3; do
+            if git pull --rebase origin main && git push origin HEAD:main; then
+              echo "::notice title=Screenshots::Committed $(git rev-parse --short HEAD)"
+              exit 0
+            fi
+            sleep $((attempt * 5))
+          done
+          echo "::error title=Screenshots::Could not push the screenshots"
+          exit 1
+
+      - name: Surface failure log
+        if: failure()
+        run: |
+          for LOG in "$RUNNER_TEMP/studio.log" "$RUNNER_TEMP/mac-build.log" "$RUNNER_TEMP/mac-xcodegen.log"; do
+            if [ -f "$LOG" ]; then
+              bash scripts/ci/annotate-failure.sh "$LOG" "Screenshots failed ($(basename "$LOG"))"
+              break
+            fi
+          done

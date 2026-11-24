@@ -7,6 +7,13 @@ import NocchiKit
 enum Services {
     static let library: PhotoLibrary = {
         let fm = FileManager.default
+        // 截图工作室（GitHub Actions）用一个临时照片库，不碰真正的照片。
+        if let override = ProcessInfo.processInfo.environment["NOCCHI_LIBRARY_ROOT"], !override.isEmpty {
+            let base = URL(fileURLWithPath: override, isDirectory: true)
+            if let library = try? PhotoLibrary(root: base.appendingPathComponent("data", isDirectory: true), printsRoot: base.appendingPathComponent("prints", isDirectory: true)) {
+                return library
+            }
+        }
         let support = (try? fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)) ?? fm.temporaryDirectory
         let pictures = (try? fm.url(for: .picturesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)) ?? fm.temporaryDirectory
         let root = support.appendingPathComponent("Nocchi", isDirectory: true)

@@ -105,6 +105,22 @@ final class PhotoBoothController: ObservableObject {
 
     // MARK: - 选相框
 
+    /// 截图工作室用：不要权限、不开摄像头、不显示布帘窗口，直接停在「选相框」。
+    func showcaseFrameChooser() {
+        guard phase == .idle, !isPreparing else { return }
+        loadChoices()
+        curtainDown = 1
+        phase = .choosingFrame
+    }
+
+    /// 结束 `showcaseFrameChooser()`。
+    func endShowcase() {
+        guard window == nil else { return }
+        phase = .idle
+        curtainDown = 0
+        previews.removeAll()
+    }
+
     /// 从上次的选择开始（设置里的默认相框、版式、黑白）。
     private func loadChoices() {
         let model = AppModel.shared
@@ -398,8 +414,8 @@ struct BoothCurtainView: View {
     }
 }
 
-/// 布帘里面：灯泡、招牌，然后是「选相框」或取景框。
-private struct BoothInterior: View {
+/// 布帘里面：灯泡、招牌，然后是「选相框」或取景框（截图工作室也用它）。
+struct BoothInterior: View {
     @ObservedObject var booth: PhotoBoothController
     let session: AVCaptureSession
     @ObservedObject var camera: CameraService

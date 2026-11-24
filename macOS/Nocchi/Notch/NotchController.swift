@@ -305,6 +305,16 @@ final class NotchController: ObservableObject {
         if mode == .shelf { setMode(.idle) }
     }
 
+    // MARK: - Screenshot studio
+
+    /// 截图工作室用：直接切到某个样子（悬停面板、胶卷柜），不等鼠标。
+    func showcase(_ newMode: NotchMode) {
+        setMode(newMode)
+    }
+
+    /// 截图工作室用：刘海面板窗口。
+    var panelWindow: NSWindow? { panel }
+
     // MARK: - Film cabinet
 
     /// 打开胶卷柜（从悬停面板点胶卷罐）。
