@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Chaosnap/Nocchi/releases/latest"><img src="https://img.shields.io/badge/release-v2.0.0-c4593b?style=flat-square" alt="Latest release: v2.0.0"></a>
+  <a href="https://github.com/Chaosnap/Nocchi/releases/latest"><img src="https://img.shields.io/badge/release-v2.1.0-c4593b?style=flat-square" alt="Latest release: v2.1.0"></a>
   <img src="https://img.shields.io/badge/platform-macOS%2014%2B%20%C2%B7%20iOS%20(soon)-2e2924?style=flat-square" alt="Platforms: macOS 14 or later, iOS coming soon">
   <a href="PRIVACY.md"><img src="https://img.shields.io/badge/offline-no%20account%20%C2%B7%20no%20telemetry-2f5f5c?style=flat-square" alt="Offline: no account, no telemetry"></a>
   <a href="https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml"><img src="https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status"></a>
@@ -51,6 +51,7 @@ Everything happens on your Mac: no account, no cloud, no telemetry. The film loo
 - **Photo booth** (⌃⌥⌘B): a velvet curtain closes, you pick a frame in a brass-trimmed showcase (eleven frames, a four-frame strip or a 2×2 grid, black and white or color), drop a coin, and after four flashes the strip comes out of the notch.
 - **Print anything**: drop an image on the notch, or print from Files (⌘O) or Photos (⇧⌘O).
 - **Any camera**: the built-in camera, external and virtual cameras (OBS, Camo and other camera extensions) and Continuity Camera.
+- **Two camera bodies**, switched from the notch: the instant camera prints one at a time; with the photo booth loaded, selfies, the screen shutter and printed photos all come out as four-frame strips.
 
 ### <img src="website/public/icons/glyph-develop.svg" width="20" height="20" align="absmiddle" alt=""> Develop
 
@@ -69,7 +70,8 @@ Everything happens on your Mac: no account, no cloud, no telemetry. The film loo
 
 - New prints gather in a pile at the top right. Drag them anywhere; near the edge of the screen they snap on like fridge magnets; pin them behind your windows on the desktop layer.
 - **The notch shelf**: drag prints into the notch to stash them, then drag them out again as image files.
-- **The album**, four ways to look: a corkboard with brass pins and washi tape, a beechwood card box with A–Z dividers (cards rise out of the box and fan out), a film light table with a loupe, and a retro wall calendar. Search by caption, #tag, place, film, date, or the pinyin initials of a Chinese caption.
+- **The album**, four ways to look: a corkboard with brass pins and washi tape, a beechwood card box filed A–Z or by year, month or day (a divider rises when you hover; cards slide out of their slot and fan out), a film light table with a loupe, and a retro wall calendar. Search by caption, #tag, place, film, date, or the pinyin initials of a Chinese caption.
+- **Your prints, your folder**: finished prints are plain JPEGs in `~/Pictures/Nocchi`, or any folder or disk you choose; existing prints move along.
 
 <a id="screenshots"></a>
 
@@ -148,7 +150,7 @@ Every release comes with `SHA256SUMS.txt`. Builds of the latest commit are attac
 
 ## <img src="website/public/icons/glyph-compass.svg" width="22" height="22" align="absmiddle" alt=""> Where it stands
 
-**Nocchi 2.0** polishes the photo lab: the photo booth is one Blender-modelled art-deco machine (bulb marquee, chrome window, a gilt Nocchi maker's plate) in front of a theatre-red velvet curtain, the Valentine frame is rebuilt with die-cut paper lace and gold foil, you can add text boxes, your own fonts and your own stickers, the corkboard is softer with an adjustable lamp and swinging prints, cards slide out of the card box like real ones, and prints come out of the notch with real physics. Next comes the iPhone app. The live progress board is [docs/PROGRESS.md](docs/PROGRESS.md) (in Chinese).
+**Nocchi 2.1** speaks English as well as Chinese, lets you switch cameras (with the photo booth loaded, every shot becomes a four-frame strip), files the card box by caption initial or by year, month or day, fills it with finer cards and tabs that rise when you hover, and lets you choose where prints live. **Nocchi 2.0** polished the photo lab: the photo booth is one Blender-modelled art-deco machine (bulb marquee, chrome window, a gilt Nocchi maker's plate) in front of a theatre-red velvet curtain, the Valentine frame is rebuilt with die-cut paper lace and gold foil, you can add text boxes, your own fonts and your own stickers, the corkboard is softer with an adjustable lamp and swinging prints, cards slide out of the card box like real ones, and prints come out of the notch with real physics. Next comes the iPhone app. The live progress board is [docs/PROGRESS.md](docs/PROGRESS.md) (in Chinese).
 
 ## <img src="website/public/icons/glyph-wrench.svg" width="22" height="22" align="absmiddle" alt=""> How it's built
 

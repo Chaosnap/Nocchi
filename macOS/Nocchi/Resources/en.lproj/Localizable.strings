@@ -27,8 +27,8 @@
 "Esc 取消 · 一次一条，不能重拍" = "Esc to cancel · one strip per go, no retakes";
 "ISO %lld · %lld 张 · %@" = "ISO %lld · %lld exposures · %@";
 "LUT 文件太大（%lld KB），上限 %lld MB。" = "The LUT file is too large (%lld KB); the limit is %lld MB.";
-"NOCCHI 冲印店 · 挂历" = "NOCCHI PHOTO SHOP · WALL CALENDAR";
-"Nocchi · 刘海冲印店" = "Nocchi · The Notch Photo Shop";
+"NOCCHI 冲印店 · 挂历" = "NOCCHI PHOTO LAB · WALL CALENDAR";
+"Nocchi · 刘海冲印店" = "Nocchi · The Notch Photo Lab";
 "Nocchi 设置" = "Nocchi Settings";
 "Nocchi 需要使用摄像头" = "Nocchi needs the camera";
 "OBS、Camo 等以「摄像头扩展」形式安装的虚拟摄像头会出现在「外接 / 虚拟」里。正在用的摄像头拔掉时，Nocchi 会自动换回默认摄像头。" = "Virtual cameras installed as camera extensions (OBS, Camo…) appear under “External / Virtual”. If the camera in use is unplugged, Nocchi switches back to the default camera.";
@@ -83,7 +83,7 @@
 "光的方向" = "Light direction";
 "全部字体" = "All Fonts";
 "全部放回" = "Put All Back";
-"全部放回桌面" = "Put All Back on the Desk";
+"全部放回桌面" = "Put All Back on the Desktop";
 "八月" = "August";
 "六" = "Sat";
 "六月" = "June";
@@ -99,7 +99,7 @@
 "冲印" = "Print";
 "冲印中" = "Developing";
 "冲印小照" = "Small Print";
-"冲印店" = "Photo Shop";
+"冲印店" = "Photo Lab";
 "冲印照片" = "Print Photos";
 "冲印照片…" = "Print Photos…";
 "冲印照片（⌘O）" = "Print Photos (⌘O)";
@@ -109,7 +109,7 @@
 "凸字标签（黑）" = "Embossed Label (Black)";
 "分享" = "Share";
 "分享…" = "Share…";
-"刘海冲印店" = "The Notch Photo Shop";
+"刘海冲印店" = "The Notch Photo Lab";
 "刘海暂存" = "Notch Shelf";
 "删掉这枚贴纸" = "Delete This Sticker";
 "删掉这段字" = "Delete This Text";
@@ -156,7 +156,7 @@
 "四格条 / 四宫格（↑ ↓）" = "Strip / grid (↑ ↓)";
 "回到这个月" = "Back to this month";
 "固定方式" = "Fastening";
-"在 Finder 中打开照片文件夹" = "Open the Photos Folder in Finder";
+"在 Finder 中打开照片文件夹" = "Open the Prints Folder in Finder";
 "在 Finder 中显示" = "Show in Finder";
 "在下面的白边上写字" = "Write on the bottom border";
 "在照片上任何地方加一段字，字体、大小、颜色都能换。也可以选左边的「T」，在照片上点一下。" = "Add text anywhere on the photo and change its font, size and colour. Or pick “T” on the left and click the photo.";
@@ -252,7 +252,7 @@
 "把鼠标移到刘海，按「屏幕快门」或「自拍」拍第一张。" = "Move the pointer to the notch and press “Screen Shutter” or “Selfie” to take the first one.";
 "投币开始（Return）" = "Insert coin to start (Return)";
 "投影" = "Drop Shadow";
-"抽出 %@" = "Draw %@";
+"抽出 %@" = "Pull out %@";
 "拉上布帘后还可以再挑；在大头贴机里换了相框、版式或黑白，下次就从换好的开始。" = "You can still choose after the curtain closes; whatever frame, layout or black-and-white setting you pick in the booth is where it starts next time.";
 "拉帘、倒数、闪光、四连拍" = "Curtain, countdown, flash, four shots";
 "拍下的照片会按题字的首字母放进盒子里。\n把鼠标移到刘海，按「屏幕快门」或「自拍」拍第一张。" = "Your photos are filed in the box by the first letter of their caption.\nMove the pointer to the notch and press “Screen Shutter” or “Selfie” to take the first one.";

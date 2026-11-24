@@ -2,6 +2,18 @@
 
 The full changelog, in Chinese, is [CHANGELOG.md](https://github.com/Chaosnap/Nocchi/blob/main/CHANGELOG.md). Downloads are on [Releases](https://github.com/Chaosnap/Nocchi/releases).
 
+## 2.1.0 · 2026-11-24
+
+**English, and a finer card box.**
+
+- **English interface**: *Settings → 通用 (General) → 语言 (Language)* switches between Simplified Chinese (the default) and English, and Nocchi offers to relaunch in the new language. Menus, the notch, the album, the decorating desk, the photo booth (with English lettering on the machine itself), settings, film, paper, templates and sticker names are all translated, with proper plurals.
+- **Switch cameras**: a camera tile next to the film tile switches between the instant camera and the photo booth, and the loaded camera decides what you get. With the photo booth loaded, selfies, the screen shutter and printed photos all become four-frame strips.
+- **The card box files by date**: the brass gear next to **＋** files it by caption initial or by year, month or day, and the divider tabs follow.
+- **About to be drawn**: hover a divider and it rises out of its slot.
+- **Finer cards and tabs**: rounded index-card stock in real pastels, packed denser and messier, a paper clip, and white plastic tabs.
+- **Choose where prints live**: *Settings → General → Storage* moves your prints to another folder or disk without overwriting anything.
+- **Fixes**: cards drawn from the box sometimes stayed blank; windows opened from the notch now appear in the space you are using (and over full-screen apps) instead of pulling you to another one; the album's view icons no longer have clipped shadows; the album's search field is readable in dark mode.
+
 ## 2.0.0 · 2026-11-24
 
 **Polishing the photo lab.**
