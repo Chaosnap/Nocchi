@@ -173,6 +173,9 @@ public enum LightModel {
         let softness = min(1, max(0, placement.softness))
         // 亮度 0…1 → 参考点上的照度 0.4…2（原版的 0–2）。
         let target = 0.4 + 1.6 * min(1, max(0, placement.intensity))
+        // 原版按大约一页纸（上千点宽）调的柔边和窗格下限：小板子（「灯光」卡片上的预览）按比例缩小，
+        // 看起来和大板子一样，不会糊成一团。
+        let scale = min(1, max(0.2, min(width, height) / 620))
         let spread = 74.0
         let halfAngle = acos(spreadToCosine(spread))
         let cosOuter = cos(halfAngle)
@@ -196,7 +199,7 @@ public enum LightModel {
             let direction = simd_normalize(SIMD3(cos(azimuth) * cos(elevation), sin(azimuth) * cos(elevation), -sin(elevation)))
             let columns = placement.source == .sunlight ? 3 : 2
             let rows = 2
-            let pane = max(40, min(width * 0.62, height * 0.7) * (0.45 + 0.75 * reach) / 2)
+            let pane = max(40 * scale, min(width * 0.62, height * 0.7) * (0.45 + 0.75 * reach) / 2)
             let slant = min(30, max(-30, (px - 0.5) * 50)) * .pi / 180
             rig.direction = direction
             rig.window = LightWindow(
@@ -206,7 +209,7 @@ public enum LightModel {
                 height: pane * Double(rows),
                 columns: columns,
                 rows: rows,
-                softness: 4 + 40 * softness,
+                softness: (4 + 40 * softness) * scale,
                 skew: tan(slant)
             )
             reference = max(0, -direction.z)

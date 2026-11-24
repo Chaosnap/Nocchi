@@ -45,11 +45,11 @@ enum StudioSpecs {
             ),
             StudioSpec(
                 key: "booth-strip", sample: "booth-grid", stockID: "booth-flash-400", format: .boothStrip, templateID: "booth-classic",
-                caption: "我们", daysAgo: 3, minute: 19 * 60 + 12
+                caption: "我们", daysAgo: 2, minute: 19 * 60 + 12
             ),
             StudioSpec(
                 key: "street", sample: "street", stockID: "night-flight-800", format: .instantWide, templateID: "filmframe",
-                caption: "雨夜小巷", tags: ["夜晚", "旅行"], location: "京都", daysAgo: 4, minute: 20 * 60 + 45
+                caption: "雨夜小巷", tags: ["夜晚", "旅行"], location: "京都", daysAgo: 2, minute: 20 * 60 + 45
             ),
             StudioSpec(
                 key: "beach", sample: "beach", stockID: "sunset-200", format: .landscape, templateID: "datebook",

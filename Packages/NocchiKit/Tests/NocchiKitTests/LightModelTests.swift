@@ -54,6 +54,17 @@ final class LightModelTests: XCTestCase {
         XCTAssertLessThan(rig.direction.z, 0)
     }
 
+    func testSmallBoardKeepsTheWindowCrisp() {
+        // 「灯光」卡片上的小预览：柔边按板子大小缩小，窗格中间照样是满的。
+        let small = CGSize(width: 212, height: 118)
+        let rig = LightModel.rig(LightPlacement(source: .sunlight, x: 0.16, y: 0.12, reach: 0.55, softness: 0.35, intensity: 0.55), size: small)
+        XCTAssertLessThan(rig.window.softness, 8)
+        let paneHeight = rig.window.height / Double(rig.window.rows)
+        let y = rig.window.y - paneHeight / 2
+        let x = rig.window.x + (y - rig.window.y) * rig.window.skew
+        XCTAssertGreaterThan(LightModel.windowGobo(rig, x: x, y: y), 0.9)
+    }
+
     func testWindowBarsCastShadows() {
         let rig = LightModel.rig(LightPlacement(source: .moonlight, x: 0.5, y: 0.05, reach: 0.6, softness: 0, intensity: 0.6), size: board)
         let window = rig.window
