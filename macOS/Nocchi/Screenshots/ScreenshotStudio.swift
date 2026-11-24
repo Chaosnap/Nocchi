@@ -128,7 +128,9 @@ private final class Studio {
         booth.showcaseFrameChooser()
         await booth.previews.prefetch(booth.prefetchRequests())
         await pause(0.3)
-        render("booth", size: CGSize(width: 1200, height: 900), BoothScene(booth: booth))
+        let velvet = CurtainScene().renderClosed(size: CGSize(width: 1200, height: 900), gap: 780)
+        say("SHOT curtain=\(velvet == nil ? "flat-fallback" : "scenekit")")
+        render("booth", size: CGSize(width: 1200, height: 900), BoothScene(booth: booth, curtain: velvet))
         booth.endShowcase()
     }
 

@@ -41,7 +41,7 @@
 | --- | --- | --- | --- | --- |
 | 1 🟢 | 装饰台 · 「格式文字」页 | 文字要看得清：系统深色模式下 `TextField`、`DatePicker`、分段 `Picker` 的字是白的，落在浅色纸面上几乎看不见（所有者截图）；分享页选中的胶囊、主按钮是白字（这个对） | `Editor/Inspector.swift`、`Editor/DecorateDesk.swift` | 装饰台窗口固定浅色外观（`window.appearance = NSAppearance(named: .aqua)`）或检查器 `.environment(\.colorScheme, .light)`；逐个控件检查对比度 |
 | 2 🟢 | 装饰台 · 贴纸 | **自定义贴纸**：导入自己的图片（PNG / JPG / HEIC，可拖放）做成贴纸，并能管理（重命名、删除、排序，单独一类「我的贴纸」） | `NocchiKit/Decorate/StickerCatalog.swift`、`StickerArt.swift`、`Editor/Inspector.swift` | NocchiKit 加 `CustomStickerStore`（照片库目录下 `stickers/`，复制原图 + 缩略图，JSON 清单，单元测试）；`kindID` 用 `custom.<uuid>`；`StickerArt` 画自定义贴纸时读位图、可选白色模切边 + 投影；`PhotoComposer` 通过注入的位图提供者拿到图（NocchiKit 不直接依赖 App 目录）；缺图时有退路 |
-| 3 🟡 | 大头贴机 | 布帘、整台机器、黄铜箭头、拨杆开关、发光的「开始」按钮都用 **Blender 建模**，要非常精细精美；整台大头贴机也要更精美 | `Booth/BoothFrameChooser.swift`、`Booth/CurtainScene.swift`、`design/blender/` | 照卡片盒的做法（决策 D22）：`design/blender/booth/*.py` 出分层 PNG（机身底图；拨杆左 / 右两态；按钮按下 / 抬起；开始按钮亮 / 暗；布帘几帧或分层），热区坐标导出 JSON；SwiftUI 只叠图和做动画 |
+| 3 🟢 | 大头贴机 | 布帘、整台机器、黄铜箭头、拨杆开关、发光的「开始」按钮都用 **Blender 建模**，要非常精细精美；整台大头贴机也要更精美（**已做**：机身面板、招牌、拨杆、箭头、开始按钮是 Blender 渲染，第 37 次推送；布帘要跟着拉动实时变形，改成 SceneKit 实时程序化建模，第 39 次推送，决策 D35） | `Booth/BoothFrameChooser.swift`、`Booth/CurtainScene.swift`、`design/blender/` | 照卡片盒的做法（决策 D22）：`design/blender/booth/*.py` 出分层 PNG（机身底图；拨杆左 / 右两态；按钮按下 / 抬起；开始按钮亮 / 暗；布帘几帧或分层），热区坐标导出 JSON；SwiftUI 只叠图和做动画 |
 | 4 | 相框 · 情人节 | `booth-heart` 不够精美，要更精致 | `NocchiKit/Decorate/TemplateArt`（模板绘制）、`PhotoComposer.swift` | 给模板加「位图图层」：Blender 渲染烫金 / 压纹 / 丝带边框（四格条、四宫格各一套），合成时叠在相纸上；屏幕与导出同源 |
 | 5 | 相框（全部） | 相框也可以用 Blender 建模，更精细 | 同上 | 同 4，先做大头贴主题和照相馆卡纸、胶片框 |
 | 6 🟢 | 相册 · 卡片盒 | 阴影出现「直角」：`CardBoxBase` 渲染图的地面阴影在图片边界被截断，右边露出一块矩形的浅色底（所有者截图） | `design/blender/cardbox/`、`NocchiUI/CardBox/CardBoxView.swift` | 重渲染：透明背景 + 阴影捕捉器，阴影自然衰减到透明并留足画布；SwiftUI 再加一层连贯的柔和环境阴影 |
@@ -127,6 +127,7 @@
 
 ## 最近更新（新的在上）
 
+- **2026-11-24 · 第 39 次推送** 丝绒布帘重做（交接表第 3 项的布帘部分，所有者：「帷幕得有那种布料的高级感觉，可以有褶皱」「帷幕进入和拉开都要有好看现实的动态效果」）：`Booth/CurtainScene.swift` 重写。两幅 `CurtainPanel` 从屏幕外沿帘杆拉进来；褶型在初始化时由 4 组不同频率、往下斜走的波算好（帘环处是整齐小褶），每帧按「布就这么多」由展开量算褶深（收拢时深）；每行的展开量 = 帘杆 + 两个线性阻尼振子（整体摆 ω 10.5 / ζ 0.17 ∝ v^1.5，腰部 ω 24 / ζ 0.3 ∝ sin πv）的偏差，所以下摆落后、甩过头、再停，怎么拉都稳定（之前想过逐行弹簧链，串联的欠阻尼环节会在共振频率上把误差放大，放弃）。帘杆按「起步柔和、长长地慢下来」的曲线走（`CurtainScene.pull`）。丝绒材质：PBR + 表面着色器（正对压深、掠射角顺着主光泛暖色光泽）+ 顶点颜色里的褶谷遮蔽；拉上后的「呼吸」是几何着色器（`scn_frame.time`），停稳后计时器就停，不占 CPU。帘头：扇形垂边（`Hemline`）、三股金色绞绳（螺旋截面）、流苏（落地时被拽长再缩回，`bounce` 由 CPU 每帧给）；金属反射程序化的暖色环境图。拉开时帘杆多拉到 −0.06，0.85 秒内（窗口关掉之前）下摆也回到屏幕外。截图工作室的「选相框」改用 `CurtainScene.renderClosed` 离屏渲染的真 3D 布帘（没有 Metal 时退回平铺纹理，日志 `SHOT curtain=`）。
 - **2026-11-24 · 第 38 次推送** 所有者：「这种都不要滚动条，这样很影响观感」（胶卷光台在接了鼠标时仍画出横向滚动条）。原因：`showsIndicators: false` 只等于 `.hidden`，macOS 在接了鼠标或「始终显示滚动条」时照样画传统滚动条。现在每个窗口的根视图（`WindowManager`、装饰台、照片图库选择器、刘海面板、大头贴机）和字体弹窗都加了 `.scrollIndicators(.never)`，各处 `ScrollView` 去掉 `showsIndicators:` 参数（它会在局部把 `.never` 覆盖成 `.hidden`）。规则写进 `docs/DESIGN.md` §0 第 6 条。
 - **2026-11-24 · 第 37 次推送** 大头贴机的 Blender 零件（交接表第 3 项的机器与按键部分；布帘在下一步）：`design/blender/booth/make_booth.py` 渲染 `BoothPanel`（@2x 九宫格搪瓷面板）、`BoothMarquee`（灯泡招牌）、`BoothLeverLeft/Right`、`BoothArrow/Pressed`、`BoothStart/Lit/Pressed`；`BoothFrameChooser` 与 `BoothInterior` 改用这些图（`RenderedButtonStyle`、`StartButtonStyle`、`BoothSign`），缺图时退回原来画的版本。所有者要求相册里不要滚动条：软木板 / 光台 / 挂历的 `ScrollView` 都隐藏了滚动条。
 - **2026-11-24 · 第 36 次推送** 所有者要求「软件一启动就默认显示卡片盒」：`AppModel.openAlbumOnLaunch`（默认开，设置 → 程序可关），启动 0.7 秒后 `AlbumRouter.shared.show(.cardBox)`。
@@ -171,9 +172,10 @@
 
 ## 下一步
 
-1. 🔴 修「照片偏暗」（见上面「交接」第 1 节），删掉 `XCTExpectFailure`，看 Screenshots 重拍的照片。
-2. v1.1 待办 14 项（见上面「交接」第 2 节），建议顺序：1（文字颜色）→ 14（滚轮）→ 6 / 9 / 13（阴影割裂）→ 10–12（软木板）→ 7–8（卡片盒抽卡与摆放）→ 2（自定义贴纸）→ 3–5（Blender 大头贴机与相框）。
-3. 之后：完成 iOS App 与灵动岛 Live Activity（`iOS/` 下的草稿还没提交，iOS 用 80 年代方盒款机身外观），接入 CI（未签名 ipa）。
+1. 交接表第 4–5 项：Blender 建模的相框（先把情人节 `booth-heart` 做精致，再做其余大头贴主题、照相馆卡纸、胶片框）——模板加「位图图层」，NocchiKit 资源里放渲染图，`PhotoComposer` 合成，屏幕与导出同源。
+2. 全部做完、CI 全绿后：`macOS/project.yml` 版本改 2.0.0，`CHANGELOG` 的「未发布」整理成 `## [2.0.0]`，推 `v2.0.0` 标签（所有者：「完成后记得 push 成 2.0」）。
+3. 看 Screenshots 工作流重拍的 `booth.jpg`（3D 布帘离屏渲染）对不对。
+4. 之后：完成 iOS App 与灵动岛 Live Activity（`iOS/` 下的草稿还没提交，iOS 用 80 年代方盒款机身外观），接入 CI（未签名 ipa）。
 
 ## 已知问题 / 待你确认
 

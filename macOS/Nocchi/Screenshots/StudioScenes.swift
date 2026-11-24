@@ -191,20 +191,32 @@ struct PrintGalleryScene: View {
     }
 }
 
-/// 大头贴机的「选相框」：丝绒布帘前的真实 `BoothInterior`。
+/// 大头贴机的「选相框」：真实的 `BoothInterior`，两边是拉上的 3D 丝绒布帘（`CurtainScene.renderClosed`
+/// 离屏渲染的透明图，和 App 里同一套几何与材质）。没有 Metal 时退回平铺的丝绒纹理。
 struct BoothScene: View {
     @ObservedObject var booth: PhotoBoothController
+    var curtain: NSImage?
 
     var body: some View {
         ZStack {
-            Image("VelvetTexture")
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 1200, height: 900)
-                .clipped()
-            Color.black.opacity(0.5)
-            RadialGradient(colors: [Color(hex: 0xFFE2B8, opacity: 0.2), .clear], center: .top, startRadius: 10, endRadius: 720)
-            BoothInterior(booth: booth, session: CameraService.shared.session, camera: CameraService.shared)
+            if let curtain {
+                StudioWallpaper()
+                Color.black.opacity(0.62)
+                RadialGradient(colors: [Color(hex: 0xFFE2B8, opacity: 0.16), .clear], center: .top, startRadius: 10, endRadius: 640)
+                BoothInterior(booth: booth, session: CameraService.shared.session, camera: CameraService.shared)
+                Image(nsImage: curtain)
+                    .resizable()
+                    .frame(width: 1200, height: 900)
+            } else {
+                Image("VelvetTexture")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 1200, height: 900)
+                    .clipped()
+                Color.black.opacity(0.5)
+                RadialGradient(colors: [Color(hex: 0xFFE2B8, opacity: 0.2), .clear], center: .top, startRadius: 10, endRadius: 720)
+                BoothInterior(booth: booth, session: CameraService.shared.session, camera: CameraService.shared)
+            }
         }
         .frame(width: 1200, height: 900)
         .clipped()
