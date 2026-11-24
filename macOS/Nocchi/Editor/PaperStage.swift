@@ -149,14 +149,10 @@ private struct StickerItem: View {
     @ObservedObject var session: DecorateSession
     let sticker: StickerPlacement
     let paperWidth: CGFloat
-    @State private var dragOrigin: CGPoint?
-    @State private var handleOrigin: HandleOrigin?
-
-    private struct HandleOrigin {
-        let size: Double
-        let rotation: Double
-        let vector: CGVector
-    }
+    /// 拖动中的样子（只在这个视图里；松手才写回照片记录）。
+    @State private var live: LiveTransform?
+    @State private var moveOrigin: CGPoint?
+    @State private var handle: HandleDrag?
 
     init(session: DecorateSession, sticker: StickerPlacement, paperWidth: CGFloat) {
         self.session = session
@@ -164,12 +160,26 @@ private struct StickerItem: View {
         self.paperWidth = paperWidth
     }
 
+    /// 现在画出来的样子：拖动中用 `live`，否则就是记录里的。
+    private var shown: StickerPlacement {
+        guard let live else { return sticker }
+        var placement = sticker
+        placement.x = live.x
+        placement.y = live.y
+        placement.size = live.size
+        placement.rotation = live.rotation
+        return placement
+    }
+
     var body: some View {
-        let frame = StickerArt.frame(of: sticker, paperWidth: paperWidth)
+        // 图按记录里的大小渲染（缓存里有），拖动缩放时只是把它放大缩小，松手后才按新大小重画一次。
+        let imageWidth = StickerArt.frame(of: sticker, paperWidth: paperWidth).width
+        let current = shown
+        let frame = StickerArt.frame(of: current, paperWidth: paperWidth)
         let selected = session.selectedSticker == sticker.id
         ZStack {
             Group {
-                if let image = StickerImageCache.shared.image(for: sticker, width: frame.width) {
+                if let image = StickerImageCache.shared.image(for: sticker, width: imageWidth) {
                     Image(nsImage: image)
                         .resizable()
                         .interpolation(.high)
@@ -193,7 +203,7 @@ private struct StickerItem: View {
                 HandleKnob(symbol: "arrow.up.left.and.arrow.down.right")
                     .offset(x: 13, y: 13)
                     .gesture(handleGesture(center: CGPoint(x: frame.midX, y: frame.midY)))
-                    .help("拖动缩放、旋转")
+                    .help("拖动缩放、旋转（按住 ⇧ 每 15° 一格）")
             }
         }
         .overlay(alignment: .topLeading) {
@@ -204,7 +214,7 @@ private struct StickerItem: View {
                     .help("删掉这枚贴纸")
             }
         }
-        .rotationEffect(.degrees(sticker.rotation))
+        .rotationEffect(.degrees(current.rotation))
         .contentShape(Rectangle())
         .onTapGesture {
             session.selectedSticker = sticker.id
@@ -218,23 +228,24 @@ private struct StickerItem: View {
     private var moveGesture: some Gesture {
         DragGesture(minimumDistance: 1, coordinateSpace: .named(PaperStage.space))
             .onChanged { value in
-                if dragOrigin == nil {
-                    session.checkpoint()
-                    session.selectedSticker = sticker.id
-                    dragOrigin = CGPoint(x: sticker.x, y: sticker.y)
+                if moveOrigin == nil {
+                    moveOrigin = CGPoint(x: sticker.x, y: sticker.y)
+                    if session.selectedSticker != sticker.id {
+                        session.selectedSticker = sticker.id
+                    }
                 }
-                guard let origin = dragOrigin else { return }
-                let x = min(max(Double(origin.x) + Double(value.translation.width / paperWidth), -0.1), 1.1)
-                // 先读出来：改 record 的闭包里不能再读 session（独占访问）。
+                guard let origin = moveOrigin else { return }
                 let maxY = session.paperHeightRatio + 0.1
-                let y = min(max(Double(origin.y) + Double(value.translation.height / paperWidth), -0.1), maxY)
-                session.updateSticker(sticker.id) { placement in
-                    placement.x = x
-                    placement.y = y
-                }
+                live = LiveTransform(
+                    x: min(max(Double(origin.x) + Double(value.translation.width / paperWidth), -0.1), 1.1),
+                    y: min(max(Double(origin.y) + Double(value.translation.height / paperWidth), -0.1), maxY),
+                    size: sticker.size,
+                    rotation: sticker.rotation
+                )
             }
             .onEnded { _ in
-                dragOrigin = nil
+                commit()
+                moveOrigin = nil
             }
     }
 
@@ -242,23 +253,82 @@ private struct StickerItem: View {
         DragGesture(minimumDistance: 0, coordinateSpace: .named(PaperStage.space))
             .onChanged { value in
                 let vector = CGVector(dx: value.location.x - center.x, dy: value.location.y - center.y)
-                if handleOrigin == nil {
-                    session.checkpoint()
+                if handle == nil {
                     let start = CGVector(dx: value.startLocation.x - center.x, dy: value.startLocation.y - center.y)
-                    handleOrigin = HandleOrigin(size: sticker.size, rotation: sticker.rotation, vector: start)
+                    handle = HandleDrag(size: sticker.size, rotation: sticker.rotation, start: start)
                 }
-                guard let origin = handleOrigin else { return }
-                let startLength = max(4, hypot(origin.vector.dx, origin.vector.dy))
-                let length = hypot(vector.dx, vector.dy)
-                let angle = atan2(vector.dy, vector.dx) - atan2(origin.vector.dy, origin.vector.dx)
-                session.updateSticker(sticker.id) { placement in
-                    placement.size = min(max(origin.size * Double(length / startLength), 0.04), 1.4)
-                    placement.rotation = origin.rotation + Double(angle) * 180 / .pi
-                }
+                guard var drag = handle else { return }
+                let result = drag.update(to: vector)
+                handle = drag
+                live = LiveTransform(
+                    x: sticker.x,
+                    y: sticker.y,
+                    size: min(max(drag.size * result.scale, 0.04), 1.4),
+                    rotation: result.rotation
+                )
             }
             .onEnded { _ in
-                handleOrigin = nil
+                commit()
+                handle = nil
             }
+    }
+
+    /// 松手：一次写回照片记录（记一步撤销）。
+    private func commit() {
+        guard let value = live else { return }
+        session.checkpoint()
+        session.updateSticker(sticker.id) { placement in
+            placement.x = value.x
+            placement.y = value.y
+            placement.size = value.size
+            placement.rotation = value.rotation
+        }
+        live = nil
+    }
+}
+
+/// 拖动中的位置、大小和角度。
+///
+/// 拖贴纸、拖文字框时只改这个视图自己的状态：以前每动一下都写回 `session.record`，整个装饰台（检查器、贴纸架……）
+/// 都要跟着重算，文字框还要重新排版、渲染，手柄就一顿一顿的。现在拖动中只是把已经渲染好的图挪、放大缩小、转，
+/// 松手才写回记录（一步撤销）、按新大小重画一次。
+struct LiveTransform: Equatable {
+    var x: Double
+    var y: Double
+    var size: Double
+    var rotation: Double
+}
+
+/// 缩放、旋转手柄的一次拖动：大小按离中心的距离等比例变，角度连续累加（转过 180° 不会跳），
+/// 按住 ⇧ 时角度每 15° 一格。
+struct HandleDrag {
+    let size: Double
+    let rotation: Double
+    let startLength: CGFloat
+    private var lastAngle: CGFloat
+    private var turned: CGFloat = 0
+
+    init(size: Double, rotation: Double, start: CGVector) {
+        self.size = size
+        self.rotation = rotation
+        startLength = max(4, hypot(start.dx, start.dy))
+        lastAngle = atan2(start.dy, start.dx)
+    }
+
+    /// 手柄到了 `vector`（相对中心）：返回大小倍数和新角度（度）。
+    mutating func update(to vector: CGVector) -> (scale: Double, rotation: Double) {
+        let angle = atan2(vector.dy, vector.dx)
+        var step = angle - lastAngle
+        if step > .pi { step -= 2 * .pi }
+        if step < -.pi { step += 2 * .pi }
+        turned += step
+        lastAngle = angle
+        var degrees = rotation + Double(turned) * 180 / .pi
+        if NSEvent.modifierFlags.contains(.shift) {
+            degrees = (degrees / 15).rounded() * 15
+        }
+        let length = hypot(vector.dx, vector.dy)
+        return (Double(length / startLength), degrees)
     }
 }
 
@@ -299,12 +369,14 @@ private struct TextTapInput: View {
 }
 
 /// 相纸上的一个文字框：和导出用同一个画法（`TextArt`）。选中时虚线框 + 缩放 / 旋转手柄 + 删除；双击改字。
+/// 拖动、缩放、旋转时只动这个视图（`LiveTransform`），松手才写回照片记录、按新大小重新排版渲染。
 private struct TextItem: View {
     @ObservedObject var session: DecorateSession
     let placement: TextPlacement
     let paperWidth: CGFloat
-    @State private var dragOrigin: CGPoint?
-    @State private var handleOrigin: (size: Double, rotation: Double, vector: CGVector)?
+    @State private var live: LiveTransform?
+    @State private var moveOrigin: CGPoint?
+    @State private var handle: HandleDrag?
 
     init(session: DecorateSession, placement: TextPlacement, paperWidth: CGFloat) {
         self.session = session
@@ -313,7 +385,13 @@ private struct TextItem: View {
     }
 
     var body: some View {
-        let frame = TextArt.frame(of: placement, paperWidth: paperWidth)
+        // 排版和渲染只按记录里的内容和大小做一次（缓存）；拖动中按比例放大缩小、挪到新位置。
+        let base = TextImageCache.shared.size(for: placement, paperWidth: paperWidth)
+        let scale = live.map { CGFloat($0.size / max(placement.size, 0.0001)) } ?? 1
+        let width = base.width * scale
+        let height = base.height * scale
+        let center = CGPoint(x: CGFloat(live?.x ?? placement.x) * paperWidth, y: CGFloat(live?.y ?? placement.y) * paperWidth)
+        let rotation = live?.rotation ?? placement.rotation
         let selected = session.selectedText == placement.id
         ZStack {
             if let image = TextImageCache.shared.image(for: placement, paperWidth: paperWidth) {
@@ -331,13 +409,13 @@ private struct TextItem: View {
                     .allowsHitTesting(false)
             }
         }
-        .frame(width: max(frame.width, 12), height: max(frame.height, 12))
+        .frame(width: max(width, 12), height: max(height, 12))
         .overlay(alignment: .bottomTrailing) {
             if selected {
                 TextKnob(symbol: "arrow.up.left.and.arrow.down.right")
                     .offset(x: 12, y: 12)
-                    .gesture(handleGesture(center: CGPoint(x: frame.midX, y: frame.midY)))
-                    .help("拖动缩放、旋转")
+                    .gesture(handleGesture(center: center))
+                    .help("拖动缩放、旋转（按住 ⇧ 每 15° 一格）")
             }
         }
         .overlay(alignment: .topLeading) {
@@ -348,7 +426,7 @@ private struct TextItem: View {
                     .help("删掉这段字")
             }
         }
-        .rotationEffect(.degrees(placement.rotation))
+        .rotationEffect(.degrees(rotation))
         .contentShape(Rectangle())
         .onTapGesture(count: 2) {
             session.selectedText = placement.id
@@ -360,28 +438,30 @@ private struct TextItem: View {
         }
         .gesture(moveGesture)
         .allowsHitTesting(session.tool == .select)
-        .position(x: frame.midX, y: frame.midY)
+        .position(center)
     }
 
     private var moveGesture: some Gesture {
         DragGesture(minimumDistance: 1, coordinateSpace: .named(PaperStage.space))
             .onChanged { value in
-                if dragOrigin == nil {
-                    session.checkpoint()
-                    session.selectedText = placement.id
-                    dragOrigin = CGPoint(x: placement.x, y: placement.y)
+                if moveOrigin == nil {
+                    moveOrigin = CGPoint(x: placement.x, y: placement.y)
+                    if session.selectedText != placement.id {
+                        session.selectedText = placement.id
+                    }
                 }
-                guard let origin = dragOrigin else { return }
+                guard let origin = moveOrigin else { return }
                 let maxY = session.paperHeightRatio + 0.1
-                let x = min(max(Double(origin.x) + Double(value.translation.width / paperWidth), -0.1), 1.1)
-                let y = min(max(Double(origin.y) + Double(value.translation.height / paperWidth), -0.1), maxY)
-                session.updateText(placement.id) { text in
-                    text.x = x
-                    text.y = y
-                }
+                live = LiveTransform(
+                    x: min(max(Double(origin.x) + Double(value.translation.width / paperWidth), -0.1), 1.1),
+                    y: min(max(Double(origin.y) + Double(value.translation.height / paperWidth), -0.1), maxY),
+                    size: placement.size,
+                    rotation: placement.rotation
+                )
             }
             .onEnded { _ in
-                dragOrigin = nil
+                commit()
+                moveOrigin = nil
             }
     }
 
@@ -389,25 +469,37 @@ private struct TextItem: View {
         DragGesture(minimumDistance: 0, coordinateSpace: .named(PaperStage.space))
             .onChanged { value in
                 let vector = CGVector(dx: value.location.x - center.x, dy: value.location.y - center.y)
-                if handleOrigin == nil {
-                    session.checkpoint()
+                if handle == nil {
                     let start = CGVector(dx: value.startLocation.x - center.x, dy: value.startLocation.y - center.y)
-                    handleOrigin = (placement.size, placement.rotation, start)
+                    handle = HandleDrag(size: placement.size, rotation: placement.rotation, start: start)
                 }
-                guard let origin = handleOrigin else { return }
-                let startLength = max(4, hypot(origin.vector.dx, origin.vector.dy))
-                let length = hypot(vector.dx, vector.dy)
-                let angle = atan2(vector.dy, vector.dx) - atan2(origin.vector.dy, origin.vector.dx)
-                let size = min(max(origin.size * Double(length / startLength), 0.02), 0.4)
-                let rotation = origin.rotation + Double(angle) * 180 / .pi
-                session.updateText(placement.id) { text in
-                    text.size = size
-                    text.rotation = rotation
-                }
+                guard var drag = handle else { return }
+                let result = drag.update(to: vector)
+                handle = drag
+                live = LiveTransform(
+                    x: placement.x,
+                    y: placement.y,
+                    size: min(max(drag.size * result.scale, 0.02), 0.4),
+                    rotation: result.rotation
+                )
             }
             .onEnded { _ in
-                handleOrigin = nil
+                commit()
+                handle = nil
             }
+    }
+
+    /// 松手：一次写回照片记录（记一步撤销）。
+    private func commit() {
+        guard let value = live else { return }
+        session.checkpoint()
+        session.updateText(placement.id) { text in
+            text.x = value.x
+            text.y = value.y
+            text.size = value.size
+            text.rotation = value.rotation
+        }
+        live = nil
     }
 }
 
@@ -427,7 +519,8 @@ private struct TextKnob: View {
     }
 }
 
-/// 文字框的渲染缓存（2 倍像素，按内容和相纸宽度）。
+/// 文字框的渲染缓存（2 倍像素）和排好的尺寸：只按影响样子的内容（字、字体、大小、颜色、样式……）和相纸宽度，
+/// 不管位置和角度——挪动、旋转文字框不用重新排版、渲染。
 @MainActor
 final class TextImageCache {
     static let shared = TextImageCache()
@@ -436,14 +529,37 @@ final class TextImageCache {
         cache.countLimit = 160
         return cache
     }()
+    private var sizes: [String: CGSize] = [:]
+
+    private static func key(_ placement: TextPlacement, bucket: Int) -> String {
+        var content = placement
+        content.x = 0
+        content.y = 0
+        content.rotation = 0
+        return "\(content.hashValue)#\(bucket)"
+    }
+
+    private static func bucket(_ paperWidth: CGFloat) -> Int {
+        Int((paperWidth / 8).rounded()) * 8
+    }
 
     func image(for placement: TextPlacement, paperWidth: CGFloat) -> NSImage? {
-        let bucket = Int((paperWidth / 8).rounded()) * 8
-        let key = "\(placement.hashValue)#\(bucket)" as NSString
+        let bucket = Self.bucket(paperWidth)
+        let key = Self.key(placement, bucket: bucket) as NSString
         if let hit = cache.object(forKey: key) { return hit }
         guard let cgImage = TextArt.image(placement, paperWidth: CGFloat(bucket) * 2) else { return nil }
         let image = NSImage(cgImage: cgImage, size: NSSize(width: CGFloat(cgImage.width) / 2, height: CGFloat(cgImage.height) / 2))
         cache.setObject(image, forKey: key)
         return image
+    }
+
+    /// 文字框排好之后的宽高（点）。
+    func size(for placement: TextPlacement, paperWidth: CGFloat) -> CGSize {
+        let key = Self.key(placement, bucket: Int((paperWidth * 4).rounded()))
+        if let hit = sizes[key] { return hit }
+        let size = TextArt.frame(of: placement, paperWidth: paperWidth).size
+        if sizes.count > 400 { sizes.removeAll() }
+        sizes[key] = size
+        return size
     }
 }

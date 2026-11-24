@@ -65,8 +65,15 @@ final class LightModelTests: XCTestCase {
         XCTAssertGreaterThan(LightModel.windowGobo(rig, x: x, y: y), 0.9)
     }
 
-    func testWindowBarsCastShadows() {
+    func testNoBarsByDefault() {
+        // 软木板上的光斑不画窗棂（田字格）：窗户正中间也是满的。
         let rig = LightModel.rig(LightPlacement(source: .moonlight, x: 0.5, y: 0.05, reach: 0.6, softness: 0, intensity: 0.6), size: board)
+        XCTAssertFalse(rig.window.bars)
+        XCTAssertEqual(LightModel.windowGobo(rig, x: rig.window.x, y: rig.window.y), 1, accuracy: 1e-6)
+    }
+
+    func testWindowBarsCastShadows() {
+        let rig = LightModel.rig(LightPlacement(source: .moonlight, x: 0.5, y: 0.05, reach: 0.6, softness: 0, intensity: 0.6, windowBars: true), size: board)
         let window = rig.window
         let open = LightModel.windowGobo(rig, x: window.x - window.width / 4, y: window.y - window.height / 4)
         // 窗户中间那根竖窗棂（两列时正好在中心线上）。

@@ -2,6 +2,14 @@
 
 The full changelog, in Chinese, is [CHANGELOG.md](https://github.com/Chaosnap/Nocchi/blob/main/CHANGELOG.md). Downloads are on [Releases](https://github.com/Chaosnap/Nocchi/releases).
 
+## 4.0.0 · 2026-11-24
+
+**Stickers and text that follow your hand.**
+
+- **Smooth moving, resizing and rotating on the decorating desk**: dragging a sticker or a text box, or turning its handle, used to rewrite the whole photo on every movement, so the desk recomputed everything and text was laid out and rendered again each time. Now only that sticker or text box moves, using the image already drawn; the photo is updated once when you let go (still one undo step) and the art is redrawn at its new size.
+- **Steadier rotation**: the handle keeps turning past 180° without a jump, and holding ⇧ snaps to 15° steps.
+- **No window bars on the corkboard**: sunlight and moonlight fall as a soft patch, without the cross of glazing bars.
+
 ## 3.1.0 · 2026-11-24
 
 **Day and night.**

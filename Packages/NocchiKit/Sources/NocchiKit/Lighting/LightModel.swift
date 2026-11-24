@@ -29,7 +29,8 @@ public enum LightSource: String, Codable, CaseIterable, Sendable, Identifiable {
     public var isParallel: Bool { self != .deskLamp }
 }
 
-/// 平行光穿过的窗户在板子上的样子：中心、大小、窗格数、边缘柔和度（点）、斜切（光从侧面斜着来，窗格成平行四边形）。
+/// 平行光穿过的窗户在板子上的样子：中心、大小、窗格数、边缘柔和度（点）、斜切（光从侧面斜着来，窗格成平行四边形）、
+/// 要不要画出窗棂（软木板上不要：所有者「这个窗户田字格删掉」，只留一块柔和的光斑）。
 public struct LightWindow: Equatable, Sendable {
     public var x: Double
     public var y: Double
@@ -39,8 +40,9 @@ public struct LightWindow: Equatable, Sendable {
     public var rows: Int
     public var softness: Double
     public var skew: Double
+    public var bars: Bool
 
-    public init(x: Double, y: Double, width: Double, height: Double, columns: Int, rows: Int, softness: Double, skew: Double) {
+    public init(x: Double, y: Double, width: Double, height: Double, columns: Int, rows: Int, softness: Double, skew: Double, bars: Bool = true) {
         self.x = x
         self.y = y
         self.width = width
@@ -49,6 +51,7 @@ public struct LightWindow: Equatable, Sendable {
         self.rows = rows
         self.softness = softness
         self.skew = skew
+        self.bars = bars
     }
 }
 
@@ -88,14 +91,17 @@ public struct LightPlacement: Equatable, Sendable {
     public var softness: Double
     /// 亮度。
     public var intensity: Double
+    /// 太阳 / 月光的光斑里画不画窗棂（原版画；软木板上不画）。
+    public var windowBars: Bool
 
-    public init(source: LightSource, x: Double, y: Double, reach: Double, softness: Double, intensity: Double) {
+    public init(source: LightSource, x: Double, y: Double, reach: Double, softness: Double, intensity: Double, windowBars: Bool = false) {
         self.source = source
         self.x = x
         self.y = y
         self.reach = reach
         self.softness = softness
         self.intensity = intensity
+        self.windowBars = windowBars
     }
 }
 
@@ -132,6 +138,7 @@ public enum LightModel {
         let dy = y - w.y
         let across = smoothstep(-soft, soft, w.width / 2 - abs(dx))
         let down = smoothstep(-soft, soft, w.height / 2 - abs(dy))
+        guard w.bars else { return across * down }
         let paneWidth = w.width / Double(max(1, w.columns))
         let paneHeight = w.height / Double(max(1, w.rows))
         let bar = barHalfWidth(paneWidth: paneWidth, paneHeight: paneHeight)
@@ -210,7 +217,8 @@ public enum LightModel {
                 columns: columns,
                 rows: rows,
                 softness: (4 + 40 * softness) * scale,
-                skew: tan(slant)
+                skew: tan(slant),
+                bars: placement.windowBars
             )
             reference = max(0, -direction.z)
         }

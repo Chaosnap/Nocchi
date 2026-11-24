@@ -666,5 +666,6 @@
  "默认简体中文。换了以后重新打开 Nocchi 生效。": "Simplified Chinese by default. Takes effect after Nocchi reopens.",
  "默认题字": "Default caption",
  "齿孔边、面值和一枚邮戳": "Perforated edges, a face value and a postmark",
- "＋ 加一段字": "+ Add Text"
+ "＋ 加一段字": "+ Add Text",
+ "拖动缩放、旋转（按住 ⇧ 每 15° 一格）": "Drag to resize and rotate (hold ⇧ for 15° steps)"
 }

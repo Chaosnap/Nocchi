@@ -266,7 +266,7 @@
 "拍黑白" = "Shoot in black and white";
 "拖出去即可使用成片；点一下放回桌面" = "Drag out to use the print; click to put it back on the desktop";
 "拖出去就是成片文件 · 点一下放回桌面" = "Drag out for the print file · click to put it back on the desktop";
-"拖动缩放、旋转" = "Drag to scale and rotate";
+"拖动缩放、旋转（按住 ⇧ 每 15° 一格）" = "Drag to resize and rotate (hold ⇧ for 15° steps)";
 "拷贝" = "Copy";
 "按年" = "By Year";
 "按日" = "By Day";
