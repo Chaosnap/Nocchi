@@ -25,6 +25,11 @@ iOS/NocchiWidgets/Info.plist
 # 设计草稿
 design/scratch/
 
+# Blender 中间产物：渲染结果已写进 Shared/Art.xcassets，脚本可随时重出
+design/blender/**/out/
+__pycache__/
+*.blend1
+
 # App 图标由 CI 从 design/icon/nocchi-icon.svg 渲染（scripts/ci/render-icons.sh）
 macOS/Nocchi/Resources/Assets.xcassets/AppIcon.appiconset/*.png
 iOS/Nocchi/Resources/Assets.xcassets/AppIcon.appiconset/*.png
