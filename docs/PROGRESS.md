@@ -48,9 +48,9 @@
 | 7 🟢 | 相册 · 卡片盒 | **抽卡要符合物理**：点哪个字母标签，照片就从那张分隔卡的位置斜着抽出来（沿卡片方向向上、带一点后仰，离开盒口后再转正），再飞到右边铺开 | `NocchiUI/CardBox/CardFlights.swift`、`CardBoxHotspots.swift` | 起点取被点标签的热点位置；第一段沿分隔卡的倾斜方向位移 + 3D 旋转（`rotation3DEffect`），第二段弧线飞到摊开位置 |
 | 8 🟢 | 相册 · 卡片盒 | 右边摊开的区域支持**拖拽摆放、自定义堆叠**，位置要记住 | `NocchiUI/CardBoxModel.swift`、`CardBox/CardBoxView.swift` | 摊开的卡片可拖动，靠近时吸成一摞；布局存进 `CardBoxModel`（UserDefaults 或照片库里的 JSON） |
 | 9 🟢 | 相册 · 胶卷光台 | 放大镜的阴影割裂：`Loupe` 图带一块方形投影 / 底，和光台不连贯（所有者截图） | `Album/FilmLightTable.swift`、`design/blender/`（Loupe） | Loupe 重渲染成透明背景、只要镜身；阴影在 SwiftUI 画圆形柔和阴影，跟着鼠标 |
-| 10 | 相册 · 软木板 | 软木板背景太扎眼，要柔和、不突兀 | `Album/CorkBoardView.swift`、`Shared/Art.xcassets/CorkTexture` | 降低软木纹理的反差 / 饱和、颗粒更细，加一层暖色柔光和内阴影；或用 Blender 渲染一块柔和的软木板 |
-| 11 | 相册 · 软木板 | 照片挂上去要有**拟物的高级动效** | `Album/CorkBoardView.swift` | 钉上去时轻微下坠回弹；悬停时绕图钉微微摆动（弹簧）；纸张卷曲的光影随角度变化 |
-| 12 | 相册 · 软木板 | **可调光照**：板子左下角钉一枚贴纸 / 小标签，点开二级菜单调光照（台灯方向、色温、强度、暗角）和显示效果（纸张卷曲、阴影深浅、图钉样式），设置要记住 | `Album/CorkBoardView.swift`、`Album/AlbumShared.swift` | 光照用一层可调的径向渐变 + 阴影方向参数传给照片卡片；菜单做成复古的小卡片（打字机字），存 UserDefaults |
+| 10 🟢 | 相册 · 软木板 | 软木板背景太扎眼，要柔和、不突兀 | `Album/CorkBoardView.swift`、`Shared/Art.xcassets/CorkTexture` | 降低软木纹理的反差 / 饱和、颗粒更细，加一层暖色柔光和内阴影；或用 Blender 渲染一块柔和的软木板 |
+| 11 🟢 | 相册 · 软木板 | 照片挂上去要有**拟物的高级动效** | `Album/CorkBoardView.swift` | 钉上去时轻微下坠回弹；悬停时绕图钉微微摆动（弹簧）；纸张卷曲的光影随角度变化 |
+| 12 🟢 | 相册 · 软木板 | **可调光照**：板子左下角钉一枚贴纸 / 小标签，点开二级菜单调光照（台灯方向、色温、强度、暗角）和显示效果（纸张卷曲、阴影深浅、图钉样式），设置要记住 | `Album/CorkBoardView.swift`、`Album/AlbumShared.swift` | 光照用一层可调的径向渐变 + 阴影方向参数传给照片卡片；菜单做成复古的小卡片（打字机字），存 UserDefaults |
 | 13 🟢 | 相册 · 软木板 | 图钉的阴影也割裂（方块状） | `Album/CorkBoardView.swift`、`PinBrass` 等图 | 图钉 PNG 透明、只要钉子本身；阴影在 SwiftUI 画成柔和椭圆，方向跟 12 的光照一致 |
 | 14 🟢 | 刘海 · 胶卷柜 | 鼠标滚轮**上下滚动时左右切换**胶卷（现在横向 `ScrollView` 只认左右滑） | `Notch/FilmCabinetPanel.swift` | 用一个 `NSViewRepresentable` 监听 `scrollWheel`，把 `deltaY` 转成横向偏移；或者自己管偏移 + `ScrollViewReader` |
 
@@ -127,6 +127,7 @@
 
 ## 最近更新（新的在上）
 
+- **2026-11-24 · 第 32 次推送** 软木板（交接表第 10–12 项）：`design/blender/textures/make_cork.py` 渲染柔和的无缝软木（4D 噪声映射到环面、@2x 资源 `CorkSoft`）；`Album/CorkLighting.swift`——灯光设置（方向、色温、亮度、暗角、阴影、纸张卷曲、固定方式，UserDefaults）、左下角「灯光」铜牌、打字机调节卡片（黄铜拨盘与滑杆）；照片、图钉、标签带、旧物的阴影方向和深浅都由灯光算出，照片上有顺着灯的卷曲明暗（柔光混合）；照片钉上去时下落回弹、图钉按进去，鼠标拂过按横向速度给一个摆动（欠阻尼弹簧，绕挂点转），胶带贴的不摆。所有者补充：这一轮主要改 macOS，iOS 之后再跟，能共用的部分（NocchiKit / NocchiUI）顺手一起做。
 - **2026-11-24 · 第 31 次推送** 卡片盒（交接表第 7、8 项 + 所有者 2026-11-24 新要求「照片像参考图那样层次堆叠」「检索字母的标签要精致」）：`SlotGeometry` 由热点算出每个字母那一格（格口线、分隔卡方向），卡片先以斜切变换（`CardSkew`）立在格子里、被格口线以下的遮罩（`SlotMask`）挡住，沿分隔卡往上抽出、在盒口上方转正，再落到右边；放回时反过来。右边改成松散的一叠（`PileLayout`），可拖动摆放、靠近另一张会叠上去，位置存在 `CardBoxModel.spots`（UserDefaults），「重新叠好」清掉。卡片的字母标签改成模切纸标签（`IndexTabShape`），分隔卡悬停提示改成吊牌。
 - **2026-11-24 · 第 30 次推送** 装饰台固定浅色外观（深色模式下检查器的字不再是白的），「文字」页图标换成引号；胶卷柜支持鼠标滚轮左右翻（`WheelToHorizontalScroll`）。阴影统一柔和：卡片盒在 2000 × 1500 的画布上重渲染、盒子靠左上，阴影捕捉器的像素在边缘 13% 内平滑淡到透明（`studio.fade_shadow_edges`，四边 alpha = 0）；热点由新脚本 `design/blender/cardbox/gen_swift_hotspots.py` 生成；图钉、木夹、放大镜改成不带地面阴影，阴影在界面里按轮廓画。
 - **2026-11-24 · 第 29 次推送** 修好「照片偏暗、偏艳」：光晕的加法混合把 alpha 加成 2，之后的柔光颗粒按公式把中间调算成黑色；每个加法效果之后把照片压回不透明（`FilmProcessor.flattened`），删掉 `XCTExpectFailure`，新增逐个效果的不透明 / 亮度回归测试。所有者新的反馈（2026-11-24）把这一轮定为 **v2.0**：除了交接表里的 14 项，还要在装饰台的照片上任意位置加文字框并可自定义字体，布帘要有布料质感、褶皱和逼真的拉合动画，完成后发 `v2.0.0`；不准用子代理（subagent）。

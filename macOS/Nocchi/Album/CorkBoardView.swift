@@ -2,33 +2,59 @@ import AppKit
 import NocchiKit
 import SwiftUI
 
-/// 软木板：装在胡桃木框里的一块软木，照片按月份钉着。
+/// 软木板：装在胡桃木框里的一块柔和的软木，照片按月份钉着。
 ///
 /// 每个月一条凸字标签带 + 打字机小纸条；照片用松散的拼贴排布（按 seed 倾斜、错落），
 /// 用黄铜图钉、彩色地图针、牛皮纸胶带或木夹固定；三张以上的月份夹一件旧物（票根、邮票、胶片）。
+/// 照片钉上去时轻轻落下回弹，鼠标拂过时绕着图钉摆一摆；左下角的「灯光」铜牌可以调台灯的方向、
+/// 色温、亮度、暗角、阴影、纸张卷曲与固定方式（`CorkLighting`），阴影和光泽都跟着灯走。
 struct CorkBoardView: View {
     let records: [PhotoRecord]
     let libraryIsEmpty: Bool
+    @ObservedObject private var lights = CorkLightingStore.shared
+    @State private var showsLighting = false
+
+    init(records: [PhotoRecord], libraryIsEmpty: Bool) {
+        self.records = records
+        self.libraryIsEmpty = libraryIsEmpty
+    }
 
     var body: some View {
         let groups = PhotoLibrary.groupedByMonth(records)
+        let lighting = lights.lighting
         WalnutFrame {
-            ZStack {
-                CorkSurface()
+            ZStack(alignment: .bottomLeading) {
+                CorkSurface(lighting: lighting)
                 if libraryIsEmpty {
-                    EmptyCorkCard()
+                    EmptyCorkCard(lighting: lighting)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if !groups.isEmpty {
                     ScrollView(.vertical) {
                         LazyVStack(alignment: .leading, spacing: 56) {
                             ForEach(groups) { group in
-                                CorkMonth(group: group)
+                                CorkMonth(group: group, lighting: lighting)
                             }
                         }
                         .padding(.horizontal, 44)
                         .padding(.top, 38)
-                        .padding(.bottom, 60)
+                        .padding(.bottom, 96)
                     }
                 }
+                if showsLighting {
+                    LightingPanel(store: lights) {
+                        withAnimation(.spring(response: 0.42, dampingFraction: 0.82)) { showsLighting = false }
+                    }
+                    .padding(.leading, 22)
+                    .padding(.bottom, 84)
+                    .transition(.scale(scale: 0.9, anchor: .bottomLeading).combined(with: .opacity))
+                    .zIndex(2)
+                }
+                LightBadge(active: showsLighting, lighting: lighting) {
+                    withAnimation(.spring(response: 0.42, dampingFraction: 0.82)) { showsLighting.toggle() }
+                }
+                .padding(.leading, 20)
+                .padding(.bottom, 18)
+                .zIndex(3)
             }
         }
         .padding(.horizontal, 20)
@@ -41,25 +67,26 @@ struct CorkBoardView: View {
 
 private struct CorkMonth: View {
     let group: PhotoLibrary.MonthGroup
+    let lighting: CorkLighting
 
     private static let monthNames = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 30) {
             HStack(alignment: .center, spacing: 16) {
-                LabelTape(text: title, color: tapeColor)
+                LabelTape(text: title, color: tapeColor, lighting: lighting)
                 TypedSlip(text: "\(group.records.count) 张", size: 11.5, tilt: 2.2)
             }
             .padding(.leading, 4)
 
             CollageLayout {
-                ForEach(items) { item in
+                ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
                     switch item {
                     case .photo(let record):
-                        PinnedPrint(record: record)
+                        PinnedPrint(record: record, lighting: lighting, order: index)
                             .layoutValue(key: CollageSeed.self, value: record.seed)
                     case .ephemera(let kindID, let seed):
-                        EphemeraPiece(kindID: kindID, seed: seed)
+                        EphemeraPiece(kindID: kindID, seed: seed, lighting: lighting)
                             .layoutValue(key: CollageSeed.self, value: seed)
                     }
                 }
@@ -182,34 +209,99 @@ private struct CollageLayout: Layout {
 
 private struct PinnedPrint: View {
     let record: PhotoRecord
+    let lighting: CorkLighting
+    let order: Int
     @State private var hovering = false
+    /// 绕固定点的摆动（度），弹簧回到 0。
+    @State private var swing: Double = 0
+    @State private var landed = false
+    @State private var pinPressed = false
+    @State private var lastHover: (x: CGFloat, time: TimeInterval)?
+    @State private var lastKick: TimeInterval = 0
 
-    init(record: PhotoRecord) {
+    init(record: PhotoRecord, lighting: CorkLighting, order: Int) {
         self.record = record
+        self.lighting = lighting
+        self.order = order
     }
 
     var body: some View {
         let width = Self.width(for: record.format)
         let aspect = max(0.1, record.printFile != nil ? record.layout.aspect : record.layout.windowAspect)
         let height = width / aspect
+        let fastener = Fastener.pick(seed: record.seed, format: record.format, style: lighting.fastener)
+        let swings = fastener.swings
+        let shadow = lighting.dropShadow(lifted: hovering)
+        let contact = lighting.contactShadow
         ZStack(alignment: .top) {
             AlbumThumbnail(record: record)
                 .frame(width: width, height: height)
-                .shadow(color: .black.opacity(0.3), radius: 1.2, x: 0.5, y: 1)
-                .shadow(color: .black.opacity(hovering ? 0.34 : 0.24), radius: hovering ? 16 : 10, x: 4, y: hovering ? 12 : 7)
-                .scaleEffect(hovering ? 1.04 : 1)
-            FastenerView(fastener: Fastener.pick(seed: record.seed, format: record.format), width: width, seed: record.seed)
+                .overlay { PaperCurl(lighting: lighting, width: width, height: height) }
+                .shadow(color: .black.opacity(contact.opacity), radius: 1.2, x: contact.offset.width, y: contact.offset.height)
+                .shadow(color: .black.opacity(shadow.opacity), radius: shadow.radius, x: shadow.offset.width, y: shadow.offset.height)
+                .scaleEffect(hovering ? 1.035 : 1, anchor: swings ? .top : .center)
+            FastenerView(fastener: fastener, width: width, seed: record.seed, lighting: lighting, pressed: pinPressed)
         }
         .frame(width: width, height: height)
-        .rotationEffect(.degrees(Self.tilt(record.seed)))
+        // 静止时的倾斜 + 摆动，都绕着固定点（图钉 / 木夹在上沿正中）转。
+        .rotationEffect(.degrees(Self.tilt(record.seed) + (swings ? swing : 0)), anchor: swings ? UnitPoint(x: 0.5, y: 0.02) : .center)
+        .offset(y: landed ? 0 : -22)
+        .opacity(landed ? 1 : 0)
         .padding(.top, 12)
         .contentShape(Rectangle())
-        .onHover { inside in
-            withAnimation(.spring(response: 0.32, dampingFraction: 0.78)) { hovering = inside }
+        .onContinuousHover { phase in
+            switch phase {
+            case .active(let location):
+                if !hovering {
+                    withAnimation(.spring(response: 0.32, dampingFraction: 0.78)) { hovering = true }
+                }
+                if swings { brush(at: location.x) }
+            case .ended:
+                withAnimation(.spring(response: 0.32, dampingFraction: 0.78)) { hovering = false }
+                lastHover = nil
+            }
         }
         .onTapGesture(count: 2) { AlbumActions.open(record) }
         .contextMenu { AlbumContextMenu(record: record) }
         .help("\(record.indexTitle) · \(record.stockName) · \(record.dateText)")
+        .onAppear { pinUp() }
+    }
+
+    /// 钉上去：从上面轻轻落下、回弹，图钉随后按进去。
+    private func pinUp() {
+        guard !landed else { return }
+        let delay = Double(min(order, 12)) * 0.05 + Double((record.seed >> 3) & 0x0F) / 300
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+            withAnimation(.interpolatingSpring(stiffness: 170, damping: 13)) {
+                landed = true
+            }
+            try? await Task.sleep(nanoseconds: 260_000_000)
+            withAnimation(.spring(response: 0.18, dampingFraction: 0.55)) { pinPressed = true }
+            try? await Task.sleep(nanoseconds: 120_000_000)
+            withAnimation(.spring(response: 0.25, dampingFraction: 0.7)) { pinPressed = false }
+            kick(by: Double((record.seed >> 13) & 0x07) - 3.5)
+        }
+    }
+
+    /// 鼠标拂过：按横向速度推一下，像真的挂着的照片那样摆一摆。
+    private func brush(at x: CGFloat) {
+        let now = Date().timeIntervalSinceReferenceDate
+        defer { lastHover = (x, now) }
+        guard let last = lastHover, now - last.time < 0.2, now - lastKick > 0.28 else { return }
+        let velocity = (x - last.x) / CGFloat(max(now - last.time, 0.008))
+        guard abs(velocity) > 60 else { return }
+        lastKick = now
+        kick(by: Double(min(max(velocity / 90, -5.5), 5.5)))
+    }
+
+    private func kick(by degrees: Double) {
+        withAnimation(.easeOut(duration: 0.12)) { swing = degrees }
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 120_000_000)
+            // 欠阻尼的弹簧：来回摆几下、慢慢停住。
+            withAnimation(.interpolatingSpring(mass: 1, stiffness: 34, damping: 2.4)) { swing = 0 }
+        }
     }
 
     /// 按画幅定宽：拍立得 170、迷你 128、宽幅 236、四格条 92、四宫格 150、冲印小照 220。
@@ -230,6 +322,30 @@ private struct PinnedPrint: View {
     }
 }
 
+/// 纸张卷曲：朝着灯的一边亮一点、背着灯的一边暗一点（柔光混合，跟着灯的方向走）。
+private struct PaperCurl: View {
+    let lighting: CorkLighting
+    let width: CGFloat
+    let height: CGFloat
+
+    var body: some View {
+        let toLight = lighting.toLight
+        let amount = lighting.curl
+        LinearGradient(
+            colors: [
+                Color.white.opacity(0.32 * amount),
+                Color.white.opacity(0.06 * amount),
+                Color.black.opacity(0.04 * amount),
+                Color.black.opacity(0.26 * amount)
+            ],
+            startPoint: UnitPoint(x: 0.5 + toLight.dx * 0.5, y: 0.5 + toLight.dy * 0.5),
+            endPoint: UnitPoint(x: 0.5 - toLight.dx * 0.5, y: 0.5 - toLight.dy * 0.5)
+        )
+        .blendMode(.softLight)
+        .allowsHitTesting(false)
+    }
+}
+
 // MARK: - 固定方式
 
 private enum Fastener {
@@ -238,12 +354,25 @@ private enum Fastener {
     case tape
     case clothespin
 
-    static func pick(seed: UInt64, format: FilmFormat) -> Fastener {
+    /// 挂在一个点上的会摆（图钉、地图针、木夹），胶带贴住两个角的不摆。
+    var swings: Bool {
+        if case .tape = self { return false }
+        return true
+    }
+
+    static func pick(seed: UInt64, format: FilmFormat, style: CorkLighting.Fastener) -> Fastener {
+        let pins = ["PinTerracotta", "PinMustard", "PinTeal"]
+        switch style {
+        case .brass: return .brassPin
+        case .mapPin: return .mapPin(pins[Int((seed >> 11) % 3)])
+        case .tape: return .tape
+        case .clip: return .clothespin
+        case .mixed: break
+        }
         let roll = (seed >> 5) % 10
         if format.isBooth {
             return roll < 5 ? .clothespin : .tape
         }
-        let pins = ["PinTerracotta", "PinMustard", "PinTeal"]
         switch roll {
         case 0..<4: return .brassPin
         case 4..<6: return .mapPin(pins[Int((seed >> 11) % 3)])
@@ -257,14 +386,18 @@ private struct FastenerView: View {
     let fastener: Fastener
     let width: CGFloat
     let seed: UInt64
+    let lighting: CorkLighting
+    let pressed: Bool
 
     var body: some View {
         switch fastener {
         case .brassPin:
-            PropImage(name: "PinBrass", size: CGSize(width: 26, height: 26), fallback: Palette.brass)
+            PropImage(name: "PinBrass", size: CGSize(width: 26, height: 26), fallback: Palette.brass, lighting: lighting, height: 3)
+                .scaleEffect(pressed ? 0.86 : 1)
                 .offset(y: -11)
         case .mapPin(let name):
-            PropImage(name: name, size: CGSize(width: 30, height: 30), fallback: Palette.terracotta)
+            PropImage(name: name, size: CGSize(width: 30, height: 30), fallback: Palette.terracotta, lighting: lighting, height: 7)
+                .scaleEffect(pressed ? 0.88 : 1, anchor: .bottom)
                 .offset(x: 2, y: -17)
         case .tape:
             let tapeWidth = min(70, width * 0.44)
@@ -279,35 +412,39 @@ private struct FastenerView: View {
             }
             .frame(width: width)
         case .clothespin:
-            PropImage(name: "Clothespin", size: CGSize(width: 22, height: 44), fallback: Color(hex: 0xD8B07A))
+            PropImage(name: "Clothespin", size: CGSize(width: 22, height: 44), fallback: Color(hex: 0xD8B07A), lighting: lighting, height: 4)
+                .scaleEffect(pressed ? 0.94 : 1, anchor: .top)
                 .offset(y: -28)
         }
     }
 }
 
-/// Blender 渲染的小道具（图钉、木夹），缺图时画一个色块。
+/// Blender 渲染的小道具（图钉、木夹）：渲染图不带地面阴影，这里按轮廓画柔和的接触阴影 + 投影，
+/// 方向跟着软木板的灯；`height` 是道具离板面的高度（越高影子离得越远、越虚）。缺图时画一个色块。
 private struct PropImage: View {
     let name: String
     let size: CGSize
     let fallback: Color
+    let lighting: CorkLighting
+    let height: CGFloat
 
     var body: some View {
+        let dir = lighting.shadowDirection
+        let far = CGSize(width: dir.dx * (2 + height), height: dir.dy * (2 + height))
         Group {
             if BundledImage.has(name) {
-                // 渲染图不带地面阴影（避免方块状的截断阴影），这里按图形轮廓画柔和的接触阴影 + 投影。
                 Image(name)
                     .resizable()
                     .interpolation(.high)
                     .aspectRatio(contentMode: .fit)
-                    .shadow(color: .black.opacity(0.32), radius: 1.2, x: 0.8, y: 1.4)
-                    .shadow(color: .black.opacity(0.2), radius: 4.5, x: 3, y: 5)
             } else {
                 Capsule()
                     .fill(RadialGradient(colors: [fallback.opacity(0.75), fallback], center: UnitPoint(x: 0.35, y: 0.3), startRadius: 1, endRadius: size.width * 0.6))
                     .frame(width: min(size.width, size.height) * 0.6, height: min(size.width, size.height) * 0.6)
-                    .shadow(color: .black.opacity(0.35), radius: 1.5, x: 1.5, y: 2)
             }
         }
+        .shadow(color: .black.opacity(0.18 + 0.16 * lighting.shadow), radius: 1, x: dir.dx * 0.8, y: dir.dy * 0.8)
+        .shadow(color: .black.opacity(0.12 + 0.18 * lighting.shadow), radius: 2.5 + height * 0.5, x: far.width, y: far.height)
         .frame(width: size.width, height: size.height)
         .allowsHitTesting(false)
     }
@@ -340,9 +477,11 @@ private struct TapeStrip: View {
 private struct EphemeraPiece: View {
     let kindID: String
     let seed: UInt64
+    let lighting: CorkLighting
 
     var body: some View {
         let width: CGFloat = kindID == "ephemera.filmstrip" ? 196 : (kindID == "ephemera.ticket" ? 172 : 96)
+        let shadow = lighting.dropShadow(lifted: false)
         Group {
             if let image = StickerImageCache.shared.image(kindID, width: width, seed: seed % 7 + 1) {
                 Image(nsImage: image)
@@ -355,7 +494,7 @@ private struct EphemeraPiece: View {
         }
         .frame(width: width)
         .rotationEffect(.degrees((Double((seed >> 40) & 0xFF) / 255 - 0.5) * 14))
-        .shadow(color: .black.opacity(0.18), radius: 4, x: 2, y: 3)
+        .shadow(color: .black.opacity(shadow.opacity * 0.8), radius: shadow.radius * 0.5, x: shadow.offset.width * 0.5, y: shadow.offset.height * 0.5)
         .padding(.top, 18)
         .allowsHitTesting(false)
     }
@@ -367,8 +506,10 @@ private struct EphemeraPiece: View {
 private struct LabelTape: View {
     let text: String
     let color: Color
+    let lighting: CorkLighting
 
     var body: some View {
+        let shadow = lighting.dropShadow(lifted: false)
         Text(text)
             .font(RetroFont.label(16))
             .tracking(2.2)
@@ -387,8 +528,8 @@ private struct LabelTape: View {
                         .fill(LinearGradient(colors: [Color.white.opacity(0.2), .clear, Color.black.opacity(0.22)], startPoint: .top, endPoint: .bottom))
                 }
             }
-            .shadow(color: .black.opacity(0.4), radius: 0.8, y: 1)
-            .shadow(color: .black.opacity(0.22), radius: 6, x: 2, y: 4)
+            .shadow(color: .black.opacity(0.4), radius: 0.8, x: lighting.contactShadow.offset.width, y: lighting.contactShadow.offset.height)
+            .shadow(color: .black.opacity(shadow.opacity), radius: shadow.radius * 0.5, x: shadow.offset.width * 0.5, y: shadow.offset.height * 0.5)
             .rotationEffect(.degrees(-2))
             .fixedSize()
     }
@@ -508,17 +649,44 @@ private struct MiterSeams: Shape {
     }
 }
 
-/// 软木：`CorkTexture` 平铺 + 左上暖光 + 右下压暗。
+/// 柔和的软木（`CorkSoft`，Blender 程序化渲染、无缝平铺、细颗粒低反差）+ 台灯光 + 暗角。
 private struct CorkSurface: View {
+    let lighting: CorkLighting
+
     var body: some View {
-        ZStack {
-            Color(hex: 0xB88A5C)
-            if BundledImage.has("CorkTexture") {
-                Image("CorkTexture")
-                    .resizable(resizingMode: .tile)
+        GeometryReader { geo in
+            let toLight = lighting.toLight
+            let lightCenter = UnitPoint(x: 0.5 + toLight.dx * 0.48, y: 0.5 + toLight.dy * 0.48)
+            let reach = max(geo.size.width, geo.size.height)
+            ZStack {
+                Color(hex: 0xC6A27B)
+                if BundledImage.has("CorkSoft") {
+                    Image("CorkSoft")
+                        .resizable(resizingMode: .tile)
+                } else if BundledImage.has("CorkTexture") {
+                    Image("CorkTexture")
+                        .resizable(resizingMode: .tile)
+                        .opacity(0.45)
+                }
+                // 台灯光：灯那一边一团暖光
+                RadialGradient(
+                    colors: [lighting.lightColor.opacity(0.5 * lighting.intensity), lighting.lightColor.opacity(0.12 * lighting.intensity), .clear],
+                    center: lightCenter,
+                    startRadius: 0,
+                    endRadius: reach * 0.95
+                )
+                .blendMode(.screen)
+                // 背光的一边沉下去
+                RadialGradient(
+                    colors: [.clear, Color.black.opacity(0.32 * lighting.vignette)],
+                    center: lightCenter,
+                    startRadius: reach * 0.35,
+                    endRadius: reach * 1.05
+                )
+                // 整体的明暗
+                Color.black.opacity(0.18 * (1 - lighting.intensity))
             }
-            LinearGradient(colors: [Color(hex: 0xFFE7BF, opacity: 0.22), .clear], startPoint: .topLeading, endPoint: .center)
-            LinearGradient(colors: [.clear, Color.black.opacity(0.24)], startPoint: .center, endPoint: .bottomTrailing)
+            .frame(width: geo.size.width, height: geo.size.height)
         }
     }
 }
@@ -528,10 +696,10 @@ private struct CorkInnerShadow: View {
     var body: some View {
         ZStack {
             Rectangle()
-                .stroke(Color.black.opacity(0.5), lineWidth: 10)
-                .blur(radius: 7)
+                .stroke(Color.black.opacity(0.45), lineWidth: 10)
+                .blur(radius: 8)
             Rectangle()
-                .stroke(Color.black.opacity(0.35), lineWidth: 2)
+                .stroke(Color.black.opacity(0.3), lineWidth: 2)
                 .blur(radius: 1)
         }
         .allowsHitTesting(false)
@@ -542,7 +710,10 @@ private struct CorkInnerShadow: View {
 
 /// 一张用黄铜图钉钉住的打字机卡片。
 private struct EmptyCorkCard: View {
+    let lighting: CorkLighting
+
     var body: some View {
+        let shadow = lighting.dropShadow(lifted: false)
         VStack(alignment: .leading, spacing: 10) {
             Text("软木板还空着")
                 .font(RetroFont.serif(19, weight: .semibold))
@@ -559,12 +730,13 @@ private struct EmptyCorkCard: View {
         .padding(22)
         .frame(width: 320, alignment: .leading)
         .background(Rectangle().fill(Palette.paper))
+        .overlay { PaperCurl(lighting: lighting, width: 320, height: 140) }
         .overlay(alignment: .top) {
-            PropImage(name: "PinBrass", size: CGSize(width: 28, height: 28), fallback: Palette.brass)
+            PropImage(name: "PinBrass", size: CGSize(width: 28, height: 28), fallback: Palette.brass, lighting: lighting, height: 3)
                 .offset(y: -12)
         }
         .rotationEffect(.degrees(-2))
-        .shadow(color: .black.opacity(0.28), radius: 1.2, x: 0.5, y: 1)
-        .shadow(color: .black.opacity(0.22), radius: 14, x: 4, y: 10)
+        .shadow(color: .black.opacity(lighting.contactShadow.opacity), radius: 1.2, x: lighting.contactShadow.offset.width, y: lighting.contactShadow.offset.height)
+        .shadow(color: .black.opacity(shadow.opacity), radius: shadow.radius, x: shadow.offset.width, y: shadow.offset.height)
     }
 }
