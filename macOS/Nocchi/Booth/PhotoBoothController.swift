@@ -370,12 +370,13 @@ struct BoothCurtainView: View {
             ZStack {
                 Color.black.opacity(0.62 * booth.curtainDown)
 
+                // 布帘在机身后面：招牌在帘头前面，机身两边盖住帘子的里缘。
+                CurtainSceneView(curtain: booth.curtain)
+                    .allowsHitTesting(false)
+
                 BoothInterior(booth: booth, session: session, camera: camera)
                     .opacity(Double(booth.curtainDown))
                     .scaleEffect((0.96 + 0.04 * booth.curtainDown) * Self.fitScale(geo.size))
-
-                CurtainSceneView(curtain: booth.curtain)
-                    .allowsHitTesting(false)
 
                 Color.white
                     .opacity(booth.phase == .flash ? 1 : 0)

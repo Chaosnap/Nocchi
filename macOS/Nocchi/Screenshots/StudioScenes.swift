@@ -203,10 +203,10 @@ struct BoothScene: View {
                 StudioWallpaper()
                 Color.black.opacity(0.62)
                 RadialGradient(colors: [Color(hex: 0xFFE2B8, opacity: 0.16), .clear], center: .top, startRadius: 10, endRadius: 640)
-                BoothInterior(booth: booth, session: CameraService.shared.session, camera: CameraService.shared)
                 Image(nsImage: curtain)
                     .resizable()
                     .frame(width: 1200, height: 900)
+                BoothInterior(booth: booth, session: CameraService.shared.session, camera: CameraService.shared)
             } else {
                 Image("VelvetTexture")
                     .resizable()

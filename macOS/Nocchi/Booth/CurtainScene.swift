@@ -55,7 +55,7 @@ final class CurtainScene {
         root.addChildNode(valanceRoot)
         scene.background.contents = NSColor.clear
         scene.lightingEnvironment.contents = Self.environmentImage()
-        scene.lightingEnvironment.intensity = 0.85
+        scene.lightingEnvironment.intensity = 0.45
 
         let camera = SCNCamera()
         camera.usesOrthographicProjection = true
@@ -68,7 +68,7 @@ final class CurtainScene {
         // 全局统一：左上方的暖光。
         let key = SCNLight()
         key.type = .directional
-        key.intensity = 980
+        key.intensity = 1000
         key.color = NSColor(red: 1.0, green: 0.9, blue: 0.79, alpha: 1)
         let keyNode = SCNNode()
         keyNode.light = key
@@ -77,7 +77,7 @@ final class CurtainScene {
 
         let rim = SCNLight()
         rim.type = .directional
-        rim.intensity = 300
+        rim.intensity = 260
         rim.color = NSColor(red: 1.0, green: 0.7, blue: 0.55, alpha: 1)
         let rimNode = SCNNode()
         rimNode.light = rim
@@ -87,7 +87,7 @@ final class CurtainScene {
         // 中间大头贴机的暖光，打在两幅帘子靠里的褶上。
         let booth = SCNLight()
         booth.type = .omni
-        booth.intensity = 420
+        booth.intensity = 260
         booth.color = NSColor(red: 1.0, green: 0.78, blue: 0.52, alpha: 1)
         booth.attenuationStartDistance = 0.25
         booth.attenuationEndDistance = 1.2
@@ -98,7 +98,7 @@ final class CurtainScene {
 
         let ambient = SCNLight()
         ambient.type = .ambient
-        ambient.intensity = 60
+        ambient.intensity = 90
         ambient.color = NSColor(red: 1.0, green: 0.9, blue: 0.84, alpha: 1)
         let ambientNode = SCNNode()
         ambientNode.light = ambient
@@ -130,7 +130,7 @@ final class CurtainScene {
         height = h
         cameraNode.camera?.orthographicScale = Double(h / 2)
 
-        let valanceH = h * 0.085
+        let valanceH = h * 0.08
         let top = h / 2 - valanceH * 0.4
         let gapW = Float(gap) / 1000
         let gathered: Float = 0.05
@@ -148,7 +148,7 @@ final class CurtainScene {
                 topY: top,
                 folds: folds,
                 seed: UInt64(index * 7919 + 17),
-                material: Self.velvetMaterial(breathingTop: top, height: h)
+                material: Self.velvetMaterial(breathingTop: top, height: h, aoCenter: 0, aoDepth: 0.018)
             )
             root.addChildNode(panel.node)
             panels.append(panel)
@@ -160,10 +160,10 @@ final class CurtainScene {
         // 帘头：一段段扇形垂下的短褶丝绒 + 沿着垂边的金色绞绳 + 一排流苏。
         let span = w * 1.04
         let swags = max(4, Int((w / 0.26).rounded()))
-        let hem = Hemline(width: span, swags: swags, dip: h * 0.013)
+        let hem = Hemline(width: span, swags: swags, dip: h * 0.024)
         let valance = SCNNode(geometry: Self.valance(
-            width: span, height: valanceH, hem: hem, folds: max(16, Int(w / 0.021)), depth: 0.008,
-            material: Self.velvetMaterial(breathingTop: nil, height: h)
+            width: span, height: valanceH, hem: hem, depth: h * 0.011,
+            material: Self.velvetMaterial(breathingTop: nil, height: h, aoCenter: 0.05, aoDepth: h * 0.012)
         ))
         valance.simdPosition = SIMD3(0, h / 2 - valanceH / 2, 0.05)
         valanceRoot.addChildNode(valance)
@@ -176,9 +176,25 @@ final class CurtainScene {
 
         let fringeGold = Self.makeFringeMaterial()
         fringeMaterial = fringeGold
-        let fringe = SCNNode(geometry: Self.fringe(hem: hem, length: h * 0.022, count: max(140, Int(span / 0.0055)), material: fringeGold))
+        let fringe = SCNNode(geometry: Self.fringe(hem: hem, length: h * 0.02, count: max(140, Int(span / 0.006)), material: fringeGold))
         fringe.simdPosition = SIMD3(0, h / 2 - valanceH - cordRadius * 0.6, 0.058)
         valanceRoot.addChildNode(fringe)
+
+        // 垂幔交接处挂的金色穗子：各自慢慢摆（周期、幅度、起步都错开一点）。
+        let threads = Self.threadMaterial()
+        for k in 1..<swags {
+            let x = -span / 2 + span * Float(k) / Float(swags)
+            guard abs(x) < w / 2 + 0.03 else { continue }
+            let tassel = Self.tassel(length: h * 0.06, gold: gold, threads: threads)
+            tassel.simdPosition = SIMD3(x, h / 2 - valanceH + cordRadius * 0.2, 0.075)
+            let amp = 0.035 + 0.01 * Float(k % 3)
+            let period = 2.3 + 0.35 * Double(k % 4)
+            tassel.simdEulerAngles = SIMD3(0, 0, -amp)
+            let swing = SCNAction.rotateBy(x: 0, y: 0, z: CGFloat(2 * amp), duration: period / 2)
+            swing.timingMode = .easeInEaseOut
+            tassel.runAction(.sequence([.wait(duration: 0.17 * Double(k)), .repeatForever(.sequence([swing, swing.reversed()]))]))
+            valanceRoot.addChildNode(tassel)
+        }
 
         // 黄铜帘杆与帘环（大多藏在菜单栏后面，帘头落下时能看到一闪）：帘环在每段垂边的两头和中间。
         let rodGeometry = SCNCylinder(radius: CGFloat(h * 0.0075), height: CGFloat(span))
@@ -322,34 +338,36 @@ final class CurtainScene {
 
     // MARK: - Materials
 
-    /// 丝绒：正对着看压得深、掠射角泛起顺着主光的暖色光泽。`breathingTop` 不为 nil 时，布在 GPU 上轻轻呼吸
-    /// （越往下摆得越多，法线也跟着轻轻起伏，褶上的光会慢慢流动）。
-    static func velvetMaterial(breathingTop: Float?, height: Float) -> SCNMaterial {
+    /// 剧院暗红丝绒：正对着看压得深、掠射角泛起顺着主光的玫瑰色光泽，褶谷里暗（按世界 z 算：正交相机在 z = 5，
+    /// `_surface.position.z + 5` 就是世界 z；`aoCenter` 是这块布的平均 z，`aoDepth` 是褶的深浅）。
+    /// `breathingTop` 不为 nil 时，布在 GPU 上轻轻呼吸（越往下摆得越多，法线也跟着起伏，褶上的光慢慢流动）。
+    /// 不用顶点颜色：几何里有 `.color` 源时 SceneKit 会拿它顶替漫反射纹理（第 39 次推送的布帘因此发黄过曝）。
+    static func velvetMaterial(breathingTop: Float?, height: Float, aoCenter: Float, aoDepth: Float) -> SCNMaterial {
         let m = SCNMaterial()
         m.lightingModel = .physicallyBased
         m.isDoubleSided = true
-        if let texture = NSImage(named: "VelvetTexture") {
+        if let texture = theaterVelvet {
             m.diffuse.contents = texture
             m.diffuse.wrapS = .repeat
             m.diffuse.wrapT = .repeat
             m.diffuse.mipFilter = .linear
         } else {
-            m.diffuse.contents = NSColor(red: 0.5, green: 0.16, blue: 0.11, alpha: 1)
+            m.diffuse.contents = NSColor(srgbRed: 0.43, green: 0.06, blue: 0.11, alpha: 1)
         }
-        // 比纹理再深一点的陶土红：丝绒的绒毛把光吃进去。
-        m.multiply.contents = NSColor(red: 0.84, green: 0.64, blue: 0.6, alpha: 1)
-        m.roughness.contents = 0.92
+        m.roughness.contents = 0.9
         m.metalness.contents = 0.0
         var modifiers: [SCNShaderModifierEntryPoint: String] = [
             .surface: """
             float3 n = normalize(_surface.normal);
             float3 toEye = normalize(_surface.view);
             float facing = clamp(dot(n, toEye), 0.0, 1.0);
-            float rim = pow(1.0 - facing, 2.4);
+            float rim = pow(1.0 - facing, 2.2);
             float3 toKey = normalize(float3(-0.62, 0.42, 0.66));
             float lit = clamp(dot(n, toKey) * 0.5 + 0.5, 0.0, 1.0);
-            _surface.diffuse.rgb *= mix(0.8, 1.06, rim);
-            _surface.emission.rgb += float3(0.95, 0.52, 0.38) * rim * lit * 0.38;
+            float depth = _surface.position.z + 5.0 - (\(aoCenter));
+            float ao = mix(0.45, 1.0, smoothstep(-(\(aoDepth)), \(aoDepth * 0.6), depth));
+            _surface.diffuse.rgb *= ao * mix(0.85, 1.1, rim);
+            _surface.emission.rgb += float3(0.62, 0.12, 0.15) * rim * lit * ao * 0.3;
             """
         ]
         if let top = breathingTop {
@@ -358,21 +376,59 @@ final class CurtainScene {
             float k = hang * hang;
             float t = scn_frame.time;
             float sway = sin(t * 0.85 + _geometry.position.y * 1.7) * 0.65 + sin(t * 0.47 + 2.1) * 0.35;
-            _geometry.position.x += sway * 0.0034 * k;
+            _geometry.position.x += sway * 0.0045 * k;
             float ripple = sin(t * 0.7 + _geometry.position.x * 9.0 - _geometry.position.y * 2.0);
-            _geometry.normal = normalize(_geometry.normal + float3(ripple * 0.06 * k, 0.0, 0.0));
+            _geometry.normal = normalize(_geometry.normal + float3(ripple * 0.08 * k, 0.0, 0.0));
             """
         }
         m.shaderModifiers = modifiers
         return m
     }
 
+    /// `VelvetTexture` 的明暗（绒毛颗粒）重新上成剧院暗红（#48070F…#961A26），只算一次。
+    private static let theaterVelvet: CGImage? = {
+        guard let image = NSImage(named: "VelvetTexture"),
+              let source = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return nil }
+        let width = source.width
+        let height = source.height
+        guard let space = CGColorSpace(name: CGColorSpace.sRGB),
+              let ctx = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4, space: space, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue),
+              let data = ctx.data else { return nil }
+        ctx.draw(source, in: CGRect(x: 0, y: 0, width: width, height: height))
+        let count = width * height
+        let pixels = data.bindMemory(to: UInt8.self, capacity: count * 4)
+        var luma = [Double](repeating: 0, count: count)
+        var sum: Double = 0
+        var sumSq: Double = 0
+        for i in 0..<count {
+            let r = Double(pixels[i * 4])
+            let g = Double(pixels[i * 4 + 1])
+            let b = Double(pixels[i * 4 + 2])
+            let l = 0.2126 * r + 0.7152 * g + 0.0722 * b
+            luma[i] = l
+            sum += l
+            sumSq += l * l
+        }
+        let mean = sum / Double(count)
+        let spread = max(1, (sumSq / Double(count) - mean * mean).squareRoot())
+        let dark: [Double] = [72, 7, 15]
+        let light: [Double] = [150, 26, 38]
+        for i in 0..<count {
+            let t = min(max(0.5 + (luma[i] - mean) / (5 * spread), 0), 1)
+            for channel in 0..<3 {
+                pixels[i * 4 + channel] = UInt8(dark[channel] + (light[channel] - dark[channel]) * t)
+            }
+            pixels[i * 4 + 3] = 255
+        }
+        return ctx.makeImage()
+    }()
+
     static func brassMaterial() -> SCNMaterial {
         let m = SCNMaterial()
         m.lightingModel = .physicallyBased
-        m.diffuse.contents = NSColor(red: 0.86, green: 0.68, blue: 0.38, alpha: 1)
+        m.diffuse.contents = NSColor(srgbRed: 0.8, green: 0.62, blue: 0.34, alpha: 1)
         m.metalness.contents = 1.0
-        m.roughness.contents = 0.32
+        m.roughness.contents = 0.38
         return m
     }
 
@@ -380,7 +436,7 @@ final class CurtainScene {
     static func makeFringeMaterial() -> SCNMaterial {
         let m = brassMaterial()
         m.isDoubleSided = true
-        m.roughness.contents = 0.42
+        m.roughness.contents = 0.5
         m.shaderModifiers = [
             .geometry: """
             #pragma arguments
@@ -442,45 +498,116 @@ final class CurtainScene {
         }
     }
 
-    /// 帘头：短而密的褶，下沿按 `hem` 垂成一段段扇形；褶谷里暗一些。
-    static func valance(width: Float, height: Float, hem: Hemline, folds: Int, depth: Float, material: SCNMaterial) -> SCNGeometry {
-        let columns = 360
-        let rows = 12
-        var positions: [SIMD3<Float>] = []
-        var normals: [SIMD3<Float>] = []
-        var shade: [SIMD4<Float>] = []
+    /// 帘头：剧院式垂幔（festoon）。每一段在中间垂下 `hem.dip`；褶是顺着垂边的弧形横褶（同一个 v 走一条，
+    /// 所以跟着垂边一起弯，越往下越深），垂幔中间往前鼓；交接处（挂穗子的地方）收拢成几道竖褶。
+    static func valance(width: Float, height: Float, hem: Hemline, depth: Float, material: SCNMaterial) -> SCNGeometry {
+        let columns = 520
+        let rows = 30
+        let stride = columns + 1
+        var positions = [SIMD3<Float>](repeating: .zero, count: (rows + 1) * stride)
         var uvs: [CGPoint] = []
-        let k = Float(folds) * 2 * .pi / width
+        uvs.reserveCapacity(positions.count)
+        let pleatK: Float = 2 * Float.pi / 0.011
         for r in 0...rows {
             let v = Float(r) / Float(rows)
             for c in 0...columns {
                 let u = Float(c) / Float(columns)
                 let x = width * (u - 0.5)
-                // 越往下褶越深（下沿被垂边拉开）。
-                let d = depth * (0.7 + 0.45 * v)
-                let wave = sin(k * x) + 0.3 * sin(k * 0.47 * x + 1.3)
-                let slopeMain: Float = cos(k * x) * k
-                let slopeSlow: Float = 0.141 * k * cos(k * 0.47 * x + 1.3)
-                let dzdx: Float = (slopeMain + slopeSlow) * d
-                let y = height * (0.5 - v) - v * v * hem.drop(at: x)
-                positions.append(SIMD3<Float>(x, y, wave * d))
-                normals.append(simd_normalize(SIMD3<Float>(-dzdx, 0.25 * v * hem.slope(at: x), 1)))
-                let ao = (0.66 + 0.34 * smooth(-1.1, 0.7, wave)) * (0.78 + 0.22 * v)
-                shade.append(SIMD4<Float>(ao, ao, ao, 1))
+                let sag = hem.drop(at: x)
+                let swag: Float = hem.dip > 0 ? sag / hem.dip : 0
+                let y: Float = height * (0.5 - v) - v * v * sag
+                let foldPhase: Float = v * 4.6 * 2 * Float.pi + 0.35
+                let foldAmp: Float = depth * (0.25 + 0.75 * v) * (0.35 + 0.65 * swag.squareRoot())
+                let gather: Float = (1 - swag) * (1 - swag)
+                let pleat: Float = sin(pleatK * x) * depth * 0.55 * gather * (0.4 + 0.6 * v)
+                let belly: Float = depth * 1.4 * swag * v * (1 - 0.5 * v)
+                positions[r * stride + c] = SIMD3<Float>(x, y, sin(foldPhase) * foldAmp + pleat + belly)
                 uvs.append(CGPoint(x: CGFloat(u * width / 0.32), y: CGFloat(v * height / 0.32)))
+            }
+        }
+        var normals = [SIMD3<Float>](repeating: SIMD3<Float>(0, 0, 1), count: positions.count)
+        for r in 0...rows {
+            for c in 0...columns {
+                let left = positions[r * stride + max(c - 1, 0)]
+                let right = positions[r * stride + min(c + 1, columns)]
+                let up = positions[max(r - 1, 0) * stride + c]
+                let down = positions[min(r + 1, rows) * stride + c]
+                let n = simd_cross(right - left, up - down)
+                let length = simd_length(n)
+                if length > 1e-12 {
+                    normals[r * stride + c] = n / length
+                }
             }
         }
         let geometry = SCNGeometry(
             sources: [
                 floatSource(positions, semantic: .vertex),
                 floatSource(normals, semantic: .normal),
-                SCNGeometrySource(textureCoordinates: uvs),
-                colorSource(shade)
+                SCNGeometrySource(textureCoordinates: uvs)
             ],
             elements: [grid(columns: columns, rows: rows, facingForward: true)]
         )
         geometry.materials = [material]
         return geometry
+    }
+
+    /// 金色穗子：一小段吊绳、葫芦头、一圈领子、一蓬流苏裙（锥面上一条条的线）。原点在吊点，往下挂。
+    static func tassel(length: Float, gold: SCNMaterial, threads: SCNMaterial) -> SCNNode {
+        let node = SCNNode()
+        let cordLength = length * 0.18
+        let cord = SCNCylinder(radius: CGFloat(length * 0.022), height: CGFloat(cordLength))
+        cord.materials = [gold]
+        let cordNode = SCNNode(geometry: cord)
+        cordNode.simdPosition = SIMD3(0, -cordLength / 2, 0)
+        node.addChildNode(cordNode)
+        let headRadius = length * 0.13
+        let head = SCNSphere(radius: CGFloat(headRadius))
+        head.segmentCount = 32
+        head.materials = [gold]
+        let headNode = SCNNode(geometry: head)
+        headNode.simdScale = SIMD3(1, 1.25, 1)
+        headNode.simdPosition = SIMD3(0, -cordLength - headRadius * 1.1, 0)
+        node.addChildNode(headNode)
+        let collarY = -cordLength - headRadius * 2.3
+        let collar = SCNTorus(ringRadius: CGFloat(headRadius * 0.85), pipeRadius: CGFloat(length * 0.025))
+        collar.materials = [gold]
+        let collarNode = SCNNode(geometry: collar)
+        collarNode.simdPosition = SIMD3(0, collarY, 0)
+        node.addChildNode(collarNode)
+        let skirtHeight = length * 0.52
+        let skirt = SCNCone(topRadius: CGFloat(headRadius * 0.8), bottomRadius: CGFloat(headRadius * 1.45), height: CGFloat(skirtHeight))
+        skirt.radialSegmentCount = 72
+        skirt.materials = [threads]
+        let skirtNode = SCNNode(geometry: skirt)
+        skirtNode.simdPosition = SIMD3(0, collarY - skirtHeight / 2, 0)
+        node.addChildNode(skirtNode)
+        return node
+    }
+
+    /// 穗子的流苏裙：一条条金线（程序化的条纹贴图，绕锥面重复）。
+    static func threadMaterial() -> SCNMaterial {
+        let m = brassMaterial()
+        m.roughness.contents = 0.5
+        if let stripes = threadStripes() {
+            m.diffuse.contents = stripes
+            m.diffuse.wrapS = .repeat
+            m.diffuse.wrapT = .repeat
+            m.diffuse.contentsTransform = SCNMatrix4MakeScale(24, 1, 1)
+        }
+        return m
+    }
+
+    private static func threadStripes() -> CGImage? {
+        let width = 48
+        guard let space = CGColorSpace(name: CGColorSpace.sRGB),
+              let ctx = CGContext(data: nil, width: width, height: 4, bitsPerComponent: 8, bytesPerRow: 0, space: space, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
+        for x in 0..<width {
+            let g = sin(Double(x) / Double(width) * 2 * .pi * 3)
+            let shade = 0.62 + 0.38 * g * g
+            ctx.setFillColor(CGColor(srgbRed: 0.8 * shade, green: 0.62 * shade, blue: 0.34 * shade, alpha: 1))
+            ctx.fill(CGRect(x: x, y: 0, width: 1, height: 4))
+        }
+        return ctx.makeImage()
     }
 
     /// 沿着垂边的金色绞绳：三股螺旋（截面半径随角度和位置起伏），法线按曲面算。
@@ -581,20 +708,6 @@ final class CurtainScene {
         )
     }
 
-    nonisolated static func colorSource(_ values: [SIMD4<Float>]) -> SCNGeometrySource {
-        let data = values.withUnsafeBufferPointer { Data(buffer: $0) }
-        return SCNGeometrySource(
-            data: data,
-            semantic: .color,
-            vectorCount: values.count,
-            usesFloatComponents: true,
-            componentsPerVector: 4,
-            bytesPerComponent: MemoryLayout<Float>.size,
-            dataOffset: 0,
-            dataStride: MemoryLayout<SIMD4<Float>>.stride
-        )
-    }
-
     /// 网格的三角形：行往下走（y 变小）。列往 +x 走时传 `facingForward: true`，往 −x 走时传 false，
     /// 这样正面（逆时针）都朝镜头。
     nonisolated static func grid(columns: Int, rows: Int, facingForward: Bool) -> SCNGeometryElement {
@@ -645,7 +758,6 @@ final class CurtainPanel {
     private let profile: [Float]
     private let element: SCNGeometryElement
     private let texcoords: SCNGeometrySource
-    private let shade: SCNGeometrySource
     private let material: SCNMaterial
     private var hem = Sway(omega: 10.5, zeta: 0.17)
     private var belly = Sway(omega: 24, zeta: 0.3)
@@ -669,37 +781,33 @@ final class CurtainPanel {
             (1.62, 0.24, Float(rng.range(0, 6.283)), Float(rng.range(-2.2, 2.2))),
             (2.35, 0.1, Float(rng.range(0, 6.283)), Float(rng.range(-2.8, 2.8)))
         ]
+        // 褶的宽窄不一：整体再加一层很慢的相位扭动。
+        let warpPhase = Float(rng.range(0, 6.283))
         let columns = Self.columns
         let rows = Self.rows
         let base = Float(folds) * 2 * .pi
         var profile: [Float] = []
-        var shades: [SIMD4<Float>] = []
         var coords: [CGPoint] = []
         profile.reserveCapacity((rows + 1) * (columns + 1))
-        shades.reserveCapacity((rows + 1) * (columns + 1))
         coords.reserveCapacity((rows + 1) * (columns + 1))
         for r in 0...rows {
             let v = Float(r) / Float(rows)
             // 帘环处是整齐的小褶，往下 18% 的高度里慢慢变成不规则的布褶。
             let regular = CurtainScene.smooth(0.18, 0, v)
-            // 帘头下面那一截在阴影里。
-            let underValance: Float = 0.72 + 0.28 * CurtainScene.smooth(0, 0.1, v)
             for c in 0...columns {
                 let u = Float(c) / Float(columns)
+                let warp: Float = 0.85 * sin(base * 0.19 * u + warpPhase)
                 var fold: Float = 0
                 for wave in waves {
-                    fold += wave.amp * sin(base * wave.freq * u + wave.phase + wave.drift * v)
+                    fold += wave.amp * sin(base * wave.freq * u + wave.freq * warp + wave.phase + wave.drift * v)
                 }
                 fold /= 1.25
                 let p = regular * sin(base * u) + (1 - regular) * fold
                 profile.append(p)
-                let ao = (0.6 + 0.4 * CurtainScene.smooth(-1.0, 0.6, p)) * underValance
-                shades.append(SIMD4<Float>(ao, ao, ao, 1))
                 coords.append(CGPoint(x: CGFloat(u * fullWidth / 0.32), y: CGFloat(v * height / 0.32)))
             }
         }
         self.profile = profile
-        shade = CurtainScene.colorSource(shades)
         texcoords = SCNGeometrySource(textureCoordinates: coords)
         // 左边那幅列往 +x 走，右边那幅往 −x 走：三角形的绕向跟着换，正面都朝镜头。
         element = CurtainScene.grid(columns: columns, rows: rows, facingForward: direction > 0)
@@ -771,8 +879,7 @@ final class CurtainPanel {
             sources: [
                 CurtainScene.floatSource(positions, semantic: .vertex),
                 CurtainScene.floatSource(normals, semantic: .normal),
-                texcoords,
-                shade
+                texcoords
             ],
             elements: [element]
         )
