@@ -30,6 +30,21 @@
 2. 工作流跑 NocchiKit 测试 → 从 SVG 渲染图标 → Release 构建 macOS App（版本号取自标签，构建号取自运行序号）→ 打包 zip 与 `SHA256SUMS.txt`。
 3. 从 `CHANGELOG.md` 取对应版本的一节作为发布说明，创建 GitHub Release 并上传附件。
 
+## 截图（Screenshots）
+
+`.github/workflows/screenshots.yml`：`macOS/**`、`Packages/**`、`Shared/**`、`design/screenshots/**` 有改动推到 `main` 时运行。
+
+1. 和 CI 一样构建 macOS App（Release、ad-hoc 签名）。
+2. `scripts/ci/render-screenshots.sh` 用隐藏的截图模式启动 App：`Nocchi --render-screenshots <目录>`，照片库放在临时目录（`NOCCHI_LIBRARY_ROOT`），样片来自 `design/screenshots/samples`（`NOCCHI_SCREENSHOT_SAMPLES`）。App 不开刘海、不注册快捷键，用真实的胶卷和模板冲印 13 张样片，然后：
+   - 打开真实的相册（四种看法）、装饰台、设置窗口和刘海面板（悬停面板、胶卷柜），向窗口服务器要自己窗口的画面（自己的窗口不需要屏幕录制权限），拿不到时退回 `cacheDisplay`，再放到桌面壁纸上；
+   - 用 `ImageRenderer` 以 2 倍像素合成「刘海出片 + 照片堆」的桌面、相纸一览和大头贴「选相框」。
+   代码在 `macOS/Nocchi/Screenshots/`，8 分钟看门狗。每张图的尺寸、拍法和灰度标准差会写成运行页面上的注解（`SHOT …`）。
+3. JPEG 提交到 `website/public/screenshots/`（github-actions[bot]，图没变就不提交）。README 和文档站都引用这里的图。
+
+## 文档站（Pages）
+
+`.github/workflows/pages.yml`：`website/**` 有改动、截图工作流跑完、或手动运行时，用 VitePress 构建 `website/`（英文在根目录，中文在 `/zh/`）并发布到 GitHub Pages：<https://chaosnap.github.io/Nocchi/>。还没渲染出来的截图会先放纸色占位图，构建不会因为缺图失败。第一次需要在仓库 **Settings → Pages → Build and deployment → Source** 选「GitHub Actions」。
+
 ## 读取失败原因
 
 - 编译错误由 `xcbeautify --renderer github-actions` 转成带文件和行号的注解。

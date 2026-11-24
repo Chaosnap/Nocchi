@@ -4,6 +4,12 @@
 
 ## 2026-11-24
 
+### D33 · 产品文档站 + CI 截图
+- 仓库所有者：参考 Typewriter Nocturne 的产品网页，「用 github ci 收集些截图，然后做产品的 doc site，默认英文，但可以中英文切换，readme 里放截图和中文 doc 入口，readme 要求英文」。
+- 文档站用 VitePress（与 Typewriter Nocturne 一致）：`website/`，英文在根目录、中文在 `/zh/`，复古冲印店配色（象牙白相纸 / 胡桃木暗房、陶土橙强调色），由 `pages.yml` 发布到 GitHub Pages。不在本地装依赖（不提交 lockfile），版本号在 `package.json` 里写死。
+- 截图不在本机拍：App 有一个隐藏的截图模式（`--render-screenshots`），在 GitHub Actions 上用原创样片冲印、截自己的真实窗口和刘海面板、合成场景，`screenshots.yml` 把 JPEG 提交回 `website/public/screenshots/`。公开仓库的构建产物要登录才能下载，所以截图直接提交进仓库，README 和文档站都引用同一份。
+- 截自己的窗口用 `CGWindowListCreateImage`（自己的窗口不需要屏幕录制权限；按名字动态取，避开 macOS 14 的弃用提示），拿不到时退回 `cacheDisplay`；纯 SwiftUI 的场景用 `ImageRenderer` 出 2 倍图。
+
 ### D32 · 许可改为 GNU AGPL-3.0；README 与社区文件改成英文（取代 D18）
 - 仓库所有者：参考 Yohaku 仓库的 license、code of conduct 和 readme，「全部做成英文，权限采用 agpl-3 和仓库一样」，并且要求先做完这件事、不必等 CI，所以 v1.0.0 就按 AGPL-3.0 发布。
 - `LICENSE` 换成 GNU AGPL-3.0 原文（与 Yohaku 相同）；`README.md` 按 Yohaku 的结构重写成英文（居中图标与标语、徽章、功能、玩法、下载、现状、构建方式、许可与致谢）；`CODE_OF_CONDUCT.md` 改为英文的 Contributor Covenant 3.0（CC BY-SA 4.0）改编版，举报仍只走 GitHub、不公开邮箱；`CONTRIBUTING.md`、`SECURITY.md`、`PRIVACY.md` 与 `.github/` 的 Issue / PR 模板一并改成英文。

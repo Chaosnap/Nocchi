@@ -1,0 +1,97 @@
+# Nocchi · 产品文档站
+#
+# 用 VitePress 构建 website/（英文在根目录，中文在 /zh/），发布到 GitHub Pages：
+# https://chaosnap.github.io/Nocchi/
+# 截图（website/public/screenshots）由 screenshots.yml 从 App 渲染并提交；那个工作流跑完后这里会自动重建。
+#
+# 第一次需要仓库所有者在 Settings → Pages → Build and deployment 里把 Source 选成「GitHub Actions」。
+
+name: Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "website/**"
+      - "design/icon/nocchi-icon.svg"
+      - ".github/workflows/pages.yml"
+  workflow_run:
+    workflows: [Screenshots]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build the documentation
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # 完整历史：每页显示「最后更新于」。workflow_run 时检出 main 的最新提交（包括刚提交的截图）。
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install VitePress
+        working-directory: website
+        run: npm install --no-audit --no-fund
+
+      - name: Icon and screenshots
+        run: |
+          set -euo pipefail
+          mkdir -p website/public/images website/public/screenshots
+          cp design/icon/nocchi-icon.svg website/public/images/icon.svg
+          # 还没渲染出来的截图先放一张纸色占位图，免得构建失败（截图工作流跑完会替换并重建）。
+          python3 - <<'EOF'
+          import pathlib, re, struct, zlib
+          site = pathlib.Path("website")
+          shots = site / "public" / "screenshots"
+          names = set()
+          for md in site.rglob("*.md"):
+              if "node_modules" in md.parts:
+                  continue
+              names.update(re.findall(r"/screenshots/([a-z0-9-]+\.jpg)", md.read_text(encoding="utf-8")))
+          def png(width, height, rgb):
+              row = b"\x00" + bytes(rgb) * width
+              def chunk(kind, data):
+                  return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data) & 0xFFFFFFFF)
+              return (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0))
+                      + chunk(b"IDAT", zlib.compress(row * height)) + chunk(b"IEND", b""))
+          missing = [n for n in sorted(names) if not (shots / n).exists()]
+          for name in missing:
+              (shots / name).write_bytes(png(160, 100, (0xEA, 0xE2, 0xD2)))
+          print(f"::notice title=Pages::{len(names)} screenshots referenced, {len(missing)} placeholders: {' '.join(missing)}")
+          EOF
+
+      - name: Build
+        working-directory: website
+        run: npm run docs:build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: website/.vitepress/dist
+
+  deploy:
+    name: Publish to GitHub Pages
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

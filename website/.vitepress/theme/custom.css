@@ -1,0 +1,166 @@
+/* Nocchi look for the VitePress default theme: a retro photo lab. Ivory photo paper and ink by
+ * day, a walnut darkroom by night; terracotta is the only accent, brass and date-stamp orange for
+ * details. Colours come from docs/DESIGN.md §1. */
+
+:root {
+  --vp-font-family-base: 'EB Garamond', 'Iowan Old Style', Palatino, Georgia, 'Songti SC', 'Noto Serif SC', serif;
+  --vp-font-family-mono: 'Courier Prime', 'American Typewriter', 'Courier New', ui-monospace, monospace;
+  --nc-display: 'Playfair Display', Didot, 'Bodoni 72', Georgia, 'Songti SC', serif;
+
+  --vp-c-brand-1: #b44f33;
+  --vp-c-brand-2: #c4593b;
+  --vp-c-brand-3: #9a4129;
+  --vp-c-brand-soft: rgba(196, 89, 59, 0.14);
+
+  --vp-c-bg: #f4eee1;
+  --vp-c-bg-alt: #eae2d2;
+  --vp-c-bg-soft: #e8dfcd;
+  --vp-c-bg-elv: #f8f3e9;
+  --vp-c-text-1: #2e2924;
+  --vp-c-text-2: #5f554b;
+  --vp-c-text-3: #8a7f73;
+  --vp-c-divider: #d8cfbf;
+  --vp-c-gutter: #e3d9c6;
+
+  --vp-button-brand-border: transparent;
+  --vp-button-brand-text: #fbf6ee;
+  --vp-button-brand-bg: #c4593b;
+  --vp-button-brand-hover-border: transparent;
+  --vp-button-brand-hover-text: #fbf6ee;
+  --vp-button-brand-hover-bg: #b44f33;
+  --vp-button-brand-active-border: transparent;
+  --vp-button-brand-active-text: #fbf6ee;
+  --vp-button-brand-active-bg: #9a4129;
+
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(120deg, #c4593b 10%, #b8955a 55%, #4a3021);
+  --vp-home-hero-image-background-image: radial-gradient(circle, rgba(232, 137, 107, 0.35), transparent 65%);
+  --vp-home-hero-image-filter: blur(56px);
+}
+
+.dark {
+  --vp-c-brand-1: #e8896b;
+  --vp-c-brand-2: #d97858;
+  --vp-c-brand-3: #c4593b;
+  --vp-c-brand-soft: rgba(232, 137, 107, 0.16);
+
+  --vp-c-bg: #1c140f;
+  --vp-c-bg-alt: #160f0b;
+  --vp-c-bg-elv: #241a13;
+  --vp-c-bg-soft: #2a1c14;
+  --vp-c-text-1: #f2eee6;
+  --vp-c-text-2: rgba(242, 238, 230, 0.72);
+  --vp-c-text-3: rgba(242, 238, 230, 0.5);
+  --vp-c-divider: rgba(184, 149, 90, 0.22);
+  --vp-c-gutter: #0e0906;
+
+  --vp-button-brand-text: #1c140f;
+  --vp-button-brand-bg: #e8896b;
+  --vp-button-brand-hover-text: #1c140f;
+  --vp-button-brand-hover-bg: #f0a088;
+  --vp-button-brand-active-text: #1c140f;
+  --vp-button-brand-active-bg: #d97858;
+
+  --vp-home-hero-name-background: linear-gradient(120deg, #f2d3b8 10%, #e3c98f 50%, #e8896b);
+}
+
+.VPHero .name,
+.VPHero .text,
+.vp-doc h1,
+.vp-doc h2 {
+  font-family: var(--nc-display);
+  font-weight: 500;
+  letter-spacing: 0.005em;
+}
+
+.VPHero .text {
+  font-style: italic;
+}
+
+.VPHero .tagline {
+  font-size: 20px;
+}
+
+/* The hero picture is a wide screenshot: inside its column on narrow screens, up to 560px beside
+ * the title on wide ones, never over the text. */
+.VPHero .image-src {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 10px;
+  box-shadow: 0 30px 70px -30px rgba(42, 28, 20, 0.85);
+}
+
+@media (min-width: 960px) {
+  .VPHero.has-image .image-container {
+    transform: none;
+  }
+
+  .VPHero .image-src {
+    max-width: min(560px, 100%);
+    max-height: 380px;
+  }
+}
+
+.dark .VPContent {
+  background:
+    radial-gradient(ellipse 70% 40% at 50% 0%, rgba(232, 137, 107, 0.07), transparent 70%),
+    var(--vp-c-bg);
+}
+
+.VPFeature .title {
+  font-family: var(--nc-display);
+  font-size: 19px;
+}
+
+.vp-doc {
+  font-size: 17.5px;
+}
+
+.vp-doc h2 {
+  font-size: 28px;
+  font-style: italic;
+}
+
+.vp-doc img {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  box-shadow: 0 20px 50px -28px rgba(42, 28, 20, 0.75);
+}
+
+.vp-doc kbd {
+  padding: 0 6px;
+  border: 1px solid var(--vp-c-divider);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.85em;
+}
+
+/* Two screenshots side by side on wide screens. */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 18px;
+  margin: 20px 0;
+}
+
+.gallery p {
+  margin: 0;
+}
+
+/* A typed paper slip, like the notes on the album's corkboard. */
+.slip {
+  margin: 20px 0;
+  padding: 16px 20px;
+  border-radius: 3px;
+  background: #fbf6ee;
+  color: #2e2924;
+  font-family: var(--vp-font-family-mono);
+  font-size: 15px;
+  box-shadow: 0 14px 30px -20px rgba(42, 28, 20, 0.7);
+  transform: rotate(-0.4deg);
+}
+
+.dark .slip {
+  background: #f2eee6;
+}

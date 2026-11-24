@@ -7,7 +7,8 @@ Nocchi/
 ├── macOS/                  刘海出片口 App（XcodeGen：macOS/project.yml）
 ├── iOS/                    灵动岛出片口 App + Live Activity 扩展（XcodeGen：iOS/project.yml）
 ├── Shared/Art.xcassets     两个 App 共用的原创美术（机身、纹理）
-└── design/                 美术源文件与部件坐标
+├── design/                 美术源文件、部件坐标、截图样片
+└── website/                产品文档站（VitePress，英文 + /zh/ 中文，GitHub Pages）
 ```
 
 ## NocchiKit
@@ -66,6 +67,7 @@ PhotoComposer（白边 + 题字 + 日期 + 手写）──► 成片 ~/Pictures/
 | `Booth/` | 大头贴机：`PhotoBoothController`（权限预检 → 3D 布帘 → 选相框 → 投币开始 → 请看镜头 → 倒数 → 白屏闪光 × 4 → 出片；离开按钮 / Esc / ⌘Q、按下「开始」后的看门狗）、`BoothFrameChooser`（黄铜橱窗里的样张、黄铜箭头、镀铬拨杆开关、发光的「开始」）、`CurtainScene`（SceneKit 丝绒布帘） |
 | `Album/` | 相册窗口：`AlbumView`（四种看法 + 搜索）、`AlbumHeader`（字标、看法切换、搜索框、冲印按钮、红绿灯对齐）、`CorkBoardView`（胡桃木框软木板、月份标签带、拼贴排布）、`FilmLightTable`（光台、35mm 胶片条、放大镜、洗一洗、正负片）、`CalendarWallView`（复古挂历）、`AlbumShared`（照片库、缩略图 / 贴纸缓存、右键菜单与操作、`AlbumRouter`） |
 | `Editor/` | 装饰台：`DecorateDesk`（窗口与入口）、`DecorateSession`（记录的工作副本、工具、撤销 / 重做、后台合成的相纸层、保存）、`PaperStage`（相纸、笔画、可拖动缩放旋转的贴纸）、`Inspector`（贴纸 / 模板 / 文字 / 分享四页）、`PosterRenderer`（1080×1350 分享海报） |
+| `Screenshots/` | 截图工作室（只在 GitHub Actions 上用）：`ScreenshotStudio`（`--render-screenshots` 启动、临时照片库、截真实窗口与刘海面板）、`StudioSpecs`（13 张样片的胶卷 / 相纸 / 模板 / 题字 / 贴纸）、`StudioScenes`（桌面、相纸一览、大头贴的合成场景） |
 | `Settings/` | 相机柜、胶卷（导入 / 导出 `.cube`）、相纸（即显相纸与默认模板、大头贴默认相框 / 版式 / 黑白、题字字体、显影后自动打开装饰台）、摄像头、通用设置、关于；全局快捷键 |
 
 窗口层级：刘海面板（菜单栏之上 +3）> 出片中的照片（+2）> 大头贴布帘（+1）> 普通浮动照片 > 桌面层照片。

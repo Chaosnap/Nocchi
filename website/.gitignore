@@ -1,0 +1,6 @@
+node_modules
+package-lock.json
+.vitepress/dist
+.vitepress/cache
+# Copied from design/icon/nocchi-icon.svg when the site is built
+public/images/icon.svg

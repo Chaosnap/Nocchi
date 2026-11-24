@@ -28,8 +28,9 @@
 | `Packages/NocchiKit` | 共享 Swift Package：胶卷引擎、`.cube` 解析、显影模型、甩动检测、声音合成、相纸排版、照片库 |
 | `macOS/` | macOS App（刘海出片口），XcodeGen 工程描述 `project.yml` |
 | `iOS/` | iPhone App（灵动岛出片口）与 Live Activity 小组件扩展 |
-| `design/` | 原创美术素材的源文件（Codex 生成） |
+| `design/` | 原创美术素材的源文件（Codex 生成）、截图样片 |
 | `docs/` | 产品构想、参考项目、架构、进度、决策记录 |
+| `website/` | 产品文档站（VitePress，默认英文、`/zh/` 中文；截图由 `screenshots.yml` 从 App 渲染） |
 
 ## 4. 内容与版权
 
