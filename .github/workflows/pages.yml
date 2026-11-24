@@ -32,7 +32,7 @@ jobs:
     name: Build the documentation
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # 完整历史：每页显示「最后更新于」。workflow_run 时检出 main 的最新提交（包括刚提交的截图）。
           fetch-depth: 0
