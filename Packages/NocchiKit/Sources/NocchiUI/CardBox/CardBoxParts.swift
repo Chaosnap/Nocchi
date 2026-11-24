@@ -299,12 +299,26 @@ struct IndexTabShape: InsettableShape {
 /// 高亮、当前那一格的描边、有照片的小圆点画在 `TabLabels` 里（跟着标签面斜切）。
 struct TabHotspot: View {
     let face: TabFace
+    /// 这张分隔卡抬起来时标签的位移：热区往上补到抬满的位置（指针跟着标签往上移也不会掉下去）。
+    var rise: CGSize = .zero
+
+    /// 热区多边形（视图坐标）。
+    var polygon: [CGPoint] { face.hitPolygon(rising: rise) }
+
+    /// 热区的外接矩形。
+    var box: CGRect {
+        let xs = polygon.map(\.x)
+        let ys = polygon.map(\.y)
+        let minX = xs.min() ?? 0
+        let minY = ys.min() ?? 0
+        return CGRect(x: minX, y: minY, width: max(1, (xs.max() ?? 0) - minX), height: max(1, (ys.max() ?? 0) - minY))
+    }
 
     var body: some View {
-        let box = face.hitBox
+        let box = self.box
         Color.clear
             .frame(width: box.width, height: box.height)
-            .contentShape(TabFaceShape(points: face.hitPolygon.map { CGPoint(x: $0.x - box.minX, y: $0.y - box.minY) }))
+            .contentShape(TabFaceShape(points: polygon.map { CGPoint(x: $0.x - box.minX, y: $0.y - box.minY) }))
     }
 }
 
@@ -422,6 +436,8 @@ struct TabLabels: View {
     let stage: CardBoxStage
     let hoveredKey: String?
     let activeKey: String?
+    /// 被前面的标签挡住的地方不印字（平时如此）；抬起的那张标签不挡（前面的标签另外盖在它上面）。
+    var occludedByFront = true
 
     var body: some View {
         Canvas { context, _ in
@@ -430,8 +446,10 @@ struct TabLabels: View {
                 let face = faces[tab.slot]
                 var ctx = context
                 ctx.clip(to: face.path)
-                for front in faces.prefix(tab.slot) where front.bounds.intersects(face.bounds) {
-                    ctx.clip(to: front.path, options: .inverse)
+                if occludedByFront {
+                    for front in faces.prefix(tab.slot) where front.bounds.intersects(face.bounds) {
+                        ctx.clip(to: front.path, options: .inverse)
+                    }
                 }
                 ctx.concatenate(face.transform)
                 draw(tab, size: CGSize(width: face.width, height: face.height), in: &ctx)

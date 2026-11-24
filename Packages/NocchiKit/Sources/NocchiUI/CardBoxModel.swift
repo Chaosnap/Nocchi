@@ -49,6 +49,8 @@ public final class CardBoxModel: ObservableObject {
     }
     /// 照片现在怎么分在 27 张分隔卡里（每一格的标签、张数，每张照片在哪一格）。
     @Published public private(set) var index: CardIndexLayout = .empty
+    /// 让某一张分隔卡像悬停时那样抬起一截（截图工作室用，平时是 nil）。
+    @Published public var peekSlot: Int?
     /// 拖动摆放过的卡片位置（记住，下次抽出来还在那里）。
     @Published public private(set) var spots: [UUID: CardSpot] = CardBoxModel.loadSpots()
 

@@ -161,7 +161,10 @@ private final class Studio {
         AlbumRouter.shared.mode = .cardBox
         cardBox.indexMode = .month
         cardBox.showRecent()
+        // 第一格的分隔卡像悬停时那样抬起一截（「准备抽出来」）。
+        cardBox.peekSlot = 0
         await capture("album-cardbox-month", title: "相册", size: CGSize(width: 1220, height: 820), settle: 4.0)
+        cardBox.peekSlot = nil
         cardBox.indexMode = .letter
         window(titled: "相册")?.close()
     }

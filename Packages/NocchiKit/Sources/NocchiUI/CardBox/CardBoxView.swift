@@ -17,6 +17,11 @@ public struct CardBoxView: View {
     @State private var hoveredTab: String?
     @State private var hoveredCard: UUID?
     @State private var drag: CardDrag?
+    /// 悬停时抬起一截的分隔卡（「准备抽出来」）和抬起的程度（0…1）。
+    @State private var liftSlot: Int?
+    @State private var liftAmount: CGFloat = 0
+    @State private var liftGeneration = 0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     public init(model: CardBoxModel) {
         self.model = model
@@ -41,13 +46,36 @@ public struct CardBoxView: View {
                 BoxArt(name: "CardBoxBase", stage: stage, fallback: true)
                     .zIndex(0)
                 TabLabels(
-                    tabs: model.index.tabs,
+                    tabs: liftSlot.map { lifted in model.index.tabs.filter { $0.slot > lifted } } ?? model.index.tabs,
                     mode: model.index.mode,
                     stage: stage,
                     hoveredKey: hoveredTab,
                     activeKey: model.activeKey
                 )
                 .zIndex(0.1)
+                if let lifted = liftSlot {
+                    // 抬起的分隔卡，前面几张的标签和字盖在它上面（它是从这几张后面升起来的）。
+                    DividerLift(
+                        slot: lifted,
+                        amount: liftAmount,
+                        stage: stage,
+                        tab: model.index.tabs.first { $0.slot == lifted },
+                        mode: model.index.mode,
+                        hoveredKey: hoveredTab,
+                        activeKey: model.activeKey
+                    )
+                    .zIndex(0.12)
+                    FrontTabs(slots: Array(0..<lifted), stage: stage)
+                        .zIndex(0.13)
+                    TabLabels(
+                        tabs: model.index.tabs.filter { $0.slot < lifted },
+                        mode: model.index.mode,
+                        stage: stage,
+                        hoveredKey: hoveredTab,
+                        activeKey: model.activeKey
+                    )
+                    .zIndex(0.14)
+                }
                 pagingSurface(stage)
                     .zIndex(0.2)
                 ForEach(flights.order, id: \.self) { id in
@@ -62,8 +90,9 @@ public struct CardBoxView: View {
                     .zIndex(2)
                 if let key = hoveredTab, let tab = model.index.tab(forKey: key) {
                     let face = TabFace(slot: tab.slot, stage: stage)
+                    let rise = tab.slot == liftSlot ? face.rise(liftAmount) : .zero
                     TabChip(title: tab.title, count: tab.count)
-                        .position(face.chipAnchor)
+                        .position(x: face.chipAnchor.x + rise.width, y: face.chipAnchor.y + rise.height)
                         .allowsHitTesting(false)
                         .transition(.opacity.combined(with: .scale(scale: 0.9, anchor: .bottom)))
                         .zIndex(3)
@@ -80,9 +109,19 @@ public struct CardBoxView: View {
             .coordinateSpace(name: Self.space)
             .clipped()
         }
-        .onAppear { flights.sync(with: model.pulled) }
+        .onAppear {
+            flights.sync(with: model.pulled)
+            if let peek = model.peekSlot {
+                lift(peek)
+            }
+        }
         .onChange(of: model.pulled) { _, pulled in
             flights.sync(with: pulled)
+        }
+        .onChange(of: model.peekSlot) { _, peek in
+            if hoveredTab == nil {
+                lift(peek)
+            }
         }
     }
 
@@ -195,7 +234,8 @@ public struct CardBoxView: View {
         ZStack(alignment: .topLeading) {
             ForEach(Array(model.index.tabs.reversed())) { tab in
                 let face = TabFace(slot: tab.slot, stage: stage)
-                TabHotspot(face: face)
+                let hotspot = TabHotspot(face: face, rise: tab.slot == liftSlot ? face.rise(1) : .zero)
+                hotspot
                     .onHover { inside in
                         withAnimation(.easeOut(duration: 0.14)) {
                             if inside {
@@ -204,10 +244,48 @@ public struct CardBoxView: View {
                                 hoveredTab = nil
                             }
                         }
+                        if inside {
+                            lift(tab.slot)
+                        } else if hoveredTab == nil {
+                            lift(model.peekSlot)
+                        }
                     }
                     .onTapGesture { model.pull(key: tab.key) }
                     .help(tabHelp(tab))
-                    .position(x: face.hitBox.midX, y: face.hitBox.midY)
+                    .position(x: hotspot.box.midX, y: hotspot.box.midY)
+            }
+        }
+    }
+
+    /// 悬停的分隔卡往上抬一截（0.2 秒），移开就落回去；换到另一张时先把抬着的那张放回去，再抬这一张。
+    private func lift(_ slot: Int?) {
+        liftGeneration += 1
+        let generation = liftGeneration
+        if reduceMotion {
+            liftSlot = slot
+            liftAmount = slot == nil ? 0 : 1
+            return
+        }
+        if slot == liftSlot {
+            guard slot != nil else { return }
+            withAnimation(.easeOut(duration: 0.2)) { liftAmount = 1 }
+            return
+        }
+        guard liftSlot != nil, liftAmount > 0 else {
+            liftSlot = slot
+            liftAmount = 0
+            if slot != nil {
+                withAnimation(.easeOut(duration: 0.2)) { liftAmount = 1 }
+            }
+            return
+        }
+        withAnimation(.easeIn(duration: slot == nil ? 0.18 : 0.12)) {
+            liftAmount = 0
+        } completion: {
+            guard generation == liftGeneration else { return }
+            liftSlot = slot
+            if slot != nil {
+                withAnimation(.easeOut(duration: 0.2)) { liftAmount = 1 }
             }
         }
     }
