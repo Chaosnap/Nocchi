@@ -49,6 +49,7 @@ struct NotchRootView: View {
         case .ejecting: return 9
         case .toast: return notch.toastStyle == .banner ? 22 : 14
         case .shelf: return 30
+        case .films: return 30
         case .dropTarget: return 26
         }
     }
@@ -81,12 +82,16 @@ struct NotchRootView: View {
         case .dropTarget:
             DropTargetPanel(notch: notch, notchHeight: notchHeight)
                 .transition(.opacity)
+        case .films:
+            FilmCabinetPanel(notch: notch, model: model, notchHeight: notchHeight)
+                .transition(.opacity.combined(with: .scale(scale: 0.97, anchor: .top)))
         }
     }
 }
 
 // MARK: - Hover
 
+/// 悬停面板：上面一行是机身和胶卷计数；下面是拍摄按钮 + 胶卷罐 + 相纸 + 小工具。
 private struct HoverPanel: View {
     @ObservedObject var notch: NotchController
     @ObservedObject var model: AppModel
@@ -94,23 +99,9 @@ private struct HoverPanel: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack(spacing: 6) {
-                Image(systemName: model.currentBody.symbolName)
-                    .font(.system(size: 11, weight: .semibold))
-                Text(model.currentBody.displayName)
-                    .font(.system(size: 12, weight: .semibold, design: .rounded))
-                Spacer(minLength: notch.metrics.rect.width + 24)
-                FilmSwatch(stock: model.currentStock)
-                    .frame(width: 26, height: 10)
-                Text("\(model.currentStock.name) · \(model.roll.counterText)")
-                    .font(.system(size: 12, weight: .medium, design: .rounded))
-                    .monospacedDigit()
-            }
-            .foregroundStyle(.white.opacity(0.85))
-            .padding(.horizontal, 18)
-            .frame(height: notchHeight)
-
-            HStack(spacing: 10) {
+            header
+                .frame(height: notchHeight)
+            HStack(spacing: 8) {
                 NotchActionButton(symbol: "camera.viewfinder", title: "屏幕快门", hint: "⌃⌥⌘S") {
                     Darkroom.shared.screenShutter()
                 }
@@ -120,6 +111,9 @@ private struct HoverPanel: View {
                 NotchActionButton(symbol: "square.grid.2x2", title: "大头贴", hint: "⌃⌥⌘B") {
                     PhotoBoothController.shared.start()
                 }
+                NotchActionButton(symbol: "photo.on.rectangle.angled", title: "冲印照片", hint: "⌘O") {
+                    PhotoImport.chooseFiles()
+                }
                 if !NotchShelf.shared.isEmpty {
                     NotchActionButton(symbol: "tray.full.fill", title: "暂存", hint: "\(NotchShelf.shared.items.count) 张") {
                         notch.openShelf()
@@ -127,32 +121,113 @@ private struct HoverPanel: View {
                 }
                 Rectangle()
                     .fill(Color.white.opacity(0.12))
-                    .frame(width: 1, height: 52)
-                VStack(spacing: 6) {
-                    Menu {
-                        ForEach(model.stocks) { stock in
-                            Button("\(stock.name)  \(stock.summary)") { model.stockID = stock.id }
-                        }
-                    } label: {
-                        Label("换胶卷", systemImage: "film")
+                    .frame(width: 1, height: 56)
+                FilmTileButton(stock: model.currentStock, counter: model.roll.counterText) {
+                    notch.openFilms()
+                }
+                PaperTileButton(format: model.instantFormat) {
+                    model.cycleInstantFormat()
+                    Haptics.tick()
+                }
+                VStack(spacing: 10) {
+                    SmallIconButton(symbol: "rectangle.stack", help: "相册") { WindowManager.shared.showAlbum() }
+                    SmallIconButton(symbol: model.quietMode ? "speaker.slash.fill" : "speaker.wave.2.fill", help: "安静模式") {
+                        model.quietMode.toggle()
                     }
-                    .menuStyle(.button)
-                    .buttonStyle(.borderless)
-                    .fixedSize()
-                    HStack(spacing: 12) {
-                        SmallIconButton(symbol: "rectangle.stack", help: "相册") { WindowManager.shared.showAlbum() }
-                        SmallIconButton(symbol: model.quietMode ? "speaker.slash.fill" : "speaker.wave.2.fill", help: "安静模式") {
-                            model.quietMode.toggle()
-                        }
-                        SmallIconButton(symbol: "gearshape.fill", help: "设置") { WindowManager.shared.showSettings() }
-                    }
+                    SmallIconButton(symbol: "gearshape.fill", help: "设置") { WindowManager.shared.showSettings() }
                 }
                 .foregroundStyle(.white.opacity(0.85))
             }
-            .padding(.horizontal, 16)
+            .padding(.horizontal, 14)
             .padding(.top, 10)
             Spacer(minLength: 0)
         }
+    }
+
+    private var header: some View {
+        HStack(spacing: 6) {
+            Image(systemName: model.currentBody.symbolName)
+                .font(.system(size: 11, weight: .semibold))
+            Text(model.currentBody.displayName)
+                .font(.system(size: 12, weight: .semibold, design: .rounded))
+            Spacer(minLength: notch.metrics.rect.width + 24)
+            Text(model.currentStock.name)
+                .font(.system(size: 12, weight: .medium, design: .rounded))
+            Text(model.roll.counterText)
+                .font(RetroFont.mono(12, weight: .bold))
+                .foregroundStyle(Palette.terracottaLight)
+                .monospacedDigit()
+        }
+        .foregroundStyle(.white.opacity(0.85))
+        .padding(.horizontal, 18)
+    }
+}
+
+/// 悬停面板里的胶卷罐：点一下打开胶卷柜。
+private struct FilmTileButton: View {
+    let stock: FilmStock
+    let counter: String
+    let action: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 1) {
+                FilmCanisterImage(stock: stock, size: 46)
+                    .shadow(color: .black.opacity(0.55), radius: 4, y: 2)
+                    .offset(y: hovering ? -3 : 0)
+                Text("换胶卷")
+                    .font(.system(size: 11, weight: .semibold, design: .rounded))
+                Text(counter)
+                    .font(RetroFont.mono(9))
+                    .opacity(0.55)
+            }
+            .foregroundStyle(.white)
+            .frame(width: 76, height: 78)
+            .background(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(Color.white.opacity(hovering ? 0.16 : 0.08))
+            )
+        }
+        .buttonStyle(.plain)
+        .onHover { hovering = $0 }
+        .animation(.spring(response: 0.3, dampingFraction: 0.75), value: hovering)
+        .help("\(stock.name) · \(stock.summary)")
+    }
+}
+
+/// 悬停面板里的相纸：按真实比例画出相纸，点一下换下一种。
+private struct PaperTileButton: View {
+    let format: FilmFormat
+    let action: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 1) {
+                PaperSilhouette(format: format)
+                    .frame(width: 46, height: 46)
+                    .offset(y: hovering ? -3 : 0)
+                Text(format.displayName)
+                    .font(.system(size: 11, weight: .semibold, design: .rounded))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                Text("相纸")
+                    .font(RetroFont.mono(9))
+                    .opacity(0.55)
+            }
+            .foregroundStyle(.white)
+            .frame(width: 76, height: 78)
+            .background(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(Color.white.opacity(hovering ? 0.16 : 0.08))
+            )
+        }
+        .buttonStyle(.plain)
+        .onHover { hovering = $0 }
+        .animation(.spring(response: 0.3, dampingFraction: 0.75), value: hovering)
+        .animation(.spring(response: 0.35, dampingFraction: 0.8), value: format)
+        .help("\(format.note)（点一下换下一种）")
     }
 }
 
@@ -176,7 +251,7 @@ private struct NotchActionButton: View {
                     .opacity(0.5)
             }
             .foregroundStyle(.white)
-            .frame(width: 92, height: 76)
+            .frame(width: 84, height: 78)
             .background(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .fill(Color.white.opacity(hovering ? 0.16 : 0.08))

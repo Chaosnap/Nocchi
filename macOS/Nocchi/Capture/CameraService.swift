@@ -3,9 +3,49 @@ import AVFoundation
 import NocchiKit
 import SwiftUI
 
+/// 一台可以用的摄像头。
+struct CameraDevice: Identifiable, Hashable, Sendable {
+    enum Kind: String, Sendable {
+        /// Mac 内建摄像头。
+        case builtIn
+        /// USB 摄像头，或以 Camera Extension 形式提供的虚拟摄像头（OBS、Camo……）。
+        case external
+        /// iPhone 连续互通摄像头。
+        case continuity
+
+        var badge: String {
+            switch self {
+            case .builtIn: return "内建"
+            case .external: return "外接 / 虚拟"
+            case .continuity: return "iPhone"
+            }
+        }
+
+        var symbolName: String {
+            switch self {
+            case .builtIn: return "laptopcomputer"
+            case .external: return "web.camera"
+            case .continuity: return "iphone"
+            }
+        }
+    }
+
+    /// `AVCaptureDevice.uniqueID`。
+    let id: String
+    let name: String
+    let kind: Kind
+}
+
 /// 刘海里的摄像头。摄像头一开，刘海旁的绿灯就亮——相机铺「营业中」。
+///
+/// 可以在设置里换成外接、虚拟或 iPhone 摄像头；所选设备拔掉时自动回落到默认摄像头。
 final class CameraService: NSObject, ObservableObject, @unchecked Sendable {
     static let shared = CameraService()
+
+    /// 所有可用的摄像头（主线程更新）。
+    @Published private(set) var devices: [CameraDevice] = []
+    /// 正在用的摄像头名字（主线程更新）。
+    @Published private(set) var activeDeviceName: String?
 
     enum CameraError: LocalizedError {
         case denied
@@ -29,6 +69,103 @@ final class CameraService: NSObject, ObservableObject, @unchecked Sendable {
     private var configured = false
     private var pending: CheckedContinuation<CGImage, Error>?
     private var captureToken = 0
+    /// 只在 `queue` 上读写。
+    private var preferredDeviceID: String?
+    private var currentInput: AVCaptureDeviceInput?
+    private var observers: [NSObjectProtocol] = []
+
+    override init() {
+        super.init()
+        let center = NotificationCenter.default
+        observers.append(center.addObserver(forName: AVCaptureDevice.wasConnectedNotification, object: nil, queue: .main) { [weak self] _ in
+            self?.refreshDevices()
+        })
+        observers.append(center.addObserver(forName: AVCaptureDevice.wasDisconnectedNotification, object: nil, queue: .main) { [weak self] note in
+            self?.deviceDisconnected(note.object as? AVCaptureDevice)
+        })
+    }
+
+    // MARK: - Devices
+
+    private static func discovery() -> AVCaptureDevice.DiscoverySession {
+        AVCaptureDevice.DiscoverySession(
+            deviceTypes: [.builtInWideAngleCamera, .external, .continuityCamera],
+            mediaType: .video,
+            position: .unspecified
+        )
+    }
+
+    private static func kind(of device: AVCaptureDevice) -> CameraDevice.Kind {
+        switch device.deviceType {
+        case .builtInWideAngleCamera: return .builtIn
+        case .continuityCamera: return .continuity
+        default: return .external
+        }
+    }
+
+    /// 重新列出摄像头（设置页打开时、插拔设备时）。
+    func refreshDevices() {
+        let found = Self.discovery().devices.map { CameraDevice(id: $0.uniqueID, name: $0.localizedName, kind: Self.kind(of: $0)) }
+        DispatchQueue.main.async {
+            self.devices = found
+        }
+    }
+
+    /// 换摄像头（nil = 系统默认）。会话已经配好时立刻换输入。
+    func setPreferredDevice(_ id: String?) {
+        queue.async {
+            self.preferredDeviceID = id
+            guard self.configured else { return }
+            self.session.beginConfiguration()
+            defer { self.session.commitConfiguration() }
+            try? self.swapInput()
+        }
+    }
+
+    private func resolveDevice() -> AVCaptureDevice? {
+        if let id = preferredDeviceID, let device = AVCaptureDevice(uniqueID: id), device.isConnected {
+            return device
+        }
+        return AVCaptureDevice.default(for: .video) ?? Self.discovery().devices.first
+    }
+
+    /// 在 `queue` 上、beginConfiguration 之后调用。
+    private func swapInput() throws {
+        guard let device = resolveDevice() else { throw CameraError.unavailable }
+        if currentInput?.device.uniqueID == device.uniqueID { return }
+        if let currentInput {
+            session.removeInput(currentInput)
+        }
+        let input = try AVCaptureDeviceInput(device: device)
+        guard session.canAddInput(input) else {
+            if let currentInput, session.canAddInput(currentInput) { session.addInput(currentInput) }
+            throw CameraError.unavailable
+        }
+        session.addInput(input)
+        currentInput = input
+        let name = device.localizedName
+        DispatchQueue.main.async { self.activeDeviceName = name }
+    }
+
+    private func deviceDisconnected(_ device: AVCaptureDevice?) {
+        refreshDevices()
+        guard let device else { return }
+        queue.async {
+            guard self.currentInput?.device.uniqueID == device.uniqueID else { return }
+            self.session.beginConfiguration()
+            if let input = self.currentInput {
+                self.session.removeInput(input)
+            }
+            self.currentInput = nil
+            try? self.swapInput()
+            self.session.commitConfiguration()
+            DispatchQueue.main.async {
+                MainActor.assumeIsolated {
+                    NotchController.shared.showToast("摄像头断开了，换回默认摄像头", symbol: "video.slash.fill", duration: 3)
+                }
+            }
+        }
+    }
 
     static func describe(_ error: Error) -> String {
         (error as? LocalizedError)?.errorDescription ?? "摄像头出错了"
@@ -97,11 +234,10 @@ final class CameraService: NSObject, ObservableObject, @unchecked Sendable {
         guard !configured else { return }
         session.beginConfiguration()
         defer { session.commitConfiguration() }
-        session.sessionPreset = .high
-        guard let device = AVCaptureDevice.default(for: .video) else { throw CameraError.unavailable }
-        let input = try AVCaptureDeviceInput(device: device)
-        guard session.canAddInput(input) else { throw CameraError.unavailable }
-        session.addInput(input)
+        if session.canSetSessionPreset(.high) {
+            session.sessionPreset = .high
+        }
+        try swapInput()
         guard session.canAddOutput(output) else { throw CameraError.unavailable }
         session.addOutput(output)
         configured = true

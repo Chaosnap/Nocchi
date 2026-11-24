@@ -105,7 +105,10 @@ final class AppModel: ObservableObject {
 
     /// 选中的摄像头（`AVCaptureDevice.uniqueID`）；nil 表示系统默认摄像头。
     @Published var cameraDeviceID: String? {
-        didSet { defaults.set(cameraDeviceID, forKey: Keys.cameraDevice) }
+        didSet {
+            defaults.set(cameraDeviceID, forKey: Keys.cameraDevice)
+            CameraService.shared.setPreferredDevice(cameraDeviceID)
+        }
     }
 
     /// 自拍画面镜像（像照镜子）。
@@ -159,6 +162,13 @@ final class AppModel: ObservableObject {
         } else {
             roll = FilmRoll(stock: FilmCatalog.stock(id: stockID, custom: custom))
         }
+    }
+
+    /// 在即显相纸之间轮换（刘海里的「相纸」小卡）。
+    func cycleInstantFormat() {
+        let choices = FilmFormat.instantChoices
+        let index = choices.firstIndex(of: instantFormat) ?? 0
+        instantFormat = choices[(index + 1) % choices.count]
     }
 
     func applyRuntimeSettings() {

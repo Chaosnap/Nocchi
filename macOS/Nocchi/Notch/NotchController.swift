@@ -19,6 +19,8 @@ enum NotchMode: Equatable {
     case shelf
     /// 有东西被拖到刘海上方：相片 → 暂存；图片文件 → 冲印。
     case dropTarget
+    /// 胶卷柜：一排排胶卷罐，挑一卷装上。
+    case films
 }
 
 /// 拖到刘海上的是什么。
@@ -165,8 +167,10 @@ final class NotchController: ObservableObject {
         case .idle:
             return CGSize(width: w0, height: h0)
         case .hover:
-            let extra: CGFloat = NotchShelf.shared.isEmpty ? 0 : 104
-            return CGSize(width: max(w0 + 330, 560) + extra, height: h0 + 112)
+            let extra: CGFloat = NotchShelf.shared.isEmpty ? 0 : 92
+            return CGSize(width: max(w0 + 420, 610) + extra, height: h0 + 110)
+        case .films:
+            return CGSize(width: max(w0 + 470, 720), height: h0 + 176)
         case .selfie:
             return CGSize(width: max(w0 + 190, SelfieLayout.minWidth), height: h0 + SelfieLayout.contentHeight)
         case .ejecting:
@@ -220,7 +224,7 @@ final class NotchController: ObservableObject {
             } else {
                 hoverWork?.cancel()
             }
-        case .hover, .shelf:
+        case .hover, .shelf, .films:
             if islandScreenRect(for: mode).insetBy(dx: -18, dy: -18).contains(location) {
                 collapseWork?.cancel()
             } else {
@@ -235,7 +239,7 @@ final class NotchController: ObservableObject {
     private func updateMousePassThrough(_ location: NSPoint) {
         let interactive: Bool
         switch mode {
-        case .hover, .selfie, .shelf:
+        case .hover, .selfie, .shelf, .films:
             interactive = islandScreenRect(for: mode).contains(location)
         case .dropTarget:
             interactive = dropKind == .files
@@ -267,7 +271,7 @@ final class NotchController: ObservableObject {
             MainActor.assumeIsolated {
                 guard let self else { return }
                 self.collapseWork = nil
-                if self.mode == .hover || self.mode == .shelf { self.collapse() }
+                if self.mode == .hover || self.mode == .shelf || self.mode == .films { self.collapse() }
             }
         }
         collapseWork = work
@@ -284,7 +288,7 @@ final class NotchController: ObservableObject {
     func collapse() {
         hoverWork?.cancel()
         collapseWork?.cancel()
-        if mode == .hover || mode == .toast || mode == .shelf {
+        if mode == .hover || mode == .toast || mode == .shelf || mode == .films {
             setMode(.idle)
         }
     }
@@ -301,6 +305,33 @@ final class NotchController: ObservableObject {
         if mode == .shelf { setMode(.idle) }
     }
 
+    // MARK: - Film cabinet
+
+    /// 打开胶卷柜（从悬停面板点胶卷罐）。
+    func openFilms() {
+        guard mode == .hover || mode == .idle || mode == .toast else { return }
+        setMode(.films)
+        Sound.play(.cardSlide)
+    }
+
+    /// 回到悬停面板。
+    func closeFilms() {
+        if mode == .films { setMode(.hover) }
+    }
+
+    /// 在胶卷柜里装上一卷。
+    func loadFilm(_ stock: FilmStock) {
+        let model = AppModel.shared
+        let changed = model.stockID != stock.id
+        model.stockID = stock.id
+        Sound.play(.gearClick)
+        Haptics.align()
+        collapse()
+        if changed {
+            showToast("装上了 \(stock.name)", symbol: "film")
+        }
+    }
+
     /// 投放区（屏幕坐标）：刘海附近一块宽松的区域。
     private var dropZone: CGRect {
         metrics.rect.insetBy(dx: -110, dy: -70)
@@ -309,7 +340,7 @@ final class NotchController: ObservableObject {
     /// 桌上的相片被拖着移动。
     func photoDragMoved(to location: NSPoint) {
         let inside = dropZone.contains(location)
-        if inside, mode == .idle || mode == .hover || mode == .toast || mode == .shelf {
+        if inside, mode == .idle || mode == .hover || mode == .toast || mode == .shelf || mode == .films {
             dropKind = .photo
             setMode(.dropTarget)
             Haptics.align()
@@ -333,7 +364,7 @@ final class NotchController: ObservableObject {
             let dragging = count != dragPasteboardCount
             guard dragging else { return }
             if dropZone.contains(location) {
-                if mode == .idle || mode == .hover || mode == .toast || mode == .shelf {
+                if mode == .idle || mode == .hover || mode == .toast || mode == .shelf || mode == .films {
                     dropKind = .files
                     setMode(.dropTarget)
                     Haptics.align()

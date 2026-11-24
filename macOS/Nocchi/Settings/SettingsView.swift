@@ -11,6 +11,8 @@ struct SettingsView: View {
                 .tabItem { Label("相机柜", systemImage: "camera") }
             FilmTab()
                 .tabItem { Label("胶卷", systemImage: "film") }
+            CameraTab()
+                .tabItem { Label("摄像头", systemImage: "web.camera") }
             GeneralTab()
                 .tabItem { Label("通用", systemImage: "gearshape") }
             AboutTab()
@@ -172,16 +174,8 @@ private struct FilmCard: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            ZStack(alignment: .bottomLeading) {
-                RoundedRectangle(cornerRadius: 6, style: .continuous)
-                    .fill(LinearGradient(colors: stock.swatch.compactMap { RGB(hex: $0) }.map { Color(rgb: $0) }, startPoint: .topLeading, endPoint: .bottomTrailing))
-                Text("\(stock.iso)")
-                    .font(.system(size: 10, weight: .heavy, design: .rounded))
-                    .foregroundStyle(.white)
-                    .shadow(radius: 2)
-                    .padding(4)
-            }
-            .frame(width: 44, height: 56)
+            FilmCanisterImage(stock: stock, size: 58)
+                .shadow(color: .black.opacity(0.2), radius: 3, y: 2)
             VStack(alignment: .leading, spacing: 3) {
                 Text(stock.name)
                     .font(.system(size: 13, weight: .semibold))
@@ -189,7 +183,7 @@ private struct FilmCard: View {
                     .font(.system(size: 11))
                     .foregroundStyle(.secondary)
                     .lineLimit(2)
-                Text("\(stock.exposures) 张")
+                Text("ISO \(stock.iso) · \(stock.exposures) 张 · \(stock.family.displayName)")
                     .font(.system(size: 10))
                     .foregroundStyle(.tertiary)
             }
@@ -234,6 +228,7 @@ private struct GeneralTab: View {
                 }
             }
             Section("相纸") {
+                PaperChooser(selection: $model.instantFormat)
                 TextField("默认题字", text: $model.defaultCaption, prompt: Text(PhotoRecord.defaultCaption))
                 Toggle("在白边上印日期", isOn: $model.printDate)
                 Picker("新照片放在", selection: $model.defaultLayer) {
@@ -259,6 +254,190 @@ private struct GeneralTab: View {
             }
         }
         .formStyle(.grouped)
+    }
+}
+
+// MARK: - 相纸
+
+/// 即显相纸的选择：按真实比例画出四种相纸。
+private struct PaperChooser: View {
+    @Binding var selection: FilmFormat
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("即显相机用的相纸")
+            HStack(spacing: 10) {
+                ForEach(FilmFormat.instantChoices) { format in
+                    Button {
+                        selection = format
+                    } label: {
+                        VStack(spacing: 6) {
+                            PaperSilhouette(format: format, paperColor: Palette.ivoryLight)
+                                .frame(width: 54, height: 54)
+                            Text(format.displayName)
+                                .font(.system(size: 11, weight: .semibold))
+                        }
+                        .padding(8)
+                        .frame(maxWidth: .infinity)
+                        .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Color(nsColor: .controlBackgroundColor)))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .stroke(selection == format ? Palette.terracotta : Color.secondary.opacity(0.2), lineWidth: selection == format ? 2 : 1)
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .help(format.note)
+                }
+            }
+            Text(selection.note)
+                .font(.system(size: 11))
+                .foregroundStyle(.secondary)
+        }
+    }
+}
+
+// MARK: - 摄像头
+
+/// 摄像头：实时预览 + 设备列表（内建、外接 / 虚拟、iPhone）+ 镜像开关。
+private struct CameraTab: View {
+    @ObservedObject private var model = AppModel.shared
+    @ObservedObject private var camera = CameraService.shared
+    @State private var ownsPreview = false
+    @State private var denied = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            preview
+            ScrollView {
+                VStack(spacing: 6) {
+                    CameraRow(title: "系统默认", detail: "跟随 macOS 的默认摄像头", symbol: "camera", badge: nil, selected: model.cameraDeviceID == nil) {
+                        model.cameraDeviceID = nil
+                    }
+                    ForEach(camera.devices) { device in
+                        CameraRow(title: device.name, detail: nil, symbol: device.kind.symbolName, badge: device.kind.badge, selected: model.cameraDeviceID == device.id) {
+                            model.cameraDeviceID = device.id
+                        }
+                    }
+                }
+                .padding(2)
+            }
+            .frame(maxHeight: 170)
+            Toggle("自拍画面镜像（像照镜子一样）", isOn: $model.mirrorSelfie)
+            Text("OBS、Camo 等以「摄像头扩展」形式安装的虚拟摄像头会出现在「外接 / 虚拟」里。正在用的摄像头拔掉时，Nocchi 会自动换回默认摄像头。")
+                .font(.system(size: 11))
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .onAppear {
+            camera.refreshDevices()
+            startPreview()
+        }
+        .onDisappear {
+            stopPreview()
+        }
+    }
+
+    private var preview: some View {
+        ZStack(alignment: .bottomLeading) {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color.black)
+            if camera.isRunning {
+                CameraPreview(session: camera.session, mirrored: model.mirrorSelfie, isRunning: camera.isRunning)
+                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                if let name = camera.activeDeviceName {
+                    Text(name)
+                        .font(.system(size: 11, weight: .semibold, design: .rounded))
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Capsule().fill(Color.black.opacity(0.55)))
+                        .foregroundStyle(.white)
+                        .padding(10)
+                }
+            } else {
+                VStack(spacing: 6) {
+                    Image(systemName: denied ? "video.slash" : "video")
+                        .font(.system(size: 22))
+                    Text(denied ? "没有摄像头权限（系统设置 → 隐私与安全性 → 摄像头）" : "正在打开摄像头…")
+                        .font(.system(size: 12))
+                }
+                .foregroundStyle(.white.opacity(0.6))
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+        }
+        .frame(height: 200)
+    }
+
+    private func startPreview() {
+        guard !camera.isRunning else { return }
+        Task {
+            guard await CameraAccess.ensure() else {
+                denied = true
+                return
+            }
+            do {
+                try await camera.start()
+                ownsPreview = true
+            } catch {
+                denied = true
+            }
+        }
+    }
+
+    private func stopPreview() {
+        guard ownsPreview else { return }
+        ownsPreview = false
+        // 自拍或大头贴机正在用摄像头时不要关。
+        if NotchController.shared.mode == .selfie || PhotoBoothController.shared.isActive { return }
+        camera.stop()
+    }
+}
+
+private struct CameraRow: View {
+    let title: String
+    let detail: String?
+    let symbol: String
+    let badge: String?
+    let selected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 10) {
+                Image(systemName: symbol)
+                    .font(.system(size: 15))
+                    .frame(width: 24)
+                    .foregroundStyle(Palette.ink.opacity(0.7))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.system(size: 13, weight: .semibold))
+                    if let detail {
+                        Text(detail)
+                            .font(.system(size: 11))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                if let badge {
+                    Text(badge)
+                        .font(.system(size: 10, weight: .medium))
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Capsule().fill(Color.secondary.opacity(0.15)))
+                }
+                Spacer(minLength: 8)
+                Image(systemName: selected ? "checkmark.circle.fill" : "circle")
+                    .font(.system(size: 16))
+                    .foregroundStyle(selected ? Palette.terracotta : Color.secondary.opacity(0.4))
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Color(nsColor: .controlBackgroundColor)))
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .stroke(selected ? Palette.terracotta.opacity(0.7) : Color.secondary.opacity(0.15), lineWidth: selected ? 1.5 : 1)
+            )
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 }
 

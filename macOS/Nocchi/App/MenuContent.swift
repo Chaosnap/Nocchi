@@ -25,7 +25,21 @@ struct MenuContent: View {
         }
         Picker("胶卷", selection: $model.stockID) {
             ForEach(model.stocks) { stock in
-                Text("\(stock.name)  ·  \(stock.exposures) 张").tag(stock.id)
+                Label {
+                    Text("\(stock.name)  ·  \(stock.exposures) 张")
+                } icon: {
+                    if let icon = FilmArt.menuIcon(for: stock) {
+                        Image(nsImage: icon)
+                    } else {
+                        Image(systemName: "film")
+                    }
+                }
+                .tag(stock.id)
+            }
+        }
+        Picker("相纸", selection: $model.instantFormat) {
+            ForEach(FilmFormat.instantChoices) { format in
+                Text(format.displayName).tag(format)
             }
         }
         Text("这一卷：\(model.roll.counterText)")

@@ -13,6 +13,16 @@ enum FilmArt {
     static func canister(for stock: FilmStock) -> NSImage? {
         NSImage(named: canisterName(for: stock))
     }
+
+    /// 菜单里用的 18pt 小图（没有渲染图时为 nil）。
+    @MainActor
+    static func menuIcon(for stock: FilmStock) -> NSImage? {
+        guard let source = canister(for: stock) else { return nil }
+        return NSImage(size: NSSize(width: 18, height: 18), flipped: false) { rect in
+            source.draw(in: rect)
+            return true
+        }
+    }
 }
 
 /// 一卷胶卷的小图（胶卷罐或相纸盒）。
@@ -152,6 +162,35 @@ private struct InstantPackFallback: View {
                     .offset(y: h / 2 - s * 0.07)
             }
             .frame(width: geo.size.width, height: geo.size.height)
+        }
+    }
+}
+
+/// 按真实比例画出一张相纸的剪影（白色相纸 + 深色画面区），用在相纸选择上。
+struct PaperSilhouette: View {
+    let format: FilmFormat
+    var paperColor: Color = Palette.ivoryLight
+
+    var body: some View {
+        GeometryReader { geo in
+            let layout = format.layout
+            let box = geo.size
+            let scale = min(box.width / layout.paperSize.width, box.height / layout.paperSize.height) * 0.94
+            let width = layout.paperSize.width * scale
+            let height = layout.paperSize.height * scale
+            ZStack(alignment: .topLeading) {
+                RoundedRectangle(cornerRadius: max(1.2, layout.cornerRadius * scale), style: .continuous)
+                    .fill(paperColor)
+                ForEach(Array(layout.windows.enumerated()), id: \.offset) { item in
+                    Rectangle()
+                        .fill(LinearGradient(colors: [Color(white: 0.38), Color(white: 0.16)], startPoint: .top, endPoint: .bottom))
+                        .frame(width: item.element.width * scale, height: item.element.height * scale)
+                        .offset(x: item.element.minX * scale, y: item.element.minY * scale)
+                }
+            }
+            .frame(width: width, height: height)
+            .shadow(color: .black.opacity(0.45), radius: 3, y: 2)
+            .position(x: box.width / 2, y: box.height / 2)
         }
     }
 }

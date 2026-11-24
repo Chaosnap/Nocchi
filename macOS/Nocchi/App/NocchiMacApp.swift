@@ -27,6 +27,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let model = AppModel.shared
         model.applyRuntimeSettings()
         SoundPlayer.shared.preload()
+        CameraService.shared.setPreferredDevice(model.cameraDeviceID)
 
         NotchController.shared.install()
         HotKeys.registerDefaults()
