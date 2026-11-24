@@ -24,6 +24,8 @@ struct NocchiMacApp: App {
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // 用户导入的字体只在本进程注册：每次启动先注册，装饰台和成片才认得它们。
+        Services.fonts.registerAll()
         // GitHub Actions 上的截图工作室：不开刘海、不注册快捷键，拍完截图就退出。
         if let output = ScreenshotStudio.requestedOutput {
             ScreenshotStudio.run(to: output)

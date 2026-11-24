@@ -249,6 +249,7 @@ private struct TemplatesTab: View {
     private func renderThumbnails(_ templates: [PrintTemplate]) async {
         var base = session.record
         base.stickers = []
+        base.texts = []
         base.strokes = []
         let paper = session.stockPaper
         let images = session.images
@@ -315,6 +316,19 @@ private struct TextTab: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 8) {
+                SectionTitle(text: "照片上的文字")
+                if let id = session.selectedText, let placement = session.text(id) {
+                    TextBoxEditor(session: session, placement: placement)
+                } else {
+                    Text("在照片上任何地方加一段字，字体、大小、颜色都能换。也可以选左边的「T」，在照片上点一下。")
+                        .font(.system(size: 11.5))
+                        .foregroundStyle(Palette.inkSoft)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Pill(title: "＋ 加一段字", selected: session.selectedText == nil) { session.addText() }
+            }
+
             VStack(alignment: .leading, spacing: 8) {
                 SectionTitle(text: "题字 / 心情")
                 TextField("写一句题字…", text: binding(\.caption), axis: .vertical)
@@ -579,5 +593,258 @@ private struct ShareTab: View {
         let picker = NSSharingServicePicker(items: [url])
         let anchor = NSRect(x: view.bounds.maxX - 170, y: 40, width: 1, height: 1)
         picker.show(relativeTo: anchor, of: view, preferredEdge: .maxY)
+    }
+}
+
+// MARK: - 文字框编辑
+
+/// 选中的文字框：内容、字体、大小、颜色、对齐、样式、粗体 / 斜体、字距。
+private struct TextBoxEditor: View {
+    @ObservedObject var session: DecorateSession
+    let placement: TextPlacement
+    @FocusState private var editing: Bool
+    @State private var showsFonts = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            TextEditor(text: Binding(
+                get: { placement.text },
+                set: { value in session.updateText(placement.id) { $0.text = value } }
+            ))
+            .font(.system(size: 13))
+            .foregroundStyle(Palette.ink)
+            .scrollContentBackground(.hidden)
+            .padding(6)
+            .frame(height: 64)
+            .background(RoundedRectangle(cornerRadius: 5, style: .continuous).fill(Color.white.opacity(0.75)))
+            .overlay(RoundedRectangle(cornerRadius: 5, style: .continuous).stroke(editing ? Palette.terracotta.opacity(0.6) : Palette.hairline, lineWidth: editing ? 1.2 : 0.6))
+            .focused($editing)
+            .onChange(of: editing) { _, now in
+                if now { session.checkpoint() }
+            }
+            .onChange(of: session.textFocusRequest) { _, _ in editing = true }
+            .onAppear {
+                if session.textFocusRequest > 0 { editing = true }
+            }
+
+            HStack(spacing: 8) {
+                Button {
+                    showsFonts.toggle()
+                } label: {
+                    HStack {
+                        Text(placement.fontFamily)
+                            .font(.custom(placement.fontFamily, size: 14))
+                            .foregroundStyle(Palette.ink)
+                            .lineLimit(1)
+                        Spacer(minLength: 4)
+                        Image(systemName: "chevron.down")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundStyle(Palette.inkSoft)
+                    }
+                    .padding(.horizontal, 10)
+                    .frame(height: 30)
+                    .background(RoundedRectangle(cornerRadius: 5, style: .continuous).fill(Color.white.opacity(0.75)))
+                    .overlay(RoundedRectangle(cornerRadius: 5, style: .continuous).stroke(Palette.hairline, lineWidth: 0.6))
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .popover(isPresented: $showsFonts, arrowEdge: .leading) {
+                    FontPicker(selection: placement.fontFamily) { family in
+                        session.editText(placement.id) { $0.fontFamily = family }
+                    }
+                    .environment(\.colorScheme, .light)
+                }
+                Toggle("粗", isOn: Binding(get: { placement.bold }, set: { value in session.editText(placement.id) { $0.bold = value } }))
+                Toggle("斜", isOn: Binding(get: { placement.italic }, set: { value in session.editText(placement.id) { $0.italic = value } }))
+            }
+            .toggleStyle(.checkbox)
+
+            HStack(spacing: 8) {
+                Text("大小")
+                    .font(RetroFont.typewriter(11))
+                    .foregroundStyle(Palette.inkSoft)
+                Slider(
+                    value: Binding(get: { placement.size }, set: { value in session.updateText(placement.id) { $0.size = value } }),
+                    in: 0.025...0.25,
+                    onEditingChanged: { editing in if editing { session.checkpoint() } }
+                )
+            }
+            HStack(spacing: 8) {
+                Text("字距")
+                    .font(RetroFont.typewriter(11))
+                    .foregroundStyle(Palette.inkSoft)
+                Slider(
+                    value: Binding(get: { placement.tracking }, set: { value in session.updateText(placement.id) { $0.tracking = value } }),
+                    in: -0.05...0.4,
+                    onEditingChanged: { editing in if editing { session.checkpoint() } }
+                )
+            }
+
+            HStack(spacing: 6) {
+                ForEach(DecorateSession.paints + [DecorateSession.Paint(name: "纸白", hex: "#FFFFFF")]) { paint in
+                    Button {
+                        session.editText(placement.id) { $0.color = paint.hex }
+                    } label: {
+                        Circle()
+                            .fill(Color(rgbHex: paint.hex))
+                            .frame(width: 18, height: 18)
+                            .overlay(Circle().stroke(Palette.ink.opacity(placement.color == paint.hex ? 0.9 : 0.2), lineWidth: placement.color == paint.hex ? 2 : 0.6))
+                    }
+                    .buttonStyle(.plain)
+                    .help(paint.name)
+                }
+            }
+
+            Picker("对齐", selection: Binding(get: { placement.alignment }, set: { value in session.editText(placement.id) { $0.alignment = value } })) {
+                Text("左").tag(-1)
+                Text("中").tag(0)
+                Text("右").tag(1)
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+
+            HStack(spacing: 6) {
+                ForEach(TextPlacement.Style.allCases) { style in
+                    Pill(title: style.displayName, selected: placement.style == style) {
+                        session.editText(placement.id) { $0.style = style }
+                    }
+                }
+                Spacer(minLength: 0)
+                Button {
+                    session.deleteSelectedText()
+                } label: {
+                    Image(systemName: "trash")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(Palette.printRed)
+                }
+                .buttonStyle(.plain)
+                .help("删掉这段字")
+            }
+        }
+        .padding(12)
+        .background(RoundedRectangle(cornerRadius: 6, style: .continuous).fill(Palette.paperDeep.opacity(0.7)))
+    }
+}
+
+/// 字体选择：搜索框 + 我导入的 / 推荐 / 全部字体（每一行用它自己的字体显示）+「导入字体…」。
+private struct FontPicker: View {
+    let selection: String
+    let choose: (String) -> Void
+    @State private var query = ""
+    @State private var imported: [String] = Services.fonts.families
+    @State private var families: [String] = FontBook.sortedFamilies
+    @State private var message: String?
+
+    private static let recommendedNames = [
+        "Didot", "Bodoni 72", "Baskerville", "Big Caslon", "Hoefler Text", "Cochin", "American Typewriter",
+        "Courier New", "Futura", "Gill Sans", "Avenir Next Condensed", "Bradley Hand", "Snell Roundhand",
+        "Savoye LET", "Songti SC", "Kaiti SC", "Hiragino Mincho ProN", "PingFang SC"
+    ]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            TextField("搜索字体", text: $query)
+                .textFieldStyle(.roundedBorder)
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 0) {
+                    let filter = query.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let recommended = Self.recommendedNames.filter { FontBook.isInstalled($0) }
+                    if !imported.isEmpty {
+                        header("我导入的")
+                        ForEach(matching(imported, filter), id: \.self) { name in
+                            row(name)
+                                .contextMenu {
+                                    Button("删除这个字体", role: .destructive) {
+                                        Services.fonts.remove(family: name)
+                                        imported = Services.fonts.families
+                                        families = FontBook.sortedFamilies
+                                    }
+                                }
+                        }
+                    }
+                    if filter.isEmpty {
+                        header("推荐")
+                        ForEach(recommended, id: \.self) { row($0) }
+                    }
+                    header(filter.isEmpty ? "全部字体" : "搜索结果")
+                    ForEach(matching(families, filter), id: \.self) { row($0) }
+                }
+            }
+            .frame(height: 300)
+            HStack {
+                Button("导入字体…") { importFonts() }
+                if let message {
+                    Text(message)
+                        .font(.system(size: 11))
+                        .foregroundStyle(Palette.inkSoft)
+                        .lineLimit(1)
+                }
+            }
+        }
+        .padding(12)
+        .frame(width: 280)
+        .background(Palette.paper)
+    }
+
+    private func matching(_ names: [String], _ filter: String) -> [String] {
+        guard !filter.isEmpty else { return names }
+        return names.filter { $0.localizedCaseInsensitiveContains(filter) }
+    }
+
+    private func header(_ title: String) -> some View {
+        Text(title)
+            .font(RetroFont.typewriter(10.5))
+            .tracking(1)
+            .foregroundStyle(Palette.inkSoft)
+            .padding(.top, 8)
+            .padding(.bottom, 2)
+    }
+
+    private func row(_ name: String) -> some View {
+        Button {
+            choose(name)
+        } label: {
+            HStack {
+                Text(name)
+                    .font(.custom(name, size: 15))
+                    .foregroundStyle(Palette.ink)
+                    .lineLimit(1)
+                Spacer(minLength: 4)
+                if name == selection {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(Palette.terracotta)
+                }
+            }
+            .padding(.vertical, 5)
+            .padding(.horizontal, 4)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// 导入 .ttf / .otf / .ttc：复制进照片库的 fonts/，在本进程注册，选中第一个家族。
+    private func importFonts() {
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = [.font]
+        panel.allowsMultipleSelection = true
+        panel.canChooseDirectories = false
+        panel.message = "选几个字体文件（.ttf / .otf / .ttc），导入后只在 Nocchi 里用"
+        guard panel.runModal() == .OK else { return }
+        var added: [String] = []
+        var failed = 0
+        for url in panel.urls {
+            if let names = try? Services.fonts.importFont(from: url) {
+                added.append(contentsOf: names)
+            } else {
+                failed += 1
+            }
+        }
+        imported = Services.fonts.families
+        families = FontBook.sortedFamilies
+        if let first = added.first {
+            choose(first)
+        }
+        message = failed > 0 ? "有 \(failed) 个文件读不出字体" : (added.isEmpty ? nil : "导入了 \(added.count) 个字体")
     }
 }

@@ -215,6 +215,7 @@ public final class PrintLayerCache: @unchecked Sendable {
         hasher.combine(record.showsLocation)
         hasher.combine(record.showsTagStickers)
         hasher.combine(record.stickers)
+        hasher.combine(record.texts)
         hasher.combine(record.strokes)
         hasher.combine(record.seed)
         hasher.combine(paper)

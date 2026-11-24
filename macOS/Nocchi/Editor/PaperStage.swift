@@ -17,16 +17,27 @@ struct PaperStage: View {
             paperLayer(height: height)
             Color.clear
                 .contentShape(Rectangle())
-                .onTapGesture { session.selectedSticker = nil }
+                .onTapGesture {
+                    session.selectedSticker = nil
+                    session.selectedText = nil
+                }
             StrokeLayer(strokes: session.record.strokes, width: width)
             ForEach(session.record.stickers) { sticker in
                 StickerItem(session: session, sticker: sticker, paperWidth: width)
             }
+            ForEach(session.record.texts) { text in
+                TextItem(session: session, placement: text, paperWidth: width)
+            }
             if let live = session.liveStroke {
                 StrokeLayer(strokes: [live], width: width)
             }
-            if session.tool != .select {
+            switch session.tool {
+            case .ink, .eraser:
                 InkInput(session: session, width: width)
+            case .text:
+                TextTapInput(session: session, width: width)
+            case .select:
+                EmptyView()
             }
         }
         .frame(width: width, height: height)
@@ -35,13 +46,14 @@ struct PaperStage: View {
         .focused($focused)
         .focusEffectDisabled()
         .onKeyPress(.delete) {
-            guard session.selectedSticker != nil else { return .ignored }
-            session.deleteSelectedSticker()
+            guard session.selectedSticker != nil || session.selectedText != nil else { return .ignored }
+            session.deleteSelection()
             return .handled
         }
         .onKeyPress(.escape) {
-            guard session.selectedSticker != nil else { return .ignored }
+            guard session.selectedSticker != nil || session.selectedText != nil else { return .ignored }
             session.selectedSticker = nil
+            session.selectedText = nil
             return .handled
         }
         .onAppear { session.refreshPaperLayer(width: width) }
@@ -49,6 +61,9 @@ struct PaperStage: View {
         .onChange(of: session.record) { _, _ in session.refreshPaperLayer(width: width) }
         .onChange(of: session.selectedSticker) { _, id in
             if id != nil { focused = true }
+        }
+        .onChange(of: session.selectedText) { _, id in
+            if id != nil, session.tab != .text { focused = true }
         }
     }
 
@@ -109,7 +124,7 @@ private struct InkInput: View {
                             }
                         case .eraser:
                             session.erase(at: point)
-                        case .select:
+                        case .select, .text:
                             break
                         }
                     }
@@ -249,5 +264,175 @@ private struct HandleKnob: View {
             .overlay(Circle().stroke(Color.white, lineWidth: 1.5))
             .shadow(color: .black.opacity(0.3), radius: 2, y: 1)
             .contentShape(Circle())
+    }
+}
+
+/// 文字工具：在照片上点一下，就在那里加一个文字框。
+private struct TextTapInput: View {
+    @ObservedObject var session: DecorateSession
+    let width: CGFloat
+
+    var body: some View {
+        Color.clear
+            .contentShape(Rectangle())
+            .gesture(
+                SpatialTapGesture()
+                    .onEnded { value in
+                        session.addText(at: CGPoint(x: value.location.x / width, y: value.location.y / width))
+                    }
+            )
+            .onHover { inside in
+                if inside { NSCursor.iBeam.push() } else { NSCursor.pop() }
+            }
+    }
+}
+
+/// 相纸上的一个文字框：和导出用同一个画法（`TextArt`）。选中时虚线框 + 缩放 / 旋转手柄 + 删除；双击改字。
+private struct TextItem: View {
+    @ObservedObject var session: DecorateSession
+    let placement: TextPlacement
+    let paperWidth: CGFloat
+    @State private var dragOrigin: CGPoint?
+    @State private var handleOrigin: (size: Double, rotation: Double, vector: CGVector)?
+
+    init(session: DecorateSession, placement: TextPlacement, paperWidth: CGFloat) {
+        self.session = session
+        self.placement = placement
+        self.paperWidth = paperWidth
+    }
+
+    var body: some View {
+        let frame = TextArt.frame(of: placement, paperWidth: paperWidth)
+        let selected = session.selectedText == placement.id
+        ZStack {
+            if let image = TextImageCache.shared.image(for: placement, paperWidth: paperWidth) {
+                Image(nsImage: image)
+                    .resizable()
+                    .interpolation(.high)
+            } else {
+                RoundedRectangle(cornerRadius: 3)
+                    .stroke(Palette.terracotta.opacity(0.6), style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
+            }
+            if selected {
+                Rectangle()
+                    .strokeBorder(Palette.cobalt, style: StrokeStyle(lineWidth: 1.2, dash: [4, 3]))
+                    .padding(-5)
+                    .allowsHitTesting(false)
+            }
+        }
+        .frame(width: max(frame.width, 12), height: max(frame.height, 12))
+        .overlay(alignment: .bottomTrailing) {
+            if selected {
+                TextKnob(symbol: "arrow.up.left.and.arrow.down.right")
+                    .offset(x: 12, y: 12)
+                    .gesture(handleGesture(center: CGPoint(x: frame.midX, y: frame.midY)))
+                    .help("拖动缩放、旋转")
+            }
+        }
+        .overlay(alignment: .topLeading) {
+            if selected {
+                TextKnob(symbol: "xmark")
+                    .offset(x: -12, y: -12)
+                    .onTapGesture { session.deleteSelectedText() }
+                    .help("删掉这段字")
+            }
+        }
+        .rotationEffect(.degrees(placement.rotation))
+        .contentShape(Rectangle())
+        .onTapGesture(count: 2) {
+            session.selectedText = placement.id
+            session.tab = .text
+            session.textFocusRequest += 1
+        }
+        .onTapGesture {
+            session.selectedText = placement.id
+        }
+        .gesture(moveGesture)
+        .allowsHitTesting(session.tool == .select)
+        .position(x: frame.midX, y: frame.midY)
+    }
+
+    private var moveGesture: some Gesture {
+        DragGesture(minimumDistance: 1, coordinateSpace: .named(PaperStage.space))
+            .onChanged { value in
+                if dragOrigin == nil {
+                    session.checkpoint()
+                    session.selectedText = placement.id
+                    dragOrigin = CGPoint(x: placement.x, y: placement.y)
+                }
+                guard let origin = dragOrigin else { return }
+                let maxY = session.paperHeightRatio + 0.1
+                let x = min(max(Double(origin.x) + Double(value.translation.width / paperWidth), -0.1), 1.1)
+                let y = min(max(Double(origin.y) + Double(value.translation.height / paperWidth), -0.1), maxY)
+                session.updateText(placement.id) { text in
+                    text.x = x
+                    text.y = y
+                }
+            }
+            .onEnded { _ in
+                dragOrigin = nil
+            }
+    }
+
+    private func handleGesture(center: CGPoint) -> some Gesture {
+        DragGesture(minimumDistance: 0, coordinateSpace: .named(PaperStage.space))
+            .onChanged { value in
+                let vector = CGVector(dx: value.location.x - center.x, dy: value.location.y - center.y)
+                if handleOrigin == nil {
+                    session.checkpoint()
+                    let start = CGVector(dx: value.startLocation.x - center.x, dy: value.startLocation.y - center.y)
+                    handleOrigin = (placement.size, placement.rotation, start)
+                }
+                guard let origin = handleOrigin else { return }
+                let startLength = max(4, hypot(origin.vector.dx, origin.vector.dy))
+                let length = hypot(vector.dx, vector.dy)
+                let angle = atan2(vector.dy, vector.dx) - atan2(origin.vector.dy, origin.vector.dx)
+                let size = min(max(origin.size * Double(length / startLength), 0.02), 0.4)
+                let rotation = origin.rotation + Double(angle) * 180 / .pi
+                session.updateText(placement.id) { text in
+                    text.size = size
+                    text.rotation = rotation
+                }
+            }
+            .onEnded { _ in
+                handleOrigin = nil
+            }
+    }
+}
+
+/// 文字框手柄：白底钴蓝小圆钮（和贴纸的陶土橙区分开）。
+private struct TextKnob: View {
+    let symbol: String
+
+    var body: some View {
+        Image(systemName: symbol)
+            .font(.system(size: 8, weight: .heavy))
+            .foregroundStyle(Color.white)
+            .frame(width: 18, height: 18)
+            .background(Circle().fill(Palette.cobalt))
+            .overlay(Circle().stroke(Color.white, lineWidth: 1.5))
+            .shadow(color: .black.opacity(0.3), radius: 2, y: 1)
+            .contentShape(Circle())
+    }
+}
+
+/// 文字框的渲染缓存（2 倍像素，按内容和相纸宽度）。
+@MainActor
+final class TextImageCache {
+    static let shared = TextImageCache()
+    private let cache: NSCache<NSString, NSImage> = {
+        let cache = NSCache<NSString, NSImage>()
+        cache.countLimit = 160
+        return cache
+    }()
+
+    func image(for placement: TextPlacement, paperWidth: CGFloat) -> NSImage? {
+        let bucket = Int((paperWidth / 8).rounded()) * 8
+        let key = "\(placement.hashValue)#\(bucket)" as NSString
+        if let hit = cache.object(forKey: key) { return hit }
+        guard let cgImage = TextArt.image(placement, paperWidth: CGFloat(bucket) * 2) else { return nil }
+        let image = NSImage(cgImage: cgImage, size: NSSize(width: CGFloat(cgImage.width) / 2, height: CGFloat(cgImage.height) / 2))
+        cache.setObject(image, forKey: key)
+        return image
     }
 }

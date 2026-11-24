@@ -27,6 +27,9 @@ enum Services {
     }()
 
     static let processor: FilmProcessor = FilmProcessor(lutDirectory: library.lutsDirectory)
+
+    /// 用户导入的字体（照片库的 `fonts/`，启动时在本进程注册）。
+    static let fonts = CustomFontStore(directory: library.root.appendingPathComponent("fonts", isDirectory: true))
 }
 
 /// 音效（安静模式由 `SoundPlayer.isMuted` 控制）。

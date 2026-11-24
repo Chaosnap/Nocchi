@@ -153,6 +153,8 @@ public struct PhotoRecord: Codable, Hashable, Identifiable, Sendable {
     public var tags: [String]
     /// 贴纸（按数组顺序从下往上叠）。
     public var stickers: [StickerPlacement]
+    /// 照片上任意位置的文字框（叠在贴纸上面、涂鸦下面）。
+    public var texts: [TextPlacement]
     /// 白边上是否印标签。
     public var showsTags: Bool
     /// 白边上是否印地点。
@@ -185,6 +187,7 @@ public struct PhotoRecord: Codable, Hashable, Identifiable, Sendable {
         location: String? = nil,
         tags: [String] = [],
         stickers: [StickerPlacement] = [],
+        texts: [TextPlacement] = [],
         showsTags: Bool = true,
         showsLocation: Bool = true,
         showsTagStickers: Bool = true,
@@ -214,6 +217,7 @@ public struct PhotoRecord: Codable, Hashable, Identifiable, Sendable {
         self.location = location
         self.tags = tags
         self.stickers = stickers
+        self.texts = texts
         self.showsTags = showsTags
         self.showsLocation = showsLocation
         self.showsTagStickers = showsTagStickers
@@ -225,7 +229,7 @@ public struct PhotoRecord: Codable, Hashable, Identifiable, Sendable {
     private enum CodingKeys: String, CodingKey {
         case id, createdAt, source, body, stockID, stockName, format, seed, negatives, frameOffsets, strokes
         case caption, showsDate, blotches, developed, printFile, desk, tornFrom
-        case takenAt, templateID, captionFont, location, tags, stickers, showsTags, showsLocation, showsTagStickers, editedAt
+        case takenAt, templateID, captionFont, location, tags, stickers, texts, showsTags, showsLocation, showsTagStickers, editedAt
     }
 
     public init(from decoder: Decoder) throws {
@@ -254,6 +258,7 @@ public struct PhotoRecord: Codable, Hashable, Identifiable, Sendable {
         location = try c.decodeIfPresent(String.self, forKey: .location)
         tags = try c.decode(.tags, default: [])
         stickers = try c.decode(.stickers, default: [])
+        texts = try c.decode(.texts, default: [])
         showsTags = try c.decode(.showsTags, default: true)
         showsLocation = try c.decode(.showsLocation, default: true)
         showsTagStickers = try c.decode(.showsTagStickers, default: true)
@@ -286,6 +291,7 @@ public struct PhotoRecord: Codable, Hashable, Identifiable, Sendable {
         try c.encodeIfPresent(location, forKey: .location)
         try c.encode(tags, forKey: .tags)
         try c.encode(stickers, forKey: .stickers)
+        try c.encode(texts, forKey: .texts)
         try c.encode(showsTags, forKey: .showsTags)
         try c.encode(showsLocation, forKey: .showsLocation)
         try c.encode(showsTagStickers, forKey: .showsTagStickers)

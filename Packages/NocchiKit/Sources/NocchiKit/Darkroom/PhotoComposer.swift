@@ -25,6 +25,8 @@ public struct PrintSpec {
     public var tagStickerIDs: [String]
     /// 用户贴的贴纸（按顺序从下往上）。
     public var stickers: [StickerPlacement]
+    /// 照片上的文字框（叠在贴纸上面、笔画下面）。
+    public var texts: [TextPlacement]
     /// 模板图样的随机种子（编号、星星位置……）。
     public var seed: UInt64
 
@@ -43,6 +45,7 @@ public struct PrintSpec {
         locationLine: String? = nil,
         tagStickerIDs: [String] = [],
         stickers: [StickerPlacement] = [],
+        texts: [TextPlacement] = [],
         seed: UInt64 = 0
     ) {
         self.layout = layout
@@ -59,6 +62,7 @@ public struct PrintSpec {
         self.locationLine = locationLine
         self.tagStickerIDs = tagStickerIDs
         self.stickers = stickers
+        self.texts = texts
         self.seed = seed
     }
 
@@ -89,6 +93,7 @@ public struct PrintSpec {
             locationLine: record.locationLine,
             tagStickerIDs: stickerIDs,
             stickers: record.stickers,
+            texts: record.texts,
             seed: record.seed
         )
     }
@@ -141,7 +146,7 @@ public enum PhotoComposer {
     }
 
     /// 照片上面的一切：窗口内凹阴影与发丝边、模板前景图样、题字 / 日期 / 地点 / 标签、
-    /// 标签贴纸、贴纸、笔画（其余透明）。
+    /// 标签贴纸、贴纸与文字框（`includeStickers`）、笔画（其余透明）。
     public static func renderOverlay(_ spec: PrintSpec, includeStickers: Bool = true, includeStrokes: Bool = true) -> CGImage? {
         guard let ctx = makeContext(spec) else { return nil }
         drawOverlay(ctx, spec, spec.pixelSize, includeStickers: includeStickers, includeStrokes: includeStrokes)
@@ -239,6 +244,9 @@ public enum PhotoComposer {
         if includeStickers {
             for sticker in spec.stickers {
                 StickerArt.draw(sticker, in: ctx, paperWidth: width)
+            }
+            for text in spec.texts {
+                TextArt.draw(text, in: ctx, paperWidth: width)
             }
         }
         if includeStrokes {

@@ -12,6 +12,8 @@ final class DecorateSession: ObservableObject {
         case select
         case ink(InkTool)
         case eraser
+        /// 在照片上点一下，加一个文字框。
+        case text
     }
 
     enum Tab: String, CaseIterable, Identifiable {
@@ -60,7 +62,15 @@ final class DecorateSession: ObservableObject {
     @Published var paint = "#2B2A28"
     /// 笔画粗细倍数（0.5…2）。
     @Published var thickness: Double = 1
-    @Published var selectedSticker: UUID?
+    @Published var selectedSticker: UUID? {
+        didSet { if selectedSticker != nil, selectedText != nil { selectedText = nil } }
+    }
+    /// 选中的文字框（和贴纸互斥）。
+    @Published var selectedText: UUID? {
+        didSet { if selectedText != nil, selectedSticker != nil { selectedSticker = nil } }
+    }
+    /// 检查器里的文字框编辑器要获得焦点（双击文字框、新加文字框时 +1）。
+    @Published var textFocusRequest = 0
     @Published var liveStroke: InkStroke?
     @Published var tab: Tab = .stickers
     @Published private(set) var canUndo = false
@@ -180,6 +190,68 @@ final class DecorateSession: ObservableObject {
         }
     }
 
+    // MARK: - 文字框
+
+    private static let lastFontKey = "desk.lastTextFont"
+
+    /// 上次用的字体（新文字框沿用）。
+    var lastFontFamily: String {
+        get { UserDefaults.standard.string(forKey: Self.lastFontKey) ?? "Baskerville" }
+        set { UserDefaults.standard.set(newValue, forKey: Self.lastFontKey) }
+    }
+
+    /// 加一个文字框（`point` 是相纸宽度单位；nil 放在相纸中间偏上）。
+    func addText(at point: CGPoint? = nil) {
+        let placement = TextPlacement(
+            text: "写点什么",
+            fontFamily: lastFontFamily,
+            size: 0.075,
+            color: paint == "#F4F1EA" ? "#2B2A28" : paint,
+            x: Double(point?.x ?? 0.5),
+            y: Double(point?.y ?? CGFloat(paperHeightRatio * 0.36)),
+            rotation: point == nil ? Double.random(in: -4...4) : 0
+        )
+        edit { $0.texts.append(placement) }
+        selectedText = placement.id
+        tool = .select
+        tab = .text
+        textFocusRequest += 1
+    }
+
+    func text(_ id: UUID) -> TextPlacement? {
+        record.texts.first { $0.id == id }
+    }
+
+    /// 连续修改（拖动、打字）：不记撤销；开始前自己 `checkpoint()`。
+    func updateText(_ id: UUID, _ change: (inout TextPlacement) -> Void) {
+        guard let index = record.texts.firstIndex(where: { $0.id == id }) else { return }
+        change(&record.texts[index])
+    }
+
+    /// 一次性的修改（换字体、颜色、样式）：记一步撤销。
+    func editText(_ id: UUID, _ change: (inout TextPlacement) -> Void) {
+        checkpoint()
+        updateText(id, change)
+        if let family = text(id)?.fontFamily {
+            lastFontFamily = family
+        }
+    }
+
+    func deleteSelectedText() {
+        guard let id = selectedText else { return }
+        edit { $0.texts.removeAll { $0.id == id } }
+        selectedText = nil
+    }
+
+    /// ⌫：删掉选中的贴纸或文字框。
+    func deleteSelection() {
+        if selectedSticker != nil {
+            deleteSelectedSticker()
+        } else if selectedText != nil {
+            deleteSelectedText()
+        }
+    }
+
     // MARK: - 笔画
 
     func beginStroke(at point: CGPoint) {
@@ -231,6 +303,7 @@ final class DecorateSession: ObservableObject {
         let pixels = max(64, Int(width * 2))
         var probe = record
         probe.stickers = []
+        probe.texts = []
         probe.strokes = []
         probe.desk = nil
         probe.editedAt = nil

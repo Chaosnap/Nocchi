@@ -214,6 +214,10 @@ private struct ToolRail: View {
                 session.tool = .eraser
                 session.selectedSticker = nil
             }
+            RailButton(symbol: "t.square", help: "文字：在照片上点一下加一段字", selected: session.tool == .text) {
+                session.tool = .text
+                session.selectedSticker = nil
+            }
             RailDivider()
             ForEach(DecorateSession.paints) { paint in
                 PaintDot(hex: paint.hex, name: paint.name, selected: session.paint == paint.hex) {
