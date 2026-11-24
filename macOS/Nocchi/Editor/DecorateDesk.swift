@@ -24,8 +24,7 @@ final class DecorateDesk {
             ?? Services.library.record(id: record.id)
             ?? record
         if let window, let session, session.record.id == current.id {
-            NSApp.activate()
-            window.makeKeyAndOrderFront(nil)
+            WindowManager.bringForward(window)
             return
         }
         close()
@@ -87,8 +86,7 @@ final class DecorateDesk {
         }
         self.window = window
         self.session = session
-        NSApp.activate()
-        window.makeKeyAndOrderFront(nil)
+        WindowManager.bringForward(window)
     }
 
     func close() {

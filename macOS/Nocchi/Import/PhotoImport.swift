@@ -54,9 +54,8 @@ final class PhotoLibraryPickerWindow {
 
     func show() {
         NotchController.shared.collapse()
-        NSApp.activate()
         if let window {
-            window.makeKeyAndOrderFront(nil)
+            WindowManager.bringForward(window)
             return
         }
         let window = NSWindow(
@@ -72,7 +71,7 @@ final class PhotoLibraryPickerWindow {
             self?.window?.close()
         }).scrollIndicators(.never))
         window.center()
-        window.makeKeyAndOrderFront(nil)
+        WindowManager.bringForward(window)
         self.window = window
     }
 }

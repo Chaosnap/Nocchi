@@ -70,6 +70,8 @@ final class NotchController: ObservableObject {
     @Published private(set) var toastSymbol: String = "camera.fill"
     /// 自拍倒数（nil 表示不在倒数）。
     @Published var countdown: Int?
+    /// 装着大头贴机时，取景器正在拍第几张（1…4；nil 表示还没开始）。
+    @Published var boothShot: Int?
     @Published private(set) var isCapturing = false
     @Published private(set) var dropKind: NotchDropKind = .photo
     @Published private(set) var toastStyle: NotchToastStyle = .compact
@@ -167,8 +169,9 @@ final class NotchController: ObservableObject {
         case .idle:
             return CGSize(width: w0, height: h0)
         case .hover:
+            // 四个拍摄按钮 + 胶卷、相机、相纸三张小卡 + 一列小按钮；暂存架里有照片时再多一个按钮。
             let extra: CGFloat = NotchShelf.shared.isEmpty ? 0 : 92
-            return CGSize(width: max(w0 + 420, 610) + extra, height: h0 + 110)
+            return CGSize(width: max(w0 + 504, 694) + extra, height: h0 + 110)
         case .films:
             return CGSize(width: max(w0 + 470, 720), height: h0 + 176)
         case .selfie:
@@ -400,20 +403,29 @@ final class NotchController: ObservableObject {
         }
     }
 
-    /// 从 Finder 拖来的图片文件：每张都冲印成拍立得。
+    /// 从 Finder 拖来的图片文件：先收齐，再交给暗房（即显相机一张一张冲，大头贴机每四张拼一条）。
     func acceptDroppedFiles(_ providers: [NSItemProvider]) -> Bool {
-        var accepted = false
-        for provider in providers where provider.canLoadObject(ofClass: NSURL.self) {
-            accepted = true
-            _ = provider.loadObject(ofClass: NSURL.self) { object, _ in
-                guard let url = object as? URL ?? (object as? NSURL).map({ $0 as URL }) else { return }
-                Task { @MainActor in
-                    Darkroom.shared.developDroppedFile(at: url)
+        let candidates = providers.filter { $0.canLoadObject(ofClass: NSURL.self) }
+        setMode(.idle)
+        guard !candidates.isEmpty else { return false }
+        Task {
+            var urls: [URL] = []
+            for provider in candidates {
+                if let url = await Self.fileURL(from: provider) {
+                    urls.append(url)
                 }
             }
+            Darkroom.shared.developDroppedFiles(at: urls)
         }
-        setMode(.idle)
-        return accepted
+        return true
+    }
+
+    private static func fileURL(from provider: NSItemProvider) async -> URL? {
+        await withCheckedContinuation { (continuation: CheckedContinuation<URL?, Never>) in
+            _ = provider.loadObject(ofClass: NSURL.self) { object, _ in
+                continuation.resume(returning: object as? URL ?? (object as? NSURL).map { $0 as URL })
+            }
+        }
     }
 
     func showToast(_ text: String, symbol: String, duration: TimeInterval = 2.4, live: Bool = false) {
@@ -502,6 +514,7 @@ final class NotchController: ObservableObject {
         guard mode == .selfie else { return }
         removeKeyMonitor()
         countdown = nil
+        boothShot = nil
         CameraService.shared.stop()
         setMode(.idle)
     }

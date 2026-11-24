@@ -142,17 +142,29 @@ private struct ModeSegment: View {
 }
 
 /// 看法图标：Blender 渲染的小物件，缺图时用 SF Symbol。
+///
+/// 渲染图四周留了地方给柔和的地面阴影（`design/blender/icons/make_icons.py` 的 `PAD`、`ANCHOR`），
+/// 所以按 `overscan` 放大画、再把物体挪回中间：布局上仍占 `size` 见方，阴影自然地淡出到格子外面，不会被截成直角。
 struct ModeIcon: View {
     let mode: AlbumMode
     let size: CGFloat
 
+    /// (1 − 2 × 0.08) / (1 − 2 × 0.22)：物体和以前（留边 8%）一样大。
+    static let overscan: CGFloat = 1.5
+    /// 渲染时物体放在画面 45% 处（阴影往右下落），这里挪回中心。
+    static let anchorShift: CGFloat = 0.05
+
     var body: some View {
         Group {
             if BundledImage.has(mode.iconName) {
+                let drawn = size * Self.overscan
                 Image(mode.iconName)
                     .resizable()
                     .interpolation(.high)
                     .aspectRatio(contentMode: .fit)
+                    .frame(width: drawn, height: drawn)
+                    .offset(x: drawn * Self.anchorShift, y: drawn * Self.anchorShift)
+                    .allowsHitTesting(false)
             } else {
                 Image(systemName: mode.symbol)
                     .font(.system(size: size * 0.55, weight: .semibold))

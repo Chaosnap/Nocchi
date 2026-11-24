@@ -238,6 +238,47 @@ final class AppModel: ObservableObject {
         instantFormat = choices[(index + 1) % choices.count]
     }
 
+    // MARK: - 机身
+
+    /// 装着大头贴机：自拍、屏幕快门、冲印照片都拍成一条四格大头贴（版式、相框、黑白用大头贴机的设置）。
+    var shootsBooth: Bool { currentBody == .photoBooth }
+
+    /// 在能用的机身之间轮换（刘海里的「换相机」）。
+    func cycleBody() {
+        let choices = CameraBody.allCases.filter(\.isAvailable)
+        guard !choices.isEmpty else { return }
+        let index = choices.firstIndex(of: currentBody) ?? 0
+        bodyID = choices[(index + 1) % choices.count].rawValue
+    }
+
+    /// 这台相机用的相纸：即显相机是选好的即显相纸，大头贴机是四格条 / 四宫格。
+    var shootingFormat: FilmFormat {
+        shootsBooth ? boothSetup().format : instantFormat
+    }
+
+    /// 这台相机这一张用的胶卷：大头贴机按黑白开关和装着的胶卷挑（见 `FilmCatalog.boothStockID`）。
+    var shootingStock: FilmStock {
+        shootsBooth ? boothStock(monochrome: boothMonochrome) : currentStock
+    }
+
+    /// 刘海里装着大头贴机时这一条的版式、相框和胶卷（和大头贴机上次的选择一致）。
+    func boothSetup() -> BoothSetup {
+        let format = FilmFormat.boothChoices.contains(boothFormat) ? boothFormat : .boothStrip
+        let template = TemplateCatalog.resolve(id: defaultBoothTemplateID, format: format)
+        return BoothSetup(format: format, templateID: template.id, stockID: boothStock(monochrome: boothMonochrome).id)
+    }
+
+    /// 刘海里的「相纸」小卡：即显相机换下一种相纸，大头贴机在四格条和四宫格之间切换。
+    func cyclePaper() {
+        if shootsBooth {
+            let choices = FilmFormat.boothChoices
+            let index = choices.firstIndex(of: boothFormat) ?? 0
+            boothFormat = choices[(index + 1) % choices.count]
+        } else {
+            cycleInstantFormat()
+        }
+    }
+
     func applyRuntimeSettings() {
         SoundPlayer.shared.isMuted = quietMode
         SoundPlayer.shared.volume = Float(volume)

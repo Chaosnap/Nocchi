@@ -24,7 +24,12 @@ sys.path.insert(0, os.path.join(HERE, "..", "cardbox"))
 import studio as S  # noqa: E402
 
 OUT = os.path.join(HERE, "out")
-SIZE = 160
+SIZE = 192
+# 画布四周留出地方给地面阴影（光从左上来、阴影落向右下）：物体只占中间约 56%，阴影在画布边之前淡到透明，
+# 不会被画布截成直角。App 里按 `ModeIcon.overscan` 放大显示，物体看起来和以前一样大。
+PAD = 0.22
+ANCHOR = (0.45, 0.45)
+FADE_MARGIN = 0.16
 
 
 def scene_for_icon(samples):
@@ -33,15 +38,16 @@ def scene_for_icon(samples):
     return scene
 
 
-def finish(scene, target, name, preview, azimuth=-36.0, elevation=30.0, pad=0.08):
+def finish(scene, target, name, preview, azimuth=-36.0, elevation=30.0, pad=PAD):
     cam = S.camera(scene, target, azimuth=azimuth, elevation=elevation, distance=60.0, lens=90.0)
     meshes = [o for o in scene.objects if o.type in ("MESH", "FONT") and not o.is_shadow_catcher and not o.hide_render]
     S.light_rig(scene, cam, target, scale=1.2, power_scale=1.0, world_strength=0.35)
     S.shadow_catcher(scene, size=300.0)
-    S.fit_camera(scene, cam, meshes, pad=pad)
+    S.fit_camera(scene, cam, meshes, pad=pad, anchor=ANCHOR)
     os.makedirs(OUT, exist_ok=True)
     path = os.path.join(OUT, name + ".png")
     S.render_to(scene, path)
+    S.fade_shadow_edges(path, margin=FADE_MARGIN)
     if not preview:
         S.write_imageset(name, path, filename=name.lower() + ".png")
     return path
@@ -170,7 +176,7 @@ def icon_cardbox(preview):
     for ob in scene.objects:
         if ob.name.startswith("cutter"):
             ob.hide_render = True
-    return finish(scene, (0, 0, 4.0), "ModeIconCardBox", preview, azimuth=-50.0, elevation=32.0, pad=0.06)
+    return finish(scene, (0, 0, 4.0), "ModeIconCardBox", preview, azimuth=-50.0, elevation=32.0, pad=PAD - 0.02)
 
 
 def icon_film(preview):
@@ -214,10 +220,11 @@ def icon_film(preview):
     S.light_rig(scene, cam, target, scale=1.2, power_scale=1.0, world_strength=0.35)
     S.shadow_catcher(scene, size=300.0)
     meshes = [o for o in scene.objects if o.type == "MESH" and not o.is_shadow_catcher]
-    S.fit_camera(scene, cam, meshes, pad=0.08)
+    S.fit_camera(scene, cam, meshes, pad=PAD, anchor=ANCHOR)
     os.makedirs(OUT, exist_ok=True)
     path = os.path.join(OUT, "ModeIconFilm.png")
     S.render_to(scene, path)
+    S.fade_shadow_edges(path, margin=FADE_MARGIN)
     if not preview:
         S.write_imageset("ModeIconFilm", path, filename="modeiconfilm.png")
     return path

@@ -91,7 +91,10 @@ struct NotchRootView: View {
 
 // MARK: - Hover
 
-/// 悬停面板：上面一行是机身和胶卷计数；下面是拍摄按钮 + 胶卷罐 + 相纸 + 小工具。
+/// 悬停面板：上面一行是机身和胶卷计数；下面是拍摄按钮 + 胶卷罐 + 相机 + 相纸 + 小工具。
+///
+/// 装着哪台相机，拍出来就是什么：即显相机一张一张出，大头贴机每次拍一条四格（自拍连拍四张、
+/// 屏幕快门框选四次、冲印照片每四张拼一条）。
 private struct HoverPanel: View {
     @ObservedObject var notch: NotchController
     @ObservedObject var model: AppModel
@@ -122,11 +125,16 @@ private struct HoverPanel: View {
                 Rectangle()
                     .fill(Color.white.opacity(0.12))
                     .frame(width: 1, height: 56)
-                FilmTileButton(stock: model.currentStock, counter: model.roll.counterText) {
+                FilmTileButton(stock: model.shootingStock, counter: model.roll.counterText) {
                     notch.openFilms()
                 }
-                PaperTileButton(format: model.instantFormat) {
-                    model.cycleInstantFormat()
+                CameraTileButton(camera: model.currentBody) {
+                    model.cycleBody()
+                    Sound.play(.gearClick)
+                    Haptics.tick()
+                }
+                PaperTileButton(format: model.shootingFormat) {
+                    model.cyclePaper()
                     Haptics.tick()
                 }
                 VStack(spacing: 10) {
@@ -151,7 +159,7 @@ private struct HoverPanel: View {
             Text(model.currentBody.displayName)
                 .font(.system(size: 12, weight: .semibold, design: .rounded))
             Spacer(minLength: notch.metrics.rect.width + 24)
-            Text(model.currentStock.name)
+            Text(model.shootingStock.name)
                 .font(.system(size: 12, weight: .medium, design: .rounded))
             Text(model.roll.counterText)
                 .font(RetroFont.mono(12, weight: .bold))
@@ -196,7 +204,73 @@ private struct FilmTileButton: View {
     }
 }
 
-/// 悬停面板里的相纸：按真实比例画出相纸，点一下换下一种。
+/// 悬停面板里的相机：机身小图 + 「换相机」+ 机身名，点一下换下一台（即显相机 ↔ 大头贴机）。
+private struct CameraTileButton: View {
+    let camera: CameraBody
+    let action: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 1) {
+                CameraBodyArt(camera: camera)
+                    .frame(width: 52, height: 46)
+                    .shadow(color: .black.opacity(0.55), radius: 4, y: 2)
+                    .offset(y: hovering ? -3 : 0)
+                    .id(camera)
+                    .transition(.asymmetric(
+                        insertion: .scale(scale: 0.7).combined(with: .opacity),
+                        removal: .opacity
+                    ))
+                Text("换相机")
+                    .font(.system(size: 11, weight: .semibold, design: .rounded))
+                Text(camera.displayName)
+                    .font(.system(size: 9, weight: .medium, design: .rounded))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+                    .opacity(0.55)
+            }
+            .foregroundStyle(.white)
+            .frame(width: 76, height: 78)
+            .background(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(Color.white.opacity(hovering ? 0.16 : 0.08))
+            )
+        }
+        .buttonStyle(.plain)
+        .onHover { hovering = $0 }
+        .animation(.spring(response: 0.3, dampingFraction: 0.75), value: hovering)
+        .animation(.spring(response: 0.38, dampingFraction: 0.72), value: camera)
+        .help("\(camera.displayName) · \(camera.tagline)（点一下换下一台）")
+    }
+}
+
+/// 机身小图：相机柜里的渲染图，缺图时用 SF Symbol。
+struct CameraBodyArt: View {
+    let camera: CameraBody
+
+    private var artName: String? {
+        switch camera {
+        case .instant: return "CameraInstant"
+        case .photoBooth: return "CameraBooth"
+        default: return nil
+        }
+    }
+
+    var body: some View {
+        if let artName, BundledImage.has(artName) {
+            Image(artName)
+                .resizable()
+                .interpolation(.high)
+                .aspectRatio(contentMode: .fit)
+        } else {
+            Image(systemName: camera.symbolName)
+                .font(.system(size: 24, weight: .medium))
+        }
+    }
+}
+
+/// 悬停面板里的相纸：按真实比例画出相纸，点一下换下一种（大头贴机是四格条 / 四宫格）。
 private struct PaperTileButton: View {
     let format: FilmFormat
     let action: () -> Void
@@ -394,10 +468,22 @@ private struct SelfiePanel: View {
 
     private var header: some View {
         HStack {
-            Text("自拍 · \(model.currentStock.name)")
+            if model.shootsBooth {
+                Text("大头贴 · \(model.shootingStock.name)")
+            } else {
+                Text("自拍 · \(model.currentStock.name)")
+            }
             Spacer(minLength: notch.metrics.rect.width + 24)
-            Text("空格拍照 · Esc 退出")
-                .opacity(0.6)
+            Group {
+                if let shot = notch.boothShot {
+                    Text("第 \(shot)/4 张")
+                } else if model.shootsBooth {
+                    Text("空格连拍四张 · Esc 退出")
+                } else {
+                    Text("空格拍照 · Esc 退出")
+                }
+            }
+            .opacity(0.6)
         }
         .font(.system(size: 12, weight: .semibold, design: .rounded))
         .foregroundStyle(.white.opacity(0.85))

@@ -44,7 +44,12 @@ public final class CardBoxModel: ObservableObject {
     public var playsSounds = true
 
     private let loader: CardImageLoader
-    private var loading = Set<UUID>()
+    /// 每张图读的是照片的哪个版本（装饰过、成片重印过都会变，见 `imageVersion`）。
+    private var imageVersions: [UUID: String] = [:]
+    /// 正在读的图（照片 → 版本）。
+    private var loading: [UUID: String] = [:]
+    /// 连续读不到图的次数（成片还没写完时会读不到，过一会儿再试）。
+    private var failures: [UUID: Int] = [:]
     private var byID: [UUID: PhotoRecord] = [:]
     private var query = ""
     private var didAutoSpread = false
@@ -57,10 +62,11 @@ public final class CardBoxModel: ObservableObject {
     // MARK: - Data
 
     public func update(records: [PhotoRecord]) {
-        // 装饰过（editedAt 变了）的照片要重新读图。
+        // 装饰过、成片刚印好（版本变了）的照片要重新读图。
+        var stale: [UUID] = []
         for record in records {
-            if let old = byID[record.id], old.editedAt != record.editedAt || old.printFile != record.printFile {
-                images[record.id] = nil
+            if let old = byID[record.id], Self.imageVersion(old) != Self.imageVersion(record) {
+                stale.append(record.id)
             }
         }
         self.records = records
@@ -71,6 +77,19 @@ public final class CardBoxModel: ObservableObject {
             saveSpots()
         }
         images = images.filter { byID[$0.key] != nil }
+        imageVersions = imageVersions.filter { byID[$0.key] != nil }
+        failures = failures.filter { byID[$0.key] != nil }
+        // 摊在桌上的卡片马上读新图（旧图先留着，新图到了再换，不会闪成空白）；还在盒子里的等露面时再读。
+        for id in stale {
+            guard let record = byID[id] else { continue }
+            failures[id] = nil
+            if pulled.contains(id) {
+                loadImage(for: record)
+            } else {
+                images[id] = nil
+                imageVersions[id] = nil
+            }
+        }
         var counts: [String: Int] = [:]
         for record in records {
             counts[record.indexLetter, default: 0] += 1
@@ -105,15 +124,51 @@ public final class CardBoxModel: ObservableObject {
         images[record.id]
     }
 
+    /// 读一张卡片的图。已经是最新版本的图就不再读；读图期间照片又变了，读完再读一次最新的；
+    /// 读不到（成片还没写完）就过一会儿再试。
     public func loadImage(for record: PhotoRecord) {
-        guard images[record.id] == nil, !loading.contains(record.id) else { return }
-        loading.insert(record.id)
+        let id = record.id
+        let version = Self.imageVersion(record)
+        if images[id] != nil, imageVersions[id] == version { return }
+        if loading[id] == version { return }
+        loading[id] = version
         let loader = self.loader
-        Task {
+        Task { [weak self] in
             let image = await loader(record)
-            self.loading.remove(record.id)
-            if let image, self.byID[record.id] != nil { self.images[record.id] = image }
+            guard let self, self.loading[id] == version else { return }
+            self.loading[id] = nil
+            guard let current = self.byID[id] else { return }
+            if let image {
+                self.images[id] = image
+                self.imageVersions[id] = version
+                self.failures[id] = nil
+            } else {
+                self.retryLater(id)
+            }
+            if Self.imageVersion(current) != version {
+                self.loadImage(for: current)
+            }
         }
+    }
+
+    /// 读不到图时过一会儿再试：0.6、1.2、2.4、4.8、9.6 秒，最多 5 次。
+    private func retryLater(_ id: UUID) {
+        let attempt = (failures[id] ?? 0) + 1
+        failures[id] = attempt
+        guard attempt <= 5 else { return }
+        let delay = UInt64(0.6 * pow(2, Double(attempt - 1)) * 1_000_000_000)
+        Task { [weak self] in
+            try? await Task.sleep(nanoseconds: delay)
+            guard let self, let record = self.byID[id] else { return }
+            if self.images[id] == nil || self.imageVersions[id] != Self.imageVersion(record) {
+                self.loadImage(for: record)
+            }
+        }
+    }
+
+    /// 照片的图是哪个版本：装饰过（editedAt）、成片印好或重印（printFile）、底片张数变了都算新版本。
+    private nonisolated static func imageVersion(_ record: PhotoRecord) -> String {
+        "\(record.editedAt?.timeIntervalSinceReferenceDate ?? 0)|\(record.printFile ?? "")|\(record.negatives.count)"
     }
 
     // MARK: - Actions

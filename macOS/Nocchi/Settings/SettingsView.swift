@@ -31,17 +31,23 @@ private struct CameraCabinetTab: View {
     @ObservedObject private var model = AppModel.shared
 
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 170), spacing: 16)], spacing: 16) {
-                ForEach(CameraBody.allCases) { camera in
-                    BodyCard(camera: camera, selected: model.bodyID == camera.rawValue)
-                        .onTapGesture {
-                            guard camera.isAvailable else { return }
-                            model.bodyID = camera.rawValue
-                        }
+        VStack(alignment: .leading, spacing: 10) {
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 170), spacing: 16)], spacing: 16) {
+                    ForEach(CameraBody.allCases) { camera in
+                        BodyCard(camera: camera, selected: model.bodyID == camera.rawValue)
+                            .onTapGesture {
+                                guard camera.isAvailable else { return }
+                                model.bodyID = camera.rawValue
+                            }
+                    }
                 }
+                .padding(4)
             }
-            .padding(4)
+            Text("装上哪台，刘海就用哪台拍。即显相机：一张一张出片。大头贴机：每次拍一条四格，自拍连拍四张、屏幕快门框选四次、冲印照片每四张拼一条，用「相纸」里大头贴机的版式、相框和黑白设置。刘海面板里点「换相机」也能换。")
+                .font(.system(size: 11))
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }
@@ -50,23 +56,13 @@ private struct BodyCard: View {
     let camera: CameraBody
     let selected: Bool
 
-    private var artName: String? {
-        switch camera {
-        case .instant: return "CameraInstant"
-        case .photoBooth: return "CameraBooth"
-        default: return nil
-        }
-    }
-
     var body: some View {
         VStack(spacing: 8) {
             ZStack {
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .fill(Palette.desk)
-                if let artName {
-                    Image(artName)
-                        .resizable()
-                        .scaledToFit()
+                if camera.isAvailable {
+                    CameraBodyArt(camera: camera)
                         .padding(10)
                         .shadow(color: .black.opacity(0.25), radius: 8, y: 6)
                 } else {
@@ -524,11 +520,6 @@ private struct AboutTab: View {
             Text("版本 \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "–")")
                 .foregroundStyle(.secondary)
             Text("把刘海当成复古相机的出片口：截图或自拍之后，照片从刘海里吐出来，像真相纸一样慢慢显影。")
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: 420)
-            Text("机身、图标与纹理为原创设计（由 Codex 生成），胶卷色调由参数配方实时生成，音效为程序合成。")
-                .font(.system(size: 11))
-                .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 420)
         }

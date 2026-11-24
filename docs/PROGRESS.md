@@ -1,6 +1,6 @@
 # 进度看板（实时更新）
 
-> 最后更新：2026-11-24 · 分支 `main`（直接在 main 开发）
+> 最后更新：2026-11-24（2.1 反馈进行中）· 分支 `main`（直接在 main 开发）
 > 每次推送都会同步更新本页。构建产物见 [Actions](https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml)。
 
 ## 一眼看懂
@@ -15,12 +15,51 @@
 | 照片卡片盒（2.5D） | 🟢 CI 全绿 | Blender 照参考图建模、Cycles 渲染（`CardBoxBase` / `CardBoxFront` + 热点），卡片从盒口升起、扇形摊开 |
 | v0.2「复古冲印店」 | 🟢 全部完成，随 v1.0.0 发布 | 规范见 [DESIGN.md](DESIGN.md)；逐步进度见下面的「v0.2 改版进度」 |
 | 产品文档站与截图 | 🟢 已上线 | <https://chaosnap.github.io/Nocchi/>（VitePress，英文 + `/zh/` 中文）；截图由 `screenshots.yml` 在 Actions 上从 App 渲染，提交到 `website/public/screenshots/` |
+| 2.1 反馈（所有者 9 项） | 🟡 进行中 | 见下面「交接 · 当前批次」：卡片空白、相机有不同效果、相册强制隐藏、换相机按钮、图标阴影、卡片盒按年月日归档、中英文切换、关于页、自定义存储位置 |
 | v2.0 打磨（所有者反馈） | 🟢 随 v2.0.0 发布 | 14 项（13 项已做）+ 文字框与自定义字体 + 自定义贴纸 + 不要滚动条；**正在做：剧院暗红布帘、机身整体建模、情人节相框**，见下面「交接」第 3 节 |
 | 仓库与社区文件 | 🟢 已补齐 | GNU AGPL-3.0（与 Yohaku 一致）；英文的 README、行为准则（Contributor Covenant 3.0）、贡献指南、安全政策、隐私说明、Issue / PR 模板 |
 
 图例：🟢 完成 · 🟡 进行中 / 待验证 · 🔵 编写中 · ⚪ 未开始 · 🔴 阻塞
 
-## 交接 · 下一位从这里开始（2026-11-24）
+## 交接 · 当前批次：2.1 反馈（2026-11-24 晚，下一位从这里接）
+
+**先读**：根目录 `CLAUDE.md`（只在 GitHub Actions 上构建，本机不编译不测试）、[DESIGN.md](DESIGN.md)。审美：复古（不要手绘风）、精致、能建模的用 Blender、阴影连贯柔和。用量快不够时：先更新本节、提交并推送。
+
+所有者原话：「有时这个取出来时会空白，其次这个选择相机这个可以在大头贴那产生不一样的效果，还有为什么现在一进灵动岛那个相册那主程序就会被强制隐藏，麻烦把换相机放到换胶卷右边，还有你看顶部的这个小的图标阴影也被强制截断了不好看，这个卡片盒那，能不能在+那右边添加一个齿轮设置按钮，可以切换不是按首字母，而是按年，月，日这种支持检索，卡片盒上的标签也会随设置变化，修改这个，并使这个应用支持中英文切换，默认中文，还有关于里去掉这句话，其次储存位置可以自定义要求」
+
+| # | 要什么 | 状态 | 文件 | 做法 / 说明 |
+| --- | --- | --- | --- | --- |
+| 1 | 卡片盒抽出来的卡片有时是空白（中间一个转圈） | 🟡 已改，等 CI | `NocchiUI/CardBoxModel.swift` | 原因：卡片的图只在第一次露面时读；照片记录变了（成片刚印好、装饰过）图被清掉却不再读；读失败也不重试。修：按「版本」（`editedAt`、`printFile`、底片张数）读图，摊在桌上的卡片当场重读（旧图先留着，新图到了再换），读不到就退避重试（0.6 秒起，最多 5 次） |
+| 2 | 选相机要有不同效果（大头贴机） | 🟡 已改，等 CI | `App/AppModel.swift`（`shootsBooth`、`cycleBody`、`boothSetup`、`cyclePaper`、`shootingStock`、`shootingFormat`）、`Darkroom/Darkroom.swift`（`boothScreenShutter`、`takeBoothSelfie`、`developImported` 分批、`developDroppedFiles`）、`Notch/NotchController.swift`（`boothShot`、拖放先收齐再冲印）、`Notch/NotchRootView.swift`（自拍取景器的标题）、`App/MenuContent.swift`、`Settings/SettingsView.swift`（相机柜下面的说明） | 装着大头贴机时：自拍在取景器里连拍四张（每张前倒数、白屏闪光）、屏幕快门框选四次、冲印照片和拖到刘海的图每四张拼一条（不够四张循环补满），用大头贴机的版式、相框、黑白设置；「大头贴」按钮仍是拉帘子的完整版；接管系统截图仍按即显冲印 |
+| 3 | 从刘海进相册时「主程序被强制隐藏」 | 🟡 推断后修，**等所有者确认** | `Settings/WindowManager.swift`（`followActiveSpace`、`bringForward`）、`Editor/DecorateDesk.swift`、`Import/PhotoImport.swift` | 代码里没有任何隐藏窗口的调用。推断：2.0 起启动时就打开相册，窗口留在当时的桌面空间；之后在别的空间或全屏 App 里从刘海点「相册」，macOS 会切到那个空间，看起来就像正在用的 App 被藏起来了。修：相册、设置、装饰台、照片选择器窗口加 `.moveToActiveSpace` + `.fullScreenAuxiliary`（出现在当前空间、能浮在全屏 App 上），最小化的先还原，`orderFrontRegardless` 保证在最前。若所有者说的是别的现象，问清楚再改 |
+| 4 | 「换相机」放到「换胶卷」右边 | 🟡 已改，等 CI | `Notch/NotchRootView.swift`（`CameraTileButton`、`CameraBodyArt`）、`Notch/NotchController.swift`（悬停面板宽 +84） | 机身小图 + 「换相机」+ 机身名，点一下换下一台；装着大头贴机时胶卷罐显示大头贴机用的胶卷，「相纸」小卡切换四格条 / 四宫格 |
+| 5 | 相册顶部四个小图标的阴影被截断 | 🟡 已重渲染，等 CI | `design/blender/icons/make_icons.py`（`PAD = 0.22`、`ANCHOR`、`fade_shadow_edges`）、`Album/AlbumHeader.swift`（`ModeIcon.overscan = 1.5`） | 原因：渲染时机位贴着物体（留边 8%），阴影跑出画布被截成直角。现在四周留足地方、阴影在画布边之前淡到透明；App 里放大 1.5 倍画、布局仍占原来的格子 |
+| 6 | 卡片盒：「＋」右边加齿轮，按首字母 / 年 / 月 / 日归档，分隔卡标签跟着变，能按日期检索 | ⚪ 下一步 | 见下面「设计 6」 | |
+| 7 | App 支持中英文切换，默认中文 | ⚪ | 见下面「设计 7」 | |
+| 8 | 关于页删掉「机身、图标与纹理为原创设计（由 Codex 生成）……」 | 🟡 已改 | `Settings/SettingsView.swift`（`AboutTab`） | |
+| 9 | 存储位置可以自定义 | ⚪ | 见下面「设计 9」 | |
+
+**设计 6 · 卡片盒归档方式**
+- NocchiKit 新增 `CardIndex`：`Mode`（首字母 / 年 / 月 / 日），把照片分进最多 27 格（盒子里有 27 张分隔卡）：首字母 = A–Z、#；年 = 有照片的年份，新的在前；月 = 有照片的年月，新的在前；日 = 有照片的日子，新的在前；放不下的进最后一格「更早」。每格有短标签（标签上印的：`2026`、`11月`、`11/24`）和完整标签（吊牌上的：`2026 年 11 月`）。单元测试。
+- `CardBoxModel`：`indexMode`（UserDefaults 记住），`tabs`（每格的键、标签、张数），按格抽卡（现在是 `pull(letter:)`）。
+- Blender：`design/blender/cardbox/make_cardbox.py` 重渲染 `CardBoxBase`，分隔卡标签不再烤进字母（空白标签），`hotspots.json` 加正确的标签正面四边形（现在的 `quad` 是错的：取的是底边前后四个点），重新生成 `CardBoxHotspots.swift`。
+- `CardBoxView`：标签上的字由 SwiftUI 叠上去（沿分隔卡方向做仿射斜切，Futura 窄体），吊牌显示完整标签，卡片自己的小标签也显示所在格的短标签。
+- `AlbumHeader`：「＋」右边一个黄铜齿轮钮，菜单里选归档方式（只影响卡片盒）。
+- 检索：确认 `PhotoSearch` 能搜「2026」「2026-11」「11月」「11/24」这类日期。
+
+**设计 7 · 中英文切换**
+- 用 Apple 标准本地化：开发语言 zh-Hans，中文原文就是键；英文在 `macOS/Nocchi/Resources/en.lproj/Localizable.strings`（另放一个 `zh-Hans.lproj`，让简体中文算「可用语言」；`InfoPlist.strings` 翻译权限说明）。
+- 切换：设置 → 通用 → 语言（简体中文 / English），写 `app.language` 和 Nocchi 自己域里的 `AppleLanguages`（与「系统设置 → 语言与地区 → App」同一个键），提示重新打开（一个小 shell 等本进程退出再 `open`）。默认中文：自定义 `@main` 入口在 NSApplication 启动前写好 `AppleLanguages`。
+- 代码：SwiftUI 的字面量本来就是 `LocalizedStringKey`；String 类型的界面文字用 `String(localized:)`；NocchiKit 里显示给人看的名字（机身、相纸、模板、贴纸名、胶卷家族）返回本地化字符串；胶卷英文时显示 `englishName`，`FilmStocks.json` 加英文简介。
+- 烤在渲染图里的中文：大头贴机招牌「大头贴机」和控制台「四格条 / 四宫格 / 黑白 / 彩色」→ `make_machine.py` 出英文版图（按语言选图）。
+- 工具：`scripts/i18n/` 下写一个脚本列出所有中文字面量、检查每个键都有英文。验收：Screenshots 加一轮 `-AppleLanguages '(en)'` 的英文截图。
+
+**设计 9 · 自定义存储位置**
+- `PhotoLibrary.printsRoot` 改成可变（加锁），`relocatePrints(to:)` 把月份文件夹搬过去（成片记录里存的是相对路径，搬完照样能找到）；位置存在 UserDefaults `storage.printsRoot`，`Services` 启动时读。
+- 设置 → 通用 → 存储：显示成片位置、「更改…」（选文件夹 → 确认搬过去）、「在访达中显示」、「恢复默认」；记录与底片仍在「应用程序支持」里。
+- Info.plist 加 `NSRemovableVolumesUsageDescription`、`NSNetworkVolumesUsageDescription`（存到外接盘 / 网络盘时系统会问）。
+
+## 交接 · 上一批（v2.0，已全部完成，留作记录）
 
 仓库所有者的用量快用完了，要求把下面的事交给下一位 AI 接着做。**先读**：本页「交接须知」、[DESIGN.md](DESIGN.md)（视觉规范与跨模块接口）、根目录 `CLAUDE.md`（只在 GitHub Actions 上构建）。所有者的审美：复古（不要手绘风）、要精致高级、能用 Blender 建模的尽量建模、阴影一律连贯柔和（不能出现直角 / 割裂的阴影）。
 
@@ -143,6 +182,7 @@
 
 ## 最近更新（新的在上）
 
+- **2026-11-24 · 第 47 次推送（2.1 反馈第一批）** 卡片盒卡片空白（按版本重读图、读不到重试）；装着大头贴机时自拍 / 屏幕快门 / 冲印照片都拍成一条四格；刘海面板「换胶卷」右边加「换相机」；相册等窗口出现在当前桌面空间（推断的「主程序被强制隐藏」）；相册顶部小图标重渲染、阴影不再被截断；关于页删掉一句话。详见「交接 · 当前批次」。
 - **2026-11-24 · 第 46 次推送** 所有者：README 和网页「不要用廉价的 emoji」。新增一套原创 SVG 图标（`design/icons/make_icons.py`）：文档站首页 9 张功能卡片换成搪瓷小砖图标；README 的导航、各节标题、下载表格换成浅陶土色线条图标。README 里两个显示成裂图的徽章换掉（CI 用 GitHub 自己的工作流徽章，版本用静态徽章，**发新版时记得改 `release-v…`**）。顺手修了首页「装饰台」卡片的说明被截断（YAML 里 ` #` 是注释开头，带 #标签 的文字要加引号）。
 - **2026-11-24 · 发行版 v2.0.0** Release 工作流第 4 次运行全绿：`Nocchi-macOS-2.0.0.zip` + `SHA256SUMS.txt`。
 - **2026-11-24 · 第 45 次推送** 所有者觉得 README 头图「不够有视觉冲击力」：`DeskScene` 重做成 1800 × 1000 的暗房桌面——深暖棕黑的桌面、从刘海往下的陶土色安全灯光、颗粒与暗角；刘海出片口更大，吐出来的相片还没显影完（乳白）；四周三层相片铺满画面（后层虚化、前层更大并被画框裁掉一角），桌上两只胶卷罐。

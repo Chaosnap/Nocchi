@@ -43,8 +43,7 @@ final class WindowManager {
     ) -> NSWindow {
         NotchController.shared.collapse()
         if let existing {
-            NSApp.activate()
-            existing.makeKeyAndOrderFront(nil)
+            Self.bringForward(existing)
             return existing
         }
         var style: NSWindow.StyleMask = [.titled, .closable, .miniaturizable, .resizable]
@@ -59,6 +58,7 @@ final class WindowManager {
         )
         window.title = title
         window.isReleasedWhenClosed = false
+        Self.followActiveSpace(window)
         if chromeless {
             window.titlebarAppearsTransparent = true
             window.titleVisibility = .hidden
@@ -71,12 +71,30 @@ final class WindowManager {
         window.contentView = NSHostingView(rootView: content().scrollIndicators(.never))
         window.center()
         window.setFrameAutosaveName(autosave)
-        NSApp.activate()
-        window.makeKeyAndOrderFront(nil)
+        Self.bringForward(window)
         if chromeless {
             TrafficLights.attach(to: window, height: AlbumHeader.height, leading: 20)
         }
         return window
+    }
+
+    /// 窗口跟着你走：从刘海、菜单或程序坞打开时出现在你正在用的桌面空间里（也能浮在全屏 App 上面），
+    /// 不会把你拽到它上次所在的空间、把正在用的 App 挤到看不见。
+    static func followActiveSpace(_ window: NSWindow) {
+        window.collectionBehavior.insert(.moveToActiveSpace)
+        window.collectionBehavior.insert(.fullScreenAuxiliary)
+    }
+
+    /// 把窗口带到眼前：从程序坞还原、搬到当前空间、提到最前面并激活 Nocchi。
+    static func bringForward(_ window: NSWindow) {
+        followActiveSpace(window)
+        if window.isMiniaturized {
+            window.deminiaturize(nil)
+        }
+        NSApp.activate()
+        window.makeKeyAndOrderFront(nil)
+        // 激活请求被系统推迟时（点在不抢焦点的刘海面板上），也要先浮到最前面，而不是躲在别的 App 后面。
+        window.orderFrontRegardless()
     }
 }
 

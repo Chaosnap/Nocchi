@@ -37,9 +37,17 @@ struct MenuContent: View {
                 .tag(stock.id)
             }
         }
-        Picker("相纸", selection: $model.instantFormat) {
-            ForEach(FilmFormat.instantChoices) { format in
-                Text(format.displayName).tag(format)
+        if model.shootsBooth {
+            Picker("版式", selection: $model.boothFormat) {
+                ForEach(FilmFormat.boothChoices) { format in
+                    Text(format.displayName).tag(format)
+                }
+            }
+        } else {
+            Picker("相纸", selection: $model.instantFormat) {
+                ForEach(FilmFormat.instantChoices) { format in
+                    Text(format.displayName).tag(format)
+                }
             }
         }
         Text("这一卷：\(model.roll.counterText)")
