@@ -31,6 +31,8 @@ struct Inspector: View {
         .overlay(alignment: .leading) {
             Rectangle().fill(Color.black.opacity(0.35)).frame(width: 1)
         }
+        .environment(\.colorScheme, .light)
+        .tint(Palette.terracotta)
     }
 }
 

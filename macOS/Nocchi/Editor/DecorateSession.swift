@@ -35,7 +35,7 @@ final class DecorateSession: ObservableObject {
             switch self {
             case .stickers: "seal.fill"
             case .templates: "rectangle.on.rectangle.angled"
-            case .text: "textformat"
+            case .text: "text.quote"
             case .share: "square.and.arrow.up"
             }
         }

@@ -71,6 +71,9 @@ final class DecorateDesk {
         window.titleVisibility = .hidden
         window.titlebarSeparatorStyle = .none
         window.isReleasedWhenClosed = false
+        // 纸色检查器上的系统控件（文字框、日期、分段、勾选框）要是墨色的字：窗口固定浅色外观，
+        // 不跟随系统深色模式（深色模式下它们是白字，落在纸面上看不见）。
+        window.appearance = NSAppearance(named: .aqua)
         window.backgroundColor = NSColor(Palette.walnutDeep)
         window.contentMinSize = NSSize(width: 980, height: 700)
         window.contentView = NSHostingView(rootView: DecorateDeskView(session: session))

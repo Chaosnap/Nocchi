@@ -1,3 +1,4 @@
+import AppKit
 import NocchiKit
 import SwiftUI
 
@@ -33,6 +34,7 @@ struct FilmCabinetPanel: View {
                     .padding(.horizontal, 18)
                     .padding(.top, 8)
                 }
+                .background(WheelToHorizontalScroll())
                 .onAppear {
                     proxy.scrollTo(model.stockID, anchor: .center)
                 }
@@ -171,5 +173,81 @@ private struct FilmCabinetTile: View {
         }
         .animation(.spring(response: 0.3, dampingFraction: 0.75), value: hovering)
         .help(stock.summary)
+    }
+}
+
+/// 鼠标滚轮上下滚动时，让横向的胶卷架左右移动（触控板横向轻扫照旧）。
+///
+/// 放在横向 `ScrollView` 的背景里：本地事件监视器拿到落在这块区域的滚轮事件，找到底下的 `NSScrollView`，
+/// 把纵向的滚动量换成横向位移（普通滚轮按「行」计，换算成点再加一点缓动）。
+struct WheelToHorizontalScroll: NSViewRepresentable {
+    func makeNSView(context: Context) -> Probe { Probe() }
+    func updateNSView(_ nsView: Probe, context: Context) {}
+
+    final class Probe: NSView {
+        private var monitor: Any?
+
+        override func viewDidMoveToWindow() {
+            super.viewDidMoveToWindow()
+            if let monitor {
+                NSEvent.removeMonitor(monitor)
+                self.monitor = nil
+            }
+            guard window != nil else { return }
+            monitor = NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { [weak self] event in
+                MainActor.assumeIsolated {
+                    guard let self, self.handle(event) else { return event }
+                    return nil
+                }
+            }
+        }
+
+        override func hitTest(_ point: NSPoint) -> NSView? { nil }
+
+        private func handle(_ event: NSEvent) -> Bool {
+            guard let window, event.window === window else { return false }
+            let point = convert(event.locationInWindow, from: nil)
+            guard bounds.contains(point) else { return false }
+            let dy = event.scrollingDeltaY
+            guard abs(dy) > abs(event.scrollingDeltaX), dy != 0, let scrollView = scrollView(in: window) else { return false }
+            let clip = scrollView.contentView
+            let documentWidth = scrollView.documentView?.frame.width ?? 0
+            let maxX = max(0, documentWidth - clip.bounds.width)
+            let step = event.hasPreciseScrollingDeltas ? dy : dy * 18
+            var origin = clip.bounds.origin
+            origin.x = min(max(0, origin.x - step), maxX)
+            if event.hasPreciseScrollingDeltas {
+                clip.setBoundsOrigin(origin)
+            } else {
+                NSAnimationContext.runAnimationGroup { context in
+                    context.duration = 0.16
+                    context.allowsImplicitAnimation = true
+                    clip.animator().setBoundsOrigin(origin)
+                }
+            }
+            scrollView.reflectScrolledClipView(clip)
+            return true
+        }
+
+        /// 窗口里覆盖这块区域、面积最小的 `NSScrollView`（SwiftUI 的横向 ScrollView 底下就是它）。
+        private func scrollView(in window: NSWindow) -> NSScrollView? {
+            guard let root = window.contentView else { return nil }
+            let center = convert(NSPoint(x: bounds.midX, y: bounds.midY), to: nil)
+            var best: NSScrollView?
+            var bestArea = CGFloat.infinity
+            var stack: [NSView] = [root]
+            while let view = stack.popLast() {
+                if let scroll = view as? NSScrollView {
+                    let frame = scroll.convert(scroll.bounds, to: nil)
+                    let area = frame.width * frame.height
+                    if frame.contains(center), area < bestArea {
+                        best = scroll
+                        bestArea = area
+                    }
+                }
+                stack.append(contentsOf: view.subviews)
+            }
+            return best
+        }
     }
 }
