@@ -225,12 +225,15 @@
 
 ## 12. 大头贴机：先选相框
 
-参考照相亭网站的流程（只借鉴流程，外观复古）：布帘拉上之后、「请看镜头」之前，多一步「选相框」：
+参考照相亭网站的流程（只借鉴流程，外观复古）：布帘拉上之后、「请看镜头」之前，多一步「选相框」（`Booth/BoothFrameChooser.swift`，已实现）：
 
-- 中央是当前模板的四格条预览（用暖灰占位格合成），两侧黄铜箭头切换模板，下方打字机字模板名。
-- 「黑白 / 彩色」金属拨动开关（黑白用 `silver-400`，彩色用 `booth-flash-400` 或当前胶卷）。
-- 一个复古发光按钮「开始」：按下有投币音效，然后进入倒数。键盘：← → 换相框，Return 开始，Esc 离开。
-- 看门狗 / 超时不能在选相框时把会话杀掉；任何时候都能离开（D17）。
+- 象牙白搪瓷面板（四角黄铜螺丝）。中央是黄铜包边的橱窗：深色绒布底、顶上一盏暖灯、玻璃斜反光，样张用小铜夹挂着、微微倾斜，带接触阴影 + 柔和投影。样张用 `TemplatePreview.render`（暖灰占位格 + 柔和半身剪影，和成片同一套 `PhotoComposer`）合成，后台线程，按「模板 + 规格 + 胶卷 + 宽度 + 题字」缓存（`TemplatePreviewStore`）。
+- 两侧黄铜箭头切换相框，样张从切换的方向滑进来；下方打字机字模板名 + 一句说明 + 页码圆点（可点）。顺序 `TemplateCatalog.boothTemplates(for:)`：先六款大头贴主题，再其余适用于这个规格的模板。
+- 两个镀铬拨杆开关（底座螺母 + 斜拨杆，左右刻字）：「四格条 / 四宫格」（同一款相框两种版式都有，切换时留在这一款）与「黑白 / 彩色」。选卷规则 `FilmCatalog.boothStockID`：黑白用 `booth-silver-400`（装着黑白卷时用它），彩色用 `booth-flash-400`（装着自己挑的彩色卷时用它）。面板上一行打字机字「胶卷 · 闪光 400」。
+- 一颗会呼吸发光的陶土橙「开始」（镀铬外圈）：按下有投币音效，**这时才打开摄像头**，然后「请看镜头」→ 倒数。取景框按版式的格子比例（四格条 4:3、四宫格 3:4）。
+- 键盘：← → 换相框，↑ ↓ 换版式，Return 开始，Esc 离开（⌘Q 退出）。
+- 看门狗只在按下「开始」之后计时，选相框时不会把会话杀掉；任何时候都能离开（D17）。
+- 这次的相框、版式、黑白写回 `AppModel`（`defaultBoothTemplateID`、`boothFormat`、`boothMonochrome`），下次从这里开始；设置 →「相纸」里也能改。矮屏幕上布帘里的内容整体缩小。
 
 ## 13. 分享海报
 
@@ -353,6 +356,27 @@ public enum PhotoComposer {
 }
 ```
 
+- 模板预览与大头贴选择（`Decorate/TemplatePreview.swift`，已实现）：
+
+```swift
+public enum TemplatePreview {
+    /// 一格占位画面（按窗口比例）：暖灰（黑白卷中性灰）渐变、左上暖光、柔和半身剪影、颗粒、暗角。
+    public static func placeholder(aspect: CGFloat, pixelWidth: Int, monochrome: Bool, index: Int) -> CGImage?
+    /// 用占位格合成一张模板预览（后台线程可调用）；模板不适用于这个规格时用默认模板。
+    public static func render(template: PrintTemplate, format: FilmFormat, stock: FilmStock, caption: String? = nil,
+                              captionFont: CaptionFont = .handwriting, showsDate: Bool = true, date: Date = Date(), widthPixels: Int) -> CGImage?
+}
+public extension TemplateCatalog {
+    static let defaultBoothID: String                                   // "booth-classic"
+    static func boothTemplates(for format: FilmFormat) -> [PrintTemplate] // 大头贴主题在前
+}
+public extension FilmCatalog {
+    static let boothColorID: String   // "booth-flash-400"
+    static let boothMonoID: String    // "booth-silver-400"
+    static func boothStockID(monochrome: Bool, loaded: FilmStock) -> String
+}
+```
+
 - 检索与分组（`Library/`）：
 
 ```swift
@@ -415,7 +439,9 @@ public enum PhotoCalendar {
 | --- | --- |
 | `FilmCanisterImage(stock: FilmStock, size: CGFloat)` 视图 | App（`App/FilmArt.swift`） |
 | `AppModel.showsDockIcon`、`AppModel.cameraDeviceID: String?`、`AppModel.mirrorSelfie`、`AppModel.instantFormat: FilmFormat` | App |
-| `AppModel.defaultInstantTemplateID`、`AppModel.defaultBoothTemplateID`、`AppModel.defaultCaptionFont`、`AppModel.autoOpenDecorate` | 设置 / 大头贴 |
+| `AppModel.defaultInstantTemplateID`、`AppModel.defaultBoothTemplateID`、`AppModel.defaultCaptionFont`、`AppModel.autoOpenDecorate`、`AppModel.boothFormat`、`AppModel.boothMonochrome`、`AppModel.defaultTemplateID(for:)`、`AppModel.boothStock(monochrome:)` | 设置 / 大头贴（已实现） |
+| `TemplatePreviewStore`、`TemplateSwatchRow` | App（`App/TemplatePreviews.swift`） |
+| `Darkroom.shared.develop(_:source:body:mirror:booth:)`（`BoothSetup`：版式、相框、胶卷） | 暗房 / 大头贴 |
 | `PhotoImport.chooseFiles()`、`PhotoImport.choosePhotosLibrary()` | 冲印照片（`Import/`） |
 | `Darkroom.shared.developImported(_ images: [CGImage]) async` | 暗房 |
 | `DecorateDesk.shared.open(_ record: PhotoRecord)` | 装饰台（`Editor/`） |

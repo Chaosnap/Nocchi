@@ -22,6 +22,7 @@ Nocchi/
 | 显影 | `Darkroom/DevelopmentModel.swift` | 显影进度（时间 + 甩动加速）；`DevelopmentVisual` 给界面画显影中的样子，进度 1 时严格等于成片 |
 | 甩动 | `Darkroom/ShakeDetector.swift` | 统计快速方向反转；鼠标拖动 / 手机加速度两套参数 |
 | 相纸 | `Darkroom/PaperLayout.swift`、`PhotoComposer.swift` | 方形即显 / 四格大头贴 / 横幅版式；合成带白边的成片（题字、日期、手写） |
+| 模板预览 | `Decorate/TemplatePreview.swift` | 暖灰占位格合成的模板样张（大头贴选相框、设置）；大头贴相框顺序与黑白 / 彩色选卷规则 |
 | 照片库 | `Darkroom/PhotoLibrary.swift`、`PhotoRecord.swift` | 本地记录、底片、成片、LUT，按月分组 |
 | 机身 | `Darkroom/CameraBody.swift` | 相机柜：即显相机、大头贴机（其余在路线图） |
 | 音效 | `Audio/SoundSynth.swift`、`SoundPlayer.swift` | 程序合成 + AVAudioEngine 播放 |
@@ -57,15 +58,15 @@ PhotoComposer（白边 + 题字 + 日期 + 手写）──► 成片 ~/Pictures/
 
 | 模块 | 作用 |
 | --- | --- |
-| `App/` | 菜单栏入口（MenuBarExtra）、全局设置 `AppModel`、配色 `Palette`、照片库与音效服务 |
+| `App/` | 菜单栏入口（MenuBarExtra）、全局设置 `AppModel`（含默认模板 / 相框 / 题字字体 / 自动打开装饰台）、配色 `Palette`、照片库与音效服务、`TemplatePreviews`（模板小样的后台合成与缓存） |
 | `Notch/` | `NotchController`：找到刘海（无刘海屏幕用虚拟刘海），在菜单栏之上放一个透明面板；悬停展开操作面板、自拍取景器、出片口、提示条 |
 | `Capture/` | 摄像头（AVFoundation）、屏幕快门（`screencapture -i`）、接管系统截图（NSMetadataQuery）、白屏闪光 |
 | `Darkroom/` | 拍摄 → 冲印 → 存档 → 出片的编排 |
 | `Photo/` | 桌面照片窗口：出片遮罩、显影计时、拖动与甩动、吸边、桌面层 / 浮动层、白边手写、右键菜单；照片堆 |
-| `Booth/` | 大头贴机：布帘、请看镜头、倒数、白屏闪光、四连拍 |
+| `Booth/` | 大头贴机：`PhotoBoothController`（权限预检 → 3D 布帘 → 选相框 → 投币开始 → 请看镜头 → 倒数 → 白屏闪光 × 4 → 出片；离开按钮 / Esc / ⌘Q、按下「开始」后的看门狗）、`BoothFrameChooser`（黄铜橱窗里的样张、黄铜箭头、镀铬拨杆开关、发光的「开始」）、`CurtainScene`（SceneKit 丝绒布帘） |
 | `Album/` | 相册窗口：`AlbumView`（四种看法 + 搜索）、`AlbumHeader`（字标、看法切换、搜索框、冲印按钮、红绿灯对齐）、`CorkBoardView`（胡桃木框软木板、月份标签带、拼贴排布）、`FilmLightTable`（光台、35mm 胶片条、放大镜、洗一洗、正负片）、`CalendarWallView`（复古挂历）、`AlbumShared`（照片库、缩略图 / 贴纸缓存、右键菜单与操作、`AlbumRouter`） |
 | `Editor/` | 装饰台：`DecorateDesk`（窗口与入口）、`DecorateSession`（记录的工作副本、工具、撤销 / 重做、后台合成的相纸层、保存）、`PaperStage`（相纸、笔画、可拖动缩放旋转的贴纸）、`Inspector`（贴纸 / 模板 / 文字 / 分享四页）、`PosterRenderer`（1080×1350 分享海报） |
-| `Settings/` | 相机柜、胶卷（导入 / 导出 `.cube`）、通用设置、关于；全局快捷键 |
+| `Settings/` | 相机柜、胶卷（导入 / 导出 `.cube`）、相纸（即显相纸与默认模板、大头贴默认相框 / 版式 / 黑白、题字字体、显影后自动打开装饰台）、摄像头、通用设置、关于；全局快捷键 |
 
 窗口层级：刘海面板（菜单栏之上 +3）> 出片中的照片（+2）> 大头贴布帘（+1）> 普通浮动照片 > 桌面层照片。
 

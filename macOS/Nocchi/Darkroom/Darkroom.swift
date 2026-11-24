@@ -89,20 +89,25 @@ final class Darkroom {
 
     // MARK: - Develop
 
-    /// 冲印并出片。
-    func develop(_ images: [CGImage], source: PhotoSource, body: CameraBody, mirror: Bool) async {
+    /// 冲印并出片。`booth` 是大头贴机「选相框」里选好的版式、相框和胶卷（其余来源传 nil）。
+    func develop(_ images: [CGImage], source: PhotoSource, body: CameraBody, mirror: Bool, booth: BoothSetup? = nil) async {
         guard !images.isEmpty else { return }
         isShooting = true
         defer { isShooting = false }
 
         let model = AppModel.shared
-        let stock = body == .photoBooth && model.currentStock.id == FilmCatalog.defaultStock.id
-            ? model.stock(id: body.defaultStockID)
-            : model.currentStock
+        let stock: FilmStock
+        if let booth {
+            stock = model.stock(id: booth.stockID)
+        } else if body == .photoBooth {
+            stock = model.boothStock(monochrome: false)
+        } else {
+            stock = model.currentStock
+        }
         let reloaded = model.consumeExposure(frames: images.count)
         let seed = SeededRandom.makeSeed()
-        // 大头贴机用它自己的版式；其余（自拍、屏幕快门、冲印照片）用你选的即显相纸。
-        let format: FilmFormat = body.format.isBooth ? body.format : model.instantFormat
+        // 大头贴机用选好的版式；其余（自拍、屏幕快门、冲印照片）用你选的即显相纸。
+        let format: FilmFormat = booth?.format ?? (body.format.isBooth ? body.format : model.instantFormat)
         let aspect = format.layout.windowAspect
         let bias = body.exposureBias
         let processor = Services.processor
@@ -110,6 +115,9 @@ final class Darkroom {
 
         var record = PhotoRecord(source: source, body: body, stock: stock, seed: seed, showsDate: model.printDate)
         record.format = format
+        record.templateID = booth.map { TemplateCatalog.resolve(id: $0.templateID, format: format).id }
+            ?? model.defaultTemplateID(for: format)
+        record.captionFont = model.defaultCaptionFont
         let caption = model.defaultCaption.trimmingCharacters(in: .whitespacesAndNewlines)
         record.caption = caption.isEmpty ? nil : caption
         if body == .photoBooth {

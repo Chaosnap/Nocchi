@@ -159,8 +159,30 @@ final class DesktopBoard {
                 self.layoutPile(animated: true)
             }
         }
+        controller.onDeveloped = { [weak self] controller in
+            self?.developmentFinished(controller)
+        }
         controllers[model.id] = controller
         return controller
+    }
+
+    /// 设置里开了「显影完成后自动打开装饰台」时打开它。等「叮」一声、成片合成好再开；
+    /// 用户还拿着相片在甩的时候不抢焦点；装饰台已经开着（正在装饰另一张）时不打断。
+    private func developmentFinished(_ controller: PhotoWindowController) {
+        guard AppModel.shared.autoOpenDecorate, !DecorateDesk.shared.isOpen else { return }
+        let id = controller.model.id
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: 900_000_000)
+            var waited = 0
+            while self?.controllers[id]?.isDragging == true, waited < 150 {
+                try? await Task.sleep(nanoseconds: 200_000_000)
+                waited += 1
+            }
+            guard let self, let controller = self.controllers[id],
+                  AppModel.shared.autoOpenDecorate, !DecorateDesk.shared.isOpen,
+                  !PhotoBoothController.shared.isActive else { return }
+            DecorateDesk.shared.open(controller.model.record)
+        }
     }
 
     private func startTicker() {

@@ -25,6 +25,12 @@ final class AppModel: ObservableObject {
         static let instantFormat = "print.instantFormat"
         static let cameraDevice = "camera.deviceID"
         static let mirrorSelfie = "camera.mirrorSelfie"
+        static let instantTemplate = "print.defaultInstantTemplate"
+        static let boothTemplate = "booth.defaultTemplate"
+        static let boothFormat = "booth.format"
+        static let boothMonochrome = "booth.monochrome"
+        static let captionFont = "print.captionFont"
+        static let autoOpenDecorate = "editor.autoOpenAfterDeveloping"
     }
 
     private let defaults = UserDefaults.standard
@@ -116,6 +122,42 @@ final class AppModel: ObservableObject {
         didSet { defaults.set(mirrorSelfie, forKey: Keys.mirrorSelfie) }
     }
 
+    /// 即显相片（自拍、屏幕快门、冲印照片）默认用的相纸模板；当前相纸用不了时用「经典」。
+    @Published var defaultInstantTemplateID: String {
+        didSet { defaults.set(defaultInstantTemplateID, forKey: Keys.instantTemplate) }
+    }
+
+    /// 大头贴机的默认相框。「选相框」从这里开始；在大头贴机里换了，下次就从换好的那款开始。
+    @Published var defaultBoothTemplateID: String {
+        didSet { defaults.set(defaultBoothTemplateID, forKey: Keys.boothTemplate) }
+    }
+
+    /// 大头贴机的版式：四格条或四宫格。
+    @Published var boothFormat: FilmFormat {
+        didSet {
+            if !FilmFormat.boothChoices.contains(boothFormat) {
+                boothFormat = .boothStrip
+                return
+            }
+            defaults.set(boothFormat.rawValue, forKey: Keys.boothFormat)
+        }
+    }
+
+    /// 大头贴机拍黑白（照相亭黑白 400，或者装着的黑白卷）。
+    @Published var boothMonochrome: Bool {
+        didSet { defaults.set(boothMonochrome, forKey: Keys.boothMonochrome) }
+    }
+
+    /// 新照片的题字字体。
+    @Published var defaultCaptionFont: CaptionFont {
+        didSet { defaults.set(defaultCaptionFont.rawValue, forKey: Keys.captionFont) }
+    }
+
+    /// 相片显影完成后自动打开装饰台（默认关）。
+    @Published var autoOpenDecorate: Bool {
+        didSet { defaults.set(autoOpenDecorate, forKey: Keys.autoOpenDecorate) }
+    }
+
     @Published private(set) var roll: FilmRoll
     @Published private(set) var customStocks: [FilmStock]
 
@@ -150,6 +192,13 @@ final class AppModel: ObservableObject {
         instantFormat = FilmFormat.instantChoices.contains(format) ? format : .instantSquare
         cameraDeviceID = d.string(forKey: Keys.cameraDevice)
         mirrorSelfie = d.object(forKey: Keys.mirrorSelfie) as? Bool ?? true
+        defaultInstantTemplateID = d.string(forKey: Keys.instantTemplate) ?? TemplateCatalog.classic.id
+        defaultBoothTemplateID = d.string(forKey: Keys.boothTemplate) ?? TemplateCatalog.defaultBoothID
+        let boothFormat = FilmFormat(rawValue: d.string(forKey: Keys.boothFormat) ?? "") ?? .boothStrip
+        self.boothFormat = FilmFormat.boothChoices.contains(boothFormat) ? boothFormat : .boothStrip
+        boothMonochrome = d.object(forKey: Keys.boothMonochrome) as? Bool ?? false
+        defaultCaptionFont = CaptionFont(rawValue: d.string(forKey: Keys.captionFont) ?? "") ?? .handwriting
+        autoOpenDecorate = d.object(forKey: Keys.autoOpenDecorate) as? Bool ?? false
 
         var custom: [FilmStock] = []
         if let data = d.data(forKey: Keys.custom), let decoded = try? JSONDecoder().decode([FilmStock].self, from: data) {
@@ -162,6 +211,17 @@ final class AppModel: ObservableObject {
         } else {
             roll = FilmRoll(stock: FilmCatalog.stock(id: stockID, custom: custom))
         }
+    }
+
+    /// 新照片该用哪款模板：大头贴用默认相框，其余用即显默认模板；这种相纸用不了时回落到「经典」。
+    func defaultTemplateID(for format: FilmFormat) -> String {
+        let preferred = format.isBooth ? defaultBoothTemplateID : defaultInstantTemplateID
+        return TemplateCatalog.resolve(id: preferred, format: format).id
+    }
+
+    /// 大头贴机这一条用的胶卷（黑白 / 彩色开关 + 装着的胶卷，见 `FilmCatalog.boothStockID`）。
+    func boothStock(monochrome: Bool) -> FilmStock {
+        stock(id: FilmCatalog.boothStockID(monochrome: monochrome, loaded: currentStock))
     }
 
     /// 在即显相纸之间轮换（刘海里的「相纸」小卡）。

@@ -3,7 +3,7 @@ import NocchiKit
 import SwiftUI
 import UniformTypeIdentifiers
 
-/// 设置：相机柜、胶卷、通用、关于。
+/// 设置：相机柜、胶卷、相纸、摄像头、通用、关于。
 struct SettingsView: View {
     var body: some View {
         TabView {
@@ -11,6 +11,8 @@ struct SettingsView: View {
                 .tabItem { Label("相机柜", systemImage: "camera") }
             FilmTab()
                 .tabItem { Label("胶卷", systemImage: "film") }
+            PrintTab()
+                .tabItem { Label("相纸", systemImage: "photo.on.rectangle.angled") }
             CameraTab()
                 .tabItem { Label("摄像头", systemImage: "web.camera") }
             GeneralTab()
@@ -227,15 +229,6 @@ private struct GeneralTab: View {
                     Slider(value: $model.volume, in: 0...1)
                 }
             }
-            Section("相纸") {
-                PaperChooser(selection: $model.instantFormat)
-                TextField("默认题字", text: $model.defaultCaption, prompt: Text(PhotoRecord.defaultCaption))
-                Toggle("在白边上印日期", isOn: $model.printDate)
-                Picker("新照片放在", selection: $model.defaultLayer) {
-                    Text("最上层（浮动）").tag(DeskPlacement.Layer.floating)
-                    Text("桌面层（在窗口后面）").tag(DeskPlacement.Layer.desktop)
-                }
-            }
             Section("快捷键") {
                 LabeledContent("屏幕快门", value: "⌃⌥⌘S")
                 LabeledContent("自拍", value: "⌃⌥⌘F")
@@ -257,7 +250,83 @@ private struct GeneralTab: View {
     }
 }
 
-// MARK: - 相纸
+// MARK: - 相纸与装饰
+
+/// 相纸：即显相纸与默认模板、大头贴的版式 / 相框 / 黑白、题字、拍完之后。
+private struct PrintTab: View {
+    @ObservedObject private var model = AppModel.shared
+
+    var body: some View {
+        Form {
+            Section("即显相机（自拍、屏幕快门、冲印照片）") {
+                PaperChooser(selection: $model.instantFormat)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("默认模板")
+                    TemplateSwatchRow(
+                        templates: TemplateCatalog.templates(for: model.instantFormat),
+                        selection: $model.defaultInstantTemplateID,
+                        format: model.instantFormat,
+                        stock: model.currentStock
+                    )
+                    if let note = instantTemplateNote {
+                        Text(note)
+                            .font(.system(size: 11))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            Section("大头贴机") {
+                Picker("版式", selection: $model.boothFormat) {
+                    ForEach(FilmFormat.boothChoices) { format in
+                        Text(format.displayName).tag(format)
+                    }
+                }
+                .pickerStyle(.segmented)
+                Toggle("拍黑白", isOn: $model.boothMonochrome)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("默认相框")
+                    TemplateSwatchRow(
+                        templates: TemplateCatalog.boothTemplates(for: model.boothFormat),
+                        selection: $model.defaultBoothTemplateID,
+                        format: model.boothFormat,
+                        stock: model.boothStock(monochrome: model.boothMonochrome)
+                    )
+                    Text("拉上布帘后还可以再挑；在大头贴机里换了相框、版式或黑白，下次就从换好的开始。")
+                        .font(.system(size: 11))
+                        .foregroundStyle(.secondary)
+                }
+            }
+            Section("题字") {
+                TextField("默认题字", text: $model.defaultCaption, prompt: Text(PhotoRecord.defaultCaption))
+                Picker("题字字体", selection: $model.defaultCaptionFont) {
+                    ForEach(CaptionFont.allCases) { font in
+                        Text(font.displayName).tag(font)
+                    }
+                }
+                .pickerStyle(.segmented)
+                Toggle("在白边上印日期", isOn: $model.printDate)
+            }
+            Section("拍完之后") {
+                Toggle("显影完成后自动打开装饰台", isOn: $model.autoOpenDecorate)
+                Text("相片一显影好就打开装饰台，可以马上贴贴纸、换模板、写字。")
+                    .font(.system(size: 11))
+                    .foregroundStyle(.secondary)
+                Picker("新照片放在", selection: $model.defaultLayer) {
+                    Text("最上层（浮动）").tag(DeskPlacement.Layer.floating)
+                    Text("桌面层（在窗口后面）").tag(DeskPlacement.Layer.desktop)
+                }
+            }
+        }
+        .formStyle(.grouped)
+    }
+
+    /// 默认模板不适用于当前相纸时提示一句。
+    private var instantTemplateNote: String? {
+        guard let chosen = TemplateCatalog.template(id: model.defaultInstantTemplateID),
+              !chosen.formats.contains(model.instantFormat) else { return nil }
+        return "「\(chosen.name)」不适用于\(model.instantFormat.displayName)，这种相纸会用「经典」。"
+    }
+}
 
 /// 即显相纸的选择：按真实比例画出四种相纸。
 private struct PaperChooser: View {
