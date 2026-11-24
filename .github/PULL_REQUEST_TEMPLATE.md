@@ -1,19 +1,19 @@
-## 改了什么
+## What changed
 
-<!-- 一两句话说明这次改动。 -->
+<!-- One or two sentences about this change. -->
 
-## 为什么
+## Why
 
-<!-- 解决的问题或带来的体验；有 Issue 请关联。 -->
+<!-- The problem it solves or the experience it improves; link the issue if there is one. -->
 
-## 截图 / 录屏
+## Screenshots / recordings
 
-<!-- 界面改动请附上；只放你自己拍的画面。 -->
+<!-- Please add them for UI changes; only use pictures you took yourself. -->
 
-## 检查清单
+## Checklist
 
-- [ ] CI 全绿（本项目不在本地构建或测试，见 docs/CI.md）
-- [ ] 更新了 `docs/PROGRESS.md`、`CHANGELOG.md` 和受影响的文档
-- [ ] 界面文案是简体中文，视觉符合 `docs/DESIGN.md`（复古，不要手绘风格）
-- [ ] 新素材是原创的，没有真实相机 / 胶片品牌的名称、logo 或标志性外观
-- [ ] 我同意按 CONTRIBUTING.md「许可」一节的条款授权我的贡献
+- [ ] CI is green (Nocchi is never built or tested locally; see docs/CI.md)
+- [ ] I updated `docs/PROGRESS.md`, `CHANGELOG.md` and any affected docs
+- [ ] Interface text is Simplified Chinese, and the visuals follow `docs/DESIGN.md` (retro, not hand-drawn)
+- [ ] New artwork is original, with no real camera or film brand names, logos or signature looks
+- [ ] I license my contribution under the GNU AGPL-3.0, as described in CONTRIBUTING.md

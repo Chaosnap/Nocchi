@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: 安全问题（私下报告）
+  - name: Security problem (report privately)
     url: https://github.com/Chaosnap/Nocchi/security/advisories/new
-    about: 请不要公开披露漏洞，用 GitHub 的私密漏洞报告。
-  - name: 进度看板
+    about: Please don't disclose vulnerabilities publicly; use GitHub's private vulnerability reporting.
+  - name: Progress board
     url: https://github.com/Chaosnap/Nocchi/blob/main/docs/PROGRESS.md
-    about: 先看看想要的功能是不是已经在路上了。
+    about: See whether what you want is already on its way.

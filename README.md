@@ -1,73 +1,116 @@
 <p align="center">
-  <img src="design/icon/nocchi-icon.svg" width="160" alt="Nocchi icon">
+  <img src="design/icon/nocchi-icon.svg" width="152" alt="The Nocchi icon: a vintage rangefinder-style instant camera in champagne metal and black leather, an aged deckle-edged print rising from its top, on a walnut tile">
 </p>
 
 <h1 align="center">Nocchi · 刘海冲印店</h1>
 
 <p align="center">
-  把 MacBook 的刘海当成一台复古相机的出片口：截图或自拍之后，照片从刘海里「吐」出来，像真相纸一样慢慢显影。<br>
-  iPhone 版用灵动岛当出片口。
+  <strong>The notch is a darkroom.</strong><br>
+  把 MacBook 的刘海，变成一台复古相机的出片口。
 </p>
 
 <p align="center">
-  <a href="https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml"><img src="https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC%204.0-C4593B" alt="License: CC BY-NC 4.0"></a>
-  <a href="https://github.com/Chaosnap/Nocchi/releases"><img src="https://img.shields.io/github/v/release/Chaosnap/Nocchi?color=4A3021" alt="Release"></a>
+  <a href="https://github.com/Chaosnap/Nocchi/releases/latest"><img src="https://img.shields.io/github/v/release/Chaosnap/Nocchi?style=flat-square&label=release&color=c4593b" alt="Latest release"></a>
+  <img src="https://img.shields.io/badge/platform-macOS%2014%2B%20%C2%B7%20iOS%20(soon)-2e2924?style=flat-square" alt="Platforms: macOS 14 or later, iOS coming soon">
+  <a href="PRIVACY.md"><img src="https://img.shields.io/badge/offline-no%20account%20%C2%B7%20no%20telemetry-2f5f5c?style=flat-square" alt="Offline: no account, no telemetry"></a>
+  <a href="https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Chaosnap/Nocchi/ci.yml?branch=main&style=flat-square&label=CI" alt="CI status"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-7a5236?style=flat-square" alt="License: AGPL-3.0"></a>
 </p>
 
-## 现在做到哪了
+<p align="center">
+  <a href="#features">✨ Features</a> ·
+  <a href="#how-to-play">🎞️ How to play</a> ·
+  <a href="#download">⬇️ Download</a> ·
+  <a href="CHANGELOG.md">📝 Changelog</a> ·
+  <a href="docs/PROGRESS.md">📋 Progress</a> ·
+  <a href="PRIVACY.md">🔒 Privacy</a>
+</p>
 
-👉 **[docs/PROGRESS.md](docs/PROGRESS.md)**：进度看板，每次推送都会更新。
+## 📷 刘海冲印店 · The notch darkroom
 
-## 怎么试用
+**刘海冲印店** means "the notch photo lab". Nocchi turns the notch at the top of your MacBook's screen into the print slot of a retro instant camera. Take a screenshot or a selfie and the print slides out of the notch, a little at a time, to the sound of a motor; then it develops slowly on your desktop, the way real instant film does. Shake it to hurry it along (shake too hard and you will get chemical blotches), write on its white border, decorate it, stick it to the edge of the screen, and file it away in a wooden card box.
 
-本项目采用 **GitHub Actions-Only** 工作流：本地不编译、不测试，所有构建都在 CI 完成。
+The iPhone version will use the Dynamic Island as its print slot, with a Live Activity that shows the print developing.
 
-- **正式版本**：[Releases](https://github.com/Chaosnap/Nocchi/releases) 下载 `Nocchi-macOS-<版本>.zip`（首次打开见 [docs/CI.md](docs/CI.md#macos-测试版)）。
-- **最新构建**：[Actions → CI](https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml) 里最新的绿色运行 → Artifacts。
+Everything happens on your Mac: no account, no cloud, no telemetry. The film looks are computed from parametric recipes at run time, and every camera body, film canister, sticker and paper template is original artwork.
 
-## 玩法速览（macOS）
+<a id="features"></a>
 
-| 操作 | 方式 |
+## ✨ Features
+
+### 🎞️ Shoot
+
+- **Screen shutter** (⌃⌥⌘S): drag out any part of the screen and it comes out of the notch as a print. Optionally, ⇧⌘3 / ⇧⌘4 screenshots become prints too.
+- **Selfie** (⌃⌥⌘F): a lens-shaped viewfinder grows out of the notch, with a three-second countdown and a white-screen fill flash.
+- **Photo booth** (⌃⌥⌘B): a velvet curtain closes, you pick a frame in a brass-trimmed showcase (eleven frames, a four-frame strip or a 2×2 grid, black and white or color), drop a coin, and after four flashes the strip comes out of the notch.
+- **Print anything**: drop an image on the notch, or print from Files (⌘O) or Photos (⇧⌘O).
+- **Any camera**: the built-in camera, external and virtual cameras (OBS, Camo and other camera extensions) and Continuity Camera.
+
+### 🧪 Develop
+
+- Prints develop over about fifteen seconds. Drag one around and shake it to speed things up.
+- **26 original film stocks**: instant films, color negatives, night and cinema stocks, black and white, and two photo-booth stocks, each with its own rendered canister or film pack. Import your own `.cube` LUTs, or export any stock as one.
+- **6 paper formats**: square, mini and wide instant, a 3:2 lab print, a four-frame booth strip and a 2×2 booth grid.
+- The film cabinet lives in the notch: hover, tap the canister, load another roll.
+
+### ✏️ Decorate
+
+- Write on the white border with your trackpad; the line follows the pressure.
+- **The decorating desk**: pens, markers, oil crayons and paint pens in eight enamel colors; **60+ retro stickers** (vinyl badges, rubber stamps, tickets and stamps, washi tape, embossed labels you can type on); **16 paper templates** (deckle edge, date stamp, film frame, postage stamp, 70s stripes, photo-studio card, and booth themes such as hearts, gold stars, birthday and new year); captions in handwriting, typewriter or letterpress type, with a place and #tags.
+- Share posters at 1080 × 1350 on linen, walnut, kraft paper, velvet or cork.
+
+### 🗂️ Keep
+
+- New prints gather in a pile at the top right. Drag them anywhere; near the edge of the screen they snap on like fridge magnets; pin them behind your windows on the desktop layer.
+- **The notch shelf**: drag prints into the notch to stash them, then drag them out again as image files.
+- **The album**, four ways to look: a corkboard with brass pins and washi tape, a beechwood card box with A–Z dividers (cards rise out of the box and fan out), a film light table with a loupe, and a retro wall calendar. Search by caption, #tag, place, film, date, or the pinyin initials of a Chinese caption.
+
+<a id="how-to-play"></a>
+
+## 🎞️ How to play (macOS)
+
+| To | Do this |
 | --- | --- |
-| 打开操作面板 | 鼠标移到刘海上 |
-| 屏幕快门（框选截图） | ⌃⌥⌘S |
-| 自拍 | ⌃⌥⌘F（空格拍照，Esc 取消） |
-| 大头贴机（四连拍） | ⌃⌥⌘B |
-| 加速显影 | 按住照片来回甩（甩太猛会出现色块） |
-| 贴在屏幕边缘 | 把照片拖到屏幕边上 |
-| 在白边上写字 | 右键 → 在白边上写字 |
-| 打开成片 | 双击照片（在 Finder 中显示） |
+| Open the camera panel | Move the pointer onto the notch |
+| Screen shutter | ⌃⌥⌘S |
+| Selfie | ⌃⌥⌘F (Space takes the picture, Esc cancels) |
+| Photo booth | ⌃⌥⌘B (← → frames, ↑ ↓ strip / grid, Return starts, Esc leaves) |
+| Develop faster | Drag a print and shake it |
+| Decorate a print | Double-click it, or right-click → 装饰… |
+| Write on the border | Right-click → 在白边上写字 |
+| Stash a print | Drag it onto the notch |
+| Open the album | ⌘0, then ⌘1–⌘4 for the four views, ⌘F to search |
 
-## 仓库结构
+The app's interface is in Simplified Chinese.
 
-| 路径 | 内容 |
-| --- | --- |
-| `Packages/NocchiKit` | 共享暗房内核：胶卷配方、LUT、Core Image 管线、显影、甩动、相纸合成、照片库、音效 |
-| `macOS/` | Mac App（刘海出片口），XcodeGen 描述 `project.yml` |
-| `iOS/` | iPhone App（灵动岛出片口）与 Live Activity |
-| `Shared/Art.xcassets` | 两端共用的原创美术 |
-| `design/` | 美术源文件、部件坐标 |
-| `docs/` | 构想、参考项目、架构、决策、胶卷、素材、CI |
+<a id="download"></a>
 
-## 文档
+## ⬇️ Download
 
-- [产品构想](docs/notch-camera-concept.md) · [滤镜与胶片模拟参考项目](docs/Notch_Darkroom_Filter_Repositories.md)
-- [架构](docs/ARCHITECTURE.md) · [决策记录](docs/DECISIONS.md) · [胶卷](docs/FILM_STOCKS.md) · [美术素材](docs/ASSETS.md) · [CI](docs/CI.md)
-- [更新日志](CHANGELOG.md) · [协作规则](CLAUDE.md)
+Get the latest build from [Releases](https://github.com/Chaosnap/Nocchi/releases/latest):
 
-## 参与
+| Platform | File | Notes |
+| --- | --- | --- |
+| 🍎 macOS 14 or later | `Nocchi-macOS-<version>.zip` | Universal (Apple silicon and Intel). Ad-hoc signed and not notarized yet: move it to Applications and run `xattr -dr com.apple.quarantine /Applications/Nocchi.app`, or click "Open Anyway" in System Settings → Privacy & Security |
+| 📱 iPhone | — | In progress |
 
-- [贡献指南](CONTRIBUTING.md) · [行为准则](CODE_OF_CONDUCT.md) · [安全政策](SECURITY.md) · [隐私说明](PRIVACY.md)
-- 问题与建议请用 [Issue](https://github.com/Chaosnap/Nocchi/issues/new/choose)；安全问题请私下报告。
+Every release comes with `SHA256SUMS.txt`. Builds of the latest commit are attached to each green run of [CI](https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml) as artifacts.
 
-照片只保存在本机，不上传。
+## 🗺️ Where it stands
 
-## 许可
+**Nocchi 1.0** is the "retro photo lab" release: the Dynamic-Island-shaped notch, the film cabinet, 26 film stocks, six paper formats, templates and stickers, the decorating desk, the four album views and the photo booth's frame picker. Next comes the iPhone app. The live progress board is [docs/PROGRESS.md](docs/PROGRESS.md) (in Chinese).
 
-© 2026 Chaosnap。本仓库里 Chaosnap 创作的内容（代码、文档、图标、机身、纹理、3D 渲染等）采用 [CC BY-NC 4.0](LICENSE)（署名—非商业性使用 4.0 协议国际版）：
+## 🛠️ How it's built
 
-- **非商业用途随便用**：复制、分享、修改、二次创作都可以，注明出处即可；
-- **商业用途需要书面许可**（请开 Issue 联系）；
-- 第三方内容按各自的许可（例如行为准则改编自 Contributor Covenant，CC BY 4.0）；
-- 胶卷、机身和相纸模板的名字都是原创的，与任何相机或胶片厂商无关。
+- **Everything is compiled, tested, packaged and released on GitHub Actions**; nothing is built on anyone's own computer. CI generates the Xcode projects with XcodeGen, runs the `NocchiKit` unit tests, builds the app, and publishes a release whenever a `v*` tag is pushed. See [docs/CI.md](docs/CI.md).
+- `Packages/NocchiKit` is the shared darkroom core: film recipes and 3D LUTs, the Core Image pipeline, development and shake detection, paper composition, templates, stickers, the photo library and procedural sound. `macOS/` is the Mac app, `iOS/` the iPhone app and its Live Activity.
+- The 3D props (card box, film canisters, pins, loupe) are rendered with Blender from the scripts in [`design/blender/`](design/blender/); the icon's source is [`design/icon/nocchi-icon.svg`](design/icon/nocchi-icon.svg).
+- The development documents are written in Chinese: [concept](docs/notch-camera-concept.md), [design spec](docs/DESIGN.md), [architecture](docs/ARCHITECTURE.md), [decisions](docs/DECISIONS.md), [film stocks](docs/FILM_STOCKS.md), [assets](docs/ASSETS.md) and [CI](docs/CI.md).
+
+## 🤝 Contributing
+
+Read the [contribution guide](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md). Bugs and ideas go to [Issues](https://github.com/Chaosnap/Nocchi/issues/new/choose); security problems are reported privately, as described in [SECURITY.md](SECURITY.md).
+
+## 📜 License and credits
+
+Nocchi is © 2026 Chaosnap and is free software under the **[GNU AGPL-3.0](LICENSE)**. The [Code of Conduct](CODE_OF_CONDUCT.md) is adapted from the [Contributor Covenant 3.0](https://www.contributor-covenant.org/version/3/0/) (CC BY-SA 4.0). The film stocks, camera bodies, templates and stickers have original names and designs and are not affiliated with any camera or film maker.

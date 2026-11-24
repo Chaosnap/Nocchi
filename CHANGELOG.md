@@ -40,8 +40,8 @@
 - 启动时刘海里出现一条横贯屏幕顶部的黑条：所有提示改成灵动岛的比例。
 
 ### 仓库
-- **许可**：Chaosnap 创作的内容（代码、文档、美术）采用 CC BY-NC 4.0（署名—非商业性使用）——非商业用途随便用，商用需书面许可；第三方内容按各自的许可。
-- **社区文件**：行为准则（改编自 Contributor Covenant 2.1）、贡献指南、安全政策（GitHub 私密漏洞报告）、隐私说明（完全本机运行、不联网）、Issue / PR 模板、`.editorconfig`、每月检查 GitHub Actions 版本的 Dependabot。
+- **许可改为 GNU AGPL-3.0**（与 Yohaku 一致，取代 0.1.x 的 CC BY-NC 4.0）：可以自由使用、修改、再发布，修改后的版本（包括通过网络提供的）也要按 AGPL-3.0 开放源码。贡献按同一许可授权。
+- **英文的 README 与社区文件**：README 按 Yohaku 的样子重写成英文；行为准则改为英文的 Contributor Covenant 3.0 改编版；贡献指南、安全政策（GitHub 私密漏洞报告）、隐私说明（完全本机运行、不联网）、Issue / PR 模板都是英文；另有 `.editorconfig` 和每月检查 GitHub Actions 版本的 Dependabot。
 - **设计规范**：`docs/DESIGN.md`——「复古冲印店」改版的视觉语言、相纸规格、模板、贴纸、装饰台、相册四种看法与跨模块接口。
 
 ## [0.1.1] · 2026-11-23

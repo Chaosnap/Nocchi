@@ -1,30 +1,30 @@
-# 隐私说明
+# Privacy
 
-Nocchi 是一台住在刘海里的相机。它**完全在本机运行**：
+Nocchi is a camera that lives in your notch. It **runs entirely on your Mac**:
 
-- 不联网，不上传、不同步任何照片或数据；
-- 没有账号，没有统计、广告或崩溃上报；
-- 不收集任何个人信息。
+- it does not go online, and does not upload or sync any photo or data;
+- there is no account, no analytics, no ads and no crash reporting;
+- it collects no personal information.
 
-## 会用到的权限
+## Permissions it uses
 
-| 权限 | 什么时候用 | 用来做什么 |
+| Permission | When | What for |
 | --- | --- | --- |
-| 摄像头 | 打开自拍、大头贴机或在设置里预览摄像头时 | 拍照。只在这些界面打开时启动，关掉就停 |
-| 屏幕录制 | 按「屏幕快门」时 | 调用系统的框选截图，把截下来的画面冲印成相片 |
-| 桌面 / 文稿 / 下载文件夹 | 只有在设置里开启「接管系统截图」后 | 读取你刚截下的系统截图，把它冲印成相片 |
-| 照片图库 | 选「从『照片』图库冲印」时 | 使用系统的照片选择器，Nocchi 只能拿到你选中的那几张，不需要访问整个图库 |
+| Camera | When you open the selfie viewfinder or the photo booth, or preview a camera in Settings | Taking the picture. The camera runs only while one of these is open and stops when it closes; in the photo booth it starts when you press 开始 (Start) |
+| Screen recording | When you use the screen shutter | Running the system's region screenshot and printing what you captured |
+| Desktop / Documents / Downloads folders | Only after you turn on "take over system screenshots" in Settings | Reading the screenshot you just took and printing it |
+| Photos | When you choose "print from Photos" | The system photo picker: Nocchi only gets the photos you pick, with no access to the rest of your library |
 
-## 数据存在哪里
+## Where your data lives
 
-| 位置 | 内容 |
+| Location | What |
 | --- | --- |
-| `~/Pictures/Nocchi/<年-月>/` | 冲印好的带白边成片（JPEG） |
-| `~/Library/Application Support/Nocchi/` | 照片记录（题字、贴纸、涂鸦、地点、标签等）、底片、导入的 LUT |
-| App 的偏好设置（UserDefaults） | 当前机身、胶卷、相纸、摄像头选择等设置 |
+| `~/Pictures/Nocchi/<year-month>/` | Finished prints with their white borders (JPEG) |
+| `~/Library/Application Support/Nocchi/` | Photo records (captions, stickers, drawings, places, tags and so on), negatives, imported LUTs |
+| The app's preferences (UserDefaults) | Settings such as the camera body, film, paper, templates and camera choice |
 
-想删除所有数据：退出 Nocchi，删掉上面两个文件夹即可。相片「移到废纸篓」时，成片进废纸篓（可以恢复），记录和底片会被删除。
+To delete everything, quit Nocchi and delete the two folders above. When you move a print to the Trash, the finished print goes to the Trash (so you can restore it) and its record and negatives are deleted.
 
-## 联系
+## Contact
 
-对隐私有疑问，可以在 [Issue](https://github.com/Chaosnap/Nocchi/issues) 里提出；涉及安全问题请按 [SECURITY.md](SECURITY.md) 私下报告。
+Questions about privacy can go to [Issues](https://github.com/Chaosnap/Nocchi/issues); security problems should be reported privately as described in [SECURITY.md](SECURITY.md).

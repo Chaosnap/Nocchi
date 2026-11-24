@@ -1,27 +1,27 @@
-# 安全政策
+# Security Policy
 
-## 支持的版本
+## Supported versions
 
-只有 [Releases](https://github.com/Chaosnap/Nocchi/releases) 里的**最新版本**会收到安全修复。
+Only the **latest release** on [Releases](https://github.com/Chaosnap/Nocchi/releases) receives security fixes.
 
-## 报告漏洞
+## Reporting a vulnerability
 
-请**不要**在公开的 Issue、讨论或 PR 里披露安全问题。
+Please **do not** disclose security problems in public issues, discussions or pull requests.
 
-用 GitHub 的私密漏洞报告：打开本仓库的 **Security → Report a vulnerability**（[直达链接](https://github.com/Chaosnap/Nocchi/security/advisories/new)），写清楚：
+Use GitHub's private vulnerability reporting: open **Security → Report a vulnerability** in this repository ([direct link](https://github.com/Chaosnap/Nocchi/security/advisories/new)) and include:
 
-- 受影响的版本与系统版本；
-- 复现步骤或概念验证；
-- 可能造成的影响。
+- the affected Nocchi version and macOS / iOS version;
+- steps to reproduce, or a proof of concept;
+- the possible impact.
 
-我们会尽量在 7 天内回复，确认问题后尽快修复，并在修复发布后（征得你同意时）致谢。
+We aim to reply within 7 days, fix confirmed problems as soon as we can, and credit you once the fix is released (if you would like that).
 
-## 适用范围
+## Scope
 
-Nocchi 完全在本机运行，不联网、不上传照片（见 [PRIVACY.md](PRIVACY.md)）。特别欢迎以下方面的报告：
+Nocchi runs entirely on your device; it does not go online or upload photos (see [PRIVACY.md](PRIVACY.md)). Reports about the following are especially welcome:
 
-- 读取外部文件时的问题（拖到刘海上的图片、导入的 `.cube` LUT、照片库记录）；
-- 权限相关的问题（摄像头、屏幕录制、文件夹访问）；
-- 覆盖层（自拍、大头贴机、白屏闪光）导致无法退出或无法操作系统的问题。
+- handling of external files: images dropped on the notch or imported, `.cube` LUTs, photo library records;
+- permissions: camera, screen recording, folder access, the Photos picker;
+- overlays (selfie viewfinder, photo booth curtain, white-screen flash) that make it impossible to quit Nocchi or to use the system.
 
-CI 构建产物是 ad-hoc 签名、未经公证的测试版本，这一点是已知的，不算漏洞。
+CI builds are ad-hoc signed and not notarized. That is known and is not a vulnerability.

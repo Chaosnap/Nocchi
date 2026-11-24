@@ -1,31 +1,31 @@
-name: 功能建议
-description: 想要一个新机身、新胶卷、新玩法？
-title: "[建议] "
+name: Feature request
+description: Want a new camera body, film stock or way to play?
+title: "[Idea] "
 labels: ["enhancement"]
 body:
   - type: textarea
     id: idea
     attributes:
-      label: 想要什么
-      description: 尽量具体：在哪里出现、怎么操作、看起来是什么样。
+      label: What you'd like
+      description: "Be as specific as you can: where it appears, how it works, what it looks like."
     validations:
       required: true
   - type: textarea
     id: why
     attributes:
-      label: 为什么想要
-      description: 它解决了什么问题，或者让哪个瞬间更好玩？
+      label: Why
+      description: What problem does it solve, or which moment does it make more fun?
     validations:
       required: true
   - type: textarea
     id: reference
     attributes:
-      label: 参考
-      description: 可以贴链接或描述参考对象。Nocchi 的美术都是原创复古风格，不会照搬真实品牌的外观。
+      label: References
+      description: Links or descriptions are welcome. Nocchi's art is original and retro, and never copies a real brand's look.
   - type: checkboxes
     id: checks
     attributes:
-      label: 确认
+      label: Confirmation
       options:
-        - label: 我搜过已有的 Issue，没有重复。
+        - label: I searched the existing issues and this isn't a duplicate.
           required: true

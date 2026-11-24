@@ -1,61 +1,151 @@
-# 贡献者行为准则
+# Contributor Code of Conduct
 
-本准则改编自 [Contributor Covenant 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/)（CC BY 4.0）。
+## Our Pledge
 
-## 我们的承诺
+We pledge to make the Nocchi community welcoming, safe, and equitable for all.
 
-作为成员、贡献者和维护者，我们承诺：无论年龄、体型、是否有可见或不可见的残障、民族、性征、性别认同与表达、经验水平、教育程度、社会经济地位、国籍、外貌、种族、宗教信仰、性取向，每个人参与本社区时都不会受到骚扰。
+We are committed to fostering an environment that respects and promotes the dignity, rights,
+and contributions of all individuals, regardless of characteristics including race, ethnicity,
+caste, color, age, physical characteristics, neurodiversity, disability, sex or gender, gender
+identity or expression, sexual orientation, language, philosophy or religion, national or social
+origin, socio-economic position, level of education, or other status. The same privileges of
+participation are extended to everyone who participates in good faith and in accordance with this
+Covenant.
 
-我们承诺以开放、友好、多元、包容和健康的方式参与和互动。
+## Encouraged Behaviors
 
-## 我们的标准
+While acknowledging differences in social norms, we all strive to meet our community's
+expectations for positive behavior. We also understand that our words and actions may be
+interpreted differently than we intend based on culture, background, or native language.
 
-有助于营造良好环境的行为，例如：
+With these considerations in mind, we agree to behave mindfully toward each other and act in ways
+that center our shared values, including:
 
-- 对他人表现出同理心与善意；
-- 尊重不同的观点和经验；
-- 给出建设性的反馈，也能大方地接受反馈；
-- 为自己的错误负责，向受影响的人道歉，并从中学习；
-- 关注对整个社区最有益的事情，而不只是对个人最有益的事情。
+1. Respecting the **purpose of our community**, our activities, and our ways of gathering.
+2. Engaging **kindly and honestly** with others.
+3. Respecting **different viewpoints** and experiences.
+4. **Taking responsibility** for our actions and contributions.
+5. Gracefully giving and accepting **constructive feedback**.
+6. Committing to **repairing harm** when it occurs.
+7. Behaving in other ways that promote and sustain the **well-being of our community**.
 
-不可接受的行为，例如：
+## Restricted Behaviors
 
-- 使用带有性暗示的言语或图像，以及任何形式的性关注或性骚扰；
-- 恶意挑衅、侮辱或贬损性评论，人身攻击或政治攻击；
-- 公开或私下的骚扰；
-- 未经明确许可，公开他人的私人信息（例如住址、电子邮箱、照片）；
-- 其他在专业场合中会被合理认为不恰当的行为。
+We agree to restrict the following behaviors in our community. Instances, threats, and promotion
+of these behaviors are violations of this Code of Conduct.
 
-本项目是一个相机 App：在 Issue、讨论或 PR 里分享照片时，请只分享你本人拍摄、且画面中的人同意公开的照片。
+1. **Harassment.** Violating explicitly expressed boundaries or engaging in unnecessary personal
+   attention after any clear request to stop.
+2. **Character attacks.** Making insulting, demeaning, or pejorative comments directed at a
+   community member or group of people.
+3. **Stereotyping or discrimination.** Characterizing anyone's personality or behavior on the
+   basis of immutable identities or traits.
+4. **Sexualization.** Behaving in a way that would generally be considered inappropriately intimate
+   in the context or purpose of the community.
+5. **Violating confidentiality.** Sharing or acting on someone's personal or private information
+   without their permission.
+6. **Endangerment.** Causing, encouraging, or threatening violence or other harm toward any person
+   or group.
+7. Behaving in other ways that **threaten the well-being** of our community.
 
-## 执行责任
+### Other Restrictions
 
-项目维护者负责阐明和执行可接受行为的标准，并会对他们认为不恰当、有威胁、冒犯或有害的行为采取适当、公平的纠正措施。
+1. **Misleading identity.** Impersonating someone else for any reason, or pretending to be someone
+   else to evade enforcement actions.
+2. **Failing to credit sources.** Not properly crediting the sources of content you contribute.
+3. **Promotional materials.** Sharing marketing or other commercial content in a way that is
+   outside the norms of the community.
+4. **Irresponsible communication.** Failing to responsibly present content which includes, links,
+   or describes any other restricted behaviors.
+5. **Other people's photos.** Nocchi is a camera app. In issues, discussions, and pull requests,
+   share only pictures you took yourself, and only of people who agreed to have them shared.
 
-维护者有权删除、编辑或拒绝与本准则不符的评论、提交、代码、Wiki 编辑、Issue 和其他贡献，并会在适当时说明处理原因。
+## Reporting an Issue
 
-## 适用范围
+Tensions can occur between community members even when they are trying their best to collaborate.
+Not every conflict represents a Code of Conduct violation, and this Code of Conduct reinforces
+encouraged behaviors and norms that can help avoid conflicts and minimize harm.
 
-本准则适用于所有社区空间（本仓库的 Issue、PR、讨论区、评论等），也适用于个人在公共场合正式代表社区的情形。
+Nocchi handles reports only through GitHub and does not publish an email address. To report a
+possible violation:
 
-## 举报
+- Open an issue titled "Code of Conduct report" and **leave the details out of it**. A maintainer
+  will reply there to arrange a private way to talk.
+- For harassment, spam, or illegal content, you can also use GitHub's
+  [Report abuse](https://docs.github.com/en/communities/maintaining-your-safety-on-github/reporting-abuse-or-spam)
+  directly.
 
-本项目只通过 GitHub 处理举报，不公开任何邮箱：
+Once a private channel is set up, include any relevant links, screenshots, logs, or other context
+that may help us understand what happened.
 
-- 在本仓库开一个 Issue，标题写「行为准则举报」，**不要在里面写细节**；维护者会在 GitHub 上与你约定私下沟通的方式。
-- 涉及骚扰、垃圾信息或违法内容时，也可以直接使用 GitHub 的 [Report abuse（举报滥用）](https://docs.github.com/zh/communities/maintaining-your-safety-on-github/reporting-abuse-or-spam)。
+Nocchi maintainers take reports of violations seriously and will make every effort to respond in
+a timely manner. They will investigate reports by reviewing messages, logs, and recordings, or by
+interviewing witnesses and other participants. Maintainers will keep investigations and enforcement
+actions as transparent as possible while prioritizing safety and confidentiality. Enforcement
+actions are carried out privately with the involved parties, though communicating to the wider
+community may be part of a mutually agreed resolution.
 
-所有维护者都有义务尊重举报人的隐私和安全。
+If a report concerns a maintainer, that person will not participate in handling the report. Another
+maintainer or a mutually agreed neutral reviewer will handle it instead.
 
-## 执行指南
+## Addressing and Repairing Harm
 
-维护者会按照以下社区影响指南，决定对违反本准则的行为采取的措施：
+If an investigation finds that this Code of Conduct has been violated, the following enforcement
+ladder may be used to determine how best to repair harm, based on the incident's impact on the
+individuals involved and the community as a whole. Depending on the severity of a violation, lower
+rungs on the ladder may be skipped.
 
-1. **更正**：使用不当语言或其他被认为不专业、不受欢迎的行为。维护者会私下提出书面警告，说明违规的性质和行为为何不当，并可能要求公开道歉。
-2. **警告**：一次事件或一系列行为构成的违规。给予警告，并说明继续这样做的后果；在规定时间内不得与相关人员互动。违反这些条款可能导致临时或永久封禁。
-3. **临时封禁**：严重违反社区标准，包括持续的不当行为。在一段时间内禁止与社区进行任何形式的互动或公开交流。
-4. **永久封禁**：表现出违反社区标准的模式，包括持续的不当行为、骚扰个人，或攻击、贬低某一类人群。永久禁止在社区内进行任何形式的公开互动。
+1. **Warning**
+   1. **Event:** A violation involving a single incident or series of incidents.
+   2. **Consequence:** A private, written warning from the Nocchi maintainers.
+   3. **Repair:** Examples include a private written apology, acknowledgement of responsibility,
+      and seeking clarification on expectations.
+2. **Temporarily Limited Activities**
+   1. **Event:** A repeated incidence of a violation that previously resulted in a warning, or the
+      first incidence of a more serious violation.
+   2. **Consequence:** A private, written warning with a time-limited cooldown period designed to
+      underscore the seriousness of the situation and give the community members involved time to
+      process the incident. The cooldown period may be limited to particular communication channels
+      or interactions with particular community members.
+   3. **Repair:** Examples include making an apology, using the cooldown period to reflect on actions
+      and impact, and being thoughtful about re-entering community spaces after the period is over.
+3. **Temporary Suspension**
+   1. **Event:** A pattern of repeated violations which the Nocchi maintainers have tried to
+      address with warnings, or a single serious violation.
+   2. **Consequence:** A private written warning with conditions for return from suspension. In
+      general, temporary suspensions give the person being suspended time to reflect upon their
+      behavior and possible corrective actions.
+   3. **Repair:** Examples include respecting the spirit of the suspension, meeting the specified
+      conditions for return, and being thoughtful about how to reintegrate with the community when
+      the suspension is lifted.
+4. **Permanent Ban**
+   1. **Event:** A pattern of repeated Code of Conduct violations that other steps on the ladder
+      have failed to resolve, or a violation so serious that the Nocchi maintainers determine there
+      is no way to keep the community safe with this person as a member.
+   2. **Consequence:** Access to all community spaces, tools, and communication channels is removed.
+      Permanent bans should be used rarely, should have strong reasoning behind them, and should
+      only be used if other remedies have failed to change the behavior.
+   3. **Repair:** There is no possible repair in cases of this severity.
 
-## 归属
+This enforcement ladder is intended as a guideline. It does not limit the ability of Nocchi
+maintainers to use their discretion and judgment in the best interests of the community.
 
-本行为准则改编自 [Contributor Covenant](https://www.contributor-covenant.org) 2.1 版；社区影响指南受 [Mozilla 行为准则执行阶梯](https://github.com/mozilla/diversity) 启发。常见问题见 <https://www.contributor-covenant.org/faq>。
+## Scope
+
+This Code of Conduct applies within all Nocchi community spaces, including the GitHub repository,
+its issues, pull requests, discussions, and other official communication channels. It also applies
+when an individual is officially representing Nocchi in public or other spaces, such as by posting
+through an official account or acting as an appointed representative at an online or offline event.
+
+## Attribution
+
+This Code of Conduct is adapted from the [Contributor Covenant, version 3.0](https://www.contributor-covenant.org/version/3/0/).
+
+Contributor Covenant is stewarded by the Organization for Ethical Source and licensed under the
+[Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).
+
+For answers to common questions, see the [Contributor Covenant FAQ](https://www.contributor-covenant.org/faq).
+Translations are available from the [Contributor Covenant translations](https://www.contributor-covenant.org/translations)
+page, and additional enforcement guidance is available from the
+[Contributor Covenant resources](https://www.contributor-covenant.org/resources). The enforcement
+ladder was inspired by the work of [Mozilla's Code of Conduct team](https://github.com/mozilla/inclusion).
