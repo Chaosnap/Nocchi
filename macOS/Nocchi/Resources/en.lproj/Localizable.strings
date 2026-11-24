@@ -282,7 +282,7 @@
 "搜索照片…" = "Search Photos…";
 "搜索结果" = "Search Results";
 "搜索题字、标签、地点、胶卷、日期…" = "Search captions, tags, places, film, dates…";
-"搬好了 %lld 个文件；有 %lld 个在新位置已经有同名文件，没有覆盖，留在了原处。" = "Moved %lld files; %lld had a file with the same name at the new location, so they stayed where they were.";
+"搬好了 %lld 个文件；有 %lld 个在新位置已经有同名文件，没有覆盖，留在了原处。" = "Moved %lld files; %lld had files with the same names at the new location, so they stayed where they were.";
 "搬好了：%lld 个文件。" = "Moved %lld files.";
 "搬过去" = "Move Them";
 "摄像头" = "Webcam";

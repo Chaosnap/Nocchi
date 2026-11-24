@@ -9,6 +9,7 @@
 - 不能在本机编译（不能用 Xcode 自动抽字符串），所以 `scripts/i18n/strings.py` 自己解析 Swift 字面量、按 SwiftUI 的规则算键（插值换成 `%@` / `%lld` / `%lf`），英文在 `scripts/i18n/en.json`，生成 `en.lproj/Localizable.strings`；CI 检查有没有缺的、格式符对不对。
 - 一个进程一种语言：启动时把 Nocchi 自己的 `AppleLanguages` 设成选的语言（没选过就是中文，系统是英文也一样），换语言要重新打开。NocchiKit 里显示给人看的名字跟着 `UILanguage.current`。
 - 贴纸图案上印的中文（小票、「已显影」等）是设计的一部分，不翻译；搜索用的中文日期写法不翻译。
+- 英文的单复数（1 photo / 2 photos）用 Apple 的 `Localizable.stringsdict`：en.json 里这种键的值写成 `{"format": "%#@n@ this month", "n": {"one": "%lld photo", "other": "%lld photos"}}`，`strings.py build` 生成 stringsdict（`.strings` 里留 other 那种），`check` 检查每种写法的格式符。英文界面的文字要放得下：按 Screenshots 的英文截图逐张看，放不下就改短（比如胶卷柜「200 · 36 exp.」）或让版式退一步（`ViewThatFits`）。
 
 ### D38 · 成片位置可以换，记录和底片不动
 - 所有者：「储存位置可以自定义」。设置里显示的就是成片文件夹，所以只让成片（给人看的 JPEG）换位置；照片记录（JSON）、底片、LUT、字体、贴纸仍在「应用程序支持」里——它们是 App 的数据库，放到外接盘上一拔就整个相册打不开。

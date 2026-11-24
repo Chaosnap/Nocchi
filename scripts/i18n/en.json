@@ -1,16 +1,40 @@
 {
  "%@  ·  %lld 张": "%@  ·  %lld exposures",
  "%@ · %@（点一下换下一台）": "%@ · %@ (click for the next camera)",
- "%@ · %lld 张": "%@ · %lld photos",
+ "%@ · %lld 张": {
+  "format": "%@ · %#@n@",
+  "n": {
+   "one": "%lld photo",
+   "other": "%lld photos"
+  }
+ },
  "%@ · 左右拖动翻看": "%@ · drag sideways to leaf through",
  "%@ 组": "Group %@",
  "%@还是空的": "%@ is still empty",
  "%@（⌘%@）": "%@ (⌘%@)",
  "%@（点一下换下一种）": "%@ (click for the next one)",
  "%lld · %lld 张": "%lld · %lld exp.",
- "%lld 张": "%lld photos",
- "%lld 张 · 点一下展开": "%lld photos · click to open",
- "%lld 月 %lld 日 · %lld 张": "%lld/%lld · %lld photos",
+ "%lld 张": {
+  "format": "%#@n@",
+  "n": {
+   "one": "%lld photo",
+   "other": "%lld photos"
+  }
+ },
+ "%lld 张 · 点一下展开": {
+  "format": "%#@n@ · click to open",
+  "n": {
+   "one": "%lld photo",
+   "other": "%lld photos"
+  }
+ },
+ "%lld 月 %lld 日 · %lld 张": {
+  "format": "%lld/%lld · %#@n@",
+  "n": {
+   "one": "%lld photo",
+   "other": "%lld photos"
+  }
+ },
  "%lld 秒": "%lld s",
  "102×152 · 2×2 四宫格": "102×152 · 2×2 grid",
  "102×76 · 3:2 白边冲印小照": "102×76 · 3:2 print with a white border",
@@ -76,7 +100,13 @@
  "会印在照片下面的白边上。": "Printed on the white border under the photo.",
  "例如：上海 · 武康路": "e.g. Paris · Rue Mouffetard",
  "偏冷的日常负片：浓郁的绿、清脆的反差，阴影里一点青绿": "A cool everyday negative: deep greens, crisp contrast, a touch of teal in the shadows",
- "做好了 %lld 枚贴纸": "Made %lld stickers",
+ "做好了 %lld 枚贴纸": {
+  "format": "Made %#@n@",
+  "n": {
+   "one": "%lld sticker",
+   "other": "%lld stickers"
+  }
+ },
  "光从%@边来": "Light from the %@",
  "光台上还没有底片 · 拍几张再来看": "No negatives on the light table yet · take a few photos first",
  "光的方向": "Light direction",
@@ -192,7 +222,13 @@
  "宽幅即显": "Instant Wide",
  "对齐": "Alignment",
  "导入 .cube 胶卷…": "Import a .cube Roll…",
- "导入了 %lld 个字体": "Imported %lld fonts",
+ "导入了 %lld 个字体": {
+  "format": "Imported %#@n@",
+  "n": {
+   "one": "%lld font",
+   "other": "%lld fonts"
+  }
+ },
  "导入图片": "Import Images",
  "导入失败：%@": "Import failed: %@",
  "导入字体…": "Import Fonts…",
@@ -276,13 +312,35 @@
  "接管系统截图（⇧⌘3 / ⇧⌘4 的截图也冲印成相片）": "Take over system screenshots (⇧⌘3 / ⇧⌘4 shots become prints too)",
  "推荐": "Suggested",
  "推荐 %@": "Best on %@",
- "搜索「%@」· %lld 张": "Search “%@” · %lld photos",
+ "搜索「%@」· %lld 张": {
+  "format": "Search “%@” · %#@n@",
+  "n": {
+   "one": "%lld photo",
+   "other": "%lld photos"
+  }
+ },
  "搜索字体": "Search fonts",
  "搜索照片…": "Search Photos…",
  "搜索结果": "Search Results",
  "搜索题字、标签、地点、胶卷、日期…": "Search captions, tags, places, film, dates…",
- "搬好了 %lld 个文件；有 %lld 个在新位置已经有同名文件，没有覆盖，留在了原处。": "Moved %lld files; %lld had a file with the same name at the new location, so they stayed where they were.",
- "搬好了：%lld 个文件。": "Moved %lld files.",
+ "搬好了 %lld 个文件；有 %lld 个在新位置已经有同名文件，没有覆盖，留在了原处。": {
+  "format": "Moved %#@moved@; %#@kept@.",
+  "moved": {
+   "one": "%lld file",
+   "other": "%lld files"
+  },
+  "kept": {
+   "one": "%lld had a file with the same name at the new location, so it stayed where it was",
+   "other": "%lld had files with the same names at the new location, so they stayed where they were"
+  }
+ },
+ "搬好了：%lld 个文件。": {
+  "format": "Moved %#@n@.",
+  "n": {
+   "one": "%lld file",
+   "other": "%lld files"
+  }
+ },
  "搬过去": "Move Them",
  "摄像头": "Webcam",
  "摄像头出错了": "The camera ran into a problem",
@@ -298,7 +356,13 @@
  "放回桌面": "Back to the Desktop",
  "放回盒子": "Put Back in the Box",
  "放回那一叠": "Back on the Pile",
- "放进刘海暂存了（%lld 张）": "Shelved in the notch (%lld photos)",
+ "放进刘海暂存了（%lld 张）": {
+  "format": "Shelved in the notch (%#@n@)",
+  "n": {
+   "one": "%lld photo",
+   "other": "%lld photos"
+  }
+ },
  "数据行数量不符：需要 %lld 行，实际 %lld 行。": "Wrong number of data rows: expected %lld, found %lld.",
  "文字": "Text",
  "文字：在照片上点一下加一段字": "Text: click the photo to add text",
@@ -334,13 +398,37 @@
  "最上层（浮动）": "On top (floating)",
  "最多选 %lld 张，每张都会用「%@」冲印成%@，从刘海一张一张吐出来。": "Choose up to %lld photos. Each is developed on “%@” as %@ and slides out of the notch one by one.",
  "最常写 #%@": "Most used #%@",
- "最近冲印 · %lld 张": "Recent prints · %lld photos",
+ "最近冲印 · %lld 张": {
+  "format": "Recent prints · %#@n@",
+  "n": {
+   "one": "%lld photo",
+   "other": "%lld photos"
+  }
+ },
  "月亮": "Moon",
- "有 %lld 个文件读不出图片": "%lld files couldn’t be read as images",
- "有 %lld 个文件读不出字体": "%lld files couldn’t be read as fonts",
+ "有 %lld 个文件读不出图片": {
+  "format": "%#@n@",
+  "n": {
+   "one": "%lld file couldn’t be read as an image",
+   "other": "%lld files couldn’t be read as images"
+  }
+ },
+ "有 %lld 个文件读不出字体": {
+  "format": "%#@n@",
+  "n": {
+   "one": "%lld file couldn’t be read as a font",
+   "other": "%lld files couldn’t be read as fonts"
+  }
+ },
  "朋友": "Friends",
  "木夹": "Wooden Pegs",
- "本月 %lld 张": "%lld photos this month",
+ "本月 %lld 张": {
+  "format": "%#@n@ this month",
+  "n": {
+   "one": "%lld photo",
+   "other": "%lld photos"
+  }
+ },
  "本月还没有照片": "No photos this month yet",
  "朱红相纸和金色回纹": "Vermilion paper, gold key-fret",
  "机身": "Camera",
@@ -402,7 +490,13 @@
  "生日": "Birthday",
  "生日快乐": "Happy Birthday",
  "用「预览」打开": "Open in Preview",
- "用了 %lld 卷胶卷": "%lld rolls of film",
+ "用了 %lld 卷胶卷": {
+  "format": "%#@n@ of film",
+  "n": {
+   "one": "%lld roll",
+   "other": "%lld rolls"
+  }
+ },
  "用这个文件夹": "Use This Folder",
  "电影卷改的夜景卷：钨丝灯下偏冷、青色阴影，灯光周围一圈红色光晕": "Cinema stock respooled for nights: cool under tungsten, cyan shadows, red halation around lights",
  "电影票": "Cinema Ticket",

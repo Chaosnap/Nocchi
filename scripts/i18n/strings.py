@@ -3,7 +3,7 @@
 
 用法：
     python3 scripts/i18n/strings.py extract   # 扫源码，写 scripts/i18n/keys.json（键 → 出现的位置和用法）
-    python3 scripts/i18n/strings.py build     # 用 scripts/i18n/en.json 生成 macOS/Nocchi/Resources/en.lproj/Localizable.strings
+    python3 scripts/i18n/strings.py build     # 用 scripts/i18n/en.json 生成 macOS/Nocchi/Resources/en.lproj/Localizable.strings（和 .stringsdict）
     python3 scripts/i18n/strings.py check     # 有键没翻译就失败（列出来）
     python3 scripts/i18n/strings.py todo      # 列出还是普通 String（SwiftUI 不会自动翻译）的中文字面量
 
@@ -14,6 +14,11 @@
 
 哪些不算：注释、多行字符串（着色器等）、带 `// i18n-ok` 的行（故意不翻译，比如按语言分别生成的字）、
 `say(` / `print(` / `log(` 里的字、测试代码。
+
+英文有单复数（1 photo / 2 photos）：en.json 里这种键的值写成对象——
+    "%lld 张": {"format": "%#@n@", "n": {"one": "%lld photo", "other": "%lld photos"}}
+`format` 是整句，`%#@n@` 处按数字选 `n` 的一种写法（数字就是 `%#@n@` 在整句里那个位置的参数）。
+build 把这些写进 Localizable.stringsdict（Apple 的复数规则，运行时优先用它），.strings 里留「other」那一种。
 """
 
 import json
@@ -32,6 +37,7 @@ KEYS = os.path.join(HERE, "keys.json")
 EN = os.path.join(HERE, "en.json")
 FORMATS = os.path.join(HERE, "formats.json")
 OUT = os.path.join(REPO, "macOS", "Nocchi", "Resources", "en.lproj", "Localizable.strings")
+PLURALS_OUT = os.path.join(REPO, "macOS", "Nocchi", "Resources", "en.lproj", "Localizable.stringsdict")
 CJK = re.compile(r"[㐀-鿿　-〿＀-￯]")
 
 # 这些调用的第一个参数是 LocalizedStringKey：SwiftUI 自己会查表。
@@ -240,6 +246,58 @@ def escape(s):
     return s.replace('"', '\\"') if '\\"' not in s else s
 
 
+def plural_vars(value):
+    """复数写法里的变量：{名字: {"one": …, "other": …}}（普通字符串返回空）。"""
+    if isinstance(value, str):
+        return {}
+    return {name: rules for name, rules in value.items() if name != "format"}
+
+
+def flat(value, form="other"):
+    """en.json 的值展开成一句：普通字符串原样；复数写法把每个 %#@变量@ 换成那个变量的 form 写法。"""
+    if isinstance(value, str):
+        return value
+    out = value["format"]
+    for name, rules in plural_vars(value).items():
+        out = out.replace("%#@" + name + "@", rules[form])
+    return out
+
+
+def plural_problems(key, value):
+    """复数写法写得对不对：每个变量都要有 one 和 other，都要在 format 里出现，键里不能有反斜杠（plist 里是原样的字）。"""
+    if isinstance(value, str):
+        return []
+    problems = []
+    if "format" not in value:
+        problems.append("no format")
+    if "\\" in key:
+        problems.append("plural keys cannot contain escapes")
+    for name, rules in plural_vars(value).items():
+        if not isinstance(rules, dict) or "one" not in rules or "other" not in rules:
+            problems.append("%s needs one and other" % name)
+        elif "%#@" + name + "@" not in value.get("format", ""):
+            problems.append("%s is not used in format" % name)
+    if not plural_vars(value):
+        problems.append("no plural variables")
+    return problems
+
+
+def write_stringsdict(plurals):
+    """Localizable.stringsdict：每个复数键一个 NSStringLocalizedFormatKey + 复数规则。"""
+    import plistlib
+    root = {}
+    spec = re.compile(r"%(?:\d+\$)?(lld|ld|d)")
+    for key, value in plurals.items():
+        entry = {"NSStringLocalizedFormatKey": value["format"]}
+        for name, rules in plural_vars(value).items():
+            kind = spec.search(rules["other"])
+            entry[name] = dict(rules, NSStringFormatSpecTypeKey="NSStringPluralRuleType",
+                               NSStringFormatValueTypeKey=kind.group(1) if kind else "lld")
+        root[key] = entry
+    with open(PLURALS_OUT, "wb") as f:
+        plistlib.dump(root, f, sort_keys=True)
+
+
 def build(check_only=False):
     keys = extract()
     # 只有运行时真的会查表的键才需要翻译（全部用法都是没包起来的普通 String 的，比如字典键、截图样片，不查表）。
@@ -252,23 +310,31 @@ def build(check_only=False):
         lines = ["/* 由 scripts/i18n/strings.py build 从 scripts/i18n/en.json 生成，不要手改。 */", ""]
         for key in sorted(keys):
             if key in en:
-                lines.append('"%s" = "%s";' % (escape(key), escape(en[key])))
+                lines.append('"%s" = "%s";' % (escape(key), escape(flat(en[key]))))
         with open(OUT, "w", encoding="utf-8") as f:
             f.write("\n".join(lines) + "\n")
-        print("wrote %s (%d translations)" % (os.path.relpath(OUT, REPO), len(keys) - len(missing)))
+        plurals = {k: en[k] for k in sorted(keys) if k in en and not isinstance(en[k], str)}
+        write_stringsdict(plurals)
+        print("wrote %s (%d translations, %d with plurals)" % (os.path.relpath(OUT, REPO), len(keys) - len(missing), len(plurals)))
     # 英文里的格式符要和键一样（个数、类型、顺序；%1$@ 这种带位置的也算），不然运行时会拿错参数。
     spec = re.compile(r"%(\d+\$)?(lld|ld|d|@|lf|f)")
     mismatched = []
     for key in keys:
         if key in en:
+            problems = plural_problems(key, en[key])
+            if problems:
+                mismatched.append((key, "; ".join(problems)))
+                continue
             want = [m.group(2) for m in spec.finditer(key.replace("%%", ""))]
-            have = [m.group(2) for m in spec.finditer(en[key].replace("%%", ""))]
-            if want != have:
-                mismatched.append(key)
+            for form in ("other", "one"):
+                have = [m.group(2) for m in spec.finditer(flat(en[key], form).replace("%%", ""))]
+                if want != have:
+                    mismatched.append((key, form))
+                    break
     if mismatched:
         print("format specifiers differ: %d" % len(mismatched))
-        for k in mismatched:
-            print("  %s => %s" % (json.dumps(k, ensure_ascii=False), json.dumps(en[k], ensure_ascii=False)))
+        for k, why in mismatched:
+            print("  %s => %s (%s)" % (json.dumps(k, ensure_ascii=False), json.dumps(en[k], ensure_ascii=False), why))
         return 1
     if unused:
         print("unused translations: %d" % len(unused))
