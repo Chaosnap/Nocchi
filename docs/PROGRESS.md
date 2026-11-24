@@ -41,7 +41,7 @@
 | --- | --- | --- | --- | --- |
 | 1 🟢 | 装饰台 · 「格式文字」页 | 文字要看得清：系统深色模式下 `TextField`、`DatePicker`、分段 `Picker` 的字是白的，落在浅色纸面上几乎看不见（所有者截图）；分享页选中的胶囊、主按钮是白字（这个对） | `Editor/Inspector.swift`、`Editor/DecorateDesk.swift` | 装饰台窗口固定浅色外观（`window.appearance = NSAppearance(named: .aqua)`）或检查器 `.environment(\.colorScheme, .light)`；逐个控件检查对比度 |
 | 2 🟢 | 装饰台 · 贴纸 | **自定义贴纸**：导入自己的图片（PNG / JPG / HEIC，可拖放）做成贴纸，并能管理（重命名、删除、排序，单独一类「我的贴纸」） | `NocchiKit/Decorate/StickerCatalog.swift`、`StickerArt.swift`、`Editor/Inspector.swift` | NocchiKit 加 `CustomStickerStore`（照片库目录下 `stickers/`，复制原图 + 缩略图，JSON 清单，单元测试）；`kindID` 用 `custom.<uuid>`；`StickerArt` 画自定义贴纸时读位图、可选白色模切边 + 投影；`PhotoComposer` 通过注入的位图提供者拿到图（NocchiKit 不直接依赖 App 目录）；缺图时有退路 |
-| 3 | 大头贴机 | 布帘、整台机器、黄铜箭头、拨杆开关、发光的「开始」按钮都用 **Blender 建模**，要非常精细精美；整台大头贴机也要更精美 | `Booth/BoothFrameChooser.swift`、`Booth/CurtainScene.swift`、`design/blender/` | 照卡片盒的做法（决策 D22）：`design/blender/booth/*.py` 出分层 PNG（机身底图；拨杆左 / 右两态；按钮按下 / 抬起；开始按钮亮 / 暗；布帘几帧或分层），热区坐标导出 JSON；SwiftUI 只叠图和做动画 |
+| 3 🟡 | 大头贴机 | 布帘、整台机器、黄铜箭头、拨杆开关、发光的「开始」按钮都用 **Blender 建模**，要非常精细精美；整台大头贴机也要更精美 | `Booth/BoothFrameChooser.swift`、`Booth/CurtainScene.swift`、`design/blender/` | 照卡片盒的做法（决策 D22）：`design/blender/booth/*.py` 出分层 PNG（机身底图；拨杆左 / 右两态；按钮按下 / 抬起；开始按钮亮 / 暗；布帘几帧或分层），热区坐标导出 JSON；SwiftUI 只叠图和做动画 |
 | 4 | 相框 · 情人节 | `booth-heart` 不够精美，要更精致 | `NocchiKit/Decorate/TemplateArt`（模板绘制）、`PhotoComposer.swift` | 给模板加「位图图层」：Blender 渲染烫金 / 压纹 / 丝带边框（四格条、四宫格各一套），合成时叠在相纸上；屏幕与导出同源 |
 | 5 | 相框（全部） | 相框也可以用 Blender 建模，更精细 | 同上 | 同 4，先做大头贴主题和照相馆卡纸、胶片框 |
 | 6 🟢 | 相册 · 卡片盒 | 阴影出现「直角」：`CardBoxBase` 渲染图的地面阴影在图片边界被截断，右边露出一块矩形的浅色底（所有者截图） | `design/blender/cardbox/`、`NocchiUI/CardBox/CardBoxView.swift` | 重渲染：透明背景 + 阴影捕捉器，阴影自然衰减到透明并留足画布；SwiftUI 再加一层连贯的柔和环境阴影 |
@@ -127,6 +127,7 @@
 
 ## 最近更新（新的在上）
 
+- **2026-11-24 · 第 37 次推送** 大头贴机的 Blender 零件（交接表第 3 项的机器与按键部分；布帘在下一步）：`design/blender/booth/make_booth.py` 渲染 `BoothPanel`（@2x 九宫格搪瓷面板）、`BoothMarquee`（灯泡招牌）、`BoothLeverLeft/Right`、`BoothArrow/Pressed`、`BoothStart/Lit/Pressed`；`BoothFrameChooser` 与 `BoothInterior` 改用这些图（`RenderedButtonStyle`、`StartButtonStyle`、`BoothSign`），缺图时退回原来画的版本。所有者要求相册里不要滚动条：软木板 / 光台 / 挂历的 `ScrollView` 都隐藏了滚动条。
 - **2026-11-24 · 第 36 次推送** 所有者要求「软件一启动就默认显示卡片盒」：`AppModel.openAlbumOnLaunch`（默认开，设置 → 程序可关），启动 0.7 秒后 `AlbumRouter.shared.show(.cardBox)`。
 - **2026-11-24 · 第 35 次推送** 出片动画重做（所有者 2026-11-24 新要求「从灵动岛出片的物理效果和动画更精细」）：`PhotoWindowController.presentEjecting` 逐帧模拟——滚轮每步「先快后慢 + 齿轮间隙回弹」、左右微抖、挂在出片口上的单摆（ω² ∝ 1/伸出长度，每步给冲量，`PhotoViewModel.ejectSway` 绕出片口转）、光泽扫过；`finishEjecting` 夹住余摆 0.14 秒后松开（出片口这时合上），重力 + 空气阻力下落、横向漂移、欠阻尼弹簧转到随手角度（落地后摩擦加大），落地弹一下、阴影收紧（`lifted`）、新音效 `paperLand`；出片口沿有一道渐隐的阴影。
 - **2026-11-24 · 第 34 次推送** 自定义贴纸（交接表第 2 项）：NocchiKit `CustomStickerStore`（照片库 `stickers/`：导入图片 → 最长边 1600、裁透明边、存 PNG，`stickers.json` 清单；重命名、模切边、排序、删掉 = 隐藏，已贴的照样能画）与 `StickerArt.customProvider`（App 启动时注入，`custom.<UUID>` 用图片 + 16 向偏移的白色模切边 + 投影画出来，成片 / 桌面相纸 / 装饰台一致）；装饰台贴纸页「我的」：导入格、拖放、右键管理（`Editor/StickerShelf.swift`），图片拖到照片上直接贴在放下的位置。新增 `CustomStickerTests`。

@@ -424,14 +424,7 @@ struct BoothInterior: View {
 
     var body: some View {
         VStack(spacing: 18) {
-            MarqueeBulbs()
-            Text("大头贴机")
-                .font(.system(size: 30, weight: .heavy, design: .rounded))
-                .foregroundStyle(Palette.charcoal)
-                .padding(.horizontal, 26)
-                .padding(.vertical, 8)
-                .background(Capsule().fill(Palette.ivory))
-                .overlay(Capsule().stroke(Palette.terracotta, lineWidth: 3))
+            BoothSign()
 
             ZStack {
                 if choosing {
@@ -466,7 +459,45 @@ struct BoothInterior: View {
     }
 }
 
-/// 招牌上方的一排暖光灯泡。
+/// 招牌：Blender 渲染的镀铬框灯泡牌（`BoothMarquee`），中间的搪瓷牌上印「大头贴机」；缺图时用画的灯泡 + 胶囊牌。
+private struct BoothSign: View {
+    @State private var flicker = false
+
+    var body: some View {
+        if BundledImage.has("BoothMarquee") {
+            ZStack {
+                Image("BoothMarquee")
+                    .resizable()
+                    .interpolation(.high)
+                    .frame(width: 400, height: 125)
+                    .brightness(flicker ? 0.015 : 0)
+                Text("大头贴机")
+                    .font(RetroFont.serif(30, weight: .heavy))
+                    .tracking(6)
+                    .foregroundStyle(Palette.charcoal)
+                    .shadow(color: .white.opacity(0.6), radius: 0, y: 1)
+            }
+            .shadow(color: Color(hex: 0xFFC56A, opacity: 0.45), radius: 18)
+            .shadow(color: .black.opacity(0.4), radius: 12, y: 8)
+            .onAppear {
+                withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) { flicker = true }
+            }
+        } else {
+            VStack(spacing: 18) {
+                MarqueeBulbs()
+                Text("大头贴机")
+                    .font(.system(size: 30, weight: .heavy, design: .rounded))
+                    .foregroundStyle(Palette.charcoal)
+                    .padding(.horizontal, 26)
+                    .padding(.vertical, 8)
+                    .background(Capsule().fill(Palette.ivory))
+                    .overlay(Capsule().stroke(Palette.terracotta, lineWidth: 3))
+            }
+        }
+    }
+}
+
+/// 招牌上方的一排暖光灯泡（渲染图缺失时的退路）。
 private struct MarqueeBulbs: View {
     var body: some View {
         HStack(spacing: 10) {

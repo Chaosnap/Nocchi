@@ -66,9 +66,20 @@ struct BoothFrameChooser: View {
 
 // MARK: - 机身面板
 
-/// 象牙白搪瓷面板（和取景框同一种外壳），四角四颗黄铜螺丝。
+/// 象牙白搪瓷面板（和取景框同一种外壳），四角四颗黄铜螺丝：Blender 渲染的 `BoothPanel`（九宫格拉伸），缺图时用画的。
 private struct MachineFace: View {
     var body: some View {
+        if BundledImage.has("BoothPanel") {
+            Image("BoothPanel")
+                .resizable(capInsets: EdgeInsets(top: 56, leading: 56, bottom: 56, trailing: 56), resizingMode: .stretch)
+                .shadow(color: .black.opacity(0.3), radius: 2, y: 1)
+                .shadow(color: .black.opacity(0.45), radius: 30, y: 18)
+        } else {
+            drawnFace
+        }
+    }
+
+    private var drawnFace: some View {
         RoundedRectangle(cornerRadius: 34, style: .continuous)
             .fill(LinearGradient(colors: [Palette.ivoryLight, Palette.ivoryShade], startPoint: .top, endPoint: .bottom))
             .overlay(
@@ -219,6 +230,16 @@ private struct BrassArrowButton: View {
     let action: () -> Void
 
     var body: some View {
+        if BundledImage.has("BoothArrow") {
+            Button(action: action) { EmptyView() }
+                .buttonStyle(RenderedButtonStyle(up: "BoothArrow", down: "BoothArrowPressed", size: CGSize(width: 60, height: 60), mirrored: pointsLeft))
+                .help(pointsLeft ? "上一款（←）" : "下一款（→）")
+        } else {
+            drawn
+        }
+    }
+
+    private var drawn: some View {
         Button(action: action) {
             ZStack {
                 Circle()
@@ -305,7 +326,32 @@ private struct LeverSwitch: View {
         .buttonStyle(.plain)
     }
 
+    @ViewBuilder
     private var lever: some View {
+        if BundledImage.has("BoothLeverLeft"), BundledImage.has("BoothLeverRight") {
+            // Blender 渲染的镀铬蝙蝠柄拨杆：两个位置的图，拨的时候一闪而过、带一点回弹。
+            ZStack {
+                Image("BoothLeverLeft")
+                    .resizable()
+                    .interpolation(.high)
+                    .opacity(isRight ? 0 : 1)
+                Image("BoothLeverRight")
+                    .resizable()
+                    .interpolation(.high)
+                    .opacity(isRight ? 1 : 0)
+            }
+            .frame(width: 46, height: 46)
+            .scaleEffect(isRight ? 1 : 0.999)
+            .shadow(color: .black.opacity(0.3), radius: 1, x: 0.6, y: 1)
+            .shadow(color: .black.opacity(0.2), radius: 4, x: 2, y: 3)
+            .contentShape(Circle())
+            .animation(.easeOut(duration: 0.07), value: isRight)
+        } else {
+            drawnLever
+        }
+    }
+
+    private var drawnLever: some View {
         ZStack {
             // 底座螺母（六角的感觉用一圈暗边表示）。
             Circle()
@@ -345,6 +391,26 @@ private struct GlowStartButton: View {
     @State private var glowing = false
 
     var body: some View {
+        if BundledImage.has("BoothStart") {
+            rendered
+        } else {
+            drawn
+        }
+    }
+
+    /// Blender 渲染的街机按钮：暗 ↔ 亮之间慢慢呼吸，按下换成按下去的那张；「开 始」印在灯罩上。
+    private var rendered: some View {
+        Button(action: action) { EmptyView() }
+            .buttonStyle(StartButtonStyle(glowing: glowing))
+            .help("投币开始（Return）")
+            .onAppear {
+                withAnimation(.easeInOut(duration: 1.3).repeatForever(autoreverses: true)) {
+                    glowing = true
+                }
+            }
+    }
+
+    private var drawn: some View {
         Button(action: action) {
             ZStack {
                 Capsule()
@@ -389,5 +455,59 @@ struct BoothPressStyle: ButtonStyle {
             .scaleEffect(configuration.isPressed ? 0.95 : 1)
             .brightness(configuration.isPressed ? -0.05 : 0)
             .animation(.spring(response: 0.28, dampingFraction: 0.7), value: configuration.isPressed)
+    }
+}
+
+// MARK: - Blender 渲染的按键
+
+/// 抬起 / 按下两张渲染图的按钮（可水平翻转，比如向左的箭头）。
+private struct RenderedButtonStyle: ButtonStyle {
+    let up: String
+    let down: String
+    let size: CGSize
+    var mirrored = false
+
+    func makeBody(configuration: Configuration) -> some View {
+        Image(configuration.isPressed ? down : up)
+            .resizable()
+            .interpolation(.high)
+            .frame(width: size.width, height: size.height)
+            .scaleEffect(x: mirrored ? -1 : 1, y: 1)
+            .shadow(color: .black.opacity(0.32), radius: 1, x: 0.6, y: 1)
+            .shadow(color: .black.opacity(configuration.isPressed ? 0.12 : 0.24), radius: configuration.isPressed ? 3 : 8, x: 2, y: configuration.isPressed ? 2 : 6)
+            .contentShape(Circle())
+            .animation(.spring(response: 0.18, dampingFraction: 0.7), value: configuration.isPressed)
+    }
+}
+
+/// 开始按钮：暗 / 亮两张图交叠呼吸，按下换成按下去的那张。
+private struct StartButtonStyle: ButtonStyle {
+    let glowing: Bool
+
+    func makeBody(configuration: Configuration) -> some View {
+        ZStack {
+            if configuration.isPressed {
+                Image("BoothStartPressed")
+                    .resizable()
+                    .interpolation(.high)
+            } else {
+                Image("BoothStart")
+                    .resizable()
+                    .interpolation(.high)
+                Image(BundledImage.has("BoothStartLit") ? "BoothStartLit" : "BoothStart")
+                    .resizable()
+                    .interpolation(.high)
+                    .opacity(glowing ? 1 : 0)
+            }
+            Text("开 始")
+                .font(RetroFont.serif(19, weight: .bold))
+                .foregroundStyle(Palette.ivoryLight)
+                .shadow(color: Color(hex: 0x6A2414).opacity(0.8), radius: 0, y: 1)
+                .offset(y: configuration.isPressed ? 1 : -3)
+        }
+        .frame(width: 108, height: 108)
+        .shadow(color: Palette.terracottaLight.opacity(glowing && !configuration.isPressed ? 0.7 : 0.2), radius: glowing ? 22 : 10)
+        .shadow(color: .black.opacity(0.3), radius: 2, y: 1.5)
+        .contentShape(Circle())
     }
 }

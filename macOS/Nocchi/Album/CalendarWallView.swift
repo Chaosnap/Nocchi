@@ -356,7 +356,7 @@ private struct DayTray: View {
                 .buttonStyle(.plain)
                 .help("收起")
             }
-            ScrollView(.horizontal) {
+            ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .top, spacing: 18) {
                     ForEach(day.records) { record in
                         VStack(alignment: .leading, spacing: 5) {

@@ -15,6 +15,7 @@
 | **卡片盒** | `cardbox/make_cardbox.py`（渲染后运行 `cardbox/gen_swift_hotspots.py` 更新 `CardBoxHotspots.swift`） | `CardBoxBase`（盒子 + 卡片 + 分隔卡）、`CardBoxFront`（前挡板，叠在抽出的卡片上面） | 相册「卡片盒」视图：浅山毛榉木盒、指接榫、把手孔里插着笔、A–Z 与 # 分隔卡、带横线的索引卡；2000×1500，3/4 俯视，盒子靠左上、右下留出阴影的空间，阴影在画布边缘之前淡到全透明（`studio.fade_shadow_edges`） |
 | 卡片盒热点 | `cardbox/hotspots.json` | （随代码使用） | 27 张分隔卡标签的中心与四角、盒口四边形、盒子外框（归一化，原点左上）：悬停提示、点字母抽卡、卡片从盒口飞出的位置 |
 | **胶卷罐 / 相纸盒** | `canisters/make_canisters.py`（工具库 `canisters/studio.py`） | `FilmCanister-<胶卷 id>`（26 卷 + `custom`） | 刘海胶卷柜、菜单栏菜单、设置里的胶卷卡片：35mm 罐（标签按胶卷配色与感光度生成）、即显相纸盒、照相亭相纸盒；384×384 |
+| **大头贴机零件** | `booth/make_booth.py` | `BoothPanel`（@2x，九宫格 56 点）、`BoothMarquee`、`BoothLeverLeft` / `BoothLeverRight`、`BoothArrow` / `BoothArrowPressed`、`BoothStart` / `BoothStartLit` / `BoothStartPressed` | 选相框面板、招牌、拨杆、箭头、开始按钮；都不带地面阴影 |
 | **软木（柔和）** | `textures/make_cork.py` | `CorkSoft`（1024×1024，@2x） | 软木板的板面：Voronoi 颗粒 + 浅缝 + 细噪声 + 稀疏小深点，低反差暖色；UV 映射到四维环面取 4D 噪声，四边无缝 |
 | 相册视图图标 | `icons/make_icons.py` | `ModeIconCork`、`ModeIconCardBox`、`ModeIconFilm`、`ModeIconCalendar` | 相册顶栏的四种看法：软木板、卡片盒、胶卷、挂历；160×160 |
 | 图钉 | `props/make_props.py`（小道具一律不带地面阴影，阴影由界面按轮廓画） | `PinBrass`（黄铜平头钉）、`PinTerracotta` / `PinMustard` / `PinTeal`（彩色地图钉） | 软木板上钉照片；128×128 |
