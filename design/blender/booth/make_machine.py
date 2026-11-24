@@ -453,7 +453,10 @@ def build_machine(scene):
         base.append(lathe_at("switch-washer%d" % side, [(0, 3.5), (1.3, 3.5), (1.38, 3.6), (1.38, 3.82), (1.25, 3.92), (0, 3.92)], (sx, -29.0), (bakelite(),), 96))
         base.append(lathe_at("switch-nut%d" % side, [(0, 3.92), (0.85, 3.92), (0.92, 4.0), (0.92, 4.4), (0.82, 4.5), (0.35, 4.5), (0.32, 4.65), (0, 4.65)], (sx, -29.0), (chr_,), 96))
     labels = {"四格条": (-25.0, -29.0), "四宫格": (-11.0, -29.0), "黑白": (12.2, -29.0), "彩色": (23.8, -29.0)}
-    for name, (lx, ly) in labels.items():
+    # 英文的词比中文长（COLOUR 六个字母）：放在板边和拨杆头之间那一段的正中间（拨杆从中心伸出约 3.6 cm），
+    # 不贴着拨杆头。热区（`hotspots`）仍用中文的位置，差一点点，点得到。
+    english_labels = {"四格条": (-25.1, -29.0), "四宫格": (-10.9, -29.0), "黑白": (10.9, -29.0), "彩色": (25.1, -29.0)}
+    for name, (lx, ly) in (english_labels if ENGLISH else labels).items():
         base.append(text("label-" + name, say(name), 1.5 if ENGLISH else 1.6, (lx, ly), 3.5, ink, face=0, extrude=0.02,
                          spacing=1.1 if ENGLISH else 1.05, font=latin("futura-cxb")))
     base.append(lathe_at("start-seat", [(3.6, 3.35), (4.85, 3.35), (5.05, 3.6), (5.0, 4.15), (4.7, 4.42), (4.05, 4.36), (3.85, 4.0)], (0.0, -29.6), (chr_,), 192))

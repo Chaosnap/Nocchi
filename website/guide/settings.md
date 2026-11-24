@@ -2,32 +2,31 @@
 
 Open settings with <kbd>⌘,</kbd> or from the menu bar. The tabs:
 
-![Settings](/screenshots/settings.jpg)
+![Settings](/screenshots/en/settings.jpg)
 
-## 相机柜 · Camera cabinet
+## Cameras
 
-The camera bodies: the instant camera and the photo booth. More bodies (a disposable, a date-stamp camera, a half-frame) are on the way and shown as *即将推出* (coming soon).
+The camera bodies: the instant camera and the photo booth. The notch shoots with whichever one is loaded; the **Camera** tile in the notch panel switches it too. More bodies (a disposable, a date back, a half-frame and others) are on the way and shown as *Coming Soon*.
 
-## 胶卷 · Film
+## Film
 
-Every film stock with its canister. Click one to load it. Right-click to export it as a `.cube`; **导入 .cube 胶卷…** turns a LUT file into a custom roll. The footer shows the frame counter and the roll number, and **换新卷** loads a fresh roll.
+Every film stock with its canister. Click one to load it. Right-click to export it (**Export as .cube…**); **Import a .cube Roll…** turns a LUT file into a custom roll. The footer shows the frame counter and the roll number, and **New Roll** loads a fresh roll.
 
-## 相纸 · Paper
+## Paper
 
-- **即显相机** (instant camera): the paper for selfies, the screen shutter and printing photos, and the **default template** for new prints, chosen from live previews. If a template does not fit the paper you use, that paper falls back to 经典 (classic).
-- **大头贴机** (photo booth): the default layout (four-frame strip or 2×2 grid), black and white or color, and the default frame. Whatever you pick in the booth itself is remembered here.
-- **题字** (caption): the default caption, the caption type (handwriting, typewriter, letterpress) and whether to print the date.
-- **拍完之后** (after the shot): **显影完成后自动打开装饰台** opens the decorating desk as soon as a print has developed (off by default), and **新照片放在** puts new prints on the top layer or on the desktop layer.
+- **Instant camera**: the paper for selfies, the screen shutter and printing photos, and the **Default template** for new prints, chosen from live previews. If a template does not fit the paper you use, that paper falls back to *Classic*.
+- **Photo Booth**: the default **Layout** (*4-Frame Strip* or *2×2 Grid*), **Shoot in black and white**, and the **Default frame**. Whatever you pick in the booth itself is remembered here.
+- **Caption**: the default caption, the **Caption font** (handwriting, typewriter or letterpress) and **Print the date on the border**.
+- **After Shooting**: **Open the decorating desk after developing** (off by default), and whether **New prints appear** *On top (floating)* or *On the desktop (behind windows)*.
 
-## 摄像头 · Camera
+## Webcam
 
-A live preview, the list of cameras (built-in, external and virtual, Continuity Camera) and **自拍画面镜像** (mirror the selfie).
+A live preview, the list of cameras (built-in, external and virtual, Continuity Camera) and **Mirror selfies**.
 
-## 通用 · General
+## General
 
-- **在程序坞显示图标**: show the Dock icon (on by default). Without it, Nocchi lives only in the menu bar and the notch.
-- **安静模式**: quiet mode, no sounds. **音量**: volume.
-- **自拍前倒数 3 秒**: the selfie countdown.
-- **接管系统截图**: also print the screenshots you take with <kbd>⇧⌘3</kbd> / <kbd>⇧⌘4</kbd>.
-- **显影时长**: how long a print takes to develop, 6 to 30 seconds.
-- The shortcuts, and where finished prints are saved (`~/Pictures/Nocchi`).
+- **Language**: the **Interface language**, 简体中文 (Simplified Chinese, the default) or English. Nocchi asks whether to relaunch now; the new language takes effect when it opens again, and your photos are not affected.
+- **App**: **Open the album (card box) at launch**, and **Show the icon in the Dock** (on by default). Without the Dock icon, Nocchi lives only in the menu bar and the notch.
+- **Shooting**: **Quiet mode** (no sounds), **Count down 3 seconds before a selfie**, **Take over system screenshots** (the screenshots you take with <kbd>⇧⌘3</kbd> / <kbd>⇧⌘4</kbd> are printed too), **Developing time** (6 to 30 seconds) and **Volume**.
+- **Shortcuts**.
+- **Storage**: where finished prints are saved, `~/Pictures/Nocchi` by default. **Change…** picks another folder, on an external or network disk too. The prints you already have move along into the same month folders, and a file that already exists there is never overwritten. **Show in Finder** opens the folder, and **Restore Default** moves the prints back. Photo records and negatives stay in Application Support. If the disk is not connected when Nocchi opens, prints go to the default location until you connect it and open Nocchi again.

@@ -29,7 +29,7 @@
 </p>
 
 <p align="center">
-  <img src="website/public/screenshots/desk.jpg" width="100%" alt="A print sliding out of the MacBook notch, with a pile of prints at the top right of the desktop">
+  <img src="website/public/screenshots/en/desk.jpg" width="100%" alt="A print sliding out of the MacBook notch, with a pile of prints at the top right of the desktop">
 </p>
 
 ## <img src="website/public/icons/glyph-notch.svg" width="22" height="22" align="absmiddle" alt=""> 刘海冲印店 · The notch darkroom
@@ -81,8 +81,8 @@ Every picture here is rendered from the app itself by [GitHub Actions](.github/w
 
 <table>
   <tr>
-    <td width="50%"><img src="website/public/screenshots/notch-panel.jpg" width="100%" alt="The camera panel that opens when you hover over the notch"><br><sub>Hover over the notch: the camera panel</sub></td>
-    <td width="50%"><img src="website/public/screenshots/film-cabinet.jpg" width="100%" alt="The film cabinet: canisters and film packs grouped by family"><br><sub>The film cabinet in the notch</sub></td>
+    <td width="50%"><img src="website/public/screenshots/en/notch-panel.jpg" width="100%" alt="The camera panel that opens when you hover over the notch"><br><sub>Hover over the notch: the camera panel</sub></td>
+    <td width="50%"><img src="website/public/screenshots/en/film-cabinet.jpg" width="100%" alt="The film cabinet: canisters and film packs grouped by family"><br><sub>The film cabinet in the notch</sub></td>
   </tr>
 </table>
 
@@ -90,11 +90,11 @@ Every picture here is rendered from the app itself by [GitHub Actions](.github/w
 
 <table>
   <tr>
-    <td width="50%"><img src="website/public/screenshots/prints.jpg" width="100%" alt="Prints on six papers with different templates, on a walnut desk"><br><sub>Six papers, sixteen templates</sub></td>
-    <td width="50%"><img src="website/public/screenshots/booth.jpg" width="100%" alt="Choosing a frame in the brass showcase behind the velvet curtain"><br><sub>The photo booth: choose a frame, then drop a coin</sub></td>
+    <td width="50%"><img src="website/public/screenshots/en/prints.jpg" width="100%" alt="Prints on six papers with different templates, on a walnut desk"><br><sub>Six papers, sixteen templates</sub></td>
+    <td width="50%"><img src="website/public/screenshots/en/booth.jpg" width="100%" alt="Choosing a frame in the brass showcase behind the velvet curtain"><br><sub>The photo booth: choose a frame, then drop a coin</sub></td>
   </tr>
   <tr>
-    <td colspan="2"><img src="website/public/screenshots/decorate.jpg" width="100%" alt="The decorating desk with washi tape, a postmark and a coffee badge on a print"><br><sub>The decorating desk: pens, stickers, templates, captions and posters</sub></td>
+    <td colspan="2"><img src="website/public/screenshots/en/decorate.jpg" width="100%" alt="The decorating desk with washi tape, a postmark and a coffee badge on a print"><br><sub>The decorating desk: pens, stickers, templates, captions and posters</sub></td>
   </tr>
 </table>
 
@@ -102,12 +102,12 @@ Every picture here is rendered from the app itself by [GitHub Actions](.github/w
 
 <table>
   <tr>
-    <td width="50%"><img src="website/public/screenshots/album-corkboard.jpg" width="100%" alt="The corkboard: prints pinned by month"><br><sub>Corkboard</sub></td>
-    <td width="50%"><img src="website/public/screenshots/album-cardbox.jpg" width="100%" alt="The card box: cards rise out of the box and fan out"><br><sub>Card box</sub></td>
+    <td width="50%"><img src="website/public/screenshots/en/album-corkboard.jpg" width="100%" alt="The corkboard: prints pinned by month"><br><sub>Corkboard</sub></td>
+    <td width="50%"><img src="website/public/screenshots/en/album-cardbox.jpg" width="100%" alt="The card box: cards rise out of the box and fan out"><br><sub>Card box</sub></td>
   </tr>
   <tr>
-    <td width="50%"><img src="website/public/screenshots/album-film.jpg" width="100%" alt="The film light table with a loupe"><br><sub>Film light table</sub></td>
-    <td width="50%"><img src="website/public/screenshots/album-calendar.jpg" width="100%" alt="The wall calendar with a small print on every day with photos"><br><sub>Wall calendar</sub></td>
+    <td width="50%"><img src="website/public/screenshots/en/album-film.jpg" width="100%" alt="The film light table with a loupe"><br><sub>Film light table</sub></td>
+    <td width="50%"><img src="website/public/screenshots/en/album-calendar.jpg" width="100%" alt="The wall calendar with a small print on every day with photos"><br><sub>Wall calendar</sub></td>
   </tr>
 </table>
 
@@ -122,12 +122,12 @@ Every picture here is rendered from the app itself by [GitHub Actions](.github/w
 | Selfie | ⌃⌥⌘F (Space takes the picture, Esc cancels) |
 | Photo booth | ⌃⌥⌘B (← → frames, ↑ ↓ strip / grid, Return starts, Esc leaves) |
 | Develop faster | Drag a print and shake it |
-| Decorate a print | Double-click it, or right-click → 装饰… |
-| Write on the border | Right-click → 在白边上写字 |
+| Decorate a print | Double-click it, or right-click → **Decorate…** |
+| Write on the border | Right-click → **Write on the border** |
 | Stash a print | Drag it onto the notch |
 | Open the album | ⌘0, then ⌘1–⌘4 for the four views, ⌘F to search |
 
-The app's interface is in Simplified Chinese.
+The interface is in Simplified Chinese or English. It starts in Chinese; switch in *Settings (⌘,) → 通用 (General) → 语言 (Language)* and relaunch.
 
 <a id="download"></a>
 

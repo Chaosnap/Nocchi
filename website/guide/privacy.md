@@ -10,7 +10,7 @@ Nocchi is a camera that lives in your notch, and it **runs entirely on your Mac*
 
 | Permission | When | What for |
 | --- | --- | --- |
-| Camera | The selfie viewfinder, the photo booth, or a camera preview in Settings | Taking the picture. The camera runs only while one of these is open; in the photo booth it starts when you press 开始 (start) |
+| Camera | The selfie viewfinder, the photo booth, or a camera preview in Settings | Taking the picture. The camera runs only while one of these is open; in the photo booth it starts when you press **Start** |
 | Screen Recording | The screen shutter | The system's region screenshot, which is then printed |
 | Desktop / Documents / Downloads | Only with *take over system screenshots* on | Reading the screenshot you just took |
 | Photos | *Print from Photos* | The system photo picker; Nocchi only gets the photos you pick |

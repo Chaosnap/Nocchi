@@ -25,10 +25,14 @@ xattr -dr com.apple.quarantine /Applications/Nocchi.app
 
 or open Nocchi once, then choose *System Settings → Privacy & Security → Open Anyway*.
 
+## Switch to English
+
+Nocchi starts in Simplified Chinese. To use it in English, press <kbd>⌘,</kbd>, open the **通用** (General) tab, and under **语言** (Language) set **界面语言** (Interface language) to **English**. Click **Relaunch Now** and Nocchi opens again in English. This guide uses the English labels.
+
 ## First steps
 
-1. Nocchi lives in the menu bar (the aperture icon), in the Dock, and in the notch. You can hide the Dock icon in *Settings → 通用* (General).
-2. **Move the pointer onto the notch.** The camera panel opens: 屏幕快门 (screen shutter), 自拍 (selfie), 大头贴 (photo booth), 冲印照片 (print photos), the loaded film and the paper.
+1. Nocchi lives in the menu bar (the aperture icon), in the Dock, and in the notch. You can hide the Dock icon in *Settings → General*.
+2. **Move the pointer onto the notch.** The camera panel opens: **Screen Shutter**, **Selfie**, **Photo Booth**, **Print Photos**, the loaded film, the camera and the paper.
 3. Press <kbd>⌃⌥⌘S</kbd> and drag over part of the screen. The picture comes out of the notch as a print.
 4. Wait about fifteen seconds while it develops, or drag the print and shake it.
 5. Double-click the print to decorate it. Press <kbd>⌘0</kbd> to open the album.
@@ -45,8 +49,6 @@ macOS asks for each permission the first time a feature needs it, before Nocchi 
 | --- | --- |
 | Camera | You open the selfie viewfinder or the photo booth, or preview a camera in Settings |
 | Screen Recording | You use the screen shutter |
-| Desktop, Documents, Downloads | You turn on *take over system screenshots* |
+| Desktop, Documents, Downloads | You turn on *Take over system screenshots* |
 
 Nothing is uploaded; see [Privacy and security](./privacy).
-
-The app's interface is in Simplified Chinese. This guide gives the Chinese labels with their English meaning, like *相册* (album).

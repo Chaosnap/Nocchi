@@ -6,7 +6,7 @@ hero:
   text: The notch is a darkroom.
   tagline: A retro instant camera for your Mac. Prints slide out of the notch and develop slowly, like real instant film.
   image:
-    src: /screenshots/desk.jpg
+    src: /screenshots/en/desk.jpg
     alt: A print sliding out of the MacBook notch, with a pile of prints at the top right of the desktop
   actions:
     - theme: brand
@@ -92,13 +92,13 @@ features:
 
 <div class="gallery">
 
-![The camera panel that opens when you hover over the notch](/screenshots/notch-panel.jpg)
+![The camera panel that opens when you hover over the notch](/screenshots/en/notch-panel.jpg)
 
-![The decorating desk: tools on the left, the print in the middle, stickers on the right](/screenshots/decorate.jpg)
+![The decorating desk: tools on the left, the print in the middle, stickers on the right](/screenshots/en/decorate.jpg)
 
-![The album's card box: cards rise out of the box and fan out](/screenshots/album-cardbox.jpg)
+![The album's card box: cards rise out of the box and fan out](/screenshots/en/album-cardbox.jpg)
 
-![The photo booth's frame picker behind the velvet curtain](/screenshots/booth.jpg)
+![The photo booth's frame picker behind the velvet curtain](/screenshots/en/booth.jpg)
 
 </div>
 

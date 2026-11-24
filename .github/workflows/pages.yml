@@ -59,7 +59,7 @@ jobs:
           for md in site.rglob("*.md"):
               if "node_modules" in md.parts:
                   continue
-              names.update(re.findall(r"/screenshots/([a-z0-9-]+\.jpg)", md.read_text(encoding="utf-8")))
+              names.update(re.findall(r"/screenshots/((?:[a-z]+/)?[a-z0-9-]+\.jpg)", md.read_text(encoding="utf-8")))
           def png(width, height, rgb):
               row = b"\x00" + bytes(rgb) * width
               def chunk(kind, data):
@@ -68,6 +68,7 @@ jobs:
                       + chunk(b"IDAT", zlib.compress(row * height)) + chunk(b"IEND", b""))
           missing = [n for n in sorted(names) if not (shots / n).exists()]
           for name in missing:
+              (shots / name).parent.mkdir(parents=True, exist_ok=True)
               (shots / name).write_bytes(png(160, 100, (0xEA, 0xE2, 0xD2)))
           print(f"::notice title=Pages::{len(names)} screenshots referenced, {len(missing)} placeholders: {' '.join(missing)}")
           EOF

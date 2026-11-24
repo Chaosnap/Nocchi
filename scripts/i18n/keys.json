@@ -75,7 +75,7 @@
   "source": "\\(stock.iso) · \\(stock.exposures) 张",
   "uses": [
    {
-    "at": "macOS/Nocchi/Notch/FilmCabinetPanel.swift:156",
+    "at": "macOS/Nocchi/Notch/FilmCabinetPanel.swift:183",
     "context": "swiftui"
    }
   ]
@@ -294,11 +294,11 @@
    },
    {
     "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:181",
-    "context": "string"
+    "context": "localized"
    },
    {
     "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:182",
-    "context": "string"
+    "context": "localized"
    }
   ]
  },
@@ -486,7 +486,7 @@
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Booth/BoothMachine.swift:361",
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:366",
     "context": "swiftui"
    }
   ]
@@ -530,7 +530,7 @@
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Booth/BoothMachine.swift:366",
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:371",
     "context": "swiftui"
    }
   ]
@@ -1061,7 +1061,7 @@
   "source": "冲印中",
   "uses": [
    {
-    "at": "macOS/Nocchi/Booth/BoothMachine.swift:267",
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:272",
     "context": "localized"
    }
   ]
@@ -1705,7 +1705,7 @@
   "source": "四格条 / 四宫格（↑ ↓）",
   "uses": [
    {
-    "at": "macOS/Nocchi/Booth/BoothMachine.swift:376",
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:381",
     "context": "swiftui"
    }
   ]
@@ -2331,7 +2331,7 @@
   "source": "已装",
   "uses": [
    {
-    "at": "macOS/Nocchi/Notch/FilmCabinetPanel.swift:149",
+    "at": "macOS/Nocchi/Notch/FilmCabinetPanel.swift:174",
     "context": "swiftui"
    }
   ]
@@ -2380,7 +2380,7 @@
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/Booth/BoothMachine.swift:481",
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:486",
     "context": "swiftui"
    }
   ]
@@ -2741,7 +2741,7 @@
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/Booth/BoothMachine.swift:397",
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:402",
     "context": "swiftui"
    }
   ]
@@ -3836,7 +3836,7 @@
     "context": "localized"
    },
    {
-    "at": "macOS/Nocchi/Booth/BoothMachine.swift:196",
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:201",
     "context": "swiftui"
    },
    {
@@ -4367,15 +4367,15 @@
    },
    {
     "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:157",
-    "context": "string"
+    "context": "localized"
    },
    {
     "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:166",
-    "context": "string"
+    "context": "localized"
    },
    {
     "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:169",
-    "context": "string"
+    "context": "localized"
    },
    {
     "at": "macOS/Nocchi/App/NocchiMacApp.swift:134",
@@ -4537,7 +4537,7 @@
   "source": "第 \\(min(booth.shot + 1, booth.totalShots)) 张 · 共 \\(booth.totalShots) 张",
   "uses": [
    {
-    "at": "macOS/Nocchi/Booth/BoothMachine.swift:266",
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:271",
     "context": "localized"
    }
   ]
@@ -4791,7 +4791,7 @@
     "context": "swiftui"
    },
    {
-    "at": "macOS/Nocchi/Booth/BoothMachine.swift:45",
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:50",
     "context": "swiftui"
    }
   ]
@@ -5041,7 +5041,7 @@
   "uses": [
    {
     "at": "macOS/Nocchi/Screenshots/ScreenshotStudio.swift:175",
-    "context": "string"
+    "context": "localized"
    },
    {
     "at": "macOS/Nocchi/Editor/DecorateDesk.swift:68",
@@ -5115,7 +5115,7 @@
   "source": "请看镜头",
   "uses": [
    {
-    "at": "macOS/Nocchi/Booth/BoothMachine.swift:265",
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:270",
     "context": "localized"
    }
   ]
@@ -5804,7 +5804,7 @@
   "source": "黑白 / 彩色",
   "uses": [
    {
-    "at": "macOS/Nocchi/Booth/BoothMachine.swift:384",
+    "at": "macOS/Nocchi/Booth/BoothMachine.swift:389",
     "context": "swiftui"
    }
   ]

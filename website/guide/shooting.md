@@ -2,40 +2,40 @@
 
 Move the pointer onto the notch and it opens into the camera panel. Every way of taking a picture ends the same way: a print slides out of the notch and starts to develop.
 
-![The camera panel that opens when you hover over the notch](/screenshots/notch-panel.jpg)
+![The camera panel that opens when you hover over the notch](/screenshots/en/notch-panel.jpg)
 
 ## Switch cameras
 
-Right of the film tile in the panel is the camera tile: click it to switch between the instant camera and the photo booth (the menu bar's camera picker and *Settings → 相机柜* (camera cabinet) switch it too). Whichever camera is loaded is the one the notch shoots with:
+Right of the film tile in the panel is the camera tile: click it to switch between the instant camera and the photo booth (the menu bar's camera picker and *Settings → Cameras* switch it too). Whichever camera is loaded is the one the notch shoots with:
 
 - **Instant camera**: one print at a time, on the instant paper you chose.
-- **Photo booth**: every shot is a four-frame strip. The selfie viewfinder takes four pictures in a row (a countdown and a white flash for each); the screen shutter has you frame four regions; printed photos and images dropped on the notch are laid out four to a strip (a short strip repeats its pictures). The layout, frame and black and white come from the booth settings in *Settings → 相纸* (paper), and the panel's paper tile switches between strip and grid.
+- **Photo booth**: every shot is a four-frame strip. The selfie viewfinder takes four pictures in a row (a countdown and a white flash for each); the screen shutter has you frame four regions; printed photos and images dropped on the notch are laid out four to a strip (a short strip repeats its pictures). The layout, frame and black and white come from the booth settings in *Settings → Paper*, and the panel's paper tile switches between strip and grid.
 
 The booth button is always the full [photo booth](./booth): the curtain, the coin and four flashes.
 
 ## Screen shutter
 
-Press <kbd>⌃⌥⌘S</kbd>, or click **屏幕快门** (screen shutter) in the panel, and drag over any part of the screen. What you selected is printed on the loaded film and the chosen paper.
+Press <kbd>⌃⌥⌘S</kbd>, or click **Screen Shutter** in the panel, and drag over any part of the screen. What you selected is printed on the loaded film and the chosen paper.
 
 ### Take over system screenshots
 
-Turn on **接管系统截图** (take over system screenshots) in *Settings → 通用* and the screenshots you take with <kbd>⇧⌘3</kbd> or <kbd>⇧⌘4</kbd> are printed too. Nocchi watches your screenshot folder for new files, so macOS asks for access to that folder the first time. It is off by default.
+Turn on **Take over system screenshots** in *Settings → General* and the screenshots you take with <kbd>⇧⌘3</kbd> or <kbd>⇧⌘4</kbd> are printed too. Nocchi watches your screenshot folder for new files, so macOS asks for access to that folder the first time. It is off by default.
 
 ## Selfie
 
-Press <kbd>⌃⌥⌘F</kbd>, or click **自拍** (selfie). A viewfinder grows out of the notch with a live preview. Press <kbd>Space</kbd> or the shutter button to take the picture, and <kbd>Esc</kbd> to cancel. By default there is a three-second countdown and the screen flashes white as a fill light.
+Press <kbd>⌃⌥⌘F</kbd>, or click **Selfie**. A viewfinder grows out of the notch with a live preview. Press <kbd>Space</kbd> or the shutter button to take the picture, and <kbd>Esc</kbd> to cancel. By default there is a three-second countdown and the screen flashes white as a fill light.
 
 ## Print photos you already have
 
 - **Drag an image onto the notch.** While you drag a file from the Finder near the notch, it turns into a drop target; let go and the image is printed.
-- **Files**: <kbd>⌘O</kbd>, or **冲印照片** (print photos) in the panel, chooses up to 20 images.
+- **Files**: <kbd>⌘O</kbd>, or **Print Photos** in the panel, chooses up to 20 images.
 - **Photos**: <kbd>⇧⌘O</kbd> opens the system photo picker. Nocchi only gets the photos you pick, with no access to the rest of your library.
 
 Each one is printed with the loaded film and the chosen paper, and they come out of the notch one after another.
 
 ## Which camera
 
-*Settings → 摄像头* (camera) lists the built-in camera, external cameras, virtual cameras installed as camera extensions (OBS, Camo and others) and Continuity Camera on your iPhone, with a live preview and a mirror switch. If the camera you chose is unplugged, Nocchi falls back to the default camera.
+*Settings → Webcam* lists the built-in camera, external cameras, virtual cameras installed as camera extensions (OBS, Camo and others) and Continuity Camera on your iPhone, with a live preview and a mirror switch. If the camera you chose is unplugged, Nocchi falls back to the default camera.
 
 ## You can always leave
 

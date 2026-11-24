@@ -2,7 +2,7 @@
 
 ## A print comes out
 
-The notch opens into a slot, and the print slides out a little at a time to the whirr of a motor (with a tap on a Force Touch trackpad). Then it develops: a pale, creamy sheet slowly gains contrast and color until, after about fifteen seconds, it rings a small bell. Change the time between 6 and 30 seconds in *Settings → 通用*.
+The notch opens into a slot, and the print slides out a little at a time to the whirr of a motor (with a tap on a Force Touch trackpad). Then it develops: a pale, creamy sheet slowly gains contrast and color until, after about fifteen seconds, it rings a small bell. Change the time between 6 and 30 seconds in *Settings → General*.
 
 - **Shake it**: drag the print and shake it to develop faster.
 - **Not too hard**: shake it violently and chemical blotches appear, up to a few per print. They stay.
@@ -12,7 +12,7 @@ The notch opens into a slot, and the print slides out a little at a time to the 
 
 Click the film canister in the notch panel and the notch opens into a cabinet of canisters and film packs, grouped as instant film, color negative, night and cinema, black and white, and photo booth. The loaded roll glows; hover for a description and the paper it suits best. Each roll has a frame counter, and a new roll is loaded when one runs out.
 
-![The film cabinet in the notch](/screenshots/film-cabinet.jpg)
+![The film cabinet in the notch](/screenshots/en/film-cabinet.jpg)
 
 Film looks are not LUT files. Each stock is a recipe (curves per channel, eight hue bands, skin-tone protection, a soft highlight shoulder, faded blacks, grain, halation, bloom, vignette, light leaks) that Nocchi bakes into a 33³ color cube at run time. All names are original.
 
@@ -47,23 +47,23 @@ Film looks are not LUT files. Each stock is a recipe (curves per channel, eight 
 
 ### Your own LUTs
 
-*Settings → 胶卷* (film) imports a `.cube` file (3D or 1D, with or without a custom domain) as a custom roll, and exports any stock as a `.cube`.
+*Settings → Film* imports a `.cube` file (3D or 1D, with or without a custom domain) as a custom roll, and exports any stock as a `.cube`.
 
 ## Paper
 
-The instant camera (selfies, the screen shutter, printing photos) uses the paper you choose; click the paper silhouette in the notch panel to switch, or choose it in *Settings → 相纸*. The photo booth chooses its layout when you pick a frame.
+The instant camera (selfies, the screen shutter, printing photos) uses the paper you choose; click the paper silhouette in the notch panel to switch, or choose it in *Settings → Paper*. The photo booth chooses its layout when you pick a frame.
 
 | Paper | Size (mm) | Used for |
 | --- | --- | --- |
-| 方形即显 · Square instant | 88 × 107, picture 79 × 79 | The default, with a thick bottom border for writing |
-| 迷你即显 · Mini instant | 54 × 86, picture 46 × 62 | Card-sized, portrait |
-| 宽幅即显 · Wide instant | 108 × 86, picture 99 × 62 | Landscape instant |
-| 冲印小照 · Lab print | 102 × 76, 3:2 picture | A white-bordered print from the photo lab |
-| 四格条 · Booth strip | 52 × 160, four 44 × 33 frames | Photo booth |
-| 四宫格 · Booth grid | 102 × 152, four 45 × 60 frames | Photo booth |
+| Instant Square | 88 × 107, picture 79 × 79 | The default, with a thick bottom border for writing |
+| Instant Mini | 54 × 86, picture 46 × 62 | Card-sized, portrait |
+| Instant Wide | 108 × 86, picture 99 × 62 | Landscape instant |
+| Small Print | 102 × 76, 3:2 picture | A white-bordered print from the photo lab |
+| 4-Frame Strip | 52 × 160, four 44 × 33 frames | Photo booth |
+| 2×2 Grid | 102 × 152, four 45 × 60 frames | Photo booth |
 
 ## Templates
 
-Templates change how the paper looks, never its size, and you can switch them at any time on the [decorating desk](./decorating). Sixteen of them: 经典 (classic), 炭黑 (charcoal), 牛皮纸 (kraft), 毛边相纸 (deckle edge), 日期机 (date stamp, with orange seven-segment digits), 胶片框 (film frame, with sprocket holes and edge markings), 邮票 (postage stamp, with perforations and a postmark), 70 年代条纹 (70s stripes), 老相册 (old album page with photo corners), 照相馆卡纸 (photo-studio card with a gilt frame), and the six booth themes. New prints use the default template from *Settings → 相纸*.
+Templates change how the paper looks, never its size, and you can switch them at any time on the [decorating desk](./decorating). Sixteen of them: *Classic*, *Charcoal*, *Kraft*, *Deckle Edge*, *Date Back* (orange seven-segment digits), *Film Frame* (sprocket holes and edge markings), *Postage Stamp* (perforations and a postmark), *Seventies Stripes*, *Old Album* (an album page with photo corners), *Studio Card* (a photo-studio card with a gilt frame), and the six booth themes. New prints use the default template from *Settings → Paper*.
 
-![Prints on six papers with different templates](/screenshots/prints.jpg)
+![Prints on six papers with different templates](/screenshots/en/prints.jpg)

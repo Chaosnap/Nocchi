@@ -1,6 +1,6 @@
 # 进度看板（实时更新）
 
-> 最后更新：2026-11-24（2.1 反馈收尾）· 分支 `main`（直接在 main 开发）
+> 最后更新：2026-11-24（2.1 反馈做完，英文截图验收）· 分支 `main`（直接在 main 开发）
 > 每次推送都会同步更新本页。构建产物见 [Actions](https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml)。
 
 ## 一眼看懂
@@ -15,7 +15,7 @@
 | 照片卡片盒（2.5D） | 🟢 CI 全绿 | Blender 照参考图建模、Cycles 渲染（`CardBoxBase` / `CardBoxFront` + 热点），卡片从盒口升起、扇形摊开 |
 | v0.2「复古冲印店」 | 🟢 全部完成，随 v1.0.0 发布 | 规范见 [DESIGN.md](DESIGN.md)；逐步进度见下面的「v0.2 改版进度」 |
 | 产品文档站与截图 | 🟢 已上线 | <https://chaosnap.github.io/Nocchi/>（VitePress，英文 + `/zh/` 中文）；截图由 `screenshots.yml` 在 Actions 上从 App 渲染，提交到 `website/public/screenshots/` |
-| 2.1 反馈（所有者 9 项 + 补充） | 🟡 收尾中 | 见下面「交接 · 当前批次」：卡片空白、相机有不同效果、相册强制隐藏（待所有者确认）、换相机按钮、图标阴影、卡片盒按年月日归档、中英文切换、关于页、自定义存储位置都已做；补充的「准备抽出来」动画、卡片盒里卡片和标签更精细、深色模式下相册搜索框看不清也已做；等 CI / Screenshots 验收 |
+| 2.1 反馈（所有者 9 项 + 补充） | 🟢 全部做完、CI 全绿 | 见下面「交接 · 当前批次」：卡片空白、相机有不同效果、换相机按钮、图标阴影、卡片盒按年月日归档、中英文切换、关于页、自定义存储位置、「准备抽出来」动画、更精细的卡片和标签都已做并用截图验收；**相册「主程序被强制隐藏」是推断后修的，等所有者确认**；等所有者决定发不发 v2.1.0 |
 | v2.0 打磨（所有者反馈） | 🟢 随 v2.0.0 发布 | 14 项（13 项已做）+ 文字框与自定义字体 + 自定义贴纸 + 不要滚动条；**正在做：剧院暗红布帘、机身整体建模、情人节相框**，见下面「交接」第 3 节 |
 | 仓库与社区文件 | 🟢 已补齐 | GNU AGPL-3.0（与 Yohaku 一致）；英文的 README、行为准则（Contributor Covenant 3.0）、贡献指南、安全政策、隐私说明、Issue / PR 模板 |
 
@@ -29,17 +29,17 @@
 
 | # | 要什么 | 状态 | 文件 | 做法 / 说明 |
 | --- | --- | --- | --- | --- |
-| 1 | 卡片盒抽出来的卡片有时是空白（中间一个转圈） | 🟡 已改，等 CI | `NocchiUI/CardBoxModel.swift` | 原因：卡片的图只在第一次露面时读；照片记录变了（成片刚印好、装饰过）图被清掉却不再读；读失败也不重试。修：按「版本」（`editedAt`、`printFile`、底片张数）读图，摊在桌上的卡片当场重读（旧图先留着，新图到了再换），读不到就退避重试（0.6 秒起，最多 5 次） |
-| 2 | 选相机要有不同效果（大头贴机） | 🟡 已改，等 CI | `App/AppModel.swift`（`shootsBooth`、`cycleBody`、`boothSetup`、`cyclePaper`、`shootingStock`、`shootingFormat`）、`Darkroom/Darkroom.swift`（`boothScreenShutter`、`takeBoothSelfie`、`developImported` 分批、`developDroppedFiles`）、`Notch/NotchController.swift`（`boothShot`、拖放先收齐再冲印）、`Notch/NotchRootView.swift`（自拍取景器的标题）、`App/MenuContent.swift`、`Settings/SettingsView.swift`（相机柜下面的说明） | 装着大头贴机时：自拍在取景器里连拍四张（每张前倒数、白屏闪光）、屏幕快门框选四次、冲印照片和拖到刘海的图每四张拼一条（不够四张循环补满），用大头贴机的版式、相框、黑白设置；「大头贴」按钮仍是拉帘子的完整版；接管系统截图仍按即显冲印 |
+| 1 | 卡片盒抽出来的卡片有时是空白（中间一个转圈） | 🟢 CI 绿（偶发问题，截图里看不出来，等所有者用一阵确认） | `NocchiUI/CardBoxModel.swift` | 原因：卡片的图只在第一次露面时读；照片记录变了（成片刚印好、装饰过）图被清掉却不再读；读失败也不重试。修：按「版本」（`editedAt`、`printFile`、底片张数）读图，摊在桌上的卡片当场重读（旧图先留着，新图到了再换），读不到就退避重试（0.6 秒起，最多 5 次） |
+| 2 | 选相机要有不同效果（大头贴机） | 🟢 CI 绿（实际拍出来的效果等所有者试） | `App/AppModel.swift`（`shootsBooth`、`cycleBody`、`boothSetup`、`cyclePaper`、`shootingStock`、`shootingFormat`）、`Darkroom/Darkroom.swift`（`boothScreenShutter`、`takeBoothSelfie`、`developImported` 分批、`developDroppedFiles`）、`Notch/NotchController.swift`（`boothShot`、拖放先收齐再冲印）、`Notch/NotchRootView.swift`（自拍取景器的标题）、`App/MenuContent.swift`、`Settings/SettingsView.swift`（相机柜下面的说明） | 装着大头贴机时：自拍在取景器里连拍四张（每张前倒数、白屏闪光）、屏幕快门框选四次、冲印照片和拖到刘海的图每四张拼一条（不够四张循环补满），用大头贴机的版式、相框、黑白设置；「大头贴」按钮仍是拉帘子的完整版；接管系统截图仍按即显冲印 |
 | 3 | 从刘海进相册时「主程序被强制隐藏」 | 🟡 推断后修，**等所有者确认** | `Settings/WindowManager.swift`（`followActiveSpace`、`bringForward`）、`Editor/DecorateDesk.swift`、`Import/PhotoImport.swift` | 代码里没有任何隐藏窗口的调用。推断：2.0 起启动时就打开相册，窗口留在当时的桌面空间；之后在别的空间或全屏 App 里从刘海点「相册」，macOS 会切到那个空间，看起来就像正在用的 App 被藏起来了。修：相册、设置、装饰台、照片选择器窗口加 `.moveToActiveSpace` + `.fullScreenAuxiliary`（出现在当前空间、能浮在全屏 App 上），最小化的先还原，`orderFrontRegardless` 保证在最前。若所有者说的是别的现象，问清楚再改 |
-| 4 | 「换相机」放到「换胶卷」右边 | 🟡 已改，等 CI | `Notch/NotchRootView.swift`（`CameraTileButton`、`CameraBodyArt`）、`Notch/NotchController.swift`（悬停面板宽 +84） | 机身小图 + 「换相机」+ 机身名，点一下换下一台；装着大头贴机时胶卷罐显示大头贴机用的胶卷，「相纸」小卡切换四格条 / 四宫格 |
-| 5 | 相册顶部四个小图标的阴影被截断 | 🟡 已重渲染，等 CI | `design/blender/icons/make_icons.py`（`PAD = 0.22`、`ANCHOR`、`fade_shadow_edges`）、`Album/AlbumHeader.swift`（`ModeIcon.overscan = 1.5`） | 原因：渲染时机位贴着物体（留边 8%），阴影跑出画布被截成直角。现在四周留足地方、阴影在画布边之前淡到透明；App 里放大 1.5 倍画、布局仍占原来的格子 |
-| 6 | 卡片盒：「＋」右边加齿轮，按首字母 / 年 / 月 / 日归档，分隔卡标签跟着变，能按日期检索 | 🟡 已改，等 CI 和 Screenshots（看 `album-cardbox.jpg`、新的 `album-cardbox-month.jpg`：标签上的字是不是正好印在标签面上、没有透到前一张标签上） | `NocchiKit/Library/CardIndex.swift`（+ 测试 `CardIndexTests`）、`NocchiKit/Support/UILanguage.swift`、`NocchiUI/CardBoxModel.swift`（`indexMode`、`index`、`pull(key:)`）、`NocchiUI/CardBox/CardBoxParts.swift`（`TabFace`、`TabLabels`、`TabHotspot`、`TabChip`、卡片小标签）、`CardBoxView.swift`、`CardBoxHotspots.swift`（重新生成）、`design/blender/cardbox/make_cardbox.py`（空白标签、导出标签面四角）、`Album/AlbumHeader.swift`（齿轮 `IndexModeButton`）、`Album/AlbumShared.swift`（卡片盒模型挪到 `AlbumRouter`）、`PhotoSearch`（英文月份）、`Screenshots/ScreenshotStudio.swift`（多拍一张按月归档） | 按「设计 6」做了，决策 D37。标签宽 2.8（原 2.3）、高 1.25 不变（试过 1.45：后一张标签的下沿被前一张挡住） |
-| 7 | App 支持中英文切换，默认中文 | 🟡 已改，等 CI | `App/AppLanguage.swift`（启动时写 `AppleLanguages`、设置里换语言 + 重新打开）、`Settings/SettingsView.swift`（通用 → 语言）、`Resources/en.lproj`（`Localizable.strings` 由脚本生成、`InfoPlist.strings`）、`Resources/zh-Hans.lproj`、`macOS/project.yml`（`CFBundleDevelopmentRegion` / `CFBundleLocalizations`）、`scripts/i18n/`（`strings.py`、`en.json` 563 条、`formats.json`、`extra.json`）、`NocchiKit/Support/UILanguage.swift`（`Localized.string`）、`FilmStock.localizedForEnglish`、`PhotoLibrary.monthTitle`、CI「Check translations」 | 按「设计 7」：中文原文就是键。`strings.py wrap` 把 417 处普通 String 里的中文包成 `String(localized:)`（跳过字典键、比较、case 模式、生成的文件、截图样片、搜索用的日期写法；故意不翻译的行标 `// i18n-ok`：贴纸图案上的字、标签规整、大头贴机热区的键）；SwiftUI 的 `Text("…")` 自己查表。`strings.py build` 生成英文表，`check`（CI）要求每个会查表的键都有英文、格式符一致。第 52 次推送：大头贴机英文版整机图 `BoothMachineEN`（`make_machine.py --english`：招牌 PHOTO BOOTH、刻字 STRIP / GRID、B&W / COLOUR、PRINTS、COIN，Futura 窄体粗体；零件和热区不变），`BoothMachine.baseImage` 按语言选；Screenshots 多拍一轮英文界面（`scripts/ci/render-screenshots.sh` 第二遍加 `-app.language en -AppleLanguages (en)`，图在 `website/public/screenshots/en/`）。**下一步**：看英文截图验收翻译；文档站英文页改用 `/screenshots/en/` 的图 |
-| 8 | 关于页删掉「机身、图标与纹理为原创设计（由 Codex 生成）……」 | 🟡 已改 | `Settings/SettingsView.swift`（`AboutTab`） | |
-| 9 | 存储位置可以自定义 | 🟡 已改，等 CI | `NocchiKit/Darkroom/PhotoLibrary.swift`（`printsRoot` 可变 + 锁、`relocatePrints(to:)`、`printFileCount()`，测试 `PrintsRelocationTests`）、`App/Services.swift`（`PrintsLocation`）、`Settings/StorageSettings.swift`（`StorageSection`）、`macOS/project.yml`（外接盘 / 网络盘的权限说明） | 按「设计 9」做：先改用新位置（之后的成片直接写过去）再按相对路径一个个搬，同名不覆盖（列出来），搬到一半出错就搬回来、改回原位置；搬空的月份文件夹删掉。选的文件夹叫 Nocchi 或是空的就直接用，否则在里面建「Nocchi」。启动时自定义位置所在的文件夹不存在（外接盘没插）就这次用默认位置、设置里提示，不在 /Volumes 下凭空建文件夹。决策 D38 |
-| 11 | 所有者：参考站的卡片盒「建模更精细」——「不是说箱子不行，而是里面的书页和标签建模还不够精细」；可以把参考图下下来照着自己做一个 | 🟡 已改，等 CI 和 Screenshots | `design/blender/cardbox/make_cardbox.py`（`paper_sheet` 圆角卡纸、`paper_mat` 卡纸材质、`CARD_COLORS`、卡片更密更乱、回形针、白色塑料标签 2.0 cm）、`Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift`（`SlotGeometry` 的标签位置比例跟着改）、`CardBoxHotspots.swift`（重新生成）、`CardBoxLift.swift`（`DividerPaper` 重新取色） | 参考图存在 `Ref_Image/shashage-archive/`（第三方作品，**不入库、不进 App**，只当参考）。木盒不动（所有者说箱子没问题）。卡片：圆角 + 厚度 + 细倒角、淡彩卡纸、在原来每两张之间再插一两张（单独的随机数，分隔卡和标签位置不变）、高低错落（分隔卡前面的卡按透视限高，不挡标签上印的字）、回形针。标签：2.0 × 1.25 cm 白色塑料插片（原来 2.8 cm 纸标签）。 |
-| 10 | 抽屉（卡片盒）取出来的效果参考 <https://shashage.de/what-we-borrow?entry=home> 的「准备取出来」动画 | 🟡 已改，等 CI 和 Screenshots（看 `album-cardbox-month.jpg`：第一格的分隔卡抬起一截，纸面颜色和标签接得上、前面的标签挡在它前面） | `NocchiUI/CardBox/CardBoxLift.swift`（`DividerLift`、`FrontTabs`、`DividerPaper`）、`CardBoxView.swift`（`lift(_:)`、`peekSlot`）、`CardBoxParts.swift`（`TabHotspot.rise`、`TabLabels.occludedByFront`）、`design/blender/cardbox/sample_tab_paper.py` | 参考站的做法（`archive-interaction.js`）：悬停时那张分隔卡沿盒子竖直方向抬起约 4% 画高（0.19 秒），只画原来藏住的那截纸面 + 原图裁出的标签，前面的标签和盒子前半部分重新盖上；点击才把卡放到桌上。这里一样：沿标签面竖边抬 1.25 个标签高，纸面颜色取自渲染图（每张标签一个色），格口线以下用 `SlotMask` 挡住，前面的标签 `FrontTabs` 盖上；换一张时先放回再抬（代数计数防止动画回调打架）；热区补到抬满的位置。点击后沿用原来的抽卡动画（斜着抽出、转正、落到右边） |
+| 4 | 「换相机」放到「换胶卷」右边 | 🟢 CI 绿，截图 `notch-panel.jpg` 已验收 | `Notch/NotchRootView.swift`（`CameraTileButton`、`CameraBodyArt`）、`Notch/NotchController.swift`（悬停面板宽 +84） | 机身小图 + 「换相机」+ 机身名，点一下换下一台；装着大头贴机时胶卷罐显示大头贴机用的胶卷，「相纸」小卡切换四格条 / 四宫格 |
+| 5 | 相册顶部四个小图标的阴影被截断 | 🟢 CI 绿，截图里阴影完整、自然淡出 | `design/blender/icons/make_icons.py`（`PAD = 0.22`、`ANCHOR`、`fade_shadow_edges`）、`Album/AlbumHeader.swift`（`ModeIcon.overscan = 1.5`） | 原因：渲染时机位贴着物体（留边 8%），阴影跑出画布被截成直角。现在四周留足地方、阴影在画布边之前淡到透明；App 里放大 1.5 倍画、布局仍占原来的格子 |
+| 6 | 卡片盒：「＋」右边加齿轮，按首字母 / 年 / 月 / 日归档，分隔卡标签跟着变，能按日期检索 | 🟢 CI 绿，Screenshots 第 25、27 次验收（标签上的字印在标签面上） | `NocchiKit/Library/CardIndex.swift`（+ 测试 `CardIndexTests`）、`NocchiKit/Support/UILanguage.swift`、`NocchiUI/CardBoxModel.swift`（`indexMode`、`index`、`pull(key:)`）、`NocchiUI/CardBox/CardBoxParts.swift`（`TabFace`、`TabLabels`、`TabHotspot`、`TabChip`、卡片小标签）、`CardBoxView.swift`、`CardBoxHotspots.swift`（重新生成）、`design/blender/cardbox/make_cardbox.py`（空白标签、导出标签面四角）、`Album/AlbumHeader.swift`（齿轮 `IndexModeButton`）、`Album/AlbumShared.swift`（卡片盒模型挪到 `AlbumRouter`）、`PhotoSearch`（英文月份）、`Screenshots/ScreenshotStudio.swift`（多拍一张按月归档） | 按「设计 6」做了，决策 D37。标签宽 2.8（原 2.3）、高 1.25 不变（试过 1.45：后一张标签的下沿被前一张挡住） |
+| 7 | App 支持中英文切换，默认中文 | 🟢 CI 绿，英文截图逐张验收（Screenshots 第 27 次），第 53 次推送修了几处截断 | `App/AppLanguage.swift`（启动时写 `AppleLanguages`、设置里换语言 + 重新打开）、`Settings/SettingsView.swift`（通用 → 语言）、`Resources/en.lproj`（`Localizable.strings` 由脚本生成、`InfoPlist.strings`）、`Resources/zh-Hans.lproj`、`macOS/project.yml`（`CFBundleDevelopmentRegion` / `CFBundleLocalizations`）、`scripts/i18n/`（`strings.py`、`en.json` 563 条、`formats.json`、`extra.json`）、`NocchiKit/Support/UILanguage.swift`（`Localized.string`）、`FilmStock.localizedForEnglish`、`PhotoLibrary.monthTitle`、CI「Check translations」 | 按「设计 7」：中文原文就是键。`strings.py wrap` 把 417 处普通 String 里的中文包成 `String(localized:)`（跳过字典键、比较、case 模式、生成的文件、截图样片、搜索用的日期写法；故意不翻译的行标 `// i18n-ok`：贴纸图案上的字、标签规整、大头贴机热区的键）；SwiftUI 的 `Text("…")` 自己查表。`strings.py build` 生成英文表，`check`（CI）要求每个会查表的键都有英文、格式符一致。第 52 次推送：大头贴机英文版整机图 `BoothMachineEN`（`make_machine.py --english`：招牌 PHOTO BOOTH、刻字 STRIP / GRID、B&W / COLOUR、PRINTS、COIN，Futura 窄体粗体；零件和热区不变），`BoothMachine.baseImage` 按语言选；Screenshots 多拍一轮英文界面（`scripts/ci/render-screenshots.sh` 第二遍加 `-app.language en -AppleLanguages (en)`，图在 `website/public/screenshots/en/`）。第 53 次推送：逐张看英文截图验收，修了几处被截断的英文（设置里相机卡片的说明、胶卷柜的「Loaded」和张数、大头贴机橱窗的相框说明）、「摄像头」页英文叫 Webcam（不和相机柜 Cameras 混）、英文大头贴机的 COLOUR 等刻字挪到板边和拨杆头之间（`make_machine.py` 的 `english_labels`）；文档站英文页和 README 改用 `/screenshots/en/` 的图和英文界面上的叫法（`pages.yml` 的占位图也认 `en/` 子目录） |
+| 8 | 关于页删掉「机身、图标与纹理为原创设计（由 Codex 生成）……」 | 🟢 已改 | `Settings/SettingsView.swift`（`AboutTab`） | |
+| 9 | 存储位置可以自定义 | 🟢 CI 绿（含 5 条单元测试） | `NocchiKit/Darkroom/PhotoLibrary.swift`（`printsRoot` 可变 + 锁、`relocatePrints(to:)`、`printFileCount()`，测试 `PrintsRelocationTests`）、`App/Services.swift`（`PrintsLocation`）、`Settings/StorageSettings.swift`（`StorageSection`）、`macOS/project.yml`（外接盘 / 网络盘的权限说明） | 按「设计 9」做：先改用新位置（之后的成片直接写过去）再按相对路径一个个搬，同名不覆盖（列出来），搬到一半出错就搬回来、改回原位置；搬空的月份文件夹删掉。选的文件夹叫 Nocchi 或是空的就直接用，否则在里面建「Nocchi」。启动时自定义位置所在的文件夹不存在（外接盘没插）就这次用默认位置、设置里提示，不在 /Volumes 下凭空建文件夹。决策 D38 |
+| 11 | 所有者：参考站的卡片盒「建模更精细」——「不是说箱子不行，而是里面的书页和标签建模还不够精细」；可以把参考图下下来照着自己做一个 | 🟢 CI 绿，Screenshots 第 27 次验收（`album-cardbox.jpg`） | `design/blender/cardbox/make_cardbox.py`（`paper_sheet` 圆角卡纸、`paper_mat` 卡纸材质、`CARD_COLORS`、卡片更密更乱、回形针、白色塑料标签 2.0 cm）、`Packages/NocchiKit/Sources/NocchiUI/CardBox/CardBoxView.swift`（`SlotGeometry` 的标签位置比例跟着改）、`CardBoxHotspots.swift`（重新生成）、`CardBoxLift.swift`（`DividerPaper` 重新取色） | 参考图存在 `Ref_Image/shashage-archive/`（第三方作品，**不入库、不进 App**，只当参考）。木盒不动（所有者说箱子没问题）。卡片：圆角 + 厚度 + 细倒角、淡彩卡纸、在原来每两张之间再插一两张（单独的随机数，分隔卡和标签位置不变）、高低错落（分隔卡前面的卡按透视限高，不挡标签上印的字）、回形针。标签：2.0 × 1.25 cm 白色塑料插片（原来 2.8 cm 纸标签）。 |
+| 10 | 抽屉（卡片盒）取出来的效果参考 <https://shashage.de/what-we-borrow?entry=home> 的「准备取出来」动画 | 🟢 CI 绿，Screenshots 第 25、27 次验收（`album-cardbox-month.jpg`：第一格的分隔卡抬起一截） | `NocchiUI/CardBox/CardBoxLift.swift`（`DividerLift`、`FrontTabs`、`DividerPaper`）、`CardBoxView.swift`（`lift(_:)`、`peekSlot`）、`CardBoxParts.swift`（`TabHotspot.rise`、`TabLabels.occludedByFront`）、`design/blender/cardbox/sample_tab_paper.py` | 参考站的做法（`archive-interaction.js`）：悬停时那张分隔卡沿盒子竖直方向抬起约 4% 画高（0.19 秒），只画原来藏住的那截纸面 + 原图裁出的标签，前面的标签和盒子前半部分重新盖上；点击才把卡放到桌上。这里一样：沿标签面竖边抬 1.25 个标签高，纸面颜色取自渲染图（每张标签一个色），格口线以下用 `SlotMask` 挡住，前面的标签 `FrontTabs` 盖上；换一张时先放回再抬（代数计数防止动画回调打架）；热区补到抬满的位置。点击后沿用原来的抽卡动画（斜着抽出、转正、落到右边） |
 
 **设计 6 · 卡片盒归档方式（已按此实现，留作说明）**
 - NocchiKit 新增 `CardIndex`：`Mode`（首字母 / 年 / 月 / 日），把照片分进最多 27 格（盒子里有 27 张分隔卡）：首字母 = A–Z、#；年 = 有照片的年份，新的在前；月 = 有照片的年月，新的在前；日 = 有照片的日子，新的在前；放不下的进最后一格「更早」。每格有短标签（标签上印的：`2026`、`11月`、`11/24`）和完整标签（吊牌上的：`2026 年 11 月`）。单元测试。
@@ -184,6 +184,7 @@
 
 ## 最近更新（新的在上）
 
+- **2026-11-24 · 第 53 次推送** 英文截图逐张验收后的修整（交接表第 7 行）：截断的英文、Webcam、COLOUR 刻字；文档站英文页和 README 用英文截图和英文界面上的叫法，设置页补「语言」「存储」，大头贴机页按剧院暗红布帘重写。CI 第 61 次、Screenshots 第 27 次（卡片和标签更精细、英文界面第一次截图）全绿。
 - **2026-11-24 · 第 52 次推送** 英文版大头贴机整机图 `BoothMachineEN` 与英文截图（见交接表第 7 行）。
 - **2026-11-24 · 第 51 次推送（2.1 反馈第五批）** 中英文切换（交接表第 7 项）：见交接表第 7 行。翻译流程：改了界面文字后跑 `python3 scripts/i18n/strings.py build`（新的中文键会列成 missing），在 `scripts/i18n/en.json` 补英文再 build；普通 String 里的中文用 `String(localized:)`（或者跑 `strings.py wrap <文件>`），模型里动态的中文用 `Localized.string`。CI 第 57 次（成片位置）全绿。
 - **2026-11-24 · 第 50 次推送（2.1 反馈第四批）** 成片位置可以换（交接表第 9 项）：`PhotoLibrary.relocatePrints(to:)`（先切换再搬、同名不覆盖、出错回滚，5 条单元测试），`PrintsLocation`（UserDefaults `storage.printsRoot`，外接盘没插上时这次用默认位置），设置 → 通用 → 存储的 `StorageSection`（更改… / 在访达中显示 / 恢复默认，确认后在后台搬、转圈、报告搬了几个）。第 49 次推送（卡片盒「准备抽出来」）CI 第 56 次全绿。
@@ -242,14 +243,13 @@
 
 ## 下一步
 
-1. 交接表第 4–5 项：Blender 建模的相框（先把情人节 `booth-heart` 做精致，再做其余大头贴主题、照相馆卡纸、胶片框）——模板加「位图图层」，NocchiKit 资源里放渲染图，`PhotoComposer` 合成，屏幕与导出同源。
-2. 全部做完、CI 全绿后：`macOS/project.yml` 版本改 2.0.0，`CHANGELOG` 的「未发布」整理成 `## [2.0.0]`，推 `v2.0.0` 标签（所有者：「完成后记得 push 成 2.0」）。
-3. 看 Screenshots 工作流重拍的 `booth.jpg`（3D 布帘离屏渲染）对不对。
-4. 之后：完成 iOS App 与灵动岛 Live Activity（`iOS/` 下的草稿还没提交，iOS 用 80 年代方盒款机身外观），接入 CI（未签名 ipa）。
+1. 等所有者确认交接表第 3 项（从刘海进相册时「主程序被强制隐藏」）：推断是窗口留在别的桌面空间，已让窗口跟着当前空间走；如果所有者说的是别的现象，问清楚再改。
+2. 所有者同意后发 v2.1.0：`macOS/project.yml` 版本改 2.1.0，`CHANGELOG` 的「未发布」整理成 `## [2.1.0]`，CI 全绿后推 `v2.1.0` 标签（`release.yml` 会出 Release）。
+3. 之后：完成 iOS App 与灵动岛 Live Activity（`iOS/` 下的草稿还没提交，iOS 用 80 年代方盒款机身外观），接入 CI（未签名 ipa）；iOS 也接上 `UILanguage` 和英文表。
 
 ## 已知问题 / 待你确认
 
 - App 名称、收费方式、Bundle ID 见 [决策记录 · 待你决定](DECISIONS.md#待你决定)（许可已定：GNU AGPL-3.0，见决策 D32）。
-- 照片偏暗（效果阶段），见「交接」第 1 节。
+- 英文界面里，贴纸图案上印的中文（「已显影」「珍藏」印章、小票上的字等）保留原样，是图案的一部分；贴纸名字是英文的。
 - 请在仓库 **Settings → Code security → Private vulnerability reporting** 打开「私密漏洞报告」，`SECURITY.md` 里的举报入口才能用。
 - CI 产物是 ad-hoc 签名，首次打开需要解除隔离（见 [CI.md](CI.md#macos-测试版)）。

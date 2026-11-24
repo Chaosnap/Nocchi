@@ -39,7 +39,8 @@
    - 打开真实的相册（四种看法）、装饰台、设置窗口和刘海面板（悬停面板、胶卷柜），向窗口服务器要自己窗口的画面（自己的窗口不需要屏幕录制权限），拿不到时退回 `cacheDisplay`，再放到桌面壁纸上；
    - 用 `ImageRenderer` 以 2 倍像素合成「刘海出片 + 照片堆」的桌面、相纸一览和大头贴「选相框」。
    代码在 `macOS/Nocchi/Screenshots/`，8 分钟看门狗。每张图的尺寸、拍法和灰度标准差会写成运行页面上的注解（`SHOT …`）。
-3. JPEG 提交到 `website/public/screenshots/`（github-actions[bot]，图没变就不提交）。README 和文档站都引用这里的图。
+   同一个 App 再用英文界面拍一遍（`-app.language en -AppleLanguages (en)`，照片库另放一个临时目录），顺便验收翻译。
+3. JPEG 提交到 `website/public/screenshots/`（中文界面）和 `website/public/screenshots/en/`（英文界面），github-actions[bot] 提交，图没变就不提交。文档站中文页（`/zh/`）用前者，英文页和 README 用后者；文档站构建时缺的图（包括 `en/` 下的）先放纸色占位图。
 
 ## 文档站（Pages）
 

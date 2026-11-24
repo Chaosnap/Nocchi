@@ -14,19 +14,19 @@ The builds are ad-hoc signed and not notarized yet. Run `xattr -dr com.apple.qua
 
 ## How do I quit?
 
-<kbd>⌘Q</kbd> when Nocchi is in front, or the aperture icon in the menu bar → 退出 Nocchi (*quit*). Every overlay (selfie, photo booth, flash) answers to <kbd>Esc</kbd> and <kbd>⌘Q</kbd> too.
+<kbd>⌘Q</kbd> when Nocchi is in front, or the aperture icon in the menu bar → **Quit Nocchi**. Every overlay (selfie, photo booth, flash) answers to <kbd>Esc</kbd> and <kbd>⌘Q</kbd> too.
 
 ## Can I use my own LUTs?
 
-Yes: *Settings → 胶卷 → 导入 .cube 胶卷…* turns a `.cube` file into a custom roll. Nocchi's own stocks are recipes rather than LUT files, and each one can be exported as a `.cube`.
+Yes: *Settings → Film → Import a .cube Roll…* turns a `.cube` file into a custom roll. Nocchi's own stocks are recipes rather than LUT files, and each one can be exported as a `.cube`.
 
 ## Can I change a print after it is done?
 
 Yes. Decorations are stored with the photo, so on the decorating desk you can change the template, the caption, the stickers or the drawing at any time; the print is composed again from the negative. Blotches from shaking too hard are the one thing that stays.
 
-## Why is the interface in Chinese?
+## Can I use Nocchi in English?
 
-Nocchi is made in Chinese first. This documentation is in English and [中文](/zh/).
+Yes. Nocchi is made in Chinese first, so it starts in Simplified Chinese; switch in *Settings → 通用 (General) → 语言 (Language)* and relaunch (see [Switch to English](./getting-started#switch-to-english)). This documentation is in English and [中文](/zh/).
 
 ## Is there an iPhone version?
 

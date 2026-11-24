@@ -144,19 +144,14 @@ private struct FilmCabinetTile: View {
                     .foregroundStyle(.white)
                     .lineLimit(1)
                     .minimumScaleFactor(0.75)
-                HStack(spacing: 4) {
-                    if loaded {
-                        Text("已装")
-                            .font(.system(size: 9, weight: .bold, design: .rounded))
-                            .padding(.horizontal, 5)
-                            .padding(.vertical, 1)
-                            .background(Capsule().fill(Palette.terracotta))
-                            .foregroundStyle(.white)
+                // 「已装」+ 感光度 · 张数。英文的「Loaded」和这一行并排放不下时，装着的这卷只显示徽章
+                // （面板底下的说明行写着这卷的详情），不把两样都截成半截。
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 4) {
+                        if loaded { loadedBadge }
+                        details
                     }
-                    Text("\(stock.iso) · \(stock.exposures) 张")
-                        .font(RetroFont.typewriter(9))
-                        .foregroundStyle(.white.opacity(0.5))
-                        .lineLimit(1)
+                    if loaded { loadedBadge } else { details }
                 }
             }
             .frame(width: 86)
@@ -173,6 +168,22 @@ private struct FilmCabinetTile: View {
         }
         .animation(.spring(response: 0.3, dampingFraction: 0.75), value: hovering)
         .help(stock.summary)
+    }
+
+    private var loadedBadge: some View {
+        Text("已装")
+            .font(.system(size: 9, weight: .bold, design: .rounded))
+            .padding(.horizontal, 5)
+            .padding(.vertical, 1)
+            .background(Capsule().fill(Palette.terracotta))
+            .foregroundStyle(.white)
+    }
+
+    private var details: some View {
+        Text("\(stock.iso) · \(stock.exposures) 张")
+            .font(RetroFont.typewriter(9))
+            .foregroundStyle(.white.opacity(0.5))
+            .lineLimit(1)
     }
 }
 
