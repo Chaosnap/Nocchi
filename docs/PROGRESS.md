@@ -37,7 +37,7 @@
 | 6 | 卡片盒：「＋」右边加齿轮，按首字母 / 年 / 月 / 日归档，分隔卡标签跟着变，能按日期检索 | 🟡 已改，等 CI 和 Screenshots（看 `album-cardbox.jpg`、新的 `album-cardbox-month.jpg`：标签上的字是不是正好印在标签面上、没有透到前一张标签上） | `NocchiKit/Library/CardIndex.swift`（+ 测试 `CardIndexTests`）、`NocchiKit/Support/UILanguage.swift`、`NocchiUI/CardBoxModel.swift`（`indexMode`、`index`、`pull(key:)`）、`NocchiUI/CardBox/CardBoxParts.swift`（`TabFace`、`TabLabels`、`TabHotspot`、`TabChip`、卡片小标签）、`CardBoxView.swift`、`CardBoxHotspots.swift`（重新生成）、`design/blender/cardbox/make_cardbox.py`（空白标签、导出标签面四角）、`Album/AlbumHeader.swift`（齿轮 `IndexModeButton`）、`Album/AlbumShared.swift`（卡片盒模型挪到 `AlbumRouter`）、`PhotoSearch`（英文月份）、`Screenshots/ScreenshotStudio.swift`（多拍一张按月归档） | 按「设计 6」做了，决策 D37。标签宽 2.8（原 2.3）、高 1.25 不变（试过 1.45：后一张标签的下沿被前一张挡住） |
 | 7 | App 支持中英文切换，默认中文 | ⚪ | 见下面「设计 7」 | |
 | 8 | 关于页删掉「机身、图标与纹理为原创设计（由 Codex 生成）……」 | 🟡 已改 | `Settings/SettingsView.swift`（`AboutTab`） | |
-| 9 | 存储位置可以自定义 | ⚪ | 见下面「设计 9」 | |
+| 9 | 存储位置可以自定义 | 🟡 已改，等 CI | `NocchiKit/Darkroom/PhotoLibrary.swift`（`printsRoot` 可变 + 锁、`relocatePrints(to:)`、`printFileCount()`，测试 `PrintsRelocationTests`）、`App/Services.swift`（`PrintsLocation`）、`Settings/StorageSettings.swift`（`StorageSection`）、`macOS/project.yml`（外接盘 / 网络盘的权限说明） | 按「设计 9」做：先改用新位置（之后的成片直接写过去）再按相对路径一个个搬，同名不覆盖（列出来），搬到一半出错就搬回来、改回原位置；搬空的月份文件夹删掉。选的文件夹叫 Nocchi 或是空的就直接用，否则在里面建「Nocchi」。启动时自定义位置所在的文件夹不存在（外接盘没插）就这次用默认位置、设置里提示，不在 /Volumes 下凭空建文件夹。决策 D38 |
 | 10 | 抽屉（卡片盒）取出来的效果参考 <https://shashage.de/what-we-borrow?entry=home> 的「准备取出来」动画 | 🟡 已改，等 CI 和 Screenshots（看 `album-cardbox-month.jpg`：第一格的分隔卡抬起一截，纸面颜色和标签接得上、前面的标签挡在它前面） | `NocchiUI/CardBox/CardBoxLift.swift`（`DividerLift`、`FrontTabs`、`DividerPaper`）、`CardBoxView.swift`（`lift(_:)`、`peekSlot`）、`CardBoxParts.swift`（`TabHotspot.rise`、`TabLabels.occludedByFront`）、`design/blender/cardbox/sample_tab_paper.py` | 参考站的做法（`archive-interaction.js`）：悬停时那张分隔卡沿盒子竖直方向抬起约 4% 画高（0.19 秒），只画原来藏住的那截纸面 + 原图裁出的标签，前面的标签和盒子前半部分重新盖上；点击才把卡放到桌上。这里一样：沿标签面竖边抬 1.25 个标签高，纸面颜色取自渲染图（每张标签一个色），格口线以下用 `SlotMask` 挡住，前面的标签 `FrontTabs` 盖上；换一张时先放回再抬（代数计数防止动画回调打架）；热区补到抬满的位置。点击后沿用原来的抽卡动画（斜着抽出、转正、落到右边） |
 
 **设计 6 · 卡片盒归档方式（已按此实现，留作说明）**
@@ -183,6 +183,7 @@
 
 ## 最近更新（新的在上）
 
+- **2026-11-24 · 第 50 次推送（2.1 反馈第四批）** 成片位置可以换（交接表第 9 项）：`PhotoLibrary.relocatePrints(to:)`（先切换再搬、同名不覆盖、出错回滚，5 条单元测试），`PrintsLocation`（UserDefaults `storage.printsRoot`，外接盘没插上时这次用默认位置），设置 → 通用 → 存储的 `StorageSection`（更改… / 在访达中显示 / 恢复默认，确认后在后台搬、转圈、报告搬了几个）。第 49 次推送（卡片盒「准备抽出来」）CI 第 56 次全绿。
 - **2026-11-24 · 第 49 次推送（2.1 反馈第三批）** 所有者补充：卡片盒取出来的效果参考 shashage.de「What We Borrow」档案盒的「准备取出来」动画。读了它的 `archive-interaction.js`：悬停时分隔卡抬起一截、前面的卡照样挡着。照做：`DividerLift`（抬起的纸面 + 原图裁出的标签 + 跟着走的字）、`FrontTabs`（前面的标签盖上），悬停换卡时先放回再抬；截图工作室的按月归档那张让第一格抬起来（`peekSlot`）。第 48 次推送（卡片盒按年月日归档）上一位写完没提交，这次检查后推送，CI 第 55 次全绿。
 - **2026-11-24 · 第 48 次推送（2.1 反馈第二批）** 卡片盒归档方式：「＋」右边的黄铜齿轮选按首字母 / 年 / 月 / 日；卡片盒重新渲染成空白标签，标签上的字由 App 按透视印上去；搜索认英文月份名；文档站「拍照」加「换相机」、「相册」加按日期归档。
 - **2026-11-24 · 第 47 次推送（2.1 反馈第一批）** 卡片盒卡片空白（按版本重读图、读不到重试）；装着大头贴机时自拍 / 屏幕快门 / 冲印照片都拍成一条四格；刘海面板「换胶卷」右边加「换相机」；相册等窗口出现在当前桌面空间（推断的「主程序被强制隐藏」）；相册顶部小图标重渲染、阴影不再被截断；关于页删掉一句话。详见「交接 · 当前批次」。

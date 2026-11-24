@@ -45,6 +45,8 @@ targets:
         NSDesktopFolderUsageDescription: "开启「接管系统截图」后，Nocchi 会读取你刚截下的屏幕截图，把它冲印成即显相片。"
         NSDocumentsFolderUsageDescription: "Nocchi 会读取你保存在这里的屏幕截图，把它冲印成即显相片。"
         NSDownloadsFolderUsageDescription: "Nocchi 会读取你保存在这里的屏幕截图，把它冲印成即显相片。"
+        NSRemovableVolumesUsageDescription: "你把成片放在外接磁盘上时，Nocchi 需要在那里保存照片。"
+        NSNetworkVolumesUsageDescription: "你把成片放在网络磁盘上时，Nocchi 需要在那里保存照片。"
         NSHumanReadableCopyright: "© 2026 Nocchi · 刘海冲印店"
     entitlements:
       path: Nocchi/Nocchi.entitlements

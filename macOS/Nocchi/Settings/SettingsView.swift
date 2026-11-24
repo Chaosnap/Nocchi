@@ -231,17 +231,7 @@ private struct GeneralTab: View {
                 LabeledContent("自拍", value: "⌃⌥⌘F")
                 LabeledContent("大头贴机", value: "⌃⌥⌘B")
             }
-            Section("存储") {
-                LabeledContent("成片") {
-                    Button(Services.library.printsRoot.path) {
-                        NSWorkspace.shared.open(Services.library.printsRoot)
-                    }
-                    .buttonStyle(.link)
-                }
-                Text("所有照片只存在这台 Mac 上，不上传。")
-                    .font(.system(size: 11))
-                    .foregroundStyle(.secondary)
-            }
+            StorageSection()
         }
         .formStyle(.grouped)
     }
