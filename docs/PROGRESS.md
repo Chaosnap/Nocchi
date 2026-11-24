@@ -9,11 +9,11 @@
 | --- | --- | --- |
 | 仓库与 CI | 🟢 已搭好 | 直接在 `main` 开发；NocchiKit 测试与 macOS 构建在 GitHub Actions 上跑；推送 `v*` 标签自动发行版本 |
 | NocchiKit（共享暗房内核） | 🟢 CI 全绿 | 调色引擎 v2（曲线、HSL、肤色保护、高光软肩）+ 26 卷胶卷；相册检索 / 胶片条 / 挂历分组 |
-| macOS App（刘海出片口） | 🟡 v1.0.0 发布中 | v0.1.1 已发布；「复古冲印店」改版（第 1–11 步）CI 全绿，推送 `v1.0.0` 标签发行 |
+| macOS App（刘海出片口） | 🟢 v1.0.0 已发布 | [Releases](https://github.com/Chaosnap/Nocchi/releases/latest)：`Nocchi-macOS-1.0.0.zip` + `SHA256SUMS.txt`（AGPL-3.0） |
 | iOS App（灵动岛出片口） | 🔵 编写中 | 分层建模相机、灵动岛出片、Live Activity |
 | 美术素材 | 🟢 第三版 | 复古机身、大头贴机、纹理（象牙白 + 炭黑 + 陶土橙）；**App 图标第三稿**：复古旁轴式即显相机 + 做旧毛边相纸（不出画框），胡桃木圆角瓷砖，CI 渲染各尺寸；80 年代方盒款机身已入库备用 |
 | 照片卡片盒（2.5D） | 🟢 CI 全绿 | Blender 照参考图建模、Cycles 渲染（`CardBoxBase` / `CardBoxFront` + 热点），卡片从盒口升起、扇形摊开 |
-| v0.2「复古冲印店」 | 🟡 第 11 / 11 步（发 v1.0.0） | 规范见 [DESIGN.md](DESIGN.md)；逐步进度见下面的「v0.2 改版进度」 |
+| v0.2「复古冲印店」 | 🟢 全部完成，随 v1.0.0 发布 | 规范见 [DESIGN.md](DESIGN.md)；逐步进度见下面的「v0.2 改版进度」 |
 | 仓库与社区文件 | 🟢 已补齐 | GNU AGPL-3.0（与 Yohaku 一致）；英文的 README、行为准则（Contributor Covenant 3.0）、贡献指南、安全政策、隐私说明、Issue / PR 模板 |
 
 图例：🟢 完成 · 🟡 进行中 / 待验证 · 🔵 编写中 · ⚪ 未开始 · 🔴 阻塞
@@ -34,7 +34,7 @@
 | 8 | 胶卷光台、复古挂历 | 🟢 | `Album/FilmLightTable.swift`、`Album/CalendarWallView.swift` |
 | 9 | 装饰台：涂鸦、贴纸、模板、题字、分享海报 | 🟢 | `macOS/Nocchi/Editor/*`；入口在 `Photo/PhotoWindowController.swift`（右键、双击）与 `Album/AlbumShared.swift` |
 | 10 | 大头贴先选相框；设置里的默认模板 / 题字字体 / 拍完自动打开装饰台 | 🟢 | `Booth/BoothFrameChooser.swift`、`Booth/PhotoBoothController.swift`、`App/TemplatePreviews.swift`、`Settings/SettingsView.swift`、`App/AppModel.swift`、`NocchiKit/Decorate/TemplatePreview.swift` |
-| 11 | 文档收尾、CI 全绿、发 `v1.0.0` | 🟡 推送标签中 | `CHANGELOG.md`（`## [1.0.0]`）、`macOS/project.yml`（版本 1.0.0） |
+| 11 | 文档收尾、CI 全绿、发 `v1.0.0` | 🟢 | `CHANGELOG.md`（`## [1.0.0]`）、`macOS/project.yml`（版本 1.0.0） |
 
 ### 交接须知
 
@@ -88,6 +88,7 @@
 
 ## 最近更新（新的在上）
 
+- **2026-11-24 · 发行版 v1.0.0** 推送 `v1.0.0` 标签（e704e0a），Release 工作流第 3 次运行全绿，发布 `Nocchi-macOS-1.0.0.zip` 与 `SHA256SUMS.txt`；说明取自 `CHANGELOG` 的 `## [1.0.0]`。这一版起按 AGPL-3.0。
 - **2026-11-24 · 第 25 次推送** 许可改为 GNU AGPL-3.0（与 Yohaku 一致，取代 CC BY-NC 4.0，见决策 D32）；README 按 Yohaku 的结构重写成英文；行为准则换成英文的 Contributor Covenant 3.0 改编版；贡献指南、安全政策、隐私说明、Issue / PR 模板改成英文；CLAUDE.md 的许可规则同步。v1.0.0 按 AGPL-3.0 发布。
 - **2026-11-24 · 第 24 次推送** 文档收尾（第 11 步）：`CHANGELOG` 把 v0.2 改版的全部内容整理成 `## [1.0.0]`（新增 / 内核 / 修复 / 仓库），macOS 工程版本号改为 1.0.0；第 10 步 CI 全绿（第 26 次 CI 运行）。CI 绿了之后推送 `v1.0.0` 标签。
 - **2026-11-24 · 第 23 次推送** 大头贴机先选相框（第 10 步）：拉上布帘后停在「选相框」——黄铜包边的橱窗里用小铜夹挂着这一款的样张（暖灰占位格和成片同一套合成），两边黄铜箭头换相框（先六款大头贴主题，再经典 / 炭黑 / 牛皮纸 / 胶片框 / 70 年代），两个镀铬拨杆开关切换四格条 / 四宫格与黑白 / 彩色，一行打字机字写着用哪卷胶卷，按下会呼吸发光的「开始」投币后才开摄像头、开始计时；← → 换相框、↑ ↓ 换版式、Return 开始、Esc 离开，选相框时看门狗不计时，下次从这次的选择开始。设置新增「相纸」页：即显默认模板、大头贴默认相框 / 版式 / 黑白（都是实时合成的小样）、题字字体、「显影完成后自动打开装饰台」（默认关）；新照片按这些默认值冲印。
@@ -118,9 +119,8 @@
 
 ## 下一步
 
-1. 第 11 步：CI 全绿后推送 `v1.0.0` 标签，确认 Release 页面有 `Nocchi-macOS-1.0.0.zip` 与 `SHA256SUMS.txt`。
-2. 产品文档站（VitePress，默认英文、可切换中文，GitHub Pages）：截图由 GitHub Actions 从 App 自己的界面渲染；README 放截图和中文文档入口。
-3. 之后：完成 iOS App 与灵动岛 Live Activity（iOS 用 80 年代方盒款机身外观），接入 CI（未签名 ipa）。
+1. 产品文档站（VitePress，默认英文、可切换中文，GitHub Pages）：截图由 GitHub Actions 从 App 自己的界面渲染；README 放截图和中文文档入口。
+2. 之后：完成 iOS App 与灵动岛 Live Activity（iOS 用 80 年代方盒款机身外观），接入 CI（未签名 ipa）。
 
 ## 已知问题 / 待你确认
 
