@@ -1,6 +1,6 @@
 # 进度看板（实时更新）
 
-> 最后更新：2026-11-24（3.0.0、3.1.0、4.0.0 已发；4.5.0：右上角一束可以转的光、软木板不卡）· 分支 `main`（直接在 main 开发）
+> 最后更新：2026-11-25（3.0.0、3.1.0、4.0.0、4.5.0 已发；5.0.0：软木板的光和灰尘改成静态的，「灯光」卡片展开收起不卡，已打标签）· 分支 `main`（直接在 main 开发）
 > 每次推送都会同步更新本页。构建产物见 [Actions](https://github.com/Chaosnap/Nocchi/actions/workflows/ci.yml)。
 
 ## 一眼看懂
@@ -9,13 +9,13 @@
 | --- | --- | --- |
 | 仓库与 CI | 🟢 已搭好 | 直接在 `main` 开发；NocchiKit 测试与 macOS 构建在 GitHub Actions 上跑；推送 `v*` 标签自动发行版本 |
 | NocchiKit（共享暗房内核） | 🟢 CI 全绿 | 调色引擎 v2（曲线、HSL、肤色保护、高光软肩）+ 26 卷胶卷；相册检索 / 胶片条 / 挂历分组 |
-| macOS App（刘海出片口） | 🟢 v4.0.0 已发布 | [Releases](https://github.com/Chaosnap/Nocchi/releases/latest)：`Nocchi-macOS-4.0.0.zip` + `SHA256SUMS.txt`（AGPL-3.0）。同一天发了 3.0.0（自拍闪退、大头贴机第一次进入卡）、3.1.0（软木板白天 / 黑夜灯光、挂历叠放、零警告）、4.0.0（装饰台拖动跟手、去掉窗格） |
+| macOS App（刘海出片口） | 🟢 v4.5.0 已发布；🟡 v5.0.0 已打标签 | [Releases](https://github.com/Chaosnap/Nocchi/releases/latest)：`Nocchi-macOS-5.0.0.zip` + `SHA256SUMS.txt`（AGPL-3.0）。3.0.0（自拍闪退、大头贴机第一次进入卡）、3.1.0（软木板白天 / 黑夜灯光、挂历叠放、零警告）、4.0.0（装饰台拖动跟手、去掉窗格）、4.5.0（右上角一束可以转的光）、5.0.0（光和灰尘静态、「灯光」卡片不卡） |
 | iOS App（灵动岛出片口） | 🔵 编写中 | 分层建模相机、灵动岛出片、Live Activity |
 | 美术素材 | 🟢 第三版 | 复古机身、大头贴机、纹理（象牙白 + 炭黑 + 陶土橙）；**App 图标第三稿**：复古旁轴式即显相机 + 做旧毛边相纸（不出画框），胡桃木圆角瓷砖，CI 渲染各尺寸；80 年代方盒款机身已入库备用 |
 | 照片卡片盒（2.5D） | 🟢 CI 全绿 | Blender 照参考图建模、Cycles 渲染（`CardBoxBase` / `CardBoxFront` + 热点），卡片从盒口升起、扇形摊开 |
 | v0.2「复古冲印店」 | 🟢 全部完成，随 v1.0.0 发布 | 规范见 [DESIGN.md](DESIGN.md)；逐步进度见下面的「v0.2 改版进度」 |
 | 产品文档站与截图 | 🟢 已上线 | <https://chaosnap.github.io/Nocchi/>（VitePress，英文 + `/zh/` 中文）；截图由 `screenshots.yml` 在 Actions 上从 App 渲染，提交到 `website/public/screenshots/` |
-| 3.0 / 3.1 / 4.0 | 🟢 都已发布 | 见下面「交接 · 当前批次」 |
+| 3.0 / 3.1 / 4.0 / 4.5 / 5.0 | 🟢 4.5 及以前都已发布；🟡 5.0 已打标签 | 见下面「交接 · 当前批次」第 8、9 项 |
 | 2.1 反馈（所有者 9 项 + 补充） | 🟢 全部做完，随 v2.1.0 发布 | 见下面「交接 · 上一批」：卡片空白、相机有不同效果、换相机按钮、图标阴影、卡片盒按年月日归档、中英文切换、关于页、自定义存储位置、「准备抽出来」动画、更精细的卡片和标签都已做并用截图验收；**相册「主程序被强制隐藏」是推断后修的，等所有者确认**；等所有者决定发不发 v2.1.0 |
 | v2.0 打磨（所有者反馈） | 🟢 随 v2.0.0 发布 | 14 项（13 项已做）+ 文字框与自定义字体 + 自定义贴纸 + 不要滚动条；**正在做：剧院暗红布帘、机身整体建模、情人节相框**，见下面「交接」第 3 节 |
 | 仓库与社区文件 | 🟢 已补齐 | GNU AGPL-3.0（与 Yohaku 一致）；英文的 README、行为准则（Contributor Covenant 3.0）、贡献指南、安全政策、隐私说明、Issue / PR 模板 |
@@ -40,7 +40,9 @@
 
 | 7 | 装饰台：贴纸移动、旋转不顺；文字框缩放、旋转不顺，「修复下，作为 4.0 release」 | 🟢 CI 第 69 次运行绿（零警告），已发 v4.0.0（Release 第 8 次运行）；手感要所有者试 | `Editor/PaperStage.swift`（`StickerItem`、`TextItem` 用 `LiveTransform` + `HandleDrag`，松手 `commit()`；`TextImageCache` 按内容为键、缓存排版尺寸）、版本 4.0.0、`CHANGELOG.md`、README、两个更新日志、决策 D42 | 截图拍不到拖动的手感，要所有者试；按住 ⇧ 旋转每 15° 一格是新加的。所有者又说「这个窗户田字格删掉」：软木板的阳光 / 月光光斑不再画窗棂（`LightPlacement.windowBars` 默认关，`LightModel` 里的窗棂留作选项），一起进 4.0.0 |
 
-| 8 | 软木板灯光：「不要那种棱形……从右边上角射下来可以旋转的打光」；「带了灯光太卡了，优化下性能，灯光的渲染可以 cheap 些，其他显示质量一律不准改，只能碰灯光」；「修复这个后直接 push build release 4.5」 | 🟡 已改（第 62 次推送），等 CI 和 Screenshots（`album-corkboard-night.jpg` 应是右上角斜下来的一束暖光、`album-corkboard-lighting.jpg` 的小板子右上角是灯、一枚铜钮落在光束上）；绿了发 `v4.5.0` | `NocchiKit/Lighting/LightModel.swift`（`LightPlacement.aim`、斜打的台灯，测试 `testCornerBeamFromTheTopRight`、`testTurningTheBeam`）、`Album/CorkLighting.swift`（`aim` 取代灯的位置、`forPrints`、`CorkLightOverlay` 只用普通叠加、`DustLayer` / `DustView` 用 `CAEmitterLayer`、`LightPad` 拖动转灯）、`Album/CorkBoardView.swift`（照片拿 `forPrints`）、版本 4.5.0、决策 D43 | 性能要所有者实际感受；灰尘的遮罩方向在截图里核对 |
+| 8 | 软木板灯光：「不要那种棱形……从右边上角射下来可以旋转的打光」；「带了灯光太卡了，优化下性能，灯光的渲染可以 cheap 些，其他显示质量一律不准改，只能碰灯光」；「修复这个后直接 push build release 4.5」 | 🟢 CI 第 71 次运行绿，已发 `v4.5.0`；README、文档站改用夜里的截图（第 63 次推送） | `NocchiKit/Lighting/LightModel.swift`（`LightPlacement.aim`、斜打的台灯，测试 `testCornerBeamFromTheTopRight`、`testTurningTheBeam`）、`Album/CorkLighting.swift`（`aim` 取代灯的位置、`forPrints`、`CorkLightOverlay` 只用普通叠加、`DustLayer` / `DustView` 用 `CAEmitterLayer`、`LightPad` 拖动转灯）、`Album/CorkBoardView.swift`（照片拿 `forPrints`）、版本 4.5.0、决策 D43 | 性能要所有者实际感受；灰尘的遮罩方向在截图里核对 |
+
+| 9 | 软木板还是卡：「灯光不用实时渲染，麻烦改成静态的」「灯光调节完就变成静态的在木板那，不然点击左下的二级菜单很卡」「灰尘麻烦也变成静态的，修改完直接推送 pub 不用等别的」「照片要保留做出反应啊，我只是让你调节灯光和灰尘，其他不准改动」「我的意思是点击左下的二级菜单展开出来和收起很卡」；「这个修改完直接 tag 5.0 push build 测试」 | 🟡 已改（第 64 次推送），推送后马上打了 `v5.0.0` 标签（所有者说不用等）；等 CI 和 Release 出 `Nocchi-macOS-5.0.0.zip` | `Album/CorkLighting.swift`（`CorkBoardLighting`：板子上正在用的灯，点选马上换、拖动停手 0.25 秒换；去掉 `forPrints`，照片拿完整的灯光；`CorkLightOverlay` 三张静态图，灰尘 `dustImage` 按屏幕像素密度画；`CorkLightMaps` 缓存先丢小预览；卡片的影子挂在纸上；设置停手 0.4 秒再存）、`Album/CorkBoardView.swift`（板子看 `CorkBoardLighting`；铜牌和卡片挪进 `CorkLightingControls`）、版本 5.0.0、决策 D44 | 卡不卡要所有者实际感受；Screenshots 里看夜里那张的灰尘还在光束里。若 CI 红了：修好后发 5.0.1 |
 
 **版本号**：灯光和挂历原本要作为「2.5」，但所有者又要先把闪退和卡顿发成 3.0，所以这一批发成 **3.1.0**（版本号不能往回走）。`macOS/project.yml`、`CHANGELOG.md`（`## [3.1.0]`）、README、两个更新日志已经写好；CI 绿、截图看过就推 `v3.1.0`。
 
@@ -208,6 +210,7 @@
 
 ## 最近更新（新的在上）
 
+- **2026-11-25 · 第 64 次推送（5.0.0）** 软木板的光和灰尘改成静态的图（灰尘不再用 `CAEmitterLayer` 一直动）；「灯光」铜牌和卡片挪进自己的视图，展开收起不再重算整块板子；板子停手才换上新的灯，照片拿完整的灯光、照样跟着变。版本 5.0.0，推送后马上打 `v5.0.0` 标签。
 - **2026-11-24 · 第 63 次推送** 所有者说 README 和网页里的软木板截图「没更新」：图其实已由 Screenshots 第 36 次运行更新、Pages 第 49 次运行部署（文档站图片缓存 10 分钟，浏览器里可能还是旧图），但白天的光束很淡、缩略图看不出变化。README 的「Corkboard」格改用夜里的截图（右上角那束光一眼就看得到），文档站「截图一览」中英文都加上夜里那张。
 - **2026-11-24 · 发行版 v4.5.0** CI 第 71 次运行绿（零警告），所有者：「ci 全绿了，麻烦 release 4.5 pub」，推了 `v4.5.0` 标签（`06b9f2c`）。
 - **2026-11-24 · 第 62 次推送（4.5.0）** 软木板的灯光改成右上角斜照下来、可以转的一束光；渲染变便宜（低分辨率光照图、普通叠加、`CAEmitterLayer` 灰尘、照片不随灯光参数重算）。版本 4.5.0。

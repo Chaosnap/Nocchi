@@ -2,6 +2,14 @@
 
 The full changelog, in Chinese, is [CHANGELOG.md](https://github.com/Chaosnap/Nocchi/blob/main/CHANGELOG.md). Downloads are on [Releases](https://github.com/Chaosnap/Nocchi/releases).
 
+## 5.0.0 · 2026-11-25
+
+**Light that holds still.**
+
+- **The Lighting card opens and closes smoothly**: the brass badge and the card sit on their own layer, so opening or closing the card no longer recomputes the whole board.
+- **Static light and dust**: the light and the dust on the board are drawn once as still images and redrawn only when you change the light. The dust no longer drifts.
+- **Applied when you let go**: while you turn the lamp or drag a slider, the little board on the card follows along, and the corkboard takes the new light once you stop. Day or night, the light source, fasteners and Reset apply right away. The prints' shadows still follow the light.
+
 ## 4.5.0 · 2026-11-24
 
 **A beam of light.**

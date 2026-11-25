@@ -87,18 +87,6 @@ struct CorkLighting: Codable, Hashable {
     /// 光束能转的范围：从顺着右边往下，到顺着上边往左。
     static let aimRange: ClosedRange<Double> = 96...174
 
-    /// 照片、图钉、标签带用的那部分：只有影子深浅、纸张卷曲、固定方式和白天 / 黑夜会影响它们。
-    /// 转灯、调亮度、色温、灰尘时这份不变，SwiftUI 就不用把板子上的每张照片都重算一遍（只有光照层跟着变）。
-    var forPrints: CorkLighting {
-        var copy = CorkLighting.standard
-        copy.time = time
-        copy.source = source
-        copy.shadow = shadow
-        copy.curl = curl
-        copy.fastener = fastener
-        return copy
-    }
-
     init() {}
 
     // MARK: 存取（2.x 存的是 `angle`：光从哪个方向来，度）
@@ -246,6 +234,10 @@ struct CorkLighting: Codable, Hashable {
 }
 
 /// 软木板灯光设置的存取（UserDefaults）。
+///
+/// 调节卡片改的是 `lighting`（卡片上摆灯的小板子当场跟着变）；板子上用的是 `board`。
+/// 所有者：「灯光调节完就变成静态的在木板那」——点选（白天黑夜、光源、固定方式、恢复默认）马上换到板子上，
+/// 拖动、滑动停手才换上一次；换上以后光、灰尘都是静态的图，不再跟着每一下重画。
 @MainActor
 final class CorkLightingStore: ObservableObject {
     static let shared = CorkLightingStore()
@@ -253,42 +245,101 @@ final class CorkLightingStore: ObservableObject {
 
     @Published var lighting: CorkLighting {
         didSet {
-            if let data = try? JSONEncoder().encode(lighting) {
-                UserDefaults.standard.set(data, forKey: Self.key)
+            guard lighting != oldValue else { return }
+            scheduleSave()
+            if lighting.time != oldValue.time || lighting.source != oldValue.source || lighting.fastener != oldValue.fastener {
+                // 点选：马上换上（在点按的动画里）。
+                board.apply(lighting)
+            } else {
+                // 拖动、滑动：停手再换上。
+                board.applyWhenSettled(lighting)
             }
         }
     }
 
+    /// 板子上正在用的灯。
+    let board: CorkBoardLighting
+    private var saveWork: DispatchWorkItem?
+
     private init() {
+        let initial: CorkLighting
         if let data = UserDefaults.standard.data(forKey: Self.key),
            let saved = try? JSONDecoder().decode(CorkLighting.self, from: data) {
-            lighting = saved
+            initial = saved
         } else {
-            lighting = .standard
+            initial = .standard
         }
+        lighting = initial
+        board = CorkBoardLighting(initial)
     }
 
     func reset() {
         withAnimation(.easeInOut(duration: 0.35)) {
             lighting = .standard
+            board.apply(lighting)
+        }
+    }
+
+    /// 拖滑杆时不每一下都写磁盘：停下 0.4 秒再存。
+    private func scheduleSave() {
+        saveWork?.cancel()
+        let value = lighting
+        let key = Self.key
+        let work = DispatchWorkItem {
+            if let data = try? JSONEncoder().encode(value) {
+                UserDefaults.standard.set(data, forKey: key)
+            }
+        }
+        saveWork = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4, execute: work)
+    }
+}
+
+/// 板子上正在用的灯：软木、照片、图钉、标签带和光照层都看这一份，照片的影子、卷曲、固定方式照样跟着灯变。
+@MainActor
+final class CorkBoardLighting: ObservableObject {
+    static var shared: CorkBoardLighting { CorkLightingStore.shared.board }
+
+    @Published private(set) var lighting: CorkLighting
+    private var pending: Task<Void, Never>?
+
+    init(_ lighting: CorkLighting) {
+        self.lighting = lighting
+    }
+
+    /// 马上换上。
+    func apply(_ new: CorkLighting) {
+        pending?.cancel()
+        pending = nil
+        if lighting != new { lighting = new }
+    }
+
+    /// 拖动、滑动：0.25 秒没有再动才换上。
+    func applyWhenSettled(_ new: CorkLighting) {
+        pending?.cancel()
+        pending = Task { [weak self] in
+            try? await Task.sleep(for: .milliseconds(250))
+            guard !Task.isCancelled else { return }
+            self?.apply(new)
         }
     }
 }
 
 // MARK: - 光照图与灰尘
 
-/// 板子上的光。要便宜（所有者：「这个木板界面带了灯光太卡了……灯光的渲染可以 cheap 些」）：
-/// - 光照图按灯光模型在 CPU 上以很低的分辨率（约 120 列）算一次（改了灯才重算），放大画上去；
-/// - 两层都是普通的透明叠加：暗处一层「影」（暗处的颜色，透明度 = 1 − 光量），亮处一层淡淡的灯光色。
-///   不用模糊、不用屏幕混合——它们会让窗口每一帧都重新合成整块板子；
-/// - 灰尘交给 Core Animation 的粒子（`DustLayer`，在渲染服务器上跑，不占 CPU），用光照图当遮罩，只在光里看得见。
+/// 板子上的光：静态的图（所有者：「灯光不用实时渲染，麻烦改成静态的」「灰尘麻烦也变成静态的」）。
+/// 板子换上新的灯时算一次，之后就是三张不动的图：
+/// - 「影」：暗处的颜色，透明度 = 1 − 光量；「光」：淡淡的灯光色（按灯光模型在 CPU 上以约 120 列算好，放大画上去）；
+/// - 「灰尘」：光束里一粒粒的亮点，按屏幕的像素密度画在一张透明图上，只在光里看得见；不飘、不闪。
+/// 都是普通的透明叠加：没有模糊、没有屏幕混合、没有动画。
 struct CorkLightOverlay: View {
     let lighting: CorkLighting
+    @Environment(\.displayScale) private var displayScale
 
     var body: some View {
         GeometryReader { geo in
             let size = geo.size
-            let maps = CorkLightMaps.shared.maps(for: lighting, size: size)
+            let maps = CorkLightMaps.shared.maps(for: lighting, size: size, scale: displayScale)
             ZStack {
                 if let shade = maps.shade {
                     Image(decorative: shade, scale: 1)
@@ -300,8 +351,10 @@ struct CorkLightOverlay: View {
                         .resizable()
                         .interpolation(.medium)
                 }
-                if lighting.particles > 0.01, let beam = maps.beam {
-                    DustLayer(amount: lighting.particles, strength: lighting.particleStrength, tint: lighting.lightRGB, mask: beam)
+                if let dust = maps.dust {
+                    Image(decorative: dust, scale: 1)
+                        .resizable()
+                        .interpolation(.medium)
                 }
             }
             .frame(width: size.width, height: size.height)
@@ -318,8 +371,8 @@ final class CorkLightMaps {
     struct Maps {
         let shade: CGImage?
         let glow: CGImage?
-        /// 光量做成的遮罩（白色，透明度 = 光量）：灰尘只在光里看得见。
-        let beam: CGImage?
+        /// 光束里的灰尘（板子大小的透明图；没有灰尘、或是卡片上的小预览时为 nil）。
+        let dust: CGImage?
         let rig: LightRig
     }
 
@@ -328,20 +381,35 @@ final class CorkLightMaps {
         let width: Int
         let height: Int
         let columns: Int
+        let scale: Int
     }
 
     private var cache: [Key: Maps] = [:]
 
-    func maps(for lighting: CorkLighting, size: CGSize, columns: Int = 120) -> Maps {
-        let key = Key(lighting: lighting, width: Int(size.width.rounded()), height: Int(size.height.rounded()), columns: columns)
+    /// `columns` 不到 100 的是卡片上的小预览（不画灰尘）；`scale` 是屏幕的像素密度，灰尘图按它画。
+    func maps(for lighting: CorkLighting, size: CGSize, columns: Int = 120, scale: CGFloat = 1) -> Maps {
+        let withDust = columns >= 100
+        let key = Key(
+            lighting: lighting,
+            width: Int(size.width.rounded()),
+            height: Int(size.height.rounded()),
+            columns: columns,
+            scale: withDust ? Int((scale * 100).rounded()) : 100
+        )
         if let cached = cache[key] { return cached }
-        let maps = Self.render(lighting, size: size, columns: columns)
-        if cache.count > 8 { cache.removeAll() }
+        let maps = Self.render(lighting, size: size, columns: columns, dust: withDust, scale: scale)
         cache[key] = maps
+        if cache.count > 10 {
+            // 拖卡片上的小板子，每一下都是一张小预览：先丢它们；板子上的大图留着（最多三张）。
+            var kept = cache.filter { $0.key.columns >= 100 }
+            if kept.count > 3 { kept = [:] }
+            kept[key] = maps
+            cache = kept
+        }
         return maps
     }
 
-    nonisolated static func render(_ lighting: CorkLighting, size: CGSize, columns: Int) -> Maps {
+    nonisolated static func render(_ lighting: CorkLighting, size: CGSize, columns: Int, dust withDust: Bool, scale: CGFloat = 1) -> Maps {
         let rig = LightModel.rig(lighting.placement, size: size)
         let width = max(1, Double(size.width))
         let height = max(1, Double(size.height))
@@ -349,7 +417,6 @@ final class CorkLightMaps {
         let rows = max(6, Int((Double(cols) * height / width).rounded()))
         var shade = [UInt8](repeating: 0, count: cols * rows * 4)
         var glow = [UInt8](repeating: 0, count: cols * rows * 4)
-        var beam = [UInt8](repeating: 0, count: cols * rows * 4)
         let ambient = lighting.ambient
         let tint = lighting.lightRGB
         let dark = lighting.shadeRGB
@@ -365,7 +432,6 @@ final class CorkLightMaps {
                 let lightness = ambient * (1 - 0.45 * vignette * corner) + (1 - ambient) * lit
                 let a = min(1, max(0, 1 - lightness))
                 let g = min(1, max(0, lit * strength))
-                let b = min(1, max(0, lit * 1.25))
                 let k = (j * cols + i) * 4
                 shade[k] = UInt8(min(255, dark.r * a * 255))
                 shade[k + 1] = UInt8(min(255, dark.g * a * 255))
@@ -375,19 +441,59 @@ final class CorkLightMaps {
                 glow[k + 1] = UInt8(min(255, tint.g * g * 255))
                 glow[k + 2] = UInt8(min(255, tint.b * g * 255))
                 glow[k + 3] = UInt8(min(255, g * 255))
-                let white = UInt8(min(255, b * 255))
-                beam[k] = white
-                beam[k + 1] = white
-                beam[k + 2] = white
-                beam[k + 3] = white
             }
         }
         return Maps(
             shade: image(shade, width: cols, height: rows),
             glow: image(glow, width: cols, height: rows),
-            beam: image(beam, width: cols, height: rows),
+            dust: withDust ? dustImage(lighting, rig: rig, size: size, scale: scale) : nil,
             rig: rig
         )
+    }
+
+    /// 光束里的灰尘：原来飘着的那些灰尘（140 粒，位置、深浅、大小、明暗都是固定的伪随机数）停在原地，
+    /// 每粒按灯光模型点亮，只画在有光的地方。按屏幕的像素密度画（特别大的板子降一点，免得占太多内存）。
+    private nonisolated static func dustImage(_ lighting: CorkLighting, rig: LightRig, size: CGSize, scale: CGFloat) -> CGImage? {
+        let amount = min(1, max(0, lighting.particles))
+        guard amount > 0.01, size.width >= 1, size.height >= 1 else { return nil }
+        let area = Double(size.width * size.height)
+        let density = CGFloat(min(Double(max(1, scale)), (4_000_000 / area).squareRoot()))
+        let width = max(1, Int((size.width * density).rounded()))
+        let height = max(1, Int((size.height * density).rounded()))
+        guard let space = CGColorSpace(name: CGColorSpace.sRGB),
+              let ctx = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0, space: space, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
+        // 图片坐标原点在左下：翻成左上、单位换成点，和板子一致。
+        ctx.translateBy(x: 0, y: CGFloat(height))
+        ctx.scaleBy(x: density, y: -density)
+        let tint = lighting.lightRGB
+        let strength = lighting.particleStrength
+        let count = Int((140 * amount).rounded())
+        for i in 0..<count {
+            let n = Double(i)
+            let x = hash(n * 3.1) * Double(size.width)
+            let y = hash(n * 7.7) * Double(size.height)
+            let lit = LightModel.lightAmount(rig, x: x, y: y)
+            guard lit > 0.05 else { continue }
+            let depth = hash(n * 1.9)
+            let twinkle = 0.5 + 0.5 * sin(hash(n * 5.3) * 100)
+            let alpha = min(1, lit * twinkle * strength)
+            guard alpha > 0.01 else { continue }
+            let radius = CGFloat((0.5 + hash(n * 9.1) * 1.6) * (1 + depth * 1.6) * 2)
+            let center = CGPoint(x: x, y: y)
+            let colors = [
+                CGColor(srgbRed: tint.r, green: tint.g, blue: tint.b, alpha: alpha),
+                CGColor(srgbRed: tint.r, green: tint.g, blue: tint.b, alpha: alpha * 0.6),
+                CGColor(srgbRed: tint.r, green: tint.g, blue: tint.b, alpha: 0),
+            ] as CFArray
+            guard let gradient = CGGradient(colorsSpace: space, colors: colors, locations: [0, 0.22, 1]) else { continue }
+            ctx.drawRadialGradient(gradient, startCenter: center, startRadius: 0, endCenter: center, endRadius: radius, options: [])
+        }
+        return ctx.makeImage()
+    }
+
+    private nonisolated static func hash(_ n: Double) -> Double {
+        let s = sin(n * 127.1 + 311.7) * 43758.5453
+        return s - floor(s)
     }
 
     private nonisolated static func image(_ bytes: [UInt8], width: Int, height: Int) -> CGImage? {
@@ -406,117 +512,6 @@ final class CorkLightMaps {
             shouldInterpolate: true,
             intent: .defaultIntent
         )
-    }
-}
-
-/// 光束里飘的灰尘：Core Animation 的粒子发射器，整块板子上慢慢漂、往上浮、淡入淡出；用光照图做遮罩，
-/// 只在光里看得见。粒子在渲染服务器上动，App 不用每帧重画。
-private struct DustLayer: NSViewRepresentable {
-    let amount: Double
-    let strength: Double
-    let tint: (r: Double, g: Double, b: Double)
-    let mask: CGImage
-
-    func makeNSView(context: Context) -> DustView {
-        DustView()
-    }
-
-    func updateNSView(_ view: DustView, context: Context) {
-        view.update(amount: amount, strength: strength, tint: tint, mask: mask)
-    }
-}
-
-final class DustView: NSView {
-    private let emitter = CAEmitterLayer()
-    private let maskLayer = CALayer()
-    private var settings: (amount: Double, strength: Double, r: Double, g: Double, b: Double)?
-    private var maskImage: CGImage?
-
-    /// 一粒灰尘：中间亮、边缘柔的小圆点（白色，颜色由粒子的 color 染）。
-    private static let sprite: CGImage? = {
-        let size = 32
-        guard let space = CGColorSpace(name: CGColorSpace.sRGB),
-              let ctx = CGContext(data: nil, width: size, height: size, bitsPerComponent: 8, bytesPerRow: 0, space: space, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue),
-              let gradient = CGGradient(
-                colorsSpace: space,
-                colors: [CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 1), CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 0.6), CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 0)] as CFArray,
-                locations: [0, 0.22, 1]
-              ) else { return nil }
-        let center = CGPoint(x: CGFloat(size) / 2, y: CGFloat(size) / 2)
-        ctx.drawRadialGradient(gradient, startCenter: center, startRadius: 0, endCenter: center, endRadius: CGFloat(size) / 2, options: [])
-        return ctx.makeImage()
-    }()
-
-    override init(frame frameRect: NSRect) {
-        super.init(frame: frameRect)
-        wantsLayer = true
-        emitter.emitterShape = .rectangle
-        emitter.emitterMode = .volume
-        emitter.renderMode = .additive
-        emitter.mask = maskLayer
-        maskLayer.contentsGravity = .resize
-        layer?.addSublayer(emitter)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func layout() {
-        super.layout()
-        fitEmitter()
-    }
-
-    override func setFrameSize(_ newSize: NSSize) {
-        super.setFrameSize(newSize)
-        fitEmitter()
-    }
-
-    /// 发射器和遮罩铺满整块板子。
-    private func fitEmitter() {
-        CATransaction.begin()
-        CATransaction.setDisableActions(true)
-        emitter.frame = bounds
-        emitter.emitterPosition = CGPoint(x: bounds.midX, y: bounds.midY)
-        emitter.emitterSize = bounds.size
-        maskLayer.frame = emitter.bounds
-        CATransaction.commit()
-    }
-
-    func update(amount: Double, strength: Double, tint: (r: Double, g: Double, b: Double), mask: CGImage) {
-        CATransaction.begin()
-        CATransaction.setDisableActions(true)
-        if maskImage !== mask {
-            maskLayer.contents = mask
-            maskImage = mask
-        }
-        CATransaction.commit()
-        // 粒子的设置没变就不动发射器（换掉会让灰尘全部重新生出来）。
-        if let settings, settings.amount == amount, settings.strength == strength,
-           settings.r == tint.r, settings.g == tint.g, settings.b == tint.b {
-            return
-        }
-        let first = settings == nil
-        settings = (amount, strength, tint.r, tint.g, tint.b)
-        let cell = CAEmitterCell()
-        cell.contents = Self.sprite
-        cell.birthRate = Float(2 + 12 * min(1, max(0, amount)))
-        cell.lifetime = 14
-        cell.lifetimeRange = 5
-        cell.velocity = 5
-        cell.velocityRange = 4
-        cell.emissionRange = .pi * 2
-        cell.yAcceleration = 0.8
-        cell.scale = 0.11
-        cell.scaleRange = 0.07
-        cell.alphaRange = 0.45
-        cell.alphaSpeed = -0.03
-        cell.color = CGColor(srgbRed: tint.r, green: tint.g, blue: tint.b, alpha: min(1, 0.35 + 0.55 * strength))
-        emitter.emitterCells = [cell]
-        if first {
-            // 一打开就满屏都有灰尘，不用等它们慢慢生出来。
-            emitter.beginTime = CACurrentMediaTime() - 16
-        }
     }
 }
 
@@ -638,12 +633,13 @@ struct LightingPanel: View {
         .padding(16)
         .fixedSize()
         .background(
+            // 影子从卡片的纸上投下来（纸不透明，样子和以前一样）：展开、收起的时候不用拿整张卡片的内容去算影子。
             Rectangle()
                 .fill(LinearGradient(colors: [Color(hex: 0xFBF8F1), Color(hex: 0xF1EADC)], startPoint: .top, endPoint: .bottom))
+                .shadow(color: .black.opacity(0.24), radius: 1.2, x: 0.6, y: 1)
+                .shadow(color: .black.opacity(0.22), radius: 18, x: 5, y: 12)
         )
         .overlay(Rectangle().stroke(Color.black.opacity(0.07), lineWidth: 0.6))
-        .shadow(color: .black.opacity(0.24), radius: 1.2, x: 0.6, y: 1)
-        .shadow(color: .black.opacity(0.22), radius: 18, x: 5, y: 12)
         .rotationEffect(.degrees(-0.8))
         .animation(.spring(response: 0.38, dampingFraction: 0.85), value: store.lighting.time)
     }

@@ -12,9 +12,9 @@ import SwiftUI
 struct CorkBoardView: View {
     let records: [PhotoRecord]
     let libraryIsEmpty: Bool
-    @ObservedObject private var lights = CorkLightingStore.shared
-    @ObservedObject private var showcase = CorkShowcase.shared
-    @State private var showsLighting = false
+    /// 板子上正在用的灯（调完才换上，之后是静态的）。「灯光」铜牌和卡片在 `CorkLightingControls` 里：
+    /// 展开、收起卡片和拖滑杆都不会让板子上的照片重画（所有者：「点击左下的二级菜单展开出来和收起很卡」）。
+    @ObservedObject private var board = CorkBoardLighting.shared
 
     /// 截图工作室用：把「灯光」卡片打开（不用点铜牌）。
     @MainActor static var showcasePanel: Bool {
@@ -29,20 +29,18 @@ struct CorkBoardView: View {
 
     var body: some View {
         let groups = PhotoLibrary.groupedByMonth(records)
-        let lighting = lights.lighting
-        // 照片、图钉、标签只拿影子要用的那部分：转灯、调亮度 / 色温 / 灰尘时它们不变，不用整块板子重算。
-        let prints = lighting.forPrints
+        let lighting = board.lighting
         WalnutFrame {
             ZStack(alignment: .bottomLeading) {
-                CorkSurface(lighting: prints)
+                CorkSurface(lighting: lighting)
                 if libraryIsEmpty {
-                    EmptyCorkCard(lighting: prints)
+                    EmptyCorkCard(lighting: lighting)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if !groups.isEmpty {
                     ScrollView(.vertical) {
                         LazyVStack(alignment: .leading, spacing: 56) {
                             ForEach(groups) { group in
-                                CorkMonth(group: group, lighting: prints)
+                                CorkMonth(group: group, lighting: lighting)
                             }
                         }
                         .padding(.horizontal, 44)
@@ -51,21 +49,8 @@ struct CorkBoardView: View {
                     }
                 }
                 CorkLightOverlay(lighting: lighting)
-                if showsLighting || showcase.panel {
-                    LightingPanel(store: lights) {
-                        withAnimation(.spring(response: 0.42, dampingFraction: 0.82)) { showsLighting = false }
-                    }
-                    .padding(.leading, 22)
-                    .padding(.bottom, 84)
-                    .transition(.scale(scale: 0.9, anchor: .bottomLeading).combined(with: .opacity))
+                CorkLightingControls()
                     .zIndex(2)
-                }
-                LightBadge(active: showsLighting, lighting: prints) {
-                    withAnimation(.spring(response: 0.42, dampingFraction: 0.82)) { showsLighting.toggle() }
-                }
-                .padding(.leading, 20)
-                .padding(.bottom, 18)
-                .zIndex(3)
             }
         }
         .padding(.horizontal, 20)
@@ -79,6 +64,34 @@ struct CorkBoardView: View {
 final class CorkShowcase: ObservableObject {
     static let shared = CorkShowcase()
     @Published var panel = false
+}
+
+/// 左下角的「灯光」铜牌和它打开的调节卡片。展开、收起只重画这里，板子上的照片不动。
+private struct CorkLightingControls: View {
+    @ObservedObject private var board = CorkBoardLighting.shared
+    @ObservedObject private var showcase = CorkShowcase.shared
+    @State private var showsLighting = false
+
+    var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            if showsLighting || showcase.panel {
+                LightingPanel(store: CorkLightingStore.shared) {
+                    withAnimation(.spring(response: 0.42, dampingFraction: 0.82)) { showsLighting = false }
+                }
+                .padding(.leading, 22)
+                .padding(.bottom, 84)
+                .transition(.scale(scale: 0.9, anchor: .bottomLeading).combined(with: .opacity))
+                .zIndex(2)
+            }
+            LightBadge(active: showsLighting, lighting: board.lighting) {
+                withAnimation(.spring(response: 0.42, dampingFraction: 0.82)) { showsLighting.toggle() }
+            }
+            .padding(.leading, 20)
+            .padding(.bottom, 18)
+            .zIndex(3)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
+    }
 }
 
 // MARK: - 一个月
